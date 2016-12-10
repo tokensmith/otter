@@ -35,6 +35,7 @@ public class ServletContainerFactory {
      *
      * @param path root path for the servlet container to run. example, "/"
      * @param clazz a class in your project.
+     * @param port the port the container should use. 0 will randomly assign a port.
      * @return
      * @throws URISyntaxException
      * @throws MalformedURLException
@@ -51,6 +52,7 @@ public class ServletContainerFactory {
      * @param path root path for the servlet container to run. example, "/"
      * @param webApp absolute file path to the webapp directory in your project.
      * @param classPath absolute file path to, target/classes/ in your project.
+     * @param port the port the container should use. 0 will randomly assign a port.
      * @return
      * @throws MalformedURLException
      */
