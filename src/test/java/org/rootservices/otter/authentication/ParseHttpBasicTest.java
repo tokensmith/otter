@@ -15,13 +15,13 @@ import static org.junit.Assert.assertThat;
  * Created by tommackenzie on 6/4/15.
  *
  */
-public class ParseHttpBasicImplTest {
+public class ParseHttpBasicTest {
 
     private ParseHttpBasic subject;
 
     @Before
     public void setUp() {
-        subject = new ParseHttpBasicImpl();
+        subject = new ParseHttpBasic();
     }
     @Test
     public void testRun() throws HttpBasicException, UnsupportedEncodingException {
