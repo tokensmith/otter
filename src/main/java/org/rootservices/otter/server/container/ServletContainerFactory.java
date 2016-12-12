@@ -2,7 +2,7 @@ package org.rootservices.otter.server.container;
 
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.server.*;
-import org.eclipse.jetty.util.resource.FileResource;
+import org.eclipse.jetty.util.resource.PathResource;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -11,6 +11,7 @@ import org.rootservices.otter.server.path.CompiledClassPath;
 import org.rootservices.otter.server.path.WebAppPath;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,45 +34,44 @@ public class ServletContainerFactory {
 
     /**
      *
-     * @param path root path for the servlet container to run. example, "/"
+     * @param documentRoot root path for the servlet container to run. example, "/"
      * @param clazz a class in your project.
      * @param port the port the container should use. 0 will randomly assign a port.
      * @return
      * @throws URISyntaxException
      * @throws MalformedURLException
      */
-    public ServletContainer makeServletContainer(String path, Class clazz, int port) throws URISyntaxException, MalformedURLException {
-        URI compiledClasses = compiledClassPath.getForClass(clazz);
-        URI webApp = webAppPath.fromClassURI(compiledClasses);
+    public ServletContainer makeServletContainer(String documentRoot, Class clazz, int port, File tempDirectory) throws URISyntaxException, IOException {
+        URI compliedClassPath = compiledClassPath.getForClass(clazz);
+        URI webApp = webAppPath.fromClassURI(compliedClassPath);
 
-        return makeServletContainer(path, webApp, compiledClasses, port);
+        return makeServletContainer(documentRoot, webApp, compliedClassPath, port, tempDirectory);
     }
 
     /**
      *
-     * @param path root path for the servlet container to run. example, "/"
+     * @param documentRoot root path for the servlet container to run. example, "/"
      * @param webApp absolute file path to the webapp directory in your project.
-     * @param classPath absolute file path to, target/classes/ in your project.
+     * @param compliedClassPath absolute file path to, target/classes/ in your project.
      * @param port the port the container should use. 0 will randomly assign a port.
      * @return
      * @throws MalformedURLException
      */
-    public ServletContainer makeServletContainer(String path, URI webApp, URI classPath, int port) throws MalformedURLException {
-        Server jetty = new Server(0);
+    public ServletContainer makeServletContainer(String documentRoot, URI webApp, URI compliedClassPath, int port, File tempDirectory) throws IOException {
+        Server jetty = new Server(port);
 
         // dependencies for, WebAppContext
-        FileResource containerResources = makeFileResource(classPath);
+        PathResource containerResources = makeFileResource(compliedClassPath);
         String resourceBase = makeResourceBase(webApp);
         String webXmlPath = makeWebXmlPath(webApp);
         Configuration[] configurations = makeConfigurations();
-        File tempDirectory = makeTempDirectory();
 
         // dependency for, org.eclipse.jetty.server.Server
         WebAppContext context = makeWebAppContext(
-                path, resourceBase, webXmlPath, configurations, tempDirectory, containerResources
+                documentRoot, resourceBase, webXmlPath, configurations, tempDirectory, containerResources
         );
 
-        ServerConnector serverConnector = makeServerConnector(jetty, port);
+        ServerConnector serverConnector = makeServerConnector(jetty);
         jetty.setConnectors( new Connector[] { serverConnector } );
 
         // Add server context
@@ -80,7 +80,7 @@ public class ServletContainerFactory {
         return server;
     }
 
-    protected WebAppContext makeWebAppContext(String path, String resourceBase, String webXmlPath, Configuration[] configurations, File tempDirectory, FileResource containerResources) throws MalformedURLException {
+    protected WebAppContext makeWebAppContext(String documentRoot, String resourceBase, String webXmlPath, Configuration[] configurations, File tempDirectory, PathResource containerResources) throws MalformedURLException {
         WebAppContext context = new WebAppContext();
 
         context.setClassLoader(Thread.currentThread().getContextClassLoader());
@@ -91,7 +91,7 @@ public class ServletContainerFactory {
         context.setDescriptor(webXmlPath);
         context.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
 
-        context.setContextPath(path);
+        context.setContextPath(documentRoot);
         context.setParentLoaderPriority(true);
 
         return context;
@@ -106,8 +106,8 @@ public class ServletContainerFactory {
         return webApp.getPath() + WEB_XML;
     }
 
-    protected FileResource makeFileResource(URI classPath) {
-        return new FileResource(classPath);
+    protected PathResource makeFileResource(URI classPath) throws IOException {
+        return new PathResource(classPath);
     }
 
     protected Configuration[] makeConfigurations() {
@@ -117,18 +117,13 @@ public class ServletContainerFactory {
         };
     }
 
-    protected ServerConnector makeServerConnector(Server server, int port) {
+    protected ServerConnector makeServerConnector(Server server) {
         // turn off jetty response header
         HttpConfiguration httpConfig = new HttpConfiguration();
         httpConfig.setSendServerVersion(false);
 
         HttpConnectionFactory httpFactory = new HttpConnectionFactory( httpConfig );
         ServerConnector serverConnector = new ServerConnector(server, httpFactory);
-        serverConnector.setPort(port);
         return serverConnector;
-    }
-
-    protected File makeTempDirectory() {
-        return new File("/tmp");
     }
 }
