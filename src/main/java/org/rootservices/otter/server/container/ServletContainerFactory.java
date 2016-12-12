@@ -23,6 +23,7 @@ import java.net.URISyntaxException;
  */
 public class ServletContainerFactory {
 
+    private static String DIR_ALLOWED_KEY = "org.eclipse.jetty.servlet.Default.dirAllowed";
     private static String WEB_XML = "/WEB-INF/web.xml";
     private CompiledClassPath compiledClassPath;
     private WebAppPath webAppPath;
@@ -71,7 +72,7 @@ public class ServletContainerFactory {
                 documentRoot, resourceBase, webXmlPath, configurations, tempDirectory, containerResources
         );
 
-        ServerConnector serverConnector = makeServerConnector(jetty);
+        ServerConnector serverConnector = makeServerConnector(jetty, port);
         jetty.setConnectors( new Connector[] { serverConnector } );
 
         // Add server context
@@ -89,8 +90,7 @@ public class ServletContainerFactory {
         context.setTempDirectory(tempDirectory);
         context.getMetaData().addContainerResource(containerResources);
         context.setDescriptor(webXmlPath);
-        context.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
-
+        context.setInitParameter(DIR_ALLOWED_KEY, "false");
         context.setContextPath(documentRoot);
         context.setParentLoaderPriority(true);
 
@@ -117,13 +117,15 @@ public class ServletContainerFactory {
         };
     }
 
-    protected ServerConnector makeServerConnector(Server server) {
+    protected ServerConnector makeServerConnector(Server server, int port) {
         // turn off jetty response header
         HttpConfiguration httpConfig = new HttpConfiguration();
         httpConfig.setSendServerVersion(false);
 
         HttpConnectionFactory httpFactory = new HttpConnectionFactory( httpConfig );
         ServerConnector serverConnector = new ServerConnector(server, httpFactory);
+        serverConnector.setPort(port);
+
         return serverConnector;
     }
 }
