@@ -38,7 +38,8 @@ public class ServletContainerFactory {
      * @param documentRoot root path for the servlet container to run. example, "/"
      * @param clazz a class in your project.
      * @param port the port the container should use. 0 will randomly assign a port.
-     * @return
+     * @param tempDirectory location to put temporary files.
+     * @return a configured instance of ServletContainer
      * @throws URISyntaxException
      * @throws MalformedURLException
      */
@@ -55,7 +56,8 @@ public class ServletContainerFactory {
      * @param webApp absolute file path to the webapp directory in your project.
      * @param compliedClassPath absolute file path to, target/classes/ in your project.
      * @param port the port the container should use. 0 will randomly assign a port.
-     * @return
+     * @param tempDirectory location to put temporary files.
+     * @return a configured instance of ServletContainer
      * @throws MalformedURLException
      */
     public ServletContainer makeServletContainer(String documentRoot, URI webApp, URI compliedClassPath, int port, File tempDirectory) throws IOException {

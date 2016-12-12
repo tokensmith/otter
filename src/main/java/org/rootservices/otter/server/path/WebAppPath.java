@@ -9,12 +9,8 @@ import java.net.URISyntaxException;
 public class WebAppPath {
 
     /**
-     * Given a URI
-     * When its a project's target/classes location
-     * Then return the URI to the project's webapp location.
-     *
-     * @param classURI
-     * @return
+     * @param classURI location of a project's target/classes
+     * @return a absolute file path to a project's target/classes
      * @throws URISyntaxException
      */
     public URI fromClassURI(URI classURI) throws URISyntaxException {
