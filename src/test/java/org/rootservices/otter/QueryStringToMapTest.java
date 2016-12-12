@@ -2,8 +2,6 @@ package org.rootservices.otter;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.otter.QueryStringToMap;
-import org.rootservices.otter.QueryStringToMapImpl;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -18,13 +16,13 @@ import static org.junit.Assert.assertThat;
 /**
  * Created by tommackenzie on 4/22/15.
  */
-public class QueryStringToMapImplTest {
+public class QueryStringToMapTest {
 
     private QueryStringToMap subject;
 
     @Before
     public void setUp() {
-        subject = new QueryStringToMapImpl();
+        subject = new QueryStringToMap();
     }
 
     @Test

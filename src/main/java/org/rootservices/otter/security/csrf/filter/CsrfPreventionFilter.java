@@ -1,6 +1,6 @@
 package org.rootservices.otter.security.csrf.filter;
 
-import org.rootservices.otter.security.RandomStringImpl;
+import org.rootservices.otter.security.RandomString;
 import org.rootservices.otter.security.csrf.Csrf;
 import org.rootservices.otter.security.csrf.SynchronizerToken;
 import org.rootservices.otter.security.csrf.exception.CsrfException;
@@ -22,7 +22,7 @@ public class CsrfPreventionFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         this.filterConfig = filterConfig;
-        this.csrf = new SynchronizerToken(new RandomStringImpl());
+        this.csrf = new SynchronizerToken(new RandomString());
     }
 
     @Override

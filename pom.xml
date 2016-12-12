@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <name>Otter</name>
-    <description>Mirco web framework for servlet api 3.1</description>
+        <description>Mirco web framework for servlet api 3.1</description>
     <groupId>org.rootservices</groupId>
     <artifactId>otter</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
 
     <url>https://github.com/RootServices/otter</url>
     <licenses>
@@ -28,6 +28,7 @@
     <properties>
         <java.version>1.8</java.version>
         <servlet.version>3.1.0</servlet.version>
+        <jetty.version>9.3.14.v20161028</jetty.version>
     </properties>
 
     <dependencies>
@@ -37,6 +38,32 @@
             <version>${servlet.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-annotations</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-webapp</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>apache-jsp</artifactId>
+            <version>${jetty.version}</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>apache-jstl</artifactId>
+            <version>${jetty.version}</version>
+            <type>pom</type>
+        </dependency>
+
         <!-- Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
@@ -44,6 +71,7 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
