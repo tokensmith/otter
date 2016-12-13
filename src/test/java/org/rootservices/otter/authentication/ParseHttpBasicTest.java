@@ -55,7 +55,7 @@ public class ParseHttpBasicTest {
 
     @Test(expected=HttpBasicException.class)
     public void testHeaderHasNoColon() throws HttpBasicException {
-        String garbage = Base64.getEncoder().encodeToString("gabage".getBytes());
+        String garbage = Base64.getEncoder().encodeToString("garbage".getBytes());
         subject.run("Basic " + garbage);
     }
 
