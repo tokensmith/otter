@@ -3,6 +3,7 @@ package org.rootservices.otter.authentication;
 import org.rootservices.otter.authentication.exception.HttpBasicException;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
@@ -10,32 +11,33 @@ import java.util.Base64;
  */
 public class ParseHttpBasic {
 
+    private static String HEADER_EMPTY = "header is null or empty";
+    private static String NOT_BASIC = "header is not Basic authentication scheme";
+    private static String PARSE_ERROR = "Could not parse header";
+    private static String BASIC = "Basic ";
+    private static String DELIMITTER = ":";
+
     public HttpBasicEntity run(String header) throws HttpBasicException {
 
         if (header == null || header.isEmpty()) {
-            throw new HttpBasicException("header is null or empty");
+            throw new HttpBasicException(HEADER_EMPTY);
         }
 
-        String[] encodedCredentials = header.split("Basic ");
+        String[] encodedCredentials = header.split(BASIC);
 
         if ( encodedCredentials.length != 2  || encodedCredentials[1].isEmpty()) {
-            throw new HttpBasicException("header is not Basic authentication scheme");
+            throw new HttpBasicException(NOT_BASIC);
         }
 
-        byte[] decodedBasicCredentialsBytes = null;
+        byte[] decodedBasicCredentialsBytes;
         decodedBasicCredentialsBytes = Base64.getDecoder().decode(encodedCredentials[1].getBytes());
 
-        String decodedBasicCredentials = null;
-        try {
-            decodedBasicCredentials = new String(decodedBasicCredentialsBytes, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new HttpBasicException("Could not convert bytes to UTF-8 string");
-        }
+        String decodedBasicCredentials = new String(decodedBasicCredentialsBytes, StandardCharsets.UTF_8);
 
-        String[] parsedCredentials = decodedBasicCredentials.split(":");
+        String[] parsedCredentials = decodedBasicCredentials.split(DELIMITTER);
 
         if ( parsedCredentials.length != 2 || parsedCredentials[0].isEmpty() || parsedCredentials[1].isEmpty()) {
-            throw new HttpBasicException("Could not parse header");
+            throw new HttpBasicException(PARSE_ERROR);
         }
         HttpBasicEntity entity = new HttpBasicEntity(
                 parsedCredentials[0], parsedCredentials[1]

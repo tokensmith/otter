@@ -23,8 +23,9 @@ public class ParseHttpBasicTest {
     public void setUp() {
         subject = new ParseHttpBasic();
     }
+
     @Test
-    public void testRun() throws HttpBasicException, UnsupportedEncodingException {
+    public void testRun() throws Exception {
         String credentials = "user:password";
         String encodedCredentials = Base64.getEncoder().encodeToString(credentials.getBytes());
 
@@ -34,33 +35,33 @@ public class ParseHttpBasicTest {
     }
 
     @Test(expected=HttpBasicException.class)
-    public void testHeaderIsEmpty() throws HttpBasicException {
+    public void testHeaderIsEmpty() throws Exception {
         subject.run("");
     }
 
     @Test(expected=HttpBasicException.class)
-    public void testHeaderIsNull() throws HttpBasicException {
+    public void testHeaderIsNull() throws Exception {
         subject.run(null);
     }
 
     @Test(expected=HttpBasicException.class)
-    public void testHeaderIsNotBasic() throws HttpBasicException {
+    public void testHeaderIsNotBasic() throws Exception {
         subject.run("foo");
     }
 
     @Test(expected=HttpBasicException.class)
-    public void testHeaderMissingCredentials() throws HttpBasicException {
+    public void testHeaderMissingCredentials() throws Exception {
         subject.run("Basic ");
     }
 
     @Test(expected=HttpBasicException.class)
-    public void testHeaderHasNoColon() throws HttpBasicException {
-        String garbage = Base64.getEncoder().encodeToString("gabage".getBytes());
+    public void testHeaderHasNoColon() throws Exception {
+        String garbage = Base64.getEncoder().encodeToString("garbage".getBytes());
         subject.run("Basic " + garbage);
     }
 
     @Test(expected=HttpBasicException.class)
-    public void testHeaderMissingPassword() throws HttpBasicException {
+    public void testHeaderMissingPassword() throws Exception {
         String missingPassword = Base64.getEncoder().encodeToString("user:".getBytes());
         subject.run("Basic " + missingPassword);
     }
