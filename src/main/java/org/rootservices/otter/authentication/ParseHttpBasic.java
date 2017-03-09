@@ -6,9 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-/**
- * Created by tommackenzie on 6/4/15.
- */
+
 public class ParseHttpBasic {
 
     private static String HEADER_EMPTY = "header is null or empty";
