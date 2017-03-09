@@ -2,9 +2,7 @@ package org.rootservices.otter.authentication;
 
 import org.rootservices.otter.authentication.exception.BearerException;
 
-/**
- * Created by tommackenzie on 12/13/16.
- */
+
 public class ParseBearer {
     private static String HEADER_EMPTY = "header is null or empty";
     private static String BEARER = "Bearer ";

@@ -1,8 +1,6 @@
 package org.rootservices.otter.authentication;
 
-/**
- * Created by tommackenzie on 6/4/15.
- */
+
 public class HttpBasicEntity {
     private String user;
     private String password;
