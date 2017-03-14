@@ -96,6 +96,10 @@ public class ServletContainerFactory {
         context.setContextPath(documentRoot);
         context.setParentLoaderPriority(true);
 
+        context.setAttribute(
+        "org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",
+        ".*/[^/]*servlet-api-[^/]*\\.jar$|.*/javax.servlet.jsp.jstl-.*\\.jar$|.*/[^/]*taglibs.*\\.jar$"
+        );
         return context;
     }
 
