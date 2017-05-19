@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
  */
 public class GetServletURI {
 
+    @SuppressWarnings("unchecked")
     public String run(String baseURI, Class clazz) {
         WebServlet webServlet = (WebServlet) clazz.getAnnotation(WebServlet.class);
 

@@ -58,7 +58,7 @@ public class ServletContainerFactory {
      * @param port the port the container should use. 0 will randomly assign a port.
      * @param tempDirectory location to put temporary files.
      * @return a configured instance of ServletContainer
-     * @throws MalformedURLException
+     * @throws IOException
      */
     public ServletContainer makeServletContainer(String documentRoot, URI webApp, URI compliedClassPath, int port, File tempDirectory) throws IOException {
         Server jetty = new Server(port);
@@ -83,7 +83,7 @@ public class ServletContainerFactory {
         return server;
     }
 
-    protected WebAppContext makeWebAppContext(String documentRoot, String resourceBase, String webXmlPath, Configuration[] configurations, File tempDirectory, PathResource containerResources) throws MalformedURLException {
+    protected WebAppContext makeWebAppContext(String documentRoot, String resourceBase, String webXmlPath, Configuration[] configurations, File tempDirectory, PathResource containerResources)  {
         WebAppContext context = new WebAppContext();
 
         context.setClassLoader(Thread.currentThread().getContextClassLoader());
@@ -96,6 +96,10 @@ public class ServletContainerFactory {
         context.setContextPath(documentRoot);
         context.setParentLoaderPriority(true);
 
+        context.setAttribute(
+            "org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",
+            ".*/[^/]*servlet-api-[^/]*\\.jar$|.*/javax.servlet.jsp.jstl-.*\\.jar$|.*/[^/]*taglibs.*\\.jar$"
+        );
         return context;
     }
 
