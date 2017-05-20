@@ -35,10 +35,10 @@ public class JsonTranslator<T> {
      * @param json
      * @param clazz
      * @return and instance of T
-     * @throws InvalidPayloadException
-     * @throws DuplicateKeyException
-     * @throws UnknownKeyException
-     * @throws InvalidValueException
+     * @throws InvalidPayloadException unpredicted error occurred
+     * @throws DuplicateKeyException a key was repeated
+     * @throws UnknownKeyException a key was not expected
+     * @throws InvalidValueException key value was incorrect for it's type
      */
     @SuppressWarnings("unchecked")
     public T from(BufferedReader json, Class clazz) throws InvalidPayloadException, DuplicateKeyException, UnknownKeyException, InvalidValueException {
