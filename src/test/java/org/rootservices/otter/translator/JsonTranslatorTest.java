@@ -11,6 +11,7 @@ import org.rootservices.otter.translator.exception.UnknownKeyException;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
@@ -27,7 +28,7 @@ public class JsonTranslatorTest {
     }
 
     @Test
-    public void shouldBeOk() throws Exception {
+    public void fromShouldBeOk() throws Exception {
         StringReader sr = new StringReader("{\"integer\": 5, \"string\": \"foo\", \"local_date\": \"2019-01-01\"}");
         BufferedReader json = new BufferedReader(sr);
 
@@ -40,7 +41,7 @@ public class JsonTranslatorTest {
     }
 
     @Test
-    public void shouldThrowDuplicateKeyException() throws Exception {
+    public void fromShouldThrowDuplicateKeyException() throws Exception {
         StringReader sr = new StringReader("{\"integer\": 5, \"integer\": \"4\", \"local_date\": \"2019-01-01\"}");
         BufferedReader json = new BufferedReader(sr);
 
@@ -56,7 +57,7 @@ public class JsonTranslatorTest {
     }
 
     @Test
-    public void shouldThrowUnknownKeyException() throws Exception {
+    public void fromShouldThrowUnknownKeyException() throws Exception {
         StringReader sr = new StringReader("{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}");
         BufferedReader json = new BufferedReader(sr);
 
@@ -72,7 +73,7 @@ public class JsonTranslatorTest {
     }
 
     @Test
-    public void shouldThrowInvalidValueException() throws Exception {
+    public void fromShouldThrowInvalidValueException() throws Exception {
         StringReader sr = new StringReader("{\"integer\": \"not a integer\", \"string\": \"foo\", \"local_date\": \"2019-01-01\"}");
         BufferedReader json = new BufferedReader(sr);
 
@@ -88,7 +89,7 @@ public class JsonTranslatorTest {
     }
 
     @Test
-    public void shouldThrowInvalidPayloadException() throws Exception {
+    public void fromShouldThrowInvalidPayloadException() throws Exception {
         StringReader sr = new StringReader("{");
         BufferedReader json = new BufferedReader(sr);
 
@@ -100,5 +101,20 @@ public class JsonTranslatorTest {
         }
 
         assertThat(actual, is(notNullValue()));
+    }
+
+
+    @Test
+    public void toShouldBeOk() throws Exception {
+        Dummy dummy = new Dummy();
+        dummy.setInteger(5);
+        dummy.setString("string");
+        dummy.setLocalDate(LocalDate.of(2017, 05, 20));
+        dummy.setIntegerOptional(Optional.empty());
+
+        String json = subject.to(dummy);
+
+        assertThat(json, is(notNullValue()));
+        assertThat(json, is("{\"integer\":5,\"string\":\"string\",\"local_date\":\"2017-05-20\",\"integer_optional\":null}"));
     }
 }
