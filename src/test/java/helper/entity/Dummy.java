@@ -1,4 +1,4 @@
-package org.rootservices.otter.translator;
+package helper.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;

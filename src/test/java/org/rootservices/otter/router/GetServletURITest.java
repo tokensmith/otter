@@ -1,6 +1,6 @@
 package org.rootservices.otter.router;
 
-import helper.FakeServlet;
+import helper.entity.FakeServlet;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -1,16 +1,20 @@
 package org.rootservices.otter.router.entity;
 
-import javax.servlet.http.HttpServlet;
+
+
+import org.rootservices.otter.controller.Resource;
+import org.rootservices.otter.controller.RestResource;
+
 import java.util.regex.Pattern;
 
 
 public class Route {
     private Pattern pattern;
-    private HttpServlet httpServlet;
+    private Resource resource;
 
-    public Route(Pattern pattern, HttpServlet httpServlet) {
+    public Route(Pattern pattern, Resource resource) {
         this.pattern = pattern;
-        this.httpServlet = httpServlet;
+        this.resource = resource;
     }
 
     public Pattern getPattern() {
@@ -21,11 +25,11 @@ public class Route {
         this.pattern = pattern;
     }
 
-    public HttpServlet getHttpServlet() {
-        return httpServlet;
+    public Resource getResource() {
+        return resource;
     }
 
-    public void setHttpServlet(HttpServlet httpServlet) {
-        this.httpServlet = httpServlet;
+    public void setResource(Resource resource) {
+        this.resource = resource;
     }
 }

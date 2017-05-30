@@ -2,21 +2,23 @@ package org.rootservices.otter.router;
 
 
 import org.rootservices.otter.router.entity.Match;
+import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
 public class Dispatcher {
-    private List<Route> routes;
+    private List<Route> get = new ArrayList<>();
+    private List<Route> post = new ArrayList<>();
+    private List<Route> put = new ArrayList<>();
+    private List<Route> patch = new ArrayList<>();
 
-    public Dispatcher(List<Route> routes) {
-        this.routes = routes;
-    }
 
-    public Match find(String url) {
+    public Match find(Method method, String url) {
 
-        for(Route route: routes) {
+        for(Route route: routes(method)) {
             Matcher matcher = route.getPattern().matcher(url);
             if (matcher.matches()) {
                 Match m = new Match(matcher, route);
@@ -24,5 +26,35 @@ public class Dispatcher {
             }
         }
         return null;
+    }
+
+    protected List<Route> routes(Method method) {
+        if (method == Method.GET) {
+            return get;
+        } else if (method == Method.POST) {
+            return post;
+        } else if (method == Method.PUT) {
+            return put;
+        } else if (method == Method.PATCH) {
+            return patch;
+        }
+
+        return new ArrayList<>();
+    }
+
+    public List<Route> getGet() {
+        return get;
+    }
+
+    public List<Route> getPost() {
+        return post;
+    }
+
+    public List<Route> getPut() {
+        return put;
+    }
+
+    public List<Route> getPatch() {
+        return patch;
     }
 }
