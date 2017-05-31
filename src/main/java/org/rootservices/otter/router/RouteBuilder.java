@@ -16,7 +16,7 @@ public class RouteBuilder {
         return this;
     }
 
-    public RouteBuilder to(Resource resource) {
+    public RouteBuilder resource(Resource resource) {
         this.resource = resource;
         return this;
     }
