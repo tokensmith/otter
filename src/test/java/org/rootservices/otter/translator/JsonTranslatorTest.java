@@ -1,5 +1,6 @@
 package org.rootservices.otter.translator;
 
+import helper.entity.Dummy;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.config.AppFactory;

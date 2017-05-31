@@ -1,4 +1,4 @@
-package org.rootservices.otter.controller.entity;
+package org.rootservices.otter.controller.header;
 
 
 public enum AuthScheme {
