@@ -7,6 +7,7 @@ import org.rootservices.otter.router.entity.Route;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 
 public class Dispatcher {
@@ -16,16 +17,16 @@ public class Dispatcher {
     private List<Route> patch = new ArrayList<>();
 
 
-    public Match find(Method method, String url) {
+    public Optional<Match> find(Method method, String url) {
 
         for(Route route: routes(method)) {
             Matcher matcher = route.getPattern().matcher(url);
             if (matcher.matches()) {
-                Match m = new Match(matcher, route);
+                Optional<Match> m = Optional.of(new Match(matcher, route));
                 return m;
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     protected List<Route> routes(Method method) {

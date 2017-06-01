@@ -52,6 +52,11 @@ public class Resource {
         return responseBuilder.notImplemented().build();
     }
 
+    public Response head(Request request) {
+        ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
+        return responseBuilder.notImplemented().build();
+    }
+
     protected ResponseBuilder responseBuilder(Map<String, Cookie> cookies) {
         ResponseBuilder responseBuilder = new ResponseBuilder();
 
