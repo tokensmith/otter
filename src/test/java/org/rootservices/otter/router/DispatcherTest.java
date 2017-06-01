@@ -10,6 +10,7 @@ import org.rootservices.otter.router.entity.Route;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -37,15 +38,16 @@ public class DispatcherTest {
         UUID id = UUID.randomUUID();
         String url = "/api/v1/foo/" + id.toString();
 
-        Match actual = subject.find(Method.GET, url);
+        Optional<Match> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
+        assertThat(actual.isPresent(), is(true));
 
-        assertThat(actual.getMatcher(), is(notNullValue()));
-        assertThat(actual.getMatcher().groupCount(), is(1));
-        assertThat(actual.getMatcher().group(0), is(url));
-        assertThat(actual.getMatcher().group(1), is(id.toString()));
-        assertThat(actual.getRoute(), is(notNullValue()));
+        assertThat(actual.get().getMatcher(), is(notNullValue()));
+        assertThat(actual.get().getMatcher().groupCount(), is(1));
+        assertThat(actual.get().getMatcher().group(0), is(url));
+        assertThat(actual.get().getMatcher().group(1), is(id.toString()));
+        assertThat(actual.get().getRoute(), is(notNullValue()));
     }
 
     @Test
@@ -53,14 +55,16 @@ public class DispatcherTest {
         UUID id = UUID.randomUUID();
         String url = "/api/v1/foo/" + id.toString() + "/bar";
 
-        Match actual = subject.find(Method.GET, url);
+        Optional<Match> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getMatcher(), is(notNullValue()));
-        assertThat(actual.getMatcher().groupCount(), is(1));
-        assertThat(actual.getMatcher().group(0), is(url));
-        assertThat(actual.getMatcher().group(1), is(id.toString()));
-        assertThat(actual.getRoute(), is(notNullValue()));
+        assertThat(actual.isPresent(), is(true));
+
+        assertThat(actual.get().getMatcher(), is(notNullValue()));
+        assertThat(actual.get().getMatcher().groupCount(), is(1));
+        assertThat(actual.get().getMatcher().group(0), is(url));
+        assertThat(actual.get().getMatcher().group(1), is(id.toString()));
+        assertThat(actual.get().getRoute(), is(notNullValue()));
     }
 
     @Test
@@ -68,9 +72,10 @@ public class DispatcherTest {
         UUID id = UUID.randomUUID();
         String url = "/api/v2/foo/" + id.toString() + "/bar";
 
-        Match actual = subject.find(Method.GET, url);
+        Optional<Match> actual = subject.find(Method.GET, url);
 
-        assertThat(actual, is(nullValue()));
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.isPresent(), is(false));
     }
 
 }

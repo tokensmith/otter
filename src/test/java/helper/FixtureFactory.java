@@ -2,18 +2,25 @@ package helper;
 
 
 import helper.entity.FakeResource;
+import org.rootservices.otter.controller.builder.ResponseBuilder;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
+import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.router.entity.Match;
 import org.rootservices.otter.router.entity.Regex;
 import org.rootservices.otter.router.entity.Route;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FixtureFactory {
+
+    public static Optional<Match> makeMatch(String url) {
+        Route route = makeRoute(url);
+        Matcher matcher = route.getPattern().matcher(url);
+        return  Optional.of(new Match(matcher, route));
+    }
 
     public static Route makeRoute(String regex) {
         Pattern p = Pattern.compile(regex);
@@ -32,6 +39,10 @@ public class FixtureFactory {
         Request request = new Request();
         request.setCookies(makeCookies());
         return request;
+    }
+
+    public static Response makeResponse() {
+        return new ResponseBuilder().build();
     }
 
     public static Map<String, Cookie> makeCookies() {

@@ -2,6 +2,7 @@ package org.rootservices.otter.controller.entity;
 
 
 import org.rootservices.otter.controller.header.AuthScheme;
+import org.rootservices.otter.router.entity.Method;
 
 import java.io.BufferedReader;
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.regex.Matcher;
 
 public class Request {
     private Optional<Matcher> matcher;
+    private Method method;
+    private String path;
     private Optional<AuthScheme> scheme;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
@@ -23,6 +26,22 @@ public class Request {
 
     public void setMatcher(Optional<Matcher> matcher) {
         this.matcher = matcher;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public void setMethod(Method method) {
+        this.method = method;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public Optional<AuthScheme> getScheme() {
