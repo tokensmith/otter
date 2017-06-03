@@ -8,7 +8,7 @@ import org.rootservices.otter.authentication.exception.BearerException;
 public class ParseBearer {
     private static String HEADER_EMPTY = "header is null or empty";
     private static String BEARER = "Bearer ";
-    private static String NOT_BEARER = "header is not Bearer authentication scheme";
+    private static String NOT_BEARER = "header is not Bearer authentication authScheme";
 
     public String parse(String header) throws BearerException {
         if (header == null || header.isEmpty()) {

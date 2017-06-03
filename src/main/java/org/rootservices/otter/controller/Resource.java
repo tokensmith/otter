@@ -61,10 +61,10 @@ public class Resource {
         ResponseBuilder responseBuilder = new ResponseBuilder();
 
         return responseBuilder
-                .setHeaders(new HashMap<>())
-                .setCookies(cookies)
-                .setBody(Optional.empty())
-                .setPresenter(Optional.empty())
-                .setTemplate(Optional.empty());
+                .headers(new HashMap<>())
+                .cookies(cookies)
+                .body(Optional.empty())
+                .presenter(Optional.empty())
+                .template(Optional.empty());
     }
 }

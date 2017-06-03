@@ -1,10 +1,9 @@
 package org.rootservices.otter.router;
 
 import helper.FixtureFactory;
-import helper.entity.FakeResource;
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.otter.router.entity.Match;
+import org.rootservices.otter.router.entity.MatchedRoute;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
 
@@ -12,7 +11,6 @@ import org.rootservices.otter.router.entity.Route;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -25,20 +23,42 @@ public class DispatcherTest {
 
     @Before
     public void setUp() {
-        List<Route> routes = FixtureFactory.makeRoutes();
+
         subject = new Dispatcher();
-        subject.getGet().addAll(routes);
-        subject.getPost().addAll(routes);
-        subject.getPatch().addAll(routes);
-        subject.getPut().addAll(routes);
+        List<Route> getRoutes = FixtureFactory.makeRoutes("get");
+        subject.getGet().addAll(getRoutes);
+
+        List<Route> postRoutes = FixtureFactory.makeRoutes("post");
+        subject.getPost().addAll(postRoutes);
+
+        List<Route> patchRoutes = FixtureFactory.makeRoutes("patch");
+        subject.getPatch().addAll(patchRoutes);
+
+        List<Route> putRoutes = FixtureFactory.makeRoutes("put");
+        subject.getPut().addAll(putRoutes);
+
+        List<Route> deleteRoutes = FixtureFactory.makeRoutes("delete");
+        subject.getDelete().addAll(deleteRoutes);
+
+        List<Route> connectRoutes = FixtureFactory.makeRoutes("connect");
+        subject.getConnect().addAll(connectRoutes);
+
+        List<Route> optionRoutes = FixtureFactory.makeRoutes("option");
+        subject.getOptions().addAll(optionRoutes);
+
+        List<Route> traceRoutes = FixtureFactory.makeRoutes("trace");
+        subject.getTrace().addAll(traceRoutes);
+
+        List<Route> headRoutes = FixtureFactory.makeRoutes("head");
+        subject.getHead().addAll(headRoutes);
     }
 
     @Test
-    public void findWhenGetAndFooShouldReturnMatch() {
+    public void findWhenGetAndBaseContextShouldReturnMatch() {
         UUID id = UUID.randomUUID();
-        String url = "/api/v1/foo/" + id.toString();
+        String url = "get" + id.toString();
 
-        Optional<Match> actual = subject.find(Method.GET, url);
+        Optional<MatchedRoute> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -51,11 +71,11 @@ public class DispatcherTest {
     }
 
     @Test
-    public void findWhenFooBarShouldReturnMatch() {
+    public void findWhenGetAndBarShouldReturnMatch() {
         UUID id = UUID.randomUUID();
-        String url = "/api/v1/foo/" + id.toString() + "/bar";
+        String url = "get" + id.toString() + "/bar";
 
-        Optional<Match> actual = subject.find(Method.GET, url);
+        Optional<MatchedRoute> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -68,11 +88,11 @@ public class DispatcherTest {
     }
 
     @Test
-    public void findWhenV2ShouldReturnNull() {
+    public void findWhenGetAndV2ShouldReturnNull() {
         UUID id = UUID.randomUUID();
-        String url = "/api/v2/foo/" + id.toString() + "/bar";
+        String url = "/get/v2/" + id.toString() + "/bar";
 
-        Optional<Match> actual = subject.find(Method.GET, url);
+        Optional<MatchedRoute> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(false));

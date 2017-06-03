@@ -6,7 +6,9 @@ import org.rootservices.otter.controller.builder.ResponseBuilder;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
-import org.rootservices.otter.router.entity.Match;
+import org.rootservices.otter.controller.header.Header;
+import org.rootservices.otter.controller.header.HeaderValue;
+import org.rootservices.otter.router.entity.MatchedRoute;
 import org.rootservices.otter.router.entity.Regex;
 import org.rootservices.otter.router.entity.Route;
 
@@ -16,10 +18,10 @@ import java.util.regex.Pattern;
 
 public class FixtureFactory {
 
-    public static Optional<Match> makeMatch(String url) {
+    public static Optional<MatchedRoute> makeMatch(String url) {
         Route route = makeRoute(url);
         Matcher matcher = route.getPattern().matcher(url);
-        return  Optional.of(new Match(matcher, route));
+        return  Optional.of(new MatchedRoute(matcher, route));
     }
 
     public static Route makeRoute(String regex) {
@@ -29,16 +31,31 @@ public class FixtureFactory {
     }
 
     public static List<Route> makeRoutes() {
+        return makeRoutes("/api/v1/foo/");
+    }
+
+    public static List<Route> makeRoutes(String baseContext) {
         List<Route> routes = new ArrayList<>();
-        routes.add(makeRoute("/api/v1/foo/" + Regex.UUID.getRegex()));
-        routes.add(makeRoute("/api/v1/foo/" + Regex.UUID.getRegex() + "/bar"));
+        routes.add(makeRoute(baseContext + Regex.UUID.getRegex()));
+        routes.add(makeRoute(baseContext + Regex.UUID.getRegex() + "/bar"));
         return routes;
+    }
+
+    public static Map<String, List<String>> makeEmptyQueryParams() {
+        Map<String, List<String>> params = new HashMap<>();
+        return params;
     }
 
     public static Request makeRequest() {
         Request request = new Request();
         request.setCookies(makeCookies());
         return request;
+    }
+
+    public static Map<String, String> makeHeaders() {
+        Map<String, String> headers = new HashMap<>();
+        headers.put(Header.CACHE_CONTROL.getValue(), HeaderValue.NO_CACHE.getValue());
+        return headers;
     }
 
     public static Response makeResponse() {

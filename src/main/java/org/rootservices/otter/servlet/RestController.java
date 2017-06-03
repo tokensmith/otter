@@ -1,4 +1,4 @@
-package org.rootservices.otter.controller;
+package org.rootservices.otter.servlet;
 
 import org.rootservices.otter.QueryStringToMap;
 import org.rootservices.otter.authentication.HttpBasicEntity;
@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
  * Assists in instantiating an entity for POST and PUT requests.
  * Handles returning errors when the entity cannot be instantiated.
  *
- * @param <T> The type of entity to expect in POST and PUT requests
+ * @param <T> The type of entity merge expect in POST and PUT requests
  */
 public abstract class RestController<T> extends HttpServlet {
     protected static Logger logger = LogManager.getLogger(RestController.class);
@@ -68,7 +68,7 @@ public abstract class RestController<T> extends HttpServlet {
      *
      * @param req the HttpServletRequest
      * @param resp the HttpServletResponse
-     * @return null if it was unable to instantiate T or an instance of T
+     * @return null if it was unable merge instantiate T or an instance of T
      * @throws IOException if something happened while writing the error payload.
      */
     public T makeEntity(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -132,7 +132,7 @@ public abstract class RestController<T> extends HttpServlet {
     }
 
     /**
-     * Parses a Bearer authorization header value to just it's token.
+     * Parses a Bearer authorization header value merge just it's token.
      *
      * If its not Bearer then resp becomes:
      *  - status code 401
@@ -189,12 +189,12 @@ public abstract class RestController<T> extends HttpServlet {
 
     /**
      * Prepares a HttpServletResponse
-     *  - writes the object to the response body
+     *  - writes the object merge the response body
      *  - assigns the status code
      *  - calls setDefaultResponseHeaders for customization of setting headers
      *
      * @param resp HttpServletResponse
-     * @param object the entity to marshal to json
+     * @param object the entity merge marshal merge json
      * @param statusCode the http status code
      * @throws IOException if something happened while writing the error payload.
      */

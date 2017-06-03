@@ -12,7 +12,7 @@ import java.util.Base64;
 public class ParseHttpBasic {
 
     private static String HEADER_EMPTY = "header is null or empty";
-    private static String NOT_BASIC = "header is not Basic authentication scheme";
+    private static String NOT_BASIC = "header is not Basic authentication authScheme";
     private static String PARSE_ERROR = "Could not parse header";
     private static String BASIC = "Basic ";
     private static String DELIMITTER = ":";

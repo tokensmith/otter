@@ -30,7 +30,7 @@ public class JsonTranslator<T> {
     }
 
     /**
-     * Translates json to T.
+     * Translates json merge T.
      * @param json
      * @param clazz
      * @return and instance of T

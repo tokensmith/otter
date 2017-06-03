@@ -4,7 +4,7 @@ package org.rootservices.otter.router;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
-import org.rootservices.otter.router.entity.Match;
+import org.rootservices.otter.router.entity.MatchedRoute;
 import org.rootservices.otter.router.entity.Method;
 
 import java.util.Optional;
@@ -17,43 +17,45 @@ public class Engine {
     }
 
     public Optional<Response> route(Request request) {
-        Optional<Match> match = dispatcher.find(request.getMethod(), request.getPath());
+        Optional<MatchedRoute> matchedRoute = dispatcher.find(request.getMethod(), request.getPathWithParams());
 
         Optional<Response> response = Optional.empty();
-        if (match.isPresent()) {
-            request.setMatcher(Optional.of(match.get().getMatcher()));
-            response = executeResourceMethod(match.get(), request);
+        if (matchedRoute.isPresent()) {
+            request.setMatcher(Optional.of(matchedRoute.get().getMatcher()));
+            response = Optional.of(executeResourceMethod(matchedRoute.get().getRoute().getResource(), request));
         }
 
         return response;
     }
 
-    protected Optional<Response> executeResourceMethod(Match match, Request request) {
-        Optional<Response> response = Optional.empty();
-        
+    public Response executeResourceMethod(Resource resource, Request request) {
+        Response response = null;
         Method method = request.getMethod();
-        Resource resource = match.getRoute().getResource();
-        
+
         if (method == Method.GET) {
-             response = Optional.of(resource.get(request));
+            response = resource.get(request);
         } else if (method == Method.POST) {
-            response = Optional.of(resource.post(request));
+            response = resource.post(request);
         } else if (method == Method.PUT) {
-            response = Optional.of(resource.put(request));
+            response = resource.put(request);
         } else if (method == Method.PATCH) {
-            response = Optional.of(resource.patch(request));
+            response = resource.patch(request);
         } else if (method == Method.DELETE) {
-            response = Optional.of(resource.delete(request));
+            response = resource.delete(request);
         } else if (method == Method.CONNECT) {
-            response = Optional.of(resource.connect(request));
+            response = resource.connect(request);
         } else if (method == Method.OPTIONS) {
-            response = Optional.of(resource.options(request));
+            response = resource.options(request);
         } else if (method == Method.TRACE) {
-            response = Optional.of(resource.trace(request));
+            response = resource.trace(request);
         } else if (method == Method.HEAD) {
-            response = Optional.of(resource.head(request));
+            response = resource.head(request);
         }
 
         return response;
+    }
+
+    public Dispatcher getDispatcher() {
+        return dispatcher;
     }
 }

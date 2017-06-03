@@ -8,7 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
-import org.rootservices.otter.router.entity.Match;
+import org.rootservices.otter.router.entity.MatchedRoute;
 import org.rootservices.otter.router.entity.Method;
 
 import java.util.Optional;
@@ -22,32 +22,32 @@ import static org.mockito.Mockito.when;
 
 public class EngineTest {
     @Mock
-    private Dispatcher mockDispacter;
+    private Dispatcher mockDispatcher;
     private Engine subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new Engine(mockDispacter);
+        subject = new Engine(mockDispatcher);
     }
 
     @Test
     public void routeWhenMethodIsGetShouldMatch() {
         String url = "foo";
-        Optional<Match> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
         Request request = FixtureFactory.makeRequest();
         request.setMethod(Method.GET);
-        request.setPath(url);
+        request.setPathWithParams(url);
 
         Response response = FixtureFactory.makeResponse();
 
         Resource mockResource = mock(Resource.class);
         when(mockResource.get(request)).thenReturn(response);
 
-        // set the resource to the mock one.
+        // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispacter.find(Method.GET, url)).thenReturn(match);
+        when(mockDispatcher.find(Method.GET, url)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request);
 
@@ -59,20 +59,20 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsPostShouldMatch() {
         String url = "foo";
-        Optional<Match> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
         Request request = FixtureFactory.makeRequest();
         request.setMethod(Method.POST);
-        request.setPath(url);
+        request.setPathWithParams(url);
 
         Response response = FixtureFactory.makeResponse();
 
         Resource mockResource = mock(Resource.class);
         when(mockResource.post(request)).thenReturn(response);
 
-        // set the resource to the mock one.
+        // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispacter.find(Method.POST, url)).thenReturn(match);
+        when(mockDispatcher.find(Method.POST, url)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request);
 
@@ -84,20 +84,20 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsPutShouldMatch() {
         String url = "foo";
-        Optional<Match> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
         Request request = FixtureFactory.makeRequest();
         request.setMethod(Method.PUT);
-        request.setPath(url);
+        request.setPathWithParams(url);
 
         Response response = FixtureFactory.makeResponse();
 
         Resource mockResource = mock(Resource.class);
         when(mockResource.put(request)).thenReturn(response);
 
-        // set the resource to the mock one.
+        // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispacter.find(Method.PUT, url)).thenReturn(match);
+        when(mockDispatcher.find(Method.PUT, url)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request);
 
@@ -109,20 +109,20 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsDeleteShouldMatch() {
         String url = "foo";
-        Optional<Match> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
         Request request = FixtureFactory.makeRequest();
         request.setMethod(Method.DELETE);
-        request.setPath(url);
+        request.setPathWithParams(url);
 
         Response response = FixtureFactory.makeResponse();
 
         Resource mockResource = mock(Resource.class);
         when(mockResource.delete(request)).thenReturn(response);
 
-        // set the resource to the mock one.
+        // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispacter.find(Method.DELETE, url)).thenReturn(match);
+        when(mockDispatcher.find(Method.DELETE, url)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request);
 
@@ -134,20 +134,20 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsConnectShouldMatch() {
         String url = "foo";
-        Optional<Match> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
         Request request = FixtureFactory.makeRequest();
         request.setMethod(Method.CONNECT);
-        request.setPath(url);
+        request.setPathWithParams(url);
 
         Response response = FixtureFactory.makeResponse();
 
         Resource mockResource = mock(Resource.class);
         when(mockResource.connect(request)).thenReturn(response);
 
-        // set the resource to the mock one.
+        // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispacter.find(Method.CONNECT, url)).thenReturn(match);
+        when(mockDispatcher.find(Method.CONNECT, url)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request);
 
@@ -159,20 +159,20 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsOptionsShouldMatch() {
         String url = "foo";
-        Optional<Match> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
         Request request = FixtureFactory.makeRequest();
         request.setMethod(Method.OPTIONS);
-        request.setPath(url);
+        request.setPathWithParams(url);
 
         Response response = FixtureFactory.makeResponse();
 
         Resource mockResource = mock(Resource.class);
         when(mockResource.options(request)).thenReturn(response);
 
-        // set the resource to the mock one.
+        // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispacter.find(Method.OPTIONS, url)).thenReturn(match);
+        when(mockDispatcher.find(Method.OPTIONS, url)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request);
 
@@ -184,20 +184,20 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsTraceShouldMatch() {
         String url = "foo";
-        Optional<Match> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
         Request request = FixtureFactory.makeRequest();
         request.setMethod(Method.TRACE);
-        request.setPath(url);
+        request.setPathWithParams(url);
 
         Response response = FixtureFactory.makeResponse();
 
         Resource mockResource = mock(Resource.class);
         when(mockResource.trace(request)).thenReturn(response);
 
-        // set the resource to the mock one.
+        // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispacter.find(Method.TRACE, url)).thenReturn(match);
+        when(mockDispatcher.find(Method.TRACE, url)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request);
 
@@ -209,20 +209,20 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsHeadShouldMatch() {
         String url = "foo";
-        Optional<Match> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
         Request request = FixtureFactory.makeRequest();
         request.setMethod(Method.HEAD);
-        request.setPath(url);
+        request.setPathWithParams(url);
 
         Response response = FixtureFactory.makeResponse();
 
         Resource mockResource = mock(Resource.class);
         when(mockResource.head(request)).thenReturn(response);
 
-        // set the resource to the mock one.
+        // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispacter.find(Method.HEAD, url)).thenReturn(match);
+        when(mockDispatcher.find(Method.HEAD, url)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request);
 
@@ -235,13 +235,13 @@ public class EngineTest {
     @Test
     public void routeShouldNotMatch() {
         String url = "foo";
-        Optional<Match> match = Optional.empty();
+        Optional<MatchedRoute> match = Optional.empty();
 
         Request request = FixtureFactory.makeRequest();
         request.setMethod(Method.GET);
-        request.setPath(url);
+        request.setPathWithParams(url);
 
-        when(mockDispacter.find(Method.GET, url)).thenReturn(match);
+        when(mockDispatcher.find(Method.GET, url)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request);
 

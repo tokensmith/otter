@@ -20,55 +20,64 @@ import static org.junit.Assert.*;
 public class ResponseBuilderTest {
 
     @Test
-    public void setHeadersShouldBeOk() {
+    public void headersShouldBeOk() {
         Map<String, String> headers = new HashMap<>();
 
         ResponseBuilder subject = new ResponseBuilder();
-        Response actual = subject.setHeaders(headers).build();
+        Response actual = subject.headers(headers).build();
 
         assertThat(actual, is(notNullValue()));
     }
 
     @Test
-    public void setCookiesShouldBeOk() {
+    public void cookiesShouldBeOk() {
         Map<String, Cookie> cookies = FixtureFactory.makeCookies();
 
         ResponseBuilder subject = new ResponseBuilder();
-        Response actual = subject.setCookies(cookies).build();
+        Response actual = subject.cookies(cookies).build();
 
         assertThat(actual, is(notNullValue()));
     }
 
     @Test
-    public void setBodyShouldBeOk() {
+    public void bodyShouldBeOk() {
         Optional<String> body = Optional.empty();
 
         ResponseBuilder subject = new ResponseBuilder();
-        Response actual = subject.setBody(body).build();
+        Response actual = subject.body(body).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getBody(), is(body));
     }
 
     @Test
-    public void setTemplateShouldBeOk() {
+    public void templateShouldBeOk() {
         Optional<String> template = Optional.empty();
 
         ResponseBuilder subject = new ResponseBuilder();
-        Response actual = subject.setTemplate(template).build();
+        Response actual = subject.template(template).build();
 
         assertThat(actual, is(notNullValue()));
     }
 
     @Test
-    public void setPresenterShouldBeOk() {
+    public void presenterShouldBeOk() {
         Optional<Object> presenter = Optional.of(new FakePresenter());
         ResponseBuilder subject = new ResponseBuilder();
-        Response actual = subject.setPresenter(presenter).build();
+        Response actual = subject.presenter(presenter).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPresenter().isPresent(), is(true));
         assertThat(actual.getPresenter().get(), is(presenter.get()));
+    }
+
+    @Test
+    public void statusCodeShouldBeOk() {
+        ResponseBuilder subject = new ResponseBuilder();
+        Response actual = subject.statusCode(StatusCode.CREATED).build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getStatusCode(), is(StatusCode.CREATED));
     }
 
     @Test
