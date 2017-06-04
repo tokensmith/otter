@@ -9,10 +9,7 @@ import org.rootservices.otter.router.entity.Method;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -39,14 +36,16 @@ public class HttpServletRequestTranslator {
         String pathWithParams = containerRequest.getRequestURI() +
                 queryStringForUrl(containerRequest.getQueryString());
 
-        Map<String, Cookie> otterCookies = Arrays.asList(containerRequest.getCookies())
-            .stream()
-            .collect(
-                Collectors.toMap(
-                    javax.servlet.http.Cookie::getName, httpServletCookieTranslator.from
-                )
-             );
-
+        Map<String, Cookie> otterCookies = new HashMap<>();
+        if (containerRequest.getCookies() != null) {
+            otterCookies = Arrays.asList(containerRequest.getCookies())
+                    .stream()
+                    .collect(
+                            Collectors.toMap(
+                                    javax.servlet.http.Cookie::getName, httpServletCookieTranslator.from
+                            )
+                    );
+        }
         Map<String, String> headers = httpServletRequestHeaderTranslator.from(containerRequest);
         Optional<String> queryString = Optional.ofNullable(containerRequest.getQueryString());
         Map<String, List<String>> queryParams = queryStringToMap.run(queryString);

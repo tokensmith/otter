@@ -2,6 +2,7 @@ package org.rootservices.otter.translator;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -50,6 +51,26 @@ public class JsonTranslator<T> {
         } catch (UnrecognizedPropertyException e) {
             String msg = String.format(UNKNOWN_KEY_MSG, e.getPropertyName());
             throw new UnknownKeyException(msg, e, e.getPropertyName());
+        } catch (InvalidFormatException e) {
+            String key = e.getPath().get(0).getFieldName();
+            String msg = String.format(INVALID_VALUE_MSG, key);
+            throw new InvalidValueException(msg, e, key);
+        } catch (JsonMappingException e) {
+            throw new InvalidPayloadException(INVALID_PAYLOAD_MSG, e);
+        } catch (IOException e) {
+            throw new InvalidPayloadException(INVALID_PAYLOAD_MSG, e);
+        }
+        return entity;
+    }
+
+
+    public T from(BufferedReader json, TypeReference typeReference) throws InvalidPayloadException, DuplicateKeyException, InvalidValueException {
+        T entity = null;
+
+        try {
+            entity = (T) objectMapper.readValue(json, typeReference);
+        } catch (JsonParseException e) {
+            handleJsonParseException(e);
         } catch (InvalidFormatException e) {
             String key = e.getPath().get(0).getFieldName();
             String msg = String.format(INVALID_VALUE_MSG, key);

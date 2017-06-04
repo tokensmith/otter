@@ -42,6 +42,11 @@ public class HttpServletResponseMerger {
 
     protected Map<String, Cookie> deleteAndUpdateCookies(HttpServletResponse containerResponse, Cookie[] containerCookies, Response response) {
         Map<String, Cookie> containerCookiesMap = new HashMap<>();
+
+        if (containerCookies == null) {
+            return containerCookiesMap;
+        }
+
         for(Cookie containerCookie: containerCookies) {
             containerCookiesMap.put(containerCookie.getName(), containerCookie);
 
