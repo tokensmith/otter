@@ -2,7 +2,7 @@ package org.rootservices.otter.gateway.servlet.merger;
 
 
 import org.rootservices.otter.controller.entity.Response;
-import org.rootservices.otter.gateway.servlet.translator.request.HttpServletRequestCookieTranslator;
+import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestCookieTranslator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

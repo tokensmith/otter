@@ -1,4 +1,4 @@
-package org.rootservices.otter.gateway.servlet.translator.request;
+package org.rootservices.otter.gateway.servlet.translator;
 
 
 import org.rootservices.otter.controller.entity.Cookie;

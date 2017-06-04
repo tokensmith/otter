@@ -11,8 +11,8 @@ public class RouteBuilder {
     private Pattern pattern;
     private Resource resource;
 
-    public RouteBuilder url(String url) {
-        this.pattern = Pattern.compile(url);
+    public RouteBuilder path(String path) {
+        this.pattern = Pattern.compile(path);
         return this;
     }
 

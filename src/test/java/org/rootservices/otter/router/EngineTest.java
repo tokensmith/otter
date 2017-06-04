@@ -233,7 +233,7 @@ public class EngineTest {
 
 
     @Test
-    public void routeShouldNotMatch() {
+    public void routeWhenGetAndNoMatchedRouteShouldBeEmptyResponse() {
         String url = "foo";
         Optional<MatchedRoute> match = Optional.empty();
 

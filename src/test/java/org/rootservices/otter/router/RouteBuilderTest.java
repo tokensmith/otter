@@ -19,10 +19,10 @@ public class RouteBuilderTest {
     }
 
     @Test
-    public void setUrlShouldBeOK() {
+    public void pathShouldBeOK() {
         String regex = "/foo/(.*)";
 
-        Route actual = subject.url(regex).build();
+        Route actual = subject.path(regex).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPattern(), is(notNullValue()));
@@ -30,7 +30,7 @@ public class RouteBuilderTest {
     }
 
     @Test
-    public void setResourceShouldBeOK() {
+    public void resourceShouldBeOK() {
         FakeResource resource = new FakeResource();
 
         Route actual = subject.resource(resource).build();
@@ -41,11 +41,11 @@ public class RouteBuilderTest {
     }
 
     @Test
-    public void setUrlAndResourceShouldBeOK() {
+    public void pathAndResourceShouldBeOK() {
         String regex = "/foo/(.*)";
         FakeResource resource = new FakeResource();
 
-        Route actual = subject.url(regex).resource(resource).build();
+        Route actual = subject.path(regex).resource(resource).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getResource(), is(notNullValue()));

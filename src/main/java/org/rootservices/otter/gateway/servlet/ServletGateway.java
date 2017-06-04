@@ -8,15 +8,15 @@ import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
-import org.rootservices.otter.gateway.servlet.translator.request.HttpServletRequestTranslator;
+import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
 import org.rootservices.otter.router.Engine;
+import org.rootservices.otter.router.RouteBuilder;
 import org.rootservices.otter.router.entity.Route;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 public class ServletGateway {
@@ -49,43 +49,54 @@ public class ServletGateway {
 
         } catch (IOException | ServletException e) {
             logger.error(e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
     }
 
-    public List<Route> getGet() {
-        return engine.getDispatcher().getGet();
+    public void get(String path, Resource resource) {
+        Route route = new RouteBuilder().path(path).resource(resource).build();
+        engine.getDispatcher().getGet().add(route);
     }
 
-    public List<Route> getPost() {
-        return engine.getDispatcher().getPost();
+    public void post(String path, Resource resource) {
+        Route route = new RouteBuilder().path(path).resource(resource).build();
+        engine.getDispatcher().getPost().add(route);
     }
 
-    public List<Route> getPut() {
-        return engine.getDispatcher().getPut();
+    public void put(String path, Resource resource) {
+        Route route = new RouteBuilder().path(path).resource(resource).build();
+        engine.getDispatcher().getPut().add(route);
     }
 
-    public List<Route> getPatch() {
-        return engine.getDispatcher().getPatch();
+    public void patch(String path, Resource resource) {
+        Route route = new RouteBuilder().path(path).resource(resource).build();
+        engine.getDispatcher().getPatch().add(route);
     }
 
-    public List<Route> getDelete() {
-        return engine.getDispatcher().getDelete();
+    public void delete(String path, Resource resource) {
+        Route route = new RouteBuilder().path(path).resource(resource).build();
+        engine.getDispatcher().getDelete().add(route);
     }
 
-    public List<Route> getConnect() {
-        return engine.getDispatcher().getConnect();
+    public void connect(String path, Resource resource) {
+        Route route = new RouteBuilder().path(path).resource(resource).build();
+        engine.getDispatcher().getConnect().add(route);
     }
 
-    public List<Route> getOptions() {
-        return engine.getDispatcher().getOptions();
+    public void options(String path, Resource resource) {
+        Route route = new RouteBuilder().path(path).resource(resource).build();
+        engine.getDispatcher().getOptions().add(route);
     }
 
-    public List<Route> getTrace() {
-        return engine.getDispatcher().getTrace();
+    public void trace(String path, Resource resource) {
+        Route route = new RouteBuilder().path(path).resource(resource).build();
+        engine.getDispatcher().getTrace().add(route);
     }
 
-    public List<Route> getHead() {
-        return engine.getDispatcher().getHead();
+    public void head(String path, Resource resource) {
+        Route route = new RouteBuilder().path(path).resource(resource).build();
+        engine.getDispatcher().getHead().add(route);
     }
 
     public void setNotFoundResource(Resource notFoundResource) {

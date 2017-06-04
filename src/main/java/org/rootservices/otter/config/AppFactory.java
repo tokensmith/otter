@@ -6,26 +6,22 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.rootservices.otter.QueryStringToMap;
-import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
-import org.rootservices.otter.gateway.servlet.translator.request.HttpServletRequestCookieTranslator;
-import org.rootservices.otter.gateway.servlet.translator.request.HttpServletRequestHeaderTranslator;
-import org.rootservices.otter.gateway.servlet.translator.request.HttpServletRequestTranslator;
-import org.rootservices.otter.gateway.servlet.translator.request.HttpServletRequestUrlTranslator;
+import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestCookieTranslator;
+import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestHeaderTranslator;
+import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
+import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestUrlTranslator;
 import org.rootservices.otter.router.Dispatcher;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 import org.rootservices.otter.server.path.CompiledClassPath;
 import org.rootservices.otter.server.path.WebAppPath;
-import org.rootservices.otter.translator.JsonTranslator;
 
 
 /**
- * Created by tommackenzie on 4/5/16.
- *
- * Application Factory merge construct objects in project.
+ * Application Factory to construct objects in project.
  */
 public class AppFactory {
 
@@ -51,7 +47,6 @@ public class AppFactory {
                 httpServletResponseMerger(),
                 engine()
         );
-
     }
 
     public Engine engine() {
