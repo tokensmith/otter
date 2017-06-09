@@ -28,14 +28,13 @@ import static org.mockito.Mockito.when;
 
 public class RestResourceTest {
     @Mock
-    private JsonTranslator<Dummy> mockJsonTranslator;
+    private JsonTranslator mockJsonTranslator;
     private RestResource subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new FakeRestResource();
-        subject.setTranslator(mockJsonTranslator);
+        subject = new FakeRestResource(mockJsonTranslator);
     }
 
     public BufferedReader makeBody() {

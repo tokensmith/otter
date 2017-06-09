@@ -6,7 +6,8 @@ public enum Header {
     AUTH_MISSING ("WWW-Authenticate"),
     ACCEPT ("Accept"),
     CACHE_CONTROL ("Cache-Control"),
-    PRAGMA ("Pragma");
+    PRAGMA ("Pragma"),
+    CONTENT_TYPE ("Content-Type");
 
     private String value;
 

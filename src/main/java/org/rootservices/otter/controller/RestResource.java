@@ -21,7 +21,7 @@ import java.util.Optional;
 public class RestResource<T> extends Resource {
     protected static Logger logger = LogManager.getLogger(RestResource.class);
 
-    protected JsonTranslator<T> translator;
+    protected JsonTranslator translator;
     protected Class<T> type;
     protected TypeReference typeReference;
 
@@ -47,7 +47,8 @@ public class RestResource<T> extends Resource {
         }
     }
 
-    public void setTranslator(JsonTranslator<T> translator) {
+    public RestResource(JsonTranslator translator) {
+        this();
         this.translator = translator;
     }
 
@@ -143,7 +144,7 @@ public class RestResource<T> extends Resource {
     protected T makeEntity(BufferedReader json) throws DeserializationException {
         T entity;
         try{
-            entity = translator.from(json, type);
+            entity = (T) translator.from(json, type);
         } catch (DuplicateKeyException e) {
             String desc = String.format(DUPLICATE_KEY_DESC, e.getKey());
             throw new DeserializationException(DUPLICATE_KEY_MSG, e, desc);
@@ -163,7 +164,7 @@ public class RestResource<T> extends Resource {
     protected T makeEntityTypeRef(BufferedReader json) throws DeserializationException {
         T entity;
         try{
-            entity = translator.from(json, typeReference);
+            entity = (T) translator.from(json, typeReference);
         } catch (DuplicateKeyException e) {
             String desc = String.format(DUPLICATE_KEY_DESC, e.getKey());
             throw new DeserializationException(DUPLICATE_KEY_MSG, e, desc);

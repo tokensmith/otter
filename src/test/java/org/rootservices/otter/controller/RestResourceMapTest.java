@@ -14,8 +14,7 @@ public class RestResourceMapTest {
 
     @Before
     public void setUp() {
-        subject = new FakeRestResourceMap();
-        subject.setTranslator(mockJsonTranslator);
+        subject = new FakeRestResourceMap(mockJsonTranslator);
     }
 
     @Test

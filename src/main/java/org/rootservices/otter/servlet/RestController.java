@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 public abstract class RestController<T> extends HttpServlet {
     protected static Logger logger = LogManager.getLogger(RestController.class);
     protected AppFactory factory;
-    protected JsonTranslator<T> translator;
+    protected JsonTranslator translator;
     protected QueryStringToMap queryStringToMap;
     protected ParseBearer parseBearer;
     protected ParseHttpBasic parseHttpBasic;
@@ -52,7 +52,7 @@ public abstract class RestController<T> extends HttpServlet {
     public void init() throws ServletException {
 
         factory = new AppFactory();
-        this.translator = new JsonTranslator<>(factory.objectMapper());
+        this.translator = new JsonTranslator(factory.objectMapper());
         this.queryStringToMap = new QueryStringToMap();
         this.parseBearer = new ParseBearer();
         this.parseHttpBasic = new ParseHttpBasic();
@@ -74,7 +74,7 @@ public abstract class RestController<T> extends HttpServlet {
     public T makeEntity(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         T entity;
         try{
-            entity = translator.from(req.getReader(), type);
+            entity = (T) translator.from(req.getReader(), type);
         } catch (DuplicateKeyException e) {
             logger.debug(e.getMessage(), e);
             String desc = String.format(DUPLICATE_KEY_DESC, e.getKey());

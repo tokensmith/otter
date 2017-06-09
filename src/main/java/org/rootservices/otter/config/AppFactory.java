@@ -18,6 +18,7 @@ import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 import org.rootservices.otter.server.path.CompiledClassPath;
 import org.rootservices.otter.server.path.WebAppPath;
+import org.rootservices.otter.translator.JsonTranslator;
 
 
 /**
@@ -51,6 +52,10 @@ public class AppFactory {
 
     public Engine engine() {
         return new Engine(new Dispatcher());
+    }
+
+    public JsonTranslator jsonTranslator() {
+        return new JsonTranslator(objectMapper());
     }
 
     public ObjectMapper objectMapper() {

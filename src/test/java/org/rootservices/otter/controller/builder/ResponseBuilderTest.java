@@ -108,4 +108,22 @@ public class ResponseBuilderTest {
         assertThat(actual.getStatusCode(), is(StatusCode.BAD_REQUEST));
     }
 
+    @Test
+    public void unAuthorizedShouldBeOk() {
+        ResponseBuilder subject = new ResponseBuilder();
+        Response actual = subject.unAuthorized().build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getStatusCode(), is(StatusCode.UNAUTHORIZED));
+    }
+
+    @Test
+    public void serverErrorShouldBeOk() {
+        ResponseBuilder subject = new ResponseBuilder();
+        Response actual = subject.serverError().build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getStatusCode(), is(StatusCode.SERVER_ERROR));
+    }
+
 }

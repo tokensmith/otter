@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class JsonTranslator<T> {
+public class JsonTranslator {
     private ObjectMapper objectMapper;
 
     private static final String DUPLICATE_NAME = "key";
@@ -40,12 +40,11 @@ public class JsonTranslator<T> {
      * @throws UnknownKeyException a key was not expected
      * @throws InvalidValueException key value was incorrect for it's type
      */
-    @SuppressWarnings("unchecked")
-    public T from(BufferedReader json, Class clazz) throws InvalidPayloadException, DuplicateKeyException, UnknownKeyException, InvalidValueException {
-        T entity = null;
+    public Object from(BufferedReader json, Class clazz) throws InvalidPayloadException, DuplicateKeyException, UnknownKeyException, InvalidValueException {
+        Object entity = null;
 
         try {
-            entity = (T) objectMapper.readValue(json, clazz);
+            entity = objectMapper.readValue(json, clazz);
         } catch (JsonParseException e) {
             handleJsonParseException(e);
         } catch (UnrecognizedPropertyException e) {
@@ -63,12 +62,11 @@ public class JsonTranslator<T> {
         return entity;
     }
 
-
-    public T from(BufferedReader json, TypeReference typeReference) throws InvalidPayloadException, DuplicateKeyException, InvalidValueException {
-        T entity = null;
+    public Object from(BufferedReader json, TypeReference typeReference) throws InvalidPayloadException, DuplicateKeyException, InvalidValueException {
+        Object entity = null;
 
         try {
-            entity = (T) objectMapper.readValue(json, typeReference);
+            entity = objectMapper.readValue(json, typeReference);
         } catch (JsonParseException e) {
             handleJsonParseException(e);
         } catch (InvalidFormatException e) {

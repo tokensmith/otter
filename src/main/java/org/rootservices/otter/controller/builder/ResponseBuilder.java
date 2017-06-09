@@ -63,6 +63,16 @@ public class ResponseBuilder {
         return this;
     }
 
+    public ResponseBuilder unAuthorized() {
+        this.statusCode = StatusCode.UNAUTHORIZED;
+        return this;
+    }
+
+    public ResponseBuilder serverError() {
+        this.statusCode = StatusCode.SERVER_ERROR;
+        return this;
+    }
+
     public Response build() {
         return new Response(this.statusCode, this.headers, this.cookies, this.body, this.template, this.presenter);
     }
