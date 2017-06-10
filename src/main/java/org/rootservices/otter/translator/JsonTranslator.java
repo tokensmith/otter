@@ -62,25 +62,6 @@ public class JsonTranslator {
         return entity;
     }
 
-    public Object from(BufferedReader json, TypeReference typeReference) throws InvalidPayloadException, DuplicateKeyException, InvalidValueException {
-        Object entity = null;
-
-        try {
-            entity = objectMapper.readValue(json, typeReference);
-        } catch (JsonParseException e) {
-            handleJsonParseException(e);
-        } catch (InvalidFormatException e) {
-            String key = e.getPath().get(0).getFieldName();
-            String msg = String.format(INVALID_VALUE_MSG, key);
-            throw new InvalidValueException(msg, e, key);
-        } catch (JsonMappingException e) {
-            throw new InvalidPayloadException(INVALID_PAYLOAD_MSG, e);
-        } catch (IOException e) {
-            throw new InvalidPayloadException(INVALID_PAYLOAD_MSG, e);
-        }
-        return entity;
-    }
-
     public String to(Object object) throws ToJsonException {
         try {
             return objectMapper.writeValueAsString(object);
