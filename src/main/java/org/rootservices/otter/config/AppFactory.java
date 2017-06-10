@@ -79,7 +79,7 @@ public class AppFactory {
     }
 
     public HttpServletRequestMerger httpServletRequestMerger() {
-        return new HttpServletRequestMerger(httpServletRequestCookieTranslator());
+        return new HttpServletRequestMerger();
     }
 
     public HttpServletResponseMerger httpServletResponseMerger() {

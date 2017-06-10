@@ -44,10 +44,10 @@ public class ResponseBuilderTest {
         Optional<String> body = Optional.empty();
 
         ResponseBuilder subject = new ResponseBuilder();
-        Response actual = subject.body(body).build();
+        Response actual = subject.payload(body).build();
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getBody(), is(body));
+        assertThat(actual.getPayload(), is(body));
     }
 
     @Test

@@ -63,7 +63,7 @@ public class Resource {
         return responseBuilder
                 .headers(new HashMap<>())
                 .cookies(cookies)
-                .body(Optional.empty())
+                .payload(Optional.empty())
                 .presenter(Optional.empty())
                 .template(Optional.empty());
     }

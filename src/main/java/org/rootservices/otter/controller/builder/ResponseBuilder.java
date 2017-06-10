@@ -11,7 +11,7 @@ public class ResponseBuilder {
     private StatusCode statusCode;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
-    private Optional<String> body;
+    private Optional<String> payload;
     private Optional<String> template;
     private Optional<Object> presenter;
 
@@ -27,8 +27,8 @@ public class ResponseBuilder {
         return this;
     }
 
-    public ResponseBuilder body(Optional<String> body) {
-        this.body = body;
+    public ResponseBuilder payload(Optional<String> payload) {
+        this.payload = payload;
         return this;
     }
 
@@ -47,6 +47,10 @@ public class ResponseBuilder {
         return this;
     }
 
+    public ResponseBuilder ok() {
+        this.statusCode = StatusCode.OK;
+        return this;
+    }
 
     public ResponseBuilder notFound() {
         this.statusCode = StatusCode.NOT_FOUND;
@@ -74,6 +78,6 @@ public class ResponseBuilder {
     }
 
     public Response build() {
-        return new Response(this.statusCode, this.headers, this.cookies, this.body, this.template, this.presenter);
+        return new Response(this.statusCode, this.headers, this.cookies, this.payload, this.template, this.presenter);
     }
 }

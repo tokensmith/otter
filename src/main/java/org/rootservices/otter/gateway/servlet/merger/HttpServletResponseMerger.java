@@ -33,8 +33,8 @@ public class HttpServletResponseMerger {
         containerResponse.setStatus(response.getStatusCode().getCode());
 
         // structured data.. json
-        if(response.getBody().isPresent()) {
-            containerResponse.getWriter().write(response.getBody().get());
+        if(response.getPayload().isPresent()) {
+            containerResponse.getWriter().write(response.getPayload().get());
         }
 
         return containerResponse;
@@ -51,7 +51,7 @@ public class HttpServletResponseMerger {
             containerCookiesMap.put(containerCookie.getName(), containerCookie);
 
             // delete cookie
-            org.rootservices.otter.controller.entity.Cookie otterCookie = response.getCookies().get(containerCookie.getValue());
+            org.rootservices.otter.controller.entity.Cookie otterCookie = response.getCookies().get(containerCookie.getName());
             if(otterCookie == null) {
                 containerCookie.setMaxAge(0);
                 containerResponse.addCookie(containerCookie);

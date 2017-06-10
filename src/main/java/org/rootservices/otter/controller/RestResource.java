@@ -63,7 +63,7 @@ public class RestResource<T> extends Resource {
             logger.debug(e.getMessage(), e);
             Optional<String> body = makeError(e);
             ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-            return responseBuilder.body(body).badRequest().build();
+            return responseBuilder.payload(body).badRequest().build();
         }
 
         return post(request, entity);
@@ -79,7 +79,7 @@ public class RestResource<T> extends Resource {
             logger.debug(e.getMessage(), e);
             Optional<String> body = makeError(e);
             ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-            return responseBuilder.body(body).badRequest().build();
+            return responseBuilder.payload(body).badRequest().build();
         }
 
         return put(request, entity);
@@ -101,7 +101,7 @@ public class RestResource<T> extends Resource {
             logger.debug(e.getMessage(), e);
             Optional<String> body = makeError(e);
             ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-            return responseBuilder.body(body).badRequest().build();
+            return responseBuilder.payload(body).badRequest().build();
         }
 
         return patch(request, entity);

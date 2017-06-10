@@ -1,7 +1,6 @@
 package org.rootservices.otter.controller.entity;
 
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -9,15 +8,15 @@ public class Response {
     private StatusCode statusCode;
     private Map<String, String> headers;
     private Map<String,Cookie> cookies;
-    private Optional<String> body;
+    private Optional<String> payload;
     private Optional<String> template;
     private Optional<Object> presenter;
 
-    public Response(StatusCode statusCode, Map<String, String> headers, Map<String, Cookie> cookies, Optional<String> body, Optional<String> template, Optional<Object> presenter) {
+    public Response(StatusCode statusCode, Map<String, String> headers, Map<String, Cookie> cookies, Optional<String> payload, Optional<String> template, Optional<Object> presenter) {
         this.statusCode = statusCode;
         this.headers = headers;
         this.cookies = cookies;
-        this.body = body;
+        this.payload = payload;
         this.template = template;
         this.presenter = presenter;
     }
@@ -46,12 +45,12 @@ public class Response {
         this.cookies = cookies;
     }
 
-    public Optional<String> getBody() {
-        return body;
+    public Optional<String> getPayload() {
+        return payload;
     }
 
-    public void setBody(Optional<String> body) {
-        this.body = body;
+    public void setPayload(Optional<String> payload) {
+        this.payload = payload;
     }
 
     public Optional<String> getTemplate() {

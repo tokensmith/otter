@@ -60,7 +60,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(false));
+        assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -80,7 +80,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(false));
+        assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -101,7 +101,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(true));
+        assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -122,7 +122,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(true));
+        assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -143,7 +143,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(true));
+        assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -164,7 +164,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(true));
+        assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -187,7 +187,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(false));
+        assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -207,7 +207,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(false));
+        assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -228,7 +228,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(true));
+        assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -249,7 +249,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(true));
+        assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -270,7 +270,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(true));
+        assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -291,7 +291,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(true));
+        assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -314,7 +314,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(false));
+        assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -330,7 +330,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(false));
+        assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -346,7 +346,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(false));
+        assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -362,7 +362,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(false));
+        assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -378,7 +378,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(false));
+        assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -398,7 +398,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(false));
+        assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -419,7 +419,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(true));
+        assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -440,7 +440,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(true));
+        assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -461,7 +461,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(true));
+        assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -482,7 +482,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(true));
+        assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }
@@ -505,7 +505,7 @@ public class RestResourceTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
         assertThat(actual.getCookies().size(), is(1));
-        assertThat(actual.getBody().isPresent(), is(false));
+        assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
     }

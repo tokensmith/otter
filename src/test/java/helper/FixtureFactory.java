@@ -59,7 +59,13 @@ public class FixtureFactory {
     }
 
     public static Response makeResponse() {
-        return new ResponseBuilder().build();
+        return new ResponseBuilder()
+                .headers(new HashMap<>())
+                .cookies(new HashMap<>())
+                .payload(Optional.empty())
+                .template(Optional.empty())
+                .ok()
+                .build();
     }
 
     public static Map<String, Cookie> makeCookies() {
@@ -72,8 +78,13 @@ public class FixtureFactory {
     }
 
     public static Cookie makeCookie() {
+        return makeCookie("test");
+    }
+
+    public static Cookie makeCookie(String name) {
         Cookie cookie = new Cookie();
-        cookie.setName("test");
+        cookie.setName(name);
+        cookie.setValue("test-value");
         return cookie;
     }
 }
