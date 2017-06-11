@@ -3,11 +3,11 @@ package org.rootservices.otter.router.entity;
 import java.util.regex.Matcher;
 
 
-public class Match {
+public class MatchedRoute {
     private Matcher matcher;
     private Route route;
 
-    public Match(Matcher matcher, Route route) {
+    public MatchedRoute(Matcher matcher, Route route) {
         this.matcher = matcher;
         this.route = route;
     }

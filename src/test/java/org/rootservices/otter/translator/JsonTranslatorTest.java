@@ -20,12 +20,12 @@ import static org.junit.Assert.*;
 
 
 public class JsonTranslatorTest {
-    private JsonTranslator<Dummy> subject;
+    private JsonTranslator subject;
 
     @Before
     public void setUp() {
         AppFactory factory = new AppFactory();
-        subject = new JsonTranslator<>(factory.objectMapper());
+        subject = new JsonTranslator(factory.objectMapper());
     }
 
     @Test
@@ -33,7 +33,7 @@ public class JsonTranslatorTest {
         StringReader sr = new StringReader("{\"integer\": 5, \"string\": \"foo\", \"local_date\": \"2019-01-01\"}");
         BufferedReader json = new BufferedReader(sr);
 
-        Dummy actual = subject.from(json, Dummy.class);
+        Dummy actual = (Dummy) subject.from(json, Dummy.class);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getInteger(), is(5));

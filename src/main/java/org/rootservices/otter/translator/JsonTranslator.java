@@ -2,6 +2,7 @@ package org.rootservices.otter.translator;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -14,7 +15,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class JsonTranslator<T> {
+public class JsonTranslator {
     private ObjectMapper objectMapper;
 
     private static final String DUPLICATE_NAME = "key";
@@ -30,7 +31,7 @@ public class JsonTranslator<T> {
     }
 
     /**
-     * Translates json to T.
+     * Translates json merge T.
      * @param json
      * @param clazz
      * @return and instance of T
@@ -39,12 +40,11 @@ public class JsonTranslator<T> {
      * @throws UnknownKeyException a key was not expected
      * @throws InvalidValueException key value was incorrect for it's type
      */
-    @SuppressWarnings("unchecked")
-    public T from(BufferedReader json, Class clazz) throws InvalidPayloadException, DuplicateKeyException, UnknownKeyException, InvalidValueException {
-        T entity = null;
+    public Object from(BufferedReader json, Class clazz) throws InvalidPayloadException, DuplicateKeyException, UnknownKeyException, InvalidValueException {
+        Object entity = null;
 
         try {
-            entity = (T) objectMapper.readValue(json, clazz);
+            entity = objectMapper.readValue(json, clazz);
         } catch (JsonParseException e) {
             handleJsonParseException(e);
         } catch (UnrecognizedPropertyException e) {

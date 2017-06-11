@@ -13,12 +13,13 @@ import org.rootservices.otter.translator.exception.*;
 
 import java.io.BufferedReader;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Optional;
 
 public class RestResource<T> extends Resource {
     protected static Logger logger = LogManager.getLogger(RestResource.class);
 
-    protected JsonTranslator<T> translator;
+    protected JsonTranslator translator;
     protected Class<T> type;
 
     private static final String DUPLICATE_KEY_MSG = "Duplicate Key";
@@ -32,12 +33,13 @@ public class RestResource<T> extends Resource {
 
     public RestResource() {
         if(this.type == null) {
-            this.type = (Class<T>) ((ParameterizedType) getClass()
-                    .getGenericSuperclass()).getActualTypeArguments()[0];
+            Type generic = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+            this.type = (Class<T>) generic;
         }
     }
 
-    public void setTranslator(JsonTranslator<T> translator) {
+    public RestResource(JsonTranslator translator) {
+        this();
         this.translator = translator;
     }
 
@@ -61,7 +63,7 @@ public class RestResource<T> extends Resource {
             logger.debug(e.getMessage(), e);
             Optional<String> body = makeError(e);
             ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-            return responseBuilder.setBody(body).badRequest().build();
+            return responseBuilder.payload(body).badRequest().build();
         }
 
         return post(request, entity);
@@ -77,7 +79,7 @@ public class RestResource<T> extends Resource {
             logger.debug(e.getMessage(), e);
             Optional<String> body = makeError(e);
             ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-            return responseBuilder.setBody(body).badRequest().build();
+            return responseBuilder.payload(body).badRequest().build();
         }
 
         return put(request, entity);
@@ -99,7 +101,7 @@ public class RestResource<T> extends Resource {
             logger.debug(e.getMessage(), e);
             Optional<String> body = makeError(e);
             ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-            return responseBuilder.setBody(body).badRequest().build();
+            return responseBuilder.payload(body).badRequest().build();
         }
 
         return patch(request, entity);
@@ -121,7 +123,7 @@ public class RestResource<T> extends Resource {
     protected T makeEntity(BufferedReader json) throws DeserializationException {
         T entity;
         try{
-            entity = translator.from(json, type);
+            entity = (T) translator.from(json, type);
         } catch (DuplicateKeyException e) {
             String desc = String.format(DUPLICATE_KEY_DESC, e.getKey());
             throw new DeserializationException(DUPLICATE_KEY_MSG, e, desc);

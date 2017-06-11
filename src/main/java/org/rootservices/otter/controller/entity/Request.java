@@ -13,12 +13,25 @@ import java.util.regex.Matcher;
 public class Request {
     private Optional<Matcher> matcher;
     private Method method;
-    private String path;
-    private Optional<AuthScheme> scheme;
+    private String pathWithParams;
+    private Optional<AuthScheme> authScheme;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
     private Map<String, List<String>> queryParams;
     private BufferedReader body;
+
+    public Request() {}
+
+    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, Optional<AuthScheme> authScheme, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, BufferedReader body) {
+        this.matcher = matcher;
+        this.method = method;
+        this.pathWithParams = pathWithParams;
+        this.authScheme = authScheme;
+        this.headers = headers;
+        this.cookies = cookies;
+        this.queryParams = queryParams;
+        this.body = body;
+    }
 
     public Optional<Matcher> getMatcher() {
         return matcher;
@@ -36,20 +49,20 @@ public class Request {
         this.method = method;
     }
 
-    public String getPath() {
-        return path;
+    public String getPathWithParams() {
+        return pathWithParams;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setPathWithParams(String pathWithParams) {
+        this.pathWithParams = pathWithParams;
     }
 
-    public Optional<AuthScheme> getScheme() {
-        return scheme;
+    public Optional<AuthScheme> getAuthScheme() {
+        return authScheme;
     }
 
-    public void setScheme(Optional<AuthScheme> scheme) {
-        this.scheme = scheme;
+    public void setAuthScheme(Optional<AuthScheme> authScheme) {
+        this.authScheme = authScheme;
     }
 
     public Map<String, String> getHeaders() {

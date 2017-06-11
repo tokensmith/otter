@@ -11,34 +11,44 @@ public class ResponseBuilder {
     private StatusCode statusCode;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
-    private Optional<String> body;
+    private Optional<String> payload;
     private Optional<String> template;
     private Optional<Object> presenter;
 
     public ResponseBuilder() {}
 
-    public ResponseBuilder setHeaders(Map<String, String> headers) {
+    public ResponseBuilder headers(Map<String, String> headers) {
         this.headers = headers;
         return this;
     }
 
-    public ResponseBuilder setCookies(Map<String, Cookie> cookies) {
+    public ResponseBuilder cookies(Map<String, Cookie> cookies) {
         this.cookies = cookies;
         return this;
     }
 
-    public ResponseBuilder setBody(Optional<String> body) {
-        this.body = body;
+    public ResponseBuilder payload(Optional<String> payload) {
+        this.payload = payload;
         return this;
     }
 
-    public ResponseBuilder setTemplate(Optional<String> template) {
+    public ResponseBuilder template(Optional<String> template) {
         this.template = template;
         return this;
     }
 
-    public ResponseBuilder setPresenter(Optional<Object> presenter) {
+    public ResponseBuilder presenter(Optional<Object> presenter) {
         this.presenter = presenter;
+        return this;
+    }
+
+    public ResponseBuilder statusCode(StatusCode statusCode) {
+        this.statusCode = statusCode;
+        return this;
+    }
+
+    public ResponseBuilder ok() {
+        this.statusCode = StatusCode.OK;
         return this;
     }
 
@@ -57,7 +67,17 @@ public class ResponseBuilder {
         return this;
     }
 
+    public ResponseBuilder unAuthorized() {
+        this.statusCode = StatusCode.UNAUTHORIZED;
+        return this;
+    }
+
+    public ResponseBuilder serverError() {
+        this.statusCode = StatusCode.SERVER_ERROR;
+        return this;
+    }
+
     public Response build() {
-        return new Response(this.statusCode, this.headers, this.cookies, this.body, this.template, this.presenter);
+        return new Response(this.statusCode, this.headers, this.cookies, this.payload, this.template, this.presenter);
     }
 }
