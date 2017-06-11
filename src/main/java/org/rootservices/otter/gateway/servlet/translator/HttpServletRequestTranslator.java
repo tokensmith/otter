@@ -20,13 +20,11 @@ public class HttpServletRequestTranslator {
     private HttpServletRequestCookieTranslator httpServletCookieTranslator;
     private HttpServletRequestHeaderTranslator httpServletRequestHeaderTranslator;
     private QueryStringToMap queryStringToMap;
-    private HttpServletRequestUrlTranslator httpServletRequestUrlTranslator;
 
-    public HttpServletRequestTranslator(HttpServletRequestCookieTranslator httpServletCookieTranslator, HttpServletRequestHeaderTranslator httpServletRequestHeaderTranslator, QueryStringToMap queryStringToMap, HttpServletRequestUrlTranslator httpServletRequestUrlTranslator) {
+    public HttpServletRequestTranslator(HttpServletRequestCookieTranslator httpServletCookieTranslator, HttpServletRequestHeaderTranslator httpServletRequestHeaderTranslator, QueryStringToMap queryStringToMap) {
         this.httpServletCookieTranslator = httpServletCookieTranslator;
         this.httpServletRequestHeaderTranslator = httpServletRequestHeaderTranslator;
         this.queryStringToMap = queryStringToMap;
-        this.httpServletRequestUrlTranslator = httpServletRequestUrlTranslator;
     }
 
     public Request from(HttpServletRequest containerRequest) throws IOException {
@@ -51,6 +49,7 @@ public class HttpServletRequestTranslator {
         Map<String, List<String>> queryParams = queryStringToMap.run(queryString);
 
         return new RequestBuilder()
+                .matcher(Optional.empty())
                 .method(method)
                 .pathWithParams(pathWithParams)
                 .authScheme(Optional.empty())

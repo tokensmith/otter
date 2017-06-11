@@ -12,7 +12,6 @@ import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestCookieTranslator;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestHeaderTranslator;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
-import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestUrlTranslator;
 import org.rootservices.otter.router.Dispatcher;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.server.container.ServletContainerFactory;
@@ -73,8 +72,7 @@ public class AppFactory {
         return new HttpServletRequestTranslator(
                 httpServletRequestCookieTranslator(),
                 new HttpServletRequestHeaderTranslator(),
-                new QueryStringToMap(),
-                new HttpServletRequestUrlTranslator()
+                new QueryStringToMap()
         );
     }
 
