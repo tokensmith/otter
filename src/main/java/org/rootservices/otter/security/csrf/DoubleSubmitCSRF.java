@@ -30,6 +30,11 @@ public class DoubleSubmitCSRF {
     private SymmetricKey preferredSignKey;
     private Map<String, SymmetricKey> rotationSignKeys;
 
+    public DoubleSubmitCSRF(AppFactory jwtFactory, RandomString randomString) {
+        this.jwtFactory = jwtFactory;
+        this.randomString = randomString;
+    }
+
     public DoubleSubmitCSRF(AppFactory jwtFactory, RandomString randomString, SymmetricKey preferredSignKey, Map<String, SymmetricKey> rotationSignKeys) {
         this.jwtFactory = jwtFactory;
         this.randomString = randomString;
@@ -134,5 +139,13 @@ public class DoubleSubmitCSRF {
         csrfCookie.setValue(encodedJwt);
 
         return csrfCookie;
+    }
+
+    public void setPreferredSignKey(SymmetricKey preferredSignKey) {
+        this.preferredSignKey = preferredSignKey;
+    }
+
+    public void setRotationSignKeys(Map<String, SymmetricKey> rotationSignKeys) {
+        this.rotationSignKeys = rotationSignKeys;
     }
 }

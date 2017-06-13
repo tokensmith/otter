@@ -3,12 +3,11 @@ package org.rootservices.otter.security.csrf;
 import helper.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.jwt.config.AppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwt.JsonWebToken;
 import org.rootservices.jwt.serializer.exception.JsonToJwtException;
+import org.rootservices.otter.config.AppFactory;
 import org.rootservices.otter.controller.entity.Cookie;
-import org.rootservices.otter.security.RandomString;
 import org.rootservices.otter.security.csrf.exception.CsrfException;
 
 import java.time.OffsetDateTime;
@@ -20,6 +19,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.number.OrderingComparison.lessThan;
+import static org.hamcrest.number.OrderingComparison.lessThanOrEqualTo;
 import static org.junit.Assert.*;
 
 
@@ -29,17 +29,17 @@ public class DoubleSubmitCSRFTest {
 
     @Before
     public void setUp() {
-        AppFactory jwtFactory = new AppFactory();
-        RandomString randomString = new RandomString();
+        AppFactory otterFactory = new AppFactory();
+        subject = otterFactory.doubleSubmitCSRF();
+
         SymmetricKey preferredSignKey = FixtureFactory.signKey("preferred-key");
 
         Map<String, SymmetricKey> rotationSignKeys = new HashMap<>();
         rotationSignKeys.put("rotation-key-1", FixtureFactory.signKey("rotation-key-1"));
         rotationSignKeys.put("rotation-key-2", FixtureFactory.signKey("rotation-key-2"));
 
-        subject = new DoubleSubmitCSRF(
-                jwtFactory, randomString, preferredSignKey, rotationSignKeys
-        );
+        subject.setPreferredSignKey(preferredSignKey);
+        subject.setRotationSignKeys(rotationSignKeys);
     }
 
     @Test
@@ -136,6 +136,6 @@ public class DoubleSubmitCSRFTest {
         assertThat(csrfClaims.getChallengeToken(), is(notNullValue()));
         assertThat(csrfClaims.getIssuedAt(), is(notNullValue()));
         assertThat(csrfClaims.getIssuedAt().isPresent(), is(true));
-        assertThat(csrfClaims.getIssuedAt().get(), is(lessThan(OffsetDateTime.now().toEpochSecond())));
+        assertThat(csrfClaims.getIssuedAt().get(), is(lessThanOrEqualTo(OffsetDateTime.now().toEpochSecond())));
     }
 }

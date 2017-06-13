@@ -3,9 +3,7 @@ package org.rootservices.otter.security;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-/**
- * Created by tommackenzie on 8/5/15.
- */
+
 public class RandomString {
 
     private SecureRandom secureRandom = new SecureRandom();
