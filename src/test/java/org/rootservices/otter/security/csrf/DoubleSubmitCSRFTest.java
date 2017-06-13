@@ -18,7 +18,6 @@ import java.util.Map;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.number.OrderingComparison.lessThan;
 import static org.hamcrest.number.OrderingComparison.lessThanOrEqualTo;
 import static org.junit.Assert.*;
 
@@ -120,8 +119,15 @@ public class DoubleSubmitCSRFTest {
     }
 
     @Test
+    public void makeChallengeTokenShouldBeOk() {
+        String actual = subject.makeChallengeToken();
+
+        assertThat(actual, is(notNullValue()));
+    }
+
+    @Test
     public void makeCsrfCookieShouldBeOk() throws Exception {
-        Cookie actual = subject.makeCsrfCookie("CSRF", true, -1);
+        Cookie actual = subject.makeCsrfCookie("CSRF", "challenge-token", true, -1);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getName(), is("CSRF"));
@@ -134,6 +140,7 @@ public class DoubleSubmitCSRFTest {
         CsrfClaims csrfClaims = (CsrfClaims) csrfJwt.getClaims();
 
         assertThat(csrfClaims.getChallengeToken(), is(notNullValue()));
+        assertThat(csrfClaims.getChallengeToken(), is("challenge-token"));
         assertThat(csrfClaims.getIssuedAt(), is(notNullValue()));
         assertThat(csrfClaims.getIssuedAt().isPresent(), is(true));
         assertThat(csrfClaims.getIssuedAt().get(), is(lessThanOrEqualTo(OffsetDateTime.now().toEpochSecond())));

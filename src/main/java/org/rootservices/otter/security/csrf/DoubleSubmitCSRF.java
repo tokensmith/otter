@@ -108,8 +108,11 @@ public class DoubleSubmitCSRF {
         return verifySignature.run(csrfJwt);
     }
 
-    protected Cookie makeCsrfCookie(String name, Boolean secure, int maxAge) throws CsrfException {
-        String challengeToken = randomString.run();
+    public String makeChallengeToken() {
+        return randomString.run();
+    }
+
+    public Cookie makeCsrfCookie(String name, String challengeToken, Boolean secure, int maxAge) throws CsrfException {
         Optional<Long> issuedAt = Optional.of(OffsetDateTime.now().toEpochSecond());
 
         CsrfClaims csrfClaims = new CsrfClaims();
