@@ -41,7 +41,7 @@ public class FixtureFactory {
     public static Route makeRoute(String regex) {
         Pattern p = Pattern.compile(regex);
         FakeResource resource = new FakeResource();
-        return new Route(p, resource);
+        return new Route(p, resource, new ArrayList<>(), new ArrayList<>());
     }
 
     public static List<Route> makeRoutes() {
@@ -62,6 +62,7 @@ public class FixtureFactory {
 
     public static Request makeRequest() {
         Request request = new Request();
+        request.setFormData(new HashMap<>());
         request.setCookies(makeCookies());
         return request;
     }
@@ -78,6 +79,7 @@ public class FixtureFactory {
                 .cookies(new HashMap<>())
                 .payload(Optional.empty())
                 .template(Optional.empty())
+                .presenter(Optional.empty())
                 .ok()
                 .build();
     }

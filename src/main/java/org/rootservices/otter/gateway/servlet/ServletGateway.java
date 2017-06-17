@@ -4,6 +4,7 @@ package org.rootservices.otter.gateway.servlet;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.otter.controller.Resource;
+import org.rootservices.otter.controller.builder.ResponseBuilder;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
@@ -17,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Optional;
 
 public class ServletGateway {
@@ -26,7 +28,7 @@ public class ServletGateway {
     private HttpServletRequestMerger httpServletRequestMerger;
     private HttpServletResponseMerger httpServletResponseMerger;
     private Engine engine;
-    private Resource notFoundResource;
+    private Route notFoundRoute;
 
     public ServletGateway(HttpServletRequestTranslator httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger httpServletResponseMerger, Engine engine) {
         this.httpServletRequestTranslator = httpServletRequestTranslator;
@@ -38,14 +40,22 @@ public class ServletGateway {
     public void processRequest(HttpServletRequest containerRequest, HttpServletResponse containerResponse) {
         try {
             Request request = httpServletRequestTranslator.from(containerRequest);
-            Optional<Response> response =  engine.route(request);
+            Response response = new ResponseBuilder()
+                    .headers(new HashMap<>())
+                    .cookies(request.getCookies())
+                    .payload(Optional.empty())
+                    .presenter(Optional.empty())
+                    .template(Optional.empty())
+                    .build();
 
-            if (!response.isPresent()) {
-                response = Optional.of(engine.executeResourceMethod(notFoundResource, request));
+            Optional<Response> resourceResponse =  engine.route(request, response);
+
+            if (!resourceResponse.isPresent()) {
+                resourceResponse = Optional.of(engine.executeResourceMethod(notFoundRoute, request, response));
             }
 
-            httpServletResponseMerger.merge(containerResponse, containerRequest.getCookies(), response.get());
-            httpServletRequestMerger.merge(containerRequest, containerResponse, response.get());
+            httpServletResponseMerger.merge(containerResponse, containerRequest.getCookies(), resourceResponse.get());
+            httpServletRequestMerger.merge(containerRequest, containerResponse, resourceResponse.get());
 
         } catch (IOException | ServletException e) {
             logger.error(e.getMessage(), e);
@@ -99,7 +109,8 @@ public class ServletGateway {
         engine.getDispatcher().getHead().add(route);
     }
 
-    public void setNotFoundResource(Resource notFoundResource) {
-        this.notFoundResource = notFoundResource;
+    public void setNotFoundRoute(Route notFoundRoute) {
+        this.notFoundRoute = notFoundRoute;
     }
+
 }

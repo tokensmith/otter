@@ -62,7 +62,9 @@ public class HttpServletResponseMergerTest {
 
     }
 
+
     @Test
+    @SuppressWarnings("unchecked")
     public void mergeUpdateCookies() throws Exception {
         String cookieName = "cookie-to-update";
 
@@ -88,6 +90,7 @@ public class HttpServletResponseMergerTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void mergeCreateCookies() throws Exception {
         String cookieName = "cookie-to-create";
 

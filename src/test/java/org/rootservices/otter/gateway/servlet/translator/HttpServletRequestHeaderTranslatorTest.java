@@ -23,6 +23,7 @@ public class HttpServletRequestHeaderTranslatorTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void fromWhenNoHeadersShouldBeEmptyMap() {
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         Enumeration containerHeaders = Collections.enumeration(Collections.emptyList());

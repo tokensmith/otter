@@ -18,11 +18,12 @@ public class Request {
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
     private Map<String, List<String>> queryParams;
+    private Map<String, String> formData;
     private BufferedReader body;
 
     public Request() {}
 
-    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, Optional<AuthScheme> authScheme, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, BufferedReader body) {
+    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, Optional<AuthScheme> authScheme, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, String> formData, BufferedReader body) {
         this.matcher = matcher;
         this.method = method;
         this.pathWithParams = pathWithParams;
@@ -30,6 +31,7 @@ public class Request {
         this.headers = headers;
         this.cookies = cookies;
         this.queryParams = queryParams;
+        this.formData = formData;
         this.body = body;
     }
 
@@ -87,6 +89,14 @@ public class Request {
 
     public void setQueryParams(Map<String, List<String>> queryParams) {
         this.queryParams = queryParams;
+    }
+
+    public Map<String, String> getFormData() {
+        return formData;
+    }
+
+    public void setFormData(Map<String, String> formData) {
+        this.formData = formData;
     }
 
     public BufferedReader getBody() {

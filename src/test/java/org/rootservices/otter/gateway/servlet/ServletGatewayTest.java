@@ -1,7 +1,6 @@
 package org.rootservices.otter.gateway.servlet;
 
 import helper.FixtureFactory;
-import helper.entity.FakeResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -13,6 +12,7 @@ import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
 import org.rootservices.otter.router.Engine;
+import org.rootservices.otter.router.entity.Route;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,46 +53,55 @@ public class ServletGatewayTest {
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
 
         Request request = new Request();
+
         when(mockHttpServletRequestTranslator.from(mockContainerRequest))
                 .thenReturn(request);
-        Optional<Response> response = Optional.of(FixtureFactory.makeResponse());
-        when(mockEngine.route(request)).thenReturn(response);
+        Optional<Response> resourceResponse = Optional.of(FixtureFactory.makeResponse());
+        when(mockEngine.route(eq(request), any(Response.class))).thenReturn(resourceResponse);
 
         subject.processRequest(mockContainerRequest, mockContainerResponse);
 
         // should never call the not found resource.
-        verify(mockEngine, never()).executeResourceMethod(any(Resource.class), any(Request.class));
+        verify(mockEngine, never()).executeResourceMethod(any(Route.class), any(Request.class), any(Response.class));
 
-        verify(mockHttpServletResponseMerger).merge(mockContainerResponse, null, response.get());
-        verify(mockHttpServletRequestMerger).merge(mockContainerRequest, mockContainerResponse, response.get());
+        verify(mockHttpServletResponseMerger).merge(mockContainerResponse, null, resourceResponse.get());
+        verify(mockHttpServletRequestMerger).merge(mockContainerRequest, mockContainerResponse, resourceResponse.get());
     }
 
     @Test
     public void processRequestResourceNotFoundShouldExecuteNotFound() throws Exception {
-        FakeResource notFoundResource = new FakeResource();
-        subject.setNotFoundResource(notFoundResource);
+        Route notFoundRoute = FixtureFactory.makeRoute("");
+        subject.setNotFoundRoute(notFoundRoute);
 
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
 
         Request request = new Request();
+
         when(mockHttpServletRequestTranslator.from(mockContainerRequest))
                 .thenReturn(request);
 
         // original engine call does NOT return a response.
-        when(mockEngine.route(request)).thenReturn(Optional.empty());
+        when(mockEngine.route(eq(request), any(Response.class))).thenReturn(Optional.empty());
 
-        Response response = FixtureFactory.makeResponse();
-        when(mockEngine.executeResourceMethod(notFoundResource, request))
-                .thenReturn(response);
+        Response resourceResponse = FixtureFactory.makeResponse();
+        when(mockEngine.executeResourceMethod(
+                eq(notFoundRoute),
+                eq(request),
+                any(Response.class)
+        )).thenReturn(resourceResponse);
 
         subject.processRequest(mockContainerRequest, mockContainerResponse);
 
         // should call the not found resource.
-        verify(mockEngine).executeResourceMethod(notFoundResource, request);
+        verify(mockEngine).executeResourceMethod(
+                eq(notFoundRoute),
+                eq(request),
+                any(Response.class)
+        );
 
-        verify(mockHttpServletResponseMerger).merge(mockContainerResponse, null, response);
-        verify(mockHttpServletRequestMerger).merge(mockContainerRequest, mockContainerResponse, response);
+        verify(mockHttpServletResponseMerger).merge(mockContainerResponse, null, resourceResponse);
+        verify(mockHttpServletRequestMerger).merge(mockContainerRequest, mockContainerResponse, resourceResponse);
 
     }
 

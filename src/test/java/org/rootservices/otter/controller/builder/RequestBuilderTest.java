@@ -10,6 +10,7 @@ import org.rootservices.otter.router.entity.Method;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -91,6 +92,17 @@ public class RequestBuilderTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getQueryParams(), is(queryParams));
+    }
+
+    @Test
+    public void buildWhenFormDataShouldBeOk() {
+        Map<String, String> formData = new HashMap<>();
+        formData.put("foo", "bar");
+
+        Request actual = subject.formData(formData).build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getFormData(), is(formData));
     }
 
     @Test

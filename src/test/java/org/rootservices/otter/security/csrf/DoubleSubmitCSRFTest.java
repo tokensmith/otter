@@ -42,6 +42,26 @@ public class DoubleSubmitCSRFTest {
     }
 
     @Test
+    public void doTokensMatchShouldBeOk() throws Exception {
+        // use the software to test it :)
+        String challengeToken = "challenge-token";
+        Cookie cookie = subject.makeCsrfCookie("CSRF", challengeToken, true, -1);
+
+        Boolean actual = subject.doTokensMatch(cookie.getValue(), challengeToken);
+        assertThat(actual, is(true));
+    }
+
+    @Test
+    public void doTokensMatchShouldBeFalse() throws Exception {
+        // use the software to test it :)
+        String challengeToken = "challenge-token";
+        Cookie cookie = subject.makeCsrfCookie("CSRF", challengeToken, true, -1);
+
+        Boolean actual = subject.doTokensMatch(cookie.getValue(), "challenge-token-1");
+        assertThat(actual, is(false));
+    }
+
+    @Test
     public void getSignKeyShouldBePreferred() {
         SymmetricKey actual = subject.getSignKey("preferred-key");
 

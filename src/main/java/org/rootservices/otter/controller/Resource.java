@@ -5,6 +5,7 @@ import org.rootservices.otter.controller.builder.ResponseBuilder;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.StatusCode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,59 +13,48 @@ import java.util.Optional;
 
 public class Resource {
 
-    public Response get(Request request) {
-        ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-        return responseBuilder.notImplemented().build();
+    public Response get(Request request, Response response) {
+        response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
+        return response;
     }
 
-    public Response post(Request request) {
-        ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-        return responseBuilder.notImplemented().build();
+    public Response post(Request request, Response response) {
+        response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
+        return response;
     }
 
-    public Response put(Request request) {
-        ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-        return responseBuilder.notImplemented().build();
+    public Response put(Request request, Response response) {
+        response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
+        return response;
     }
 
-    public Response delete(Request request) {
-        ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-        return responseBuilder.notImplemented().build();
+    public Response delete(Request request, Response response) {
+        response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
+        return response;
     }
 
-    public Response connect(Request request) {
-        ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-        return responseBuilder.notImplemented().build();
+    public Response connect(Request request, Response response) {
+        response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
+        return response;
     }
 
-    public Response options(Request request) {
-        ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-        return responseBuilder.notImplemented().build();
+    public Response options(Request request, Response response) {
+        response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
+        return response;
     }
 
-    public Response trace(Request request) {
-        ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-        return responseBuilder.notImplemented().build();
+    public Response trace(Request request, Response response) {
+        response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
+        return response;
     }
 
-    public Response patch(Request request) {
-        ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-        return responseBuilder.notImplemented().build();
+    public Response patch(Request request, Response response) {
+        response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
+        return response;
     }
 
-    public Response head(Request request) {
-        ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-        return responseBuilder.notImplemented().build();
-    }
-
-    protected ResponseBuilder responseBuilder(Map<String, Cookie> cookies) {
-        ResponseBuilder responseBuilder = new ResponseBuilder();
-
-        return responseBuilder
-                .headers(new HashMap<>())
-                .cookies(cookies)
-                .payload(Optional.empty())
-                .presenter(Optional.empty())
-                .template(Optional.empty());
+    public Response head(Request request, Response response) {
+        response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
+        return response;
     }
 }

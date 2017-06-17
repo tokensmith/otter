@@ -30,6 +30,10 @@ public class DoubleSubmitCSRF {
     private SymmetricKey preferredSignKey;
     private Map<String, SymmetricKey> rotationSignKeys;
 
+    private static String VERIFY_MSG = "Could not verify signature";
+    private static String DECODE_JWT = "Could not decode CSRF JWT to POJO";
+    private static String ENCODE_JWT = "Could not create CSRF JWT";
+
     public DoubleSubmitCSRF(AppFactory jwtFactory, RandomString randomString) {
         this.jwtFactory = jwtFactory;
         this.randomString = randomString;
@@ -42,7 +46,7 @@ public class DoubleSubmitCSRF {
         this.rotationSignKeys = rotationSignKeys;
     }
 
-    protected Boolean doTokensMatch(String encodedCsrfCookieValue, String csrfFormValue) {
+    public Boolean doTokensMatch(String encodedCsrfCookieValue, String csrfFormValue) {
 
         JsonWebToken csrfJwt;
         try {
@@ -76,7 +80,7 @@ public class DoubleSubmitCSRF {
         try {
             jsonWebToken = jwtSerializer.stringToJwt(encodedCsrfCookieValue, CsrfClaims.class);
         } catch (JsonToJwtException e) {
-            throw new CsrfException("", e);
+            throw new CsrfException(DECODE_JWT, e);
         }
 
         return jsonWebToken;
@@ -100,9 +104,9 @@ public class DoubleSubmitCSRF {
                 csrfJwt.getHeader().getAlgorithm(), signKey
             );
         } catch (InvalidJsonWebKeyException e) {
-            throw new CsrfException("", e);
+            throw new CsrfException(VERIFY_MSG, e);
         } catch (InvalidAlgorithmException e) {
-            throw new CsrfException("", e);
+            throw new CsrfException(VERIFY_MSG, e);
         }
 
         return verifySignature.run(csrfJwt);
@@ -119,20 +123,20 @@ public class DoubleSubmitCSRF {
         csrfClaims.setChallengeToken(challengeToken);
         csrfClaims.setIssuedAt(issuedAt);
 
-        SecureJwtEncoder secureJwtEncoder = null;
+        SecureJwtEncoder secureJwtEncoder;
         try {
             secureJwtEncoder = jwtFactory.secureJwtEncoder(Algorithm.HS256, preferredSignKey);
         } catch (InvalidAlgorithmException e) {
-            throw new CsrfException("", e);
+            throw new CsrfException(ENCODE_JWT, e);
         } catch (InvalidJsonWebKeyException e) {
-            throw new CsrfException("", e);
+            throw new CsrfException(ENCODE_JWT, e);
         }
 
         String encodedJwt = null;
         try {
             encodedJwt = secureJwtEncoder.encode(csrfClaims);
         } catch (JwtToJsonException e) {
-            throw new CsrfException("", e);
+            throw new CsrfException(ENCODE_JWT, e);
         }
 
         Cookie csrfCookie = new Cookie();
