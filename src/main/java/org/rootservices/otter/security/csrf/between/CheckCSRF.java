@@ -14,6 +14,10 @@ public class CheckCSRF implements Between {
     private String formFieldName;
     private DoubleSubmitCSRF doubleSubmitCSRF;
 
+    public CheckCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
+        this.doubleSubmitCSRF = doubleSubmitCSRF;
+    }
+
     public CheckCSRF(String cookieName, String formFieldName, DoubleSubmitCSRF doubleSubmitCSRF) {
         this.cookieName = cookieName;
         this.formFieldName = formFieldName;
@@ -35,5 +39,29 @@ public class CheckCSRF implements Between {
             response.setStatusCode(StatusCode.FORBIDDEN);
         }
         return ok;
+    }
+
+    public String getCookieName() {
+        return cookieName;
+    }
+
+    public void setCookieName(String cookieName) {
+        this.cookieName = cookieName;
+    }
+
+    public String getFormFieldName() {
+        return formFieldName;
+    }
+
+    public void setFormFieldName(String formFieldName) {
+        this.formFieldName = formFieldName;
+    }
+
+    public DoubleSubmitCSRF getDoubleSubmitCSRF() {
+        return doubleSubmitCSRF;
+    }
+
+    public void setDoubleSubmitCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
+        this.doubleSubmitCSRF = doubleSubmitCSRF;
     }
 }

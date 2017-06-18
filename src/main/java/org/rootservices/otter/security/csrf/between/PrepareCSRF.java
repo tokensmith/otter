@@ -18,6 +18,10 @@ public class PrepareCSRF implements Between {
     private Integer maxAge;
     private DoubleSubmitCSRF doubleSubmitCSRF;
 
+    public PrepareCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
+        this.doubleSubmitCSRF = doubleSubmitCSRF;
+    }
+
     public PrepareCSRF(String cookieName, Boolean isSecure, Integer maxAge, DoubleSubmitCSRF doubleSubmitCSRF) {
         this.cookieName = cookieName;
         this.isSecure = isSecure;
@@ -39,5 +43,37 @@ public class PrepareCSRF implements Between {
             }
         }
         return true;
+    }
+
+    public String getCookieName() {
+        return cookieName;
+    }
+
+    public void setCookieName(String cookieName) {
+        this.cookieName = cookieName;
+    }
+
+    public Boolean getSecure() {
+        return isSecure;
+    }
+
+    public void setSecure(Boolean secure) {
+        isSecure = secure;
+    }
+
+    public Integer getMaxAge() {
+        return maxAge;
+    }
+
+    public void setMaxAge(Integer maxAge) {
+        this.maxAge = maxAge;
+    }
+
+    public DoubleSubmitCSRF getDoubleSubmitCSRF() {
+        return doubleSubmitCSRF;
+    }
+
+    public void setDoubleSubmitCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
+        this.doubleSubmitCSRF = doubleSubmitCSRF;
     }
 }

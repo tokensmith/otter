@@ -12,6 +12,7 @@ import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
 import org.rootservices.otter.router.Engine;
+import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Route;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +34,10 @@ public class ServletGatewayTest {
     private HttpServletResponseMerger mockHttpServletResponseMerger;
     @Mock
     private Engine mockEngine;
+    @Mock
+    private Between mockPrepareCSRF;
+    @Mock
+    private Between mockCheckCSRF;
 
     private ServletGateway subject;
 
@@ -43,7 +48,9 @@ public class ServletGatewayTest {
                 mockHttpServletRequestTranslator,
                 mockHttpServletRequestMerger,
                 mockHttpServletResponseMerger,
-                mockEngine
+                mockEngine,
+                mockPrepareCSRF,
+                mockCheckCSRF
         );
     }
 
