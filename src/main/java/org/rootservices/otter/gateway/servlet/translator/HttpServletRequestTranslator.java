@@ -48,6 +48,11 @@ public class HttpServletRequestTranslator {
         Optional<String> queryString = Optional.ofNullable(containerRequest.getQueryString());
         Map<String, List<String>> queryParams = queryStringToMap.run(queryString);
 
+        Map<String, String> formData = new HashMap<>();
+        if (method == Method.POST) {
+            formData = getFormData(containerRequest.getParameterMap(), queryParams);
+        }
+
         return new RequestBuilder()
                 .matcher(Optional.empty())
                 .method(method)
@@ -56,6 +61,7 @@ public class HttpServletRequestTranslator {
                 .cookies(otterCookies)
                 .headers(headers)
                 .queryParams(queryParams)
+                .formData(formData)
                 .body(containerRequest.getReader())
                 .build();
     }
@@ -68,5 +74,17 @@ public class HttpServletRequestTranslator {
             queryStringForUrl = EMPTY;
         }
         return queryStringForUrl;
+    }
+
+    protected Map<String, String> getFormData(Map<String, String[]> containerParameters, Map<String, List<String>> queryParams) {
+        Map<String, String> formData = new HashMap<>();
+
+        for (Map.Entry<String, String[]> formElement: containerParameters.entrySet()) {
+            if(queryParams.get(formElement.getKey()) == null) {
+                formData.put(formElement.getKey(), formElement.getValue()[0]);
+            }
+        }
+
+        return formData;
     }
 }

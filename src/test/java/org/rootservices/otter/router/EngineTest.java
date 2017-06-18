@@ -43,13 +43,13 @@ public class EngineTest {
         Response response = FixtureFactory.makeResponse();
 
         Resource mockResource = mock(Resource.class);
-        when(mockResource.get(request)).thenReturn(response);
+        when(mockResource.get(request, response)).thenReturn(response);
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
         when(mockDispatcher.find(Method.GET, url)).thenReturn(match);
 
-        Optional<Response> actual = subject.route(request);
+        Optional<Response> actual = subject.route(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -68,13 +68,13 @@ public class EngineTest {
         Response response = FixtureFactory.makeResponse();
 
         Resource mockResource = mock(Resource.class);
-        when(mockResource.post(request)).thenReturn(response);
+        when(mockResource.post(request, response)).thenReturn(response);
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
         when(mockDispatcher.find(Method.POST, url)).thenReturn(match);
 
-        Optional<Response> actual = subject.route(request);
+        Optional<Response> actual = subject.route(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -93,13 +93,13 @@ public class EngineTest {
         Response response = FixtureFactory.makeResponse();
 
         Resource mockResource = mock(Resource.class);
-        when(mockResource.put(request)).thenReturn(response);
+        when(mockResource.put(request, response)).thenReturn(response);
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
         when(mockDispatcher.find(Method.PUT, url)).thenReturn(match);
 
-        Optional<Response> actual = subject.route(request);
+        Optional<Response> actual = subject.route(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -118,13 +118,13 @@ public class EngineTest {
         Response response = FixtureFactory.makeResponse();
 
         Resource mockResource = mock(Resource.class);
-        when(mockResource.delete(request)).thenReturn(response);
+        when(mockResource.delete(request, response)).thenReturn(response);
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
         when(mockDispatcher.find(Method.DELETE, url)).thenReturn(match);
 
-        Optional<Response> actual = subject.route(request);
+        Optional<Response> actual = subject.route(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -143,13 +143,13 @@ public class EngineTest {
         Response response = FixtureFactory.makeResponse();
 
         Resource mockResource = mock(Resource.class);
-        when(mockResource.connect(request)).thenReturn(response);
+        when(mockResource.connect(request, response)).thenReturn(response);
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
         when(mockDispatcher.find(Method.CONNECT, url)).thenReturn(match);
 
-        Optional<Response> actual = subject.route(request);
+        Optional<Response> actual = subject.route(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -168,13 +168,13 @@ public class EngineTest {
         Response response = FixtureFactory.makeResponse();
 
         Resource mockResource = mock(Resource.class);
-        when(mockResource.options(request)).thenReturn(response);
+        when(mockResource.options(request, response)).thenReturn(response);
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
         when(mockDispatcher.find(Method.OPTIONS, url)).thenReturn(match);
 
-        Optional<Response> actual = subject.route(request);
+        Optional<Response> actual = subject.route(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -193,13 +193,13 @@ public class EngineTest {
         Response response = FixtureFactory.makeResponse();
 
         Resource mockResource = mock(Resource.class);
-        when(mockResource.trace(request)).thenReturn(response);
+        when(mockResource.trace(request, response)).thenReturn(response);
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
         when(mockDispatcher.find(Method.TRACE, url)).thenReturn(match);
 
-        Optional<Response> actual = subject.route(request);
+        Optional<Response> actual = subject.route(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -218,13 +218,13 @@ public class EngineTest {
         Response response = FixtureFactory.makeResponse();
 
         Resource mockResource = mock(Resource.class);
-        when(mockResource.head(request)).thenReturn(response);
+        when(mockResource.head(request, response)).thenReturn(response);
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
         when(mockDispatcher.find(Method.HEAD, url)).thenReturn(match);
 
-        Optional<Response> actual = subject.route(request);
+        Optional<Response> actual = subject.route(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -241,9 +241,11 @@ public class EngineTest {
         request.setMethod(Method.GET);
         request.setPathWithParams(url);
 
+        Response response = FixtureFactory.makeResponse();
+
         when(mockDispatcher.find(Method.GET, url)).thenReturn(match);
 
-        Optional<Response> actual = subject.route(request);
+        Optional<Response> actual = subject.route(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(false));

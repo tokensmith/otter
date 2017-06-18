@@ -31,7 +31,7 @@ public class JsonTranslator {
     }
 
     /**
-     * Translates json merge T.
+     * Translates json from T.
      * @param json
      * @param clazz
      * @return and instance of T

@@ -20,6 +20,7 @@ public class RequestBuilder {
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
     private Map<String, List<String>> queryParams;
+    private Map<String, String> formData;
     private BufferedReader body;
 
     public RequestBuilder matcher(Optional<Matcher> matcher) {
@@ -57,12 +58,17 @@ public class RequestBuilder {
         return this;
     }
 
+    public RequestBuilder formData(Map<String, String> formData) {
+        this.formData = formData;
+        return this;
+    }
+
     public RequestBuilder body(BufferedReader body) {
         this.body = body;
         return this;
     }
 
     public Request build() {
-        return new Request(this.matcher, this.method, this.pathWithParams, this.authScheme, this.headers, this.cookies, this.queryParams, this.body);
+        return new Request(this.matcher, this.method, this.pathWithParams, this.authScheme, this.headers, this.cookies, this.queryParams, this.formData, this.body);
     }
 }

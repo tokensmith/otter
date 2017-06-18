@@ -3,10 +3,10 @@ package org.rootservices.otter.controller;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.rootservices.otter.controller.builder.ResponseBuilder;
 import org.rootservices.otter.controller.entity.Error;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.exception.DeserializationException;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.exception.*;
@@ -48,13 +48,13 @@ public class RestResource<T> extends Resource {
     }
 
     @Override
-    public Response get(Request request) {
-        ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-        return responseBuilder.notImplemented().build();
+    public Response get(Request request, Response response) {
+        response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
+        return response;
     }
 
     @Override
-    public Response post(Request request) {
+    public Response post(Request request, Response response) {
         T entity;
 
         try {
@@ -62,15 +62,16 @@ public class RestResource<T> extends Resource {
         } catch (DeserializationException e) {
             logger.debug(e.getMessage(), e);
             Optional<String> body = makeError(e);
-            ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-            return responseBuilder.payload(body).badRequest().build();
+            response.setStatusCode(StatusCode.BAD_REQUEST);
+            response.setPayload(body);
+            return response;
         }
 
-        return post(request, entity);
+        return post(request, response, entity);
     }
 
     @Override
-    public Response put(Request request) {
+    public Response put(Request request, Response response) {
         T entity;
 
         try {
@@ -78,21 +79,22 @@ public class RestResource<T> extends Resource {
         } catch (DeserializationException e) {
             logger.debug(e.getMessage(), e);
             Optional<String> body = makeError(e);
-            ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-            return responseBuilder.payload(body).badRequest().build();
+            response.setStatusCode(StatusCode.BAD_REQUEST);
+            response.setPayload(body);
+            return response;
         }
 
-        return put(request, entity);
+        return put(request, response, entity);
     }
 
     @Override
-    public Response delete(Request request) {
-        ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-        return responseBuilder.notImplemented().build();
+    public Response delete(Request request, Response response) {
+        response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
+        return response;
     }
 
     @Override
-    public Response patch(Request request) {
+    public Response patch(Request request, Response response) {
         T entity;
 
         try {
@@ -100,11 +102,12 @@ public class RestResource<T> extends Resource {
         } catch (DeserializationException e) {
             logger.debug(e.getMessage(), e);
             Optional<String> body = makeError(e);
-            ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-            return responseBuilder.payload(body).badRequest().build();
+            response.setStatusCode(StatusCode.BAD_REQUEST);
+            response.setPayload(body);
+            return response;
         }
 
-        return patch(request, entity);
+        return patch(request, response, entity);
     }
 
     protected Optional<String> makeError(DeserializationException e) {
@@ -140,18 +143,18 @@ public class RestResource<T> extends Resource {
 
     }
 
-    protected Response post(Request request, T entity) {
-        ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-        return responseBuilder.notImplemented().build();
+    protected Response post(Request request, Response response, T entity) {
+        response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
+        return response;
     }
 
-    protected Response put(Request request, T entity) {
-        ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-        return responseBuilder.notImplemented().build();
+    protected Response put(Request request, Response response, T entity) {
+        response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
+        return response;
     }
 
-    protected Response patch(Request request, T entity) {
-        ResponseBuilder responseBuilder = responseBuilder(request.getCookies());
-        return responseBuilder.notImplemented().build();
+    protected Response patch(Request request, Response response, T entity) {
+        response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
+        return response;
     }
 }

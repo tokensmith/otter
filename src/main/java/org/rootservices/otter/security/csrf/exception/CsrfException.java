@@ -7,4 +7,8 @@ public class CsrfException extends Exception {
     public CsrfException(String message) {
         super(message);
     }
+
+    public CsrfException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

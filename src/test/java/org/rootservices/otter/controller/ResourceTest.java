@@ -23,8 +23,9 @@ public class ResourceTest {
     @Test
     public void getShouldNotBeImplemented() {
         Request request = FixtureFactory.makeRequest();
+        Response response = FixtureFactory.makeResponse();
 
-        Response actual = subject.get(request);
+        Response actual = subject.get(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
@@ -34,8 +35,9 @@ public class ResourceTest {
     @Test
     public void postShouldNotBeImplemented() {
         Request request = FixtureFactory.makeRequest();
+        Response response = FixtureFactory.makeResponse();
 
-        Response actual = subject.post(request);
+        Response actual = subject.post(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
@@ -44,8 +46,9 @@ public class ResourceTest {
     @Test
     public void putShouldNotBeImplemented() {
         Request request = FixtureFactory.makeRequest();
+        Response response = FixtureFactory.makeResponse();
 
-        Response actual = subject.put(request);
+        Response actual = subject.put(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
@@ -54,8 +57,9 @@ public class ResourceTest {
     @Test
     public void patchShouldNotBeImplemented() {
         Request request = FixtureFactory.makeRequest();
+        Response response = FixtureFactory.makeResponse();
 
-        Response actual = subject.patch(request);
+        Response actual = subject.patch(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
@@ -64,8 +68,9 @@ public class ResourceTest {
     @Test
     public void deleteShouldNotBeImplemented() {
         Request request = FixtureFactory.makeRequest();
+        Response response = FixtureFactory.makeResponse();
 
-        Response actual = subject.delete(request);
+        Response actual = subject.delete(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
@@ -74,8 +79,9 @@ public class ResourceTest {
     @Test
     public void connectShouldNotBeImplemented() {
         Request request = FixtureFactory.makeRequest();
+        Response response = FixtureFactory.makeResponse();
 
-        Response actual = subject.connect(request);
+        Response actual = subject.connect(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
@@ -84,8 +90,9 @@ public class ResourceTest {
     @Test
     public void optionsShouldNotBeImplemented() {
         Request request = FixtureFactory.makeRequest();
+        Response response = FixtureFactory.makeResponse();
 
-        Response actual = subject.options(request);
+        Response actual = subject.options(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
@@ -94,8 +101,9 @@ public class ResourceTest {
     @Test
     public void traceShouldNotBeImplemented() {
         Request request = FixtureFactory.makeRequest();
+        Response response = FixtureFactory.makeResponse();
 
-        Response actual = subject.trace(request);
+        Response actual = subject.trace(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));

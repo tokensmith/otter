@@ -74,7 +74,7 @@ public abstract class RestController<T> extends HttpServlet {
     public T makeEntity(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         T entity;
         try{
-            entity = (T) translator.from(req.getReader(), type);
+            entity = (T) translator.from(req.getReader(), type.getClass());
         } catch (DuplicateKeyException e) {
             logger.debug(e.getMessage(), e);
             String desc = String.format(DUPLICATE_KEY_DESC, e.getKey());

@@ -52,14 +52,14 @@ public class RestResourceTest {
     @Test
     public void getShouldBeNotImplemented() throws Exception {
         Request request = FixtureFactory.makeRequest();
+        Response response = FixtureFactory.makeResponse();
 
-        Response actual = subject.get(request);
+        Response actual = subject.get(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -70,16 +70,17 @@ public class RestResourceTest {
         Request request = FixtureFactory.makeRequest();
         request.setBody(makeBody());
 
+        Response response = FixtureFactory.makeResponse();
+
         Dummy dummy = new Dummy();
         when(mockJsonTranslator.from(request.getBody(), Dummy.class)).thenReturn(dummy);
 
-        Response actual = subject.post(request);
+        Response actual = subject.post(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -90,17 +91,18 @@ public class RestResourceTest {
         Request request = FixtureFactory.makeRequest();
         request.setBody(makeBody());
 
+        Response response = FixtureFactory.makeResponse();
+
         DuplicateKeyException e = new DuplicateKeyException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
         when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
 
-        Response actual = subject.post(request);
+        Response actual = subject.post(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.BAD_REQUEST));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -111,17 +113,18 @@ public class RestResourceTest {
         Request request = FixtureFactory.makeRequest();
         request.setBody(makeBody());
 
+        Response response = FixtureFactory.makeResponse();
+
         InvalidValueException e = new InvalidValueException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
         when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
 
-        Response actual = subject.post(request);
+        Response actual = subject.post(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.BAD_REQUEST));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -132,17 +135,18 @@ public class RestResourceTest {
         Request request = FixtureFactory.makeRequest();
         request.setBody(makeBody());
 
+        Response response = FixtureFactory.makeResponse();
+
         UnknownKeyException e = new UnknownKeyException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
         when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
 
-        Response actual = subject.post(request);
+        Response actual = subject.post(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.BAD_REQUEST));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -153,17 +157,18 @@ public class RestResourceTest {
         Request request = FixtureFactory.makeRequest();
         request.setBody(makeBody());
 
+        Response response = FixtureFactory.makeResponse();
+
         InvalidPayloadException e = new InvalidPayloadException("test", null);
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
         when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
 
-        Response actual = subject.post(request);
+        Response actual = subject.post(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.BAD_REQUEST));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -174,19 +179,20 @@ public class RestResourceTest {
         Request request = FixtureFactory.makeRequest();
         request.setBody(makeBody());
 
+        Response response = FixtureFactory.makeResponse();
+
         InvalidPayloadException e = new InvalidPayloadException("test", null);
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
 
         ToJsonException e2 = new ToJsonException("test", null);
         doThrow(e2).when(mockJsonTranslator).to(any(Error.class));
 
-        Response actual = subject.post(request);
+        Response actual = subject.post(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.BAD_REQUEST));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -197,16 +203,17 @@ public class RestResourceTest {
         Request request = FixtureFactory.makeRequest();
         request.setBody(makeBody());
 
+        Response response = FixtureFactory.makeResponse();
+
         Dummy dummy = new Dummy();
         when(mockJsonTranslator.from(request.getBody(), Dummy.class)).thenReturn(dummy);
 
-        Response actual = subject.put(request);
+        Response actual = subject.put(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -217,17 +224,18 @@ public class RestResourceTest {
         Request request = FixtureFactory.makeRequest();
         request.setBody(makeBody());
 
+        Response response = FixtureFactory.makeResponse();
+
         DuplicateKeyException e = new DuplicateKeyException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
         when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
 
-        Response actual = subject.put(request);
+        Response actual = subject.put(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.BAD_REQUEST));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -238,17 +246,18 @@ public class RestResourceTest {
         Request request = FixtureFactory.makeRequest();
         request.setBody(makeBody());
 
+        Response response = FixtureFactory.makeResponse();
+
         InvalidValueException e = new InvalidValueException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
         when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
 
-        Response actual = subject.put(request);
+        Response actual = subject.put(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.BAD_REQUEST));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -259,17 +268,18 @@ public class RestResourceTest {
         Request request = FixtureFactory.makeRequest();
         request.setBody(makeBody());
 
+        Response response = FixtureFactory.makeResponse();
+
         UnknownKeyException e = new UnknownKeyException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
         when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
 
-        Response actual = subject.put(request);
+        Response actual = subject.put(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.BAD_REQUEST));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -280,17 +290,18 @@ public class RestResourceTest {
         Request request = FixtureFactory.makeRequest();
         request.setBody(makeBody());
 
+        Response response = FixtureFactory.makeResponse();
+
         InvalidPayloadException e = new InvalidPayloadException("test", null);
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
         when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
 
-        Response actual = subject.put(request);
+        Response actual = subject.put(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.BAD_REQUEST));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -301,19 +312,20 @@ public class RestResourceTest {
         Request request = FixtureFactory.makeRequest();
         request.setBody(makeBody());
 
+        Response response = FixtureFactory.makeResponse();
+
         InvalidPayloadException e = new InvalidPayloadException("test", null);
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
 
         ToJsonException e2 = new ToJsonException("test", null);
         doThrow(e2).when(mockJsonTranslator).to(any(Error.class));
 
-        Response actual = subject.put(request);
+        Response actual = subject.put(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.BAD_REQUEST));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -322,14 +334,14 @@ public class RestResourceTest {
     @Test
     public void deleteShouldBeNotImplemented() throws Exception {
         Request request = FixtureFactory.makeRequest();
+        Response response = FixtureFactory.makeResponse();
 
-        Response actual = subject.delete(request);
+        Response actual = subject.delete(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -338,14 +350,14 @@ public class RestResourceTest {
     @Test
     public void connectShouldBeNotImplemented() throws Exception {
         Request request = FixtureFactory.makeRequest();
+        Response response = FixtureFactory.makeResponse();
 
-        Response actual = subject.connect(request);
+        Response actual = subject.connect(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -354,14 +366,14 @@ public class RestResourceTest {
     @Test
     public void optionsShouldBeNotImplemented() throws Exception {
         Request request = FixtureFactory.makeRequest();
+        Response response = FixtureFactory.makeResponse();
 
-        Response actual = subject.options(request);
+        Response actual = subject.options(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -370,14 +382,14 @@ public class RestResourceTest {
     @Test
     public void traceShouldBeNotImplemented() throws Exception {
         Request request = FixtureFactory.makeRequest();
+        Response response = FixtureFactory.makeResponse();
 
-        Response actual = subject.trace(request);
+        Response actual = subject.trace(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -388,16 +400,17 @@ public class RestResourceTest {
         Request request = FixtureFactory.makeRequest();
         request.setBody(makeBody());
 
+        Response response = FixtureFactory.makeResponse();
+
         Dummy dummy = new Dummy();
         when(mockJsonTranslator.from(request.getBody(), Dummy.class)).thenReturn(dummy);
 
-        Response actual = subject.patch(request);
+        Response actual = subject.patch(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -408,17 +421,18 @@ public class RestResourceTest {
         Request request = FixtureFactory.makeRequest();
         request.setBody(makeBody());
 
+        Response response = FixtureFactory.makeResponse();
+
         DuplicateKeyException e = new DuplicateKeyException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
         when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
 
-        Response actual = subject.patch(request);
+        Response actual = subject.patch(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.BAD_REQUEST));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -429,17 +443,18 @@ public class RestResourceTest {
         Request request = FixtureFactory.makeRequest();
         request.setBody(makeBody());
 
+        Response response = FixtureFactory.makeResponse();
+
         InvalidValueException e = new InvalidValueException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
         when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
 
-        Response actual = subject.patch(request);
+        Response actual = subject.patch(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.BAD_REQUEST));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -450,17 +465,18 @@ public class RestResourceTest {
         Request request = FixtureFactory.makeRequest();
         request.setBody(makeBody());
 
+        Response response = FixtureFactory.makeResponse();
+
         UnknownKeyException e = new UnknownKeyException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
         when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
 
-        Response actual = subject.patch(request);
+        Response actual = subject.patch(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.BAD_REQUEST));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -471,17 +487,18 @@ public class RestResourceTest {
         Request request = FixtureFactory.makeRequest();
         request.setBody(makeBody());
 
+        Response response = FixtureFactory.makeResponse();
+
         InvalidPayloadException e = new InvalidPayloadException("test", null);
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
         when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
 
-        Response actual = subject.patch(request);
+        Response actual = subject.patch(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.BAD_REQUEST));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
@@ -492,19 +509,20 @@ public class RestResourceTest {
         Request request = FixtureFactory.makeRequest();
         request.setBody(makeBody());
 
+        Response response = FixtureFactory.makeResponse();
+
         InvalidPayloadException e = new InvalidPayloadException("test", null);
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
 
         ToJsonException e2 = new ToJsonException("test", null);
         doThrow(e2).when(mockJsonTranslator).to(any(Error.class));
 
-        Response actual = subject.patch(request);
+        Response actual = subject.patch(request, response);
 
         assertThat(actual.getStatusCode(), is(StatusCode.BAD_REQUEST));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getCookies(), is(notNullValue()));
-        assertThat(actual.getCookies().size(), is(1));
         assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate().isPresent(), is(false));
         assertThat(actual.getPresenter().isPresent(), is(false));
