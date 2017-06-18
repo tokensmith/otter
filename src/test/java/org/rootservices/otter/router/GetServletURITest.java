@@ -1,10 +1,8 @@
 package org.rootservices.otter.router;
 
-import helper.FakeServlet;
+import helper.entity.FakeServlet;
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.otter.router.GetServletURI;
-import org.rootservices.otter.router.GetServletURIImpl;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -13,14 +11,14 @@ import static org.junit.Assert.assertThat;
 /**
  * Created by tommackenzie on 5/2/15.
  */
-public class GetServletURIImplTest {
+public class GetServletURITest {
 
     private static String BASE_URI = "https://rootservices.org";
     private GetServletURI subject;
 
     @Before
     public void setUp() {
-        subject = new GetServletURIImpl();
+        subject = new GetServletURI();
     }
 
     @Test
