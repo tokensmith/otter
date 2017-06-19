@@ -8,6 +8,7 @@ import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -41,7 +42,7 @@ public class ResponseBuilderTest {
 
     @Test
     public void bodyShouldBeOk() {
-        Optional<String> body = Optional.empty();
+        Optional<ByteArrayOutputStream> body = Optional.empty();
 
         ResponseBuilder subject = new ResponseBuilder();
         Response actual = subject.payload(body).build();

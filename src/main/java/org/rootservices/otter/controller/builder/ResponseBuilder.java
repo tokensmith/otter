@@ -5,13 +5,14 @@ import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 
+import java.io.ByteArrayOutputStream;
 import java.util.*;
 
 public class ResponseBuilder {
     private StatusCode statusCode;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
-    private Optional<String> payload;
+    private Optional<ByteArrayOutputStream> payload;
     private Optional<String> template;
     private Optional<Object> presenter;
 
@@ -27,7 +28,7 @@ public class ResponseBuilder {
         return this;
     }
 
-    public ResponseBuilder payload(Optional<String> payload) {
+    public ResponseBuilder payload(Optional<ByteArrayOutputStream> payload) {
         this.payload = payload;
         return this;
     }

@@ -1,6 +1,7 @@
 package org.rootservices.otter.controller.entity;
 
 
+import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import java.util.Optional;
 
@@ -8,11 +9,11 @@ public class Response {
     private StatusCode statusCode;
     private Map<String, String> headers;
     private Map<String,Cookie> cookies;
-    private Optional<String> payload;
+    private Optional<ByteArrayOutputStream> payload;
     private Optional<String> template;
     private Optional<Object> presenter;
 
-    public Response(StatusCode statusCode, Map<String, String> headers, Map<String, Cookie> cookies, Optional<String> payload, Optional<String> template, Optional<Object> presenter) {
+    public Response(StatusCode statusCode, Map<String, String> headers, Map<String, Cookie> cookies, Optional<ByteArrayOutputStream> payload, Optional<String> template, Optional<Object> presenter) {
         this.statusCode = statusCode;
         this.headers = headers;
         this.cookies = cookies;
@@ -45,11 +46,11 @@ public class Response {
         this.cookies = cookies;
     }
 
-    public Optional<String> getPayload() {
+    public Optional<ByteArrayOutputStream> getPayload() {
         return payload;
     }
 
-    public void setPayload(Optional<String> payload) {
+    public void setPayload(Optional<ByteArrayOutputStream> payload) {
         this.payload = payload;
     }
 

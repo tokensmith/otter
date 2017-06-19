@@ -17,7 +17,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.ParameterizedType;
 
 import org.apache.log4j.LogManager;
@@ -201,12 +203,12 @@ public abstract class RestController<T> extends HttpServlet {
     protected void prepareResponseWithBody(HttpServletResponse resp, Object object, int statusCode) throws IOException {
         setDefaultResponseHeaders(resp);
         resp.setStatus(statusCode);
-        String json = null;
+        ByteArrayOutputStream out = null;
         try {
-            json = translator.to(object);
+            out = translator.to(object);
         } catch (ToJsonException e) {
             logger.error(e.getMessage(), e);
         }
-        resp.getWriter().write(json);
+        resp.getOutputStream().write(out.toByteArray());
     }
 }

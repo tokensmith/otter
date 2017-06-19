@@ -34,7 +34,7 @@ public class HttpServletResponseMerger {
 
         // structured data.. json
         if(response.getPayload().isPresent()) {
-            containerResponse.getWriter().write(response.getPayload().get());
+            containerResponse.getOutputStream().write(response.getPayload().get().toByteArray());
         }
 
         return containerResponse;
