@@ -65,9 +65,9 @@ public class RestResource<T extends Translatable> extends Resource {
             entity = makeEntity(request.getBody());
         } catch (DeserializationException e) {
             logger.debug(e.getMessage(), e);
-            Optional<ByteArrayOutputStream> body = makeError(e);
+            Optional<ByteArrayOutputStream> payload = makeError(e);
             response.setStatusCode(StatusCode.BAD_REQUEST);
-            response.setPayload(body);
+            response.setPayload(payload);
             return response;
         }
 
@@ -82,9 +82,9 @@ public class RestResource<T extends Translatable> extends Resource {
             entity = makeEntity(request.getBody());
         } catch (DeserializationException e) {
             logger.debug(e.getMessage(), e);
-            Optional<ByteArrayOutputStream> body = makeError(e);
+            Optional<ByteArrayOutputStream> payload = makeError(e);
             response.setStatusCode(StatusCode.BAD_REQUEST);
-            response.setPayload(body);
+            response.setPayload(payload);
             return response;
         }
 
@@ -105,9 +105,9 @@ public class RestResource<T extends Translatable> extends Resource {
             entity = makeEntity(request.getBody());
         } catch (DeserializationException e) {
             logger.debug(e.getMessage(), e);
-            Optional<ByteArrayOutputStream> body = makeError(e);
+            Optional<ByteArrayOutputStream> payload = makeError(e);
             response.setStatusCode(StatusCode.BAD_REQUEST);
-            response.setPayload(body);
+            response.setPayload(payload);
             return response;
         }
 
@@ -116,15 +116,15 @@ public class RestResource<T extends Translatable> extends Resource {
 
     protected Optional<ByteArrayOutputStream> makeError(DeserializationException e) {
 
-        Optional<ByteArrayOutputStream> body = Optional.empty();
+        Optional<ByteArrayOutputStream> payload = Optional.empty();
         Error error = new Error(e.getMessage(), e.getDescription());
         try {
-            ByteArrayOutputStream response = translator.to(error);
-            body = Optional.of(response);
+            ByteArrayOutputStream out = translator.to(error);
+            payload = Optional.of(out);
         } catch (ToJsonException e1) {
             logger.error(e1.getMessage(), e1);
         }
-        return body;
+        return payload;
     }
 
     protected T makeEntity(BufferedReader json) throws DeserializationException {

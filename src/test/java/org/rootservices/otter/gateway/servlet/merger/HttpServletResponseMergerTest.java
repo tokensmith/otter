@@ -8,9 +8,13 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestCookieTranslator;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.util.Optional;
 import java.util.function.Function;
 
 import static org.junit.Assert.*;
@@ -111,6 +115,25 @@ public class HttpServletResponseMergerTest {
         // indicates cookie was added
         verify(mockHttpServletRequestCookieTranslator.to).apply(response.getCookies().get(cookieName));
         verify(mockContainerResponse).addCookie(mockContainerCookieToCreate);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mergeWhenPayloadShouldX() throws Exception {
+        HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
+        Cookie[] containerCookies = new Cookie[0];
+        Response response = FixtureFactory.makeResponse();
+
+        Optional<ByteArrayOutputStream> payload = Optional.of(new ByteArrayOutputStream());
+        response.setPayload(payload);
+
+        ServletOutputStream mockServletOutputStream = mock(ServletOutputStream.class);
+        when(mockContainerResponse.getOutputStream()).thenReturn(mockServletOutputStream);
+
+        subject.merge(mockContainerResponse, containerCookies, response);
+
+        // indicates payload was set in response.
+        verify(mockServletOutputStream).write(payload.get().toByteArray());
     }
 
 }
