@@ -2,7 +2,8 @@ package helper.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.rootservices.otter.translator.Translatable;
+import org.rootservices.otter.translatable.Translatable;
+
 
 import java.time.LocalDate;
 import java.util.Optional;

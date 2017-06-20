@@ -8,8 +8,8 @@ import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.exception.DeserializationException;
+import org.rootservices.otter.translatable.Translatable;
 import org.rootservices.otter.translator.JsonTranslator;
-import org.rootservices.otter.translator.Translatable;
 import org.rootservices.otter.translator.exception.*;
 
 import java.io.BufferedReader;
