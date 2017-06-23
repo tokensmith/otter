@@ -73,7 +73,12 @@ public class ServletGateway {
     }
 
     public void get(String path, Resource resource) {
-        Route route = new RouteBuilder().path(path).resource(resource).build();
+        Route route = new RouteBuilder()
+                .path(path)
+                .resource(resource)
+                .before(new ArrayList<>())
+                .after(new ArrayList<>())
+                .build();
         engine.getDispatcher().getGet().add(route);
     }
 
@@ -85,13 +90,19 @@ public class ServletGateway {
                 .path(path)
                 .resource(resource)
                 .before(before)
+                .after(new ArrayList<>())
                 .build();
 
         engine.getDispatcher().getGet().add(route);
     }
 
     public void post(String path, Resource resource) {
-        Route route = new RouteBuilder().path(path).resource(resource).build();
+        Route route = new RouteBuilder()
+                .path(path)
+                .resource(resource)
+                .after(new ArrayList<>())
+                .before(new ArrayList<>())
+                .build();
         engine.getDispatcher().getPost().add(route);
     }
 
@@ -103,43 +114,79 @@ public class ServletGateway {
                 .path(path)
                 .resource(resource)
                 .before(before)
+                .after(new ArrayList<>())
                 .build();
 
         engine.getDispatcher().getPost().add(route);
     }
 
     public void put(String path, Resource resource) {
-        Route route = new RouteBuilder().path(path).resource(resource).build();
+        Route route = new RouteBuilder()
+                .path(path)
+                .resource(resource)
+                .before(new ArrayList<>())
+                .after(new ArrayList<>())
+                .build();
         engine.getDispatcher().getPut().add(route);
     }
 
     public void patch(String path, Resource resource) {
-        Route route = new RouteBuilder().path(path).resource(resource).build();
+        Route route = new RouteBuilder()
+                .path(path)
+                .resource(resource)
+                .before(new ArrayList<>())
+                .after(new ArrayList<>())
+                .build();
         engine.getDispatcher().getPatch().add(route);
     }
 
     public void delete(String path, Resource resource) {
-        Route route = new RouteBuilder().path(path).resource(resource).build();
+        Route route = new RouteBuilder()
+                .path(path)
+                .resource(resource)
+                .before(new ArrayList<>())
+                .after(new ArrayList<>())
+                .build();
         engine.getDispatcher().getDelete().add(route);
     }
 
     public void connect(String path, Resource resource) {
-        Route route = new RouteBuilder().path(path).resource(resource).build();
+        Route route = new RouteBuilder()
+                .path(path)
+                .resource(resource)
+                .before(new ArrayList<>())
+                .after(new ArrayList<>())
+                .build();
         engine.getDispatcher().getConnect().add(route);
     }
 
     public void options(String path, Resource resource) {
-        Route route = new RouteBuilder().path(path).resource(resource).build();
+        Route route = new RouteBuilder()
+                .path(path)
+                .resource(resource)
+                .before(new ArrayList<>())
+                .after(new ArrayList<>())
+                .build();
         engine.getDispatcher().getOptions().add(route);
     }
 
     public void trace(String path, Resource resource) {
-        Route route = new RouteBuilder().path(path).resource(resource).build();
+        Route route = new RouteBuilder()
+                .path(path)
+                .resource(resource)
+                .before(new ArrayList<>())
+                .after(new ArrayList<>())
+                .build();
         engine.getDispatcher().getTrace().add(route);
     }
 
     public void head(String path, Resource resource) {
-        Route route = new RouteBuilder().path(path).resource(resource).build();
+        Route route = new RouteBuilder()
+                .path(path)
+                .resource(resource)
+                .before(new ArrayList<>())
+                .after(new ArrayList<>())
+                .build();
         engine.getDispatcher().getHead().add(route);
     }
 
@@ -149,70 +196,28 @@ public class ServletGateway {
         this.notFoundRoute = notFoundRoute;
     }
 
-    /**
-     * Assigns the value of the CSRF cookie name to be used.
-     *
-     * @param cookieName name of the cookie
-     */
     public void setCsrfCookieName(String cookieName) {
         ((CheckCSRF) this.checkCSRF).setCookieName(cookieName);
         ((PrepareCSRF) this.prepareCSRF).setCookieName(cookieName);
     }
 
-    /**
-     * Assigns the value of the CSRF form field name to be used.
-     *
-     * @param fieldName name of the form field
-     */
     public void setCsrfFormFieldName(String fieldName) {
         ((CheckCSRF) this.checkCSRF).setFormFieldName(fieldName);
     }
 
-    /**
-     * Sets the max age a CSRF cookie should live for
-     *
-     * @param csrfCookieAge age of the cookie
-     */
     public void setCsrfCookieAge(Integer csrfCookieAge) {
         ((PrepareCSRF) this.prepareCSRF).setMaxAge(csrfCookieAge);
     }
 
-    /**
-     * Sets wether if the CSRF cookie should be set with HTTPS or HTTP
-     *
-     * @param csrfCookieSecure true if HTTPS, false if HTTP
-     */
     public void setCsrfCookieSecure(Boolean csrfCookieSecure) {
         ((PrepareCSRF) this.prepareCSRF).setSecure(csrfCookieSecure);
     }
 
-    /**
-     * Assigns the value of sign key to both,
-     * checkCSRF's doubleSubmitCSRF and prepareCSRF's doubleSubmitCSRF.
-     *
-     * The doubleSubmitCSRF should be a singleton, so it probably does not
-     * need to be assigned to both instances.
-     *
-     * It is assigned to both just in case it's not a singleton
-     *
-     * @param signKey the key to sign cookies with.
-     */
     public void setSignKey(SymmetricKey signKey) {
         ((CheckCSRF) this.checkCSRF).getDoubleSubmitCSRF().setPreferredSignKey(signKey);
         ((PrepareCSRF) this.prepareCSRF).getDoubleSubmitCSRF().setPreferredSignKey(signKey);
     }
 
-    /**
-     * Assigns the value of rotation keys to both,
-     * checkCSRF's doubleSubmitCSRF and prepareCSRF's doubleSubmitCSRF.
-     *
-     * The doubleSubmitCSRF should be a singleton, so it probably does not
-     * need to be assigned to both instances.
-     *
-     * It is assigned to both just in case it's not a singleton
-     *
-     * @param rotationSignKeys the previous sign keys
-     */
     public void setRotationKeys(Map<String, SymmetricKey> rotationSignKeys) {
         ((CheckCSRF) this.checkCSRF).getDoubleSubmitCSRF().setRotationSignKeys(rotationSignKeys);
         ((PrepareCSRF) this.prepareCSRF).getDoubleSubmitCSRF().setRotationSignKeys(rotationSignKeys);
