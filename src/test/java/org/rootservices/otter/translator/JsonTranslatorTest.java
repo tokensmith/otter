@@ -10,6 +10,7 @@ import org.rootservices.otter.translator.exception.InvalidValueException;
 import org.rootservices.otter.translator.exception.UnknownKeyException;
 
 import java.io.BufferedReader;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -20,12 +21,12 @@ import static org.junit.Assert.*;
 
 
 public class JsonTranslatorTest {
-    private JsonTranslator subject;
+    private JsonTranslator<Dummy> subject;
 
     @Before
     public void setUp() {
         AppFactory factory = new AppFactory();
-        subject = new JsonTranslator(factory.objectMapper());
+        subject = new JsonTranslator<Dummy>(factory.objectMapper());
     }
 
     @Test
@@ -113,9 +114,9 @@ public class JsonTranslatorTest {
         dummy.setLocalDate(LocalDate.of(2017, 05, 20));
         dummy.setIntegerOptional(Optional.empty());
 
-        String json = subject.to(dummy);
+        OutputStream out = subject.to(dummy);
 
-        assertThat(json, is(notNullValue()));
-        assertThat(json, is("{\"integer\":5,\"string\":\"string\",\"local_date\":\"2017-05-20\",\"integer_optional\":null}"));
+        assertThat(out, is(notNullValue()));
+        assertThat(out.toString(), is("{\"integer\":5,\"string\":\"string\",\"local_date\":\"2017-05-20\",\"integer_optional\":null}"));
     }
 }

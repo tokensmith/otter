@@ -15,6 +15,7 @@ import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.exception.*;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 
 
@@ -28,7 +29,7 @@ import static org.mockito.Mockito.when;
 
 public class RestResourceTest {
     @Mock
-    private JsonTranslator mockJsonTranslator;
+    private JsonTranslator<Dummy> mockJsonTranslator;
     private RestResource subject;
 
     @Before
@@ -95,7 +96,9 @@ public class RestResourceTest {
 
         DuplicateKeyException e = new DuplicateKeyException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
 
         Response actual = subject.post(request, response);
 
@@ -117,7 +120,9 @@ public class RestResourceTest {
 
         InvalidValueException e = new InvalidValueException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
 
         Response actual = subject.post(request, response);
 
@@ -139,7 +144,9 @@ public class RestResourceTest {
 
         UnknownKeyException e = new UnknownKeyException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
 
         Response actual = subject.post(request, response);
 
@@ -161,7 +168,9 @@ public class RestResourceTest {
 
         InvalidPayloadException e = new InvalidPayloadException("test", null);
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
 
         Response actual = subject.post(request, response);
 
@@ -228,7 +237,9 @@ public class RestResourceTest {
 
         DuplicateKeyException e = new DuplicateKeyException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
 
         Response actual = subject.put(request, response);
 
@@ -250,7 +261,9 @@ public class RestResourceTest {
 
         InvalidValueException e = new InvalidValueException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
 
         Response actual = subject.put(request, response);
 
@@ -272,7 +285,9 @@ public class RestResourceTest {
 
         UnknownKeyException e = new UnknownKeyException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
 
         Response actual = subject.put(request, response);
 
@@ -294,7 +309,9 @@ public class RestResourceTest {
 
         InvalidPayloadException e = new InvalidPayloadException("test", null);
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
 
         Response actual = subject.put(request, response);
 
@@ -425,7 +442,9 @@ public class RestResourceTest {
 
         DuplicateKeyException e = new DuplicateKeyException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
 
         Response actual = subject.patch(request, response);
 
@@ -447,7 +466,9 @@ public class RestResourceTest {
 
         InvalidValueException e = new InvalidValueException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
 
         Response actual = subject.patch(request, response);
 
@@ -469,7 +490,9 @@ public class RestResourceTest {
 
         UnknownKeyException e = new UnknownKeyException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
 
         Response actual = subject.patch(request, response);
 
@@ -491,7 +514,9 @@ public class RestResourceTest {
 
         InvalidPayloadException e = new InvalidPayloadException("test", null);
         doThrow(e).when(mockJsonTranslator).from(request.getBody(), Dummy.class);
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn("");
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
 
         Response actual = subject.patch(request, response);
 

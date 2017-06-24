@@ -2,20 +2,23 @@ package org.rootservices.otter.translator;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import org.rootservices.otter.translatable.Translatable;
 import org.rootservices.otter.translator.exception.*;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class JsonTranslator {
+
+public class JsonTranslator<T extends Translatable> {
     private ObjectMapper objectMapper;
 
     private static final String DUPLICATE_NAME = "key";
@@ -40,11 +43,11 @@ public class JsonTranslator {
      * @throws UnknownKeyException a key was not expected
      * @throws InvalidValueException key value was incorrect for it's type
      */
-    public Object from(BufferedReader json, Class clazz) throws InvalidPayloadException, DuplicateKeyException, UnknownKeyException, InvalidValueException {
-        Object entity = null;
+    public T from(BufferedReader json, Class<? extends Translatable> clazz) throws InvalidPayloadException, DuplicateKeyException, UnknownKeyException, InvalidValueException {
+        T entity = null;
 
         try {
-            entity = objectMapper.readValue(json, clazz);
+            entity = (T) objectMapper.readValue(json, clazz);
         } catch (JsonParseException e) {
             handleJsonParseException(e);
         } catch (UnrecognizedPropertyException e) {
@@ -62,12 +65,16 @@ public class JsonTranslator {
         return entity;
     }
 
-    public String to(Object object) throws ToJsonException {
+    public ByteArrayOutputStream to(Object object) throws ToJsonException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
-            return objectMapper.writeValueAsString(object);
+            objectMapper.writeValue(out, object);
         } catch (JsonProcessingException e) {
             throw new ToJsonException(TO_JSON_MSG, e);
+        } catch (IOException e) {
+            throw new ToJsonException(TO_JSON_MSG, e);
         }
+        return out;
     }
 
     protected void handleJsonParseException(JsonParseException jpe) throws DuplicateKeyException, InvalidPayloadException {

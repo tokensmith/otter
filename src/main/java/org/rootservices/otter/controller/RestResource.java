@@ -8,18 +8,20 @@ import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.exception.DeserializationException;
+import org.rootservices.otter.translatable.Translatable;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.exception.*;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
-public class RestResource<T> extends Resource {
+public class RestResource<T extends Translatable> extends Resource {
     protected static Logger logger = LogManager.getLogger(RestResource.class);
 
-    protected JsonTranslator translator;
+    protected JsonTranslator<T> translator;
     protected Class<T> type;
 
     private static final String DUPLICATE_KEY_MSG = "Duplicate Key";
@@ -31,14 +33,16 @@ public class RestResource<T> extends Resource {
     private static final String INVALID_VALUE_DESC = "%s was invalid";
     private static final String UNKNOWN_KEY_DESC = "%s was not expected";
 
+
     public RestResource() {
         if(this.type == null) {
             Type generic = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
             this.type = (Class<T>) generic;
+
         }
     }
 
-    public RestResource(JsonTranslator translator) {
+    public RestResource(JsonTranslator<T> translator) {
         this();
         this.translator = translator;
     }
@@ -61,9 +65,9 @@ public class RestResource<T> extends Resource {
             entity = makeEntity(request.getBody());
         } catch (DeserializationException e) {
             logger.debug(e.getMessage(), e);
-            Optional<String> body = makeError(e);
+            Optional<ByteArrayOutputStream> payload = makeError(e);
             response.setStatusCode(StatusCode.BAD_REQUEST);
-            response.setPayload(body);
+            response.setPayload(payload);
             return response;
         }
 
@@ -78,9 +82,9 @@ public class RestResource<T> extends Resource {
             entity = makeEntity(request.getBody());
         } catch (DeserializationException e) {
             logger.debug(e.getMessage(), e);
-            Optional<String> body = makeError(e);
+            Optional<ByteArrayOutputStream> payload = makeError(e);
             response.setStatusCode(StatusCode.BAD_REQUEST);
-            response.setPayload(body);
+            response.setPayload(payload);
             return response;
         }
 
@@ -101,32 +105,33 @@ public class RestResource<T> extends Resource {
             entity = makeEntity(request.getBody());
         } catch (DeserializationException e) {
             logger.debug(e.getMessage(), e);
-            Optional<String> body = makeError(e);
+            Optional<ByteArrayOutputStream> payload = makeError(e);
             response.setStatusCode(StatusCode.BAD_REQUEST);
-            response.setPayload(body);
+            response.setPayload(payload);
             return response;
         }
 
         return patch(request, response, entity);
     }
 
-    protected Optional<String> makeError(DeserializationException e) {
+    protected Optional<ByteArrayOutputStream> makeError(DeserializationException e) {
 
-        Optional<String> body = Optional.empty();
+        Optional<ByteArrayOutputStream> payload = Optional.empty();
         Error error = new Error(e.getMessage(), e.getDescription());
         try {
-            String response = translator.to(error);
-            body = Optional.of(response);
+            ByteArrayOutputStream out = translator.to(error);
+            payload = Optional.of(out);
         } catch (ToJsonException e1) {
             logger.error(e1.getMessage(), e1);
         }
-        return body;
+        return payload;
     }
 
     protected T makeEntity(BufferedReader json) throws DeserializationException {
         T entity;
+
         try{
-            entity = (T) translator.from(json, type);
+            entity = translator.from(json, type);
         } catch (DuplicateKeyException e) {
             String desc = String.format(DUPLICATE_KEY_DESC, e.getKey());
             throw new DeserializationException(DUPLICATE_KEY_MSG, e, desc);
