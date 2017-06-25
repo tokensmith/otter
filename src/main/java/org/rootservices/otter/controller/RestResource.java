@@ -62,7 +62,7 @@ public class RestResource<T extends Translatable> extends Resource {
         T entity;
 
         try {
-            entity = makeEntity(request.getBody());
+            entity = makeEntity(request.getPayload().get());
         } catch (DeserializationException e) {
             logger.debug(e.getMessage(), e);
             Optional<ByteArrayOutputStream> payload = makeError(e);
@@ -79,7 +79,7 @@ public class RestResource<T extends Translatable> extends Resource {
         T entity;
 
         try {
-            entity = makeEntity(request.getBody());
+            entity = makeEntity(request.getPayload().get());
         } catch (DeserializationException e) {
             logger.debug(e.getMessage(), e);
             Optional<ByteArrayOutputStream> payload = makeError(e);
@@ -102,7 +102,7 @@ public class RestResource<T extends Translatable> extends Resource {
         T entity;
 
         try {
-            entity = makeEntity(request.getBody());
+            entity = makeEntity(request.getPayload().get());
         } catch (DeserializationException e) {
             logger.debug(e.getMessage(), e);
             Optional<ByteArrayOutputStream> payload = makeError(e);

@@ -106,13 +106,13 @@ public class RequestBuilderTest {
     }
 
     @Test
-    public void buildWhenBodyShouldBeOk() {
+    public void buildWhenPayloadShouldBeOk() {
         StringReader sr = new StringReader("{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}");
-        BufferedReader body = new BufferedReader(sr);
+        Optional<BufferedReader> payload = Optional.of(new BufferedReader(sr));
 
-        Request actual = subject.body(body).build();
+        Request actual = subject.payload(payload).build();
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getBody(), is(body));
+        assertThat(actual.getPayload(), is(payload));
     }
 }

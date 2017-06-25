@@ -5,9 +5,12 @@ import org.rootservices.otter.QueryStringToMap;
 import org.rootservices.otter.controller.builder.RequestBuilder;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
+import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.router.entity.Method;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -49,8 +52,13 @@ public class HttpServletRequestTranslator {
         Map<String, List<String>> queryParams = queryStringToMap.run(queryString);
 
         Map<String, String> formData = new HashMap<>();
-        if (method == Method.POST) {
+        if (method == Method.POST && ContentType.FORM_URL_ENCODED.getValue().equals(containerRequest.getContentType())) {
             formData = getFormData(containerRequest.getParameterMap(), queryParams);
+        }
+
+        Optional<BufferedReader> payload = Optional.empty();
+        if (method == Method.POST && !ContentType.FORM_URL_ENCODED.getValue().equals(containerRequest.getContentType())) {
+            payload = Optional.of(containerRequest.getReader());
         }
 
         return new RequestBuilder()
@@ -62,7 +70,7 @@ public class HttpServletRequestTranslator {
                 .headers(headers)
                 .queryParams(queryParams)
                 .formData(formData)
-                .body(containerRequest.getReader())
+                .payload(payload)
                 .build();
     }
 
