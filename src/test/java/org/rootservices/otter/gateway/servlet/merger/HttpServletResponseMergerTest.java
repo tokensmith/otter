@@ -132,7 +132,7 @@ public class HttpServletResponseMergerTest {
 
         subject.merge(mockContainerResponse, containerCookies, response);
 
-        // indicates payload was set in response.
+        // indicates json was set in response.
         verify(mockServletOutputStream).write(payload.get().toByteArray());
     }
 

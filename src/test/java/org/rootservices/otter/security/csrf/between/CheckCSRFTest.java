@@ -12,6 +12,8 @@ import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 
+import java.util.Arrays;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -37,7 +39,7 @@ public class CheckCSRFTest {
 
         Cookie cookie = FixtureFactory.makeCookie(COOKIE_NAME);
         request.getCookies().put(COOKIE_NAME, cookie);
-        request.getFormData().put(FORM_FIELD_NAME, "challenge-token");
+        request.getFormData().put(FORM_FIELD_NAME, Arrays.asList("challenge-token"));
 
         when(mockDoubleSubmitCSRF.doTokensMatch(cookie.getValue(), "challenge-token")).thenReturn(true);
 
@@ -53,7 +55,7 @@ public class CheckCSRFTest {
 
         Cookie cookie = FixtureFactory.makeCookie(COOKIE_NAME);
         request.getCookies().put(COOKIE_NAME, cookie);
-        request.getFormData().put(FORM_FIELD_NAME, "challenge-token");
+        request.getFormData().put(FORM_FIELD_NAME, Arrays.asList("challenge-token"));
 
         when(mockDoubleSubmitCSRF.doTokensMatch(cookie.getValue(), "challenge-token")).thenReturn(false);
 

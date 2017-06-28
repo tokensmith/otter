@@ -1,7 +1,6 @@
 package org.rootservices.otter.controller.entity;
 
 
-import org.rootservices.otter.controller.header.AuthScheme;
 import org.rootservices.otter.router.entity.Method;
 
 import java.io.BufferedReader;
@@ -14,20 +13,18 @@ public class Request {
     private Optional<Matcher> matcher;
     private Method method;
     private String pathWithParams;
-    private Optional<AuthScheme> authScheme;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
     private Map<String, List<String>> queryParams;
-    private Map<String, String> formData;
+    private Map<String, List<String>> formData;
     private Optional<BufferedReader> payload;
 
     public Request() {}
 
-    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, Optional<AuthScheme> authScheme, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, String> formData, Optional<BufferedReader> payload) {
+    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<BufferedReader> payload) {
         this.matcher = matcher;
         this.method = method;
         this.pathWithParams = pathWithParams;
-        this.authScheme = authScheme;
         this.headers = headers;
         this.cookies = cookies;
         this.queryParams = queryParams;
@@ -59,14 +56,6 @@ public class Request {
         this.pathWithParams = pathWithParams;
     }
 
-    public Optional<AuthScheme> getAuthScheme() {
-        return authScheme;
-    }
-
-    public void setAuthScheme(Optional<AuthScheme> authScheme) {
-        this.authScheme = authScheme;
-    }
-
     public Map<String, String> getHeaders() {
         return headers;
     }
@@ -91,11 +80,11 @@ public class Request {
         this.queryParams = queryParams;
     }
 
-    public Map<String, String> getFormData() {
+    public Map<String, List<String>> getFormData() {
         return formData;
     }
 
-    public void setFormData(Map<String, String> formData) {
+    public void setFormData(Map<String, List<String>> formData) {
         this.formData = formData;
     }
 
