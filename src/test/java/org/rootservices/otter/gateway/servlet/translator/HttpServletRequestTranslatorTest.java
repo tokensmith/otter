@@ -75,6 +75,7 @@ public class HttpServletRequestTranslatorTest {
         assertThat(actual.getMatcher().isPresent(), is(false));
         assertThat(actual.getFormData(), is(notNullValue()));
         assertThat(actual.getFormData().size(), is(0));
+        assertThat(actual.getCsrfChallenge().isPresent(), is(false));
     }
 
     @Test
@@ -116,6 +117,7 @@ public class HttpServletRequestTranslatorTest {
         assertThat(actual.getFormData(), is(notNullValue()));
         assertThat(actual.getFormData().size(), is(1));
         assertThat(actual.getFormData().get("form-field"), is("form-value"));
+        assertThat(actual.getCsrfChallenge().isPresent(), is(false));
     }
 
 

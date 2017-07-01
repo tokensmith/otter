@@ -50,6 +50,8 @@ public class PrepareCSRFTest {
         assertThat(actual, is(true));
         assertThat(response.getCookies().get(COOKIE_NAME), is(notNullValue()));
         assertThat(response.getCookies().get(COOKIE_NAME), is(cookie));
+        assertThat(request.getCsrfChallenge().isPresent(), is(true));
+        assertThat(request.getCsrfChallenge().get(), is(challengeToken));
 
         verify(mockDoubleSubmitCSRF).makeChallengeToken();
         verify(mockDoubleSubmitCSRF).makeCsrfCookie(COOKIE_NAME, challengeToken, false, -1);

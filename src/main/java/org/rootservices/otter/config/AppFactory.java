@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.QueryStringToMap;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
@@ -56,8 +55,8 @@ public class AppFactory {
                 httpServletRequestMerger(),
                 httpServletResponseMerger(),
                 engine(),
-                checkCSRF(doubleSubmitCSRF),
-                prepareCSRF(doubleSubmitCSRF)
+                prepareCSRF(doubleSubmitCSRF),
+                checkCSRF(doubleSubmitCSRF)
         );
     }
 

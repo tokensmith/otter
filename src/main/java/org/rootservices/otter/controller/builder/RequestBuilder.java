@@ -22,6 +22,7 @@ public class RequestBuilder {
     private Map<String, List<String>> queryParams;
     private Map<String, String> formData;
     private BufferedReader body;
+    private Optional<String> csrfChallenge;;
 
     public RequestBuilder matcher(Optional<Matcher> matcher) {
         this.matcher = matcher;
@@ -68,7 +69,12 @@ public class RequestBuilder {
         return this;
     }
 
+    public RequestBuilder csrfChallenge(Optional<String> csrfChallenge) {
+        this.csrfChallenge = csrfChallenge;
+        return this;
+    }
+
     public Request build() {
-        return new Request(this.matcher, this.method, this.pathWithParams, this.authScheme, this.headers, this.cookies, this.queryParams, this.formData, this.body);
+        return new Request(this.matcher, this.method, this.pathWithParams, this.authScheme, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge);
     }
 }

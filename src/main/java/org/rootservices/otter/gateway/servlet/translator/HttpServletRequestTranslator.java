@@ -63,6 +63,7 @@ public class HttpServletRequestTranslator {
                 .queryParams(queryParams)
                 .formData(formData)
                 .body(containerRequest.getReader())
+                .csrfChallenge(Optional.empty())
                 .build();
     }
 

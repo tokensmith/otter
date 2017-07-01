@@ -43,8 +43,8 @@ public class ServletGateway {
         this.httpServletRequestMerger = httpServletRequestMerger;
         this.httpServletResponseMerger = httpServletResponseMerger;
         this.engine = engine;
-        this.checkCSRF = checkCSRF;
         this.prepareCSRF = prepareCSRF;
+        this.checkCSRF = checkCSRF;
     }
 
     public void processRequest(HttpServletRequest containerRequest, HttpServletResponse containerResponse) {

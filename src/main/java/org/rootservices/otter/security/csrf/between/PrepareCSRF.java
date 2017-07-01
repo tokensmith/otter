@@ -10,6 +10,8 @@ import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import org.rootservices.otter.security.csrf.exception.CsrfException;
 
+import java.util.Optional;
+
 
 public class PrepareCSRF implements Between {
     protected static Logger logger = LogManager.getLogger(PrepareCSRF.class);
@@ -38,6 +40,7 @@ public class PrepareCSRF implements Between {
                     cookieName, challengeToken, isSecure, maxAge
                 );
                 response.getCookies().put(cookieName, csrfCookie);
+                request.setCsrfChallenge(Optional.of(challengeToken));
             } catch (CsrfException e) {
                 logger.error(e.getMessage(), e);
             }

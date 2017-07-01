@@ -5,6 +5,7 @@ import com.ning.http.client.AsyncHttpClient;
 import integration.app.hello.controller.HelloResource;
 import integration.test.HelloResourceTest;
 import integration.test.HelloRestResourceTest;
+import integration.test.LoginResourceTest;
 import integration.test.NotFoundResourceTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -23,7 +24,8 @@ import java.net.URI;
 @Suite.SuiteClasses({
     NotFoundResourceTest.class,
     HelloResourceTest.class,
-    HelloRestResourceTest.class
+    HelloRestResourceTest.class,
+    LoginResourceTest.class
 })
 public class IntegrationTestSuite {
     private static AppFactory otterTestAppFactory;

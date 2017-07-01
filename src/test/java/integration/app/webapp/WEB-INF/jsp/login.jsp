@@ -9,7 +9,7 @@
 
     <label for="password">Password:</label>
     <input id="password" type="password" name="password" required="true"/>
-    <input id="csrfToken" type="hidden" name="csrfToken" value="${presenter.getEncodedCsrfToken()}" />
+    <input id="csrfToken" type="hidden" name="csrfToken" value="${presenter.getCsrfChallengeToken()}" />
     <input type="submit"/>
 </form>
 
