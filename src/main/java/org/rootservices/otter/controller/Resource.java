@@ -1,15 +1,9 @@
 package org.rootservices.otter.controller;
 
-
-import org.rootservices.otter.controller.builder.ResponseBuilder;
-import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 public class Resource {
 

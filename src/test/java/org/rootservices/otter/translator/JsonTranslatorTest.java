@@ -3,11 +3,13 @@ package org.rootservices.otter.translator;
 import helper.entity.Dummy;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.rootservices.otter.config.AppFactory;
 import org.rootservices.otter.translator.exception.DuplicateKeyException;
 import org.rootservices.otter.translator.exception.InvalidPayloadException;
 import org.rootservices.otter.translator.exception.InvalidValueException;
 import org.rootservices.otter.translator.exception.UnknownKeyException;
+import suite.UnitTest;
 
 import java.io.BufferedReader;
 import java.io.OutputStream;
@@ -20,6 +22,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 
+@Category(UnitTest.class)
 public class JsonTranslatorTest {
     private JsonTranslator<Dummy> subject;
 

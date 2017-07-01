@@ -2,6 +2,8 @@ package org.rootservices.otter;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import suite.UnitTest;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -13,9 +15,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 
-/**
- * Created by tommackenzie on 4/22/15.
- */
+@Category(UnitTest.class)
 public class QueryStringToMapTest {
 
     private QueryStringToMap subject;

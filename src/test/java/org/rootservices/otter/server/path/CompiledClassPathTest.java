@@ -2,15 +2,16 @@ package org.rootservices.otter.server.path;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import suite.UnitTest;
 
 import java.net.URI;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-/**
- * Created by tommackenzie on 4/5/16.
- */
+
+@Category(UnitTest.class)
 public class CompiledClassPathTest {
 
     private CompiledClassPath subject;

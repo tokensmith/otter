@@ -4,7 +4,9 @@ import helper.FixtureFactory;
 import helper.entity.FakePresenter;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.rootservices.otter.controller.entity.Response;
+import suite.UnitTest;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +19,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 
+@Category(UnitTest.class)
 public class HttpServletRequestMergerTest {
     private HttpServletRequestMerger subject;
 
