@@ -174,13 +174,16 @@ public class HttpServletRequestTranslatorTest {
     public void getFormDataWhenQueryParamsHasSameKeyAsFormShouldExcludeQueryValues() throws Exception {
         Map<String, List<String>> queryParams = new HashMap<>();
         queryParams.put("key-1", Arrays.asList("query-param-value-1", "query-param-value-2", "same-value"));
+        queryParams.put("key-2", Arrays.asList("query-param-value-key-2"));
 
         Map<String, String[]> containerParameters = new HashMap<>();
         containerParameters.put("key-1", new String[]{"form-value-1", "form-value-2", "same-value", "query-param-value-1", "query-param-value-2", "same-value"});
+        containerParameters.put("key-2", new String[]{"query-param-value-key-2"});
 
         Map<String, List<String>> actual = subject.getFormData(containerParameters, queryParams);
 
         assertThat(actual, is(notNullValue()));
+        assertThat(actual.size(), is(1));
         assertThat(actual.get("key-1"), is(notNullValue()));
         assertThat(actual.get("key-1").size(), is(3));
         assertThat(actual.get("key-1").contains("form-value-1"), is(true));

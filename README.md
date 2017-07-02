@@ -105,3 +105,8 @@ Maven uber jar
     </configuration>
 </plugin>
 ```
+
+OutputStream and InputStream are blocking
+Asynchronous socket channel 28:35
+
+must call isReady between writes.

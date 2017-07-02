@@ -47,11 +47,14 @@ public class ReadListenerImpl implements ReadListener {
         ServletOutputStream output = res.getOutputStream();
         WriteListener writeListener = new WriteListenerImpl(output, queue, ac);
         output.setWriteListener(writeListener);
+
+        // pass in the read data.
         servletGateway.processRequest(req, res);
     }
 
     @Override
     public void onError(Throwable t) {
+        logger.error(t.getMessage(), t);
         ac.complete();
     }
 }

@@ -54,11 +54,13 @@ public class HttpServletRequestTranslator {
 
         Map<String, List<String>> formData = new HashMap<>();
         if (method == Method.POST && ContentType.FORM_URL_ENCODED.getValue().equals(containerRequest.getContentType())) {
+            // Might be blocking.. getParameterMap()
             formData = getFormData(containerRequest.getParameterMap(), queryParams);
         }
-        
+
         Optional<BufferedReader> payload = Optional.empty();
         if (method == Method.POST && !ContentType.FORM_URL_ENCODED.getValue().equals(containerRequest.getContentType())) {
+            // Might be blocking.. getReader()
             payload = Optional.of(containerRequest.getReader());
         }
 
@@ -109,6 +111,11 @@ public class HttpServletRequestTranslator {
                 // remove the values that were from the query params
                 for(String queryValue: queryValues) {
                     formData.get(formElement.getKey()).remove(queryValue);
+                }
+
+                // were all the values from the query params? if yes, remove it from formData
+                if(formData.get(formElement.getKey()).size() == 0) {
+                    formData.remove(formElement.getKey());
                 }
             }
         }
