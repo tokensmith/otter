@@ -30,7 +30,11 @@ public class HttpServletRequestCookieTranslator {
         public javax.servlet.http.Cookie apply(Cookie otterCookie) {
             javax.servlet.http.Cookie containerCookie = new javax.servlet.http.Cookie(otterCookie.getName(), otterCookie.getValue());
             containerCookie.setComment(otterCookie.getComment());
-            // containerCookie.setDomain(otterCookie.getDomain());
+
+            if(otterCookie.getDomain() != null) {
+                containerCookie.setDomain(otterCookie.getDomain());
+            }
+
             containerCookie.setMaxAge(otterCookie.getMaxAge());
             containerCookie.setPath(otterCookie.getPath());
             containerCookie.setSecure(otterCookie.isSecure());
