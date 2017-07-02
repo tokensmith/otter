@@ -11,11 +11,11 @@ import org.rootservices.otter.router.entity.Method;
 import suite.UnitTest;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.StringReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
@@ -56,14 +56,6 @@ public class RequestBuilderTest {
     }
 
     @Test
-    public void buildWhenSchemeShouldBeOk() {
-        Request actual = subject.authScheme(Optional.of(AuthScheme.BEARER)).build();
-
-        assertThat(actual, is(notNullValue()));
-        assertThat(actual.getAuthScheme().isPresent(), is(true));
-    }
-
-    @Test
     public void buildWhenHeadersShouldBeOk() {
         Map<String, String> headers = FixtureFactory.makeHeaders();
 
@@ -98,8 +90,8 @@ public class RequestBuilderTest {
 
     @Test
     public void buildWhenFormDataShouldBeOk() {
-        Map<String, String> formData = new HashMap<>();
-        formData.put("foo", "bar");
+        Map<String, List<String>> formData = new HashMap<>();
+        formData.put("foo", Arrays.asList("bar"));
 
         Request actual = subject.formData(formData).build();
 
@@ -108,13 +100,13 @@ public class RequestBuilderTest {
     }
 
     @Test
-    public void buildWhenBodyShouldBeOk() {
-        StringReader sr = new StringReader("{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}");
-        BufferedReader body = new BufferedReader(sr);
+    public void buildWhenPayloadShouldBeOk() {
+        String json = "{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}";
+        Optional<BufferedReader> payload = FixtureFactory.payload(json);
 
-        Request actual = subject.body(body).build();
+        Request actual = subject.payload(payload).build();
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getBody(), is(body));
+        assertThat(actual.getPayload(), is(payload));
     }
 }

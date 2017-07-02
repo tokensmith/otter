@@ -9,6 +9,9 @@ import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 
+import java.util.List;
+import java.util.Optional;
+
 public class CheckCSRF implements Between {
     private String cookieName;
     private String formFieldName;
@@ -28,16 +31,19 @@ public class CheckCSRF implements Between {
     public Boolean process(Method method, Request request, Response response) {
         Boolean ok;
         Cookie csrfCookie = request.getCookies().get(cookieName);
-        String formValue = request.getFormData().get(formFieldName);
-        if ( csrfCookie != null && formValue != null) {
-            ok = doubleSubmitCSRF.doTokensMatch(csrfCookie.getValue(), formValue);
+        List<String> formValue = request.getFormData().get(formFieldName);
+        if ( csrfCookie != null && formValue != null && formValue.size() == 1) {
+            ok = doubleSubmitCSRF.doTokensMatch(csrfCookie.getValue(), formValue.get(0));
         } else {
             ok = false;
         }
 
         if(!ok) {
             response.setStatusCode(StatusCode.FORBIDDEN);
+        } else {
+            request.setCsrfChallenge(Optional.of(formValue.get(0)));
         }
+
         return ok;
     }
 

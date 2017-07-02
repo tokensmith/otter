@@ -13,7 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import java.util.ArrayList;
 import java.util.Optional;
 
-@WebServlet(value="/app/*", name="EntryServlet")
+@WebServlet(value="/app/*", name="EntryServlet", asyncSupported = true)
 public class EntryServlet extends OtterEntryServlet {
     private AppConfig appConfig;
 
@@ -23,6 +23,7 @@ public class EntryServlet extends OtterEntryServlet {
         servletGateway.setCsrfCookieAge(-1);
         servletGateway.setCsrfCookieName("csrf");
         servletGateway.setCsrfCookieSecure(false);
+        servletGateway.setCsrfFormFieldName("csrfToken");
 
         SymmetricKey key = new SymmetricKey(
                 Optional.of("key-1"),
@@ -49,5 +50,6 @@ public class EntryServlet extends OtterEntryServlet {
         servletGateway.get(HelloRestResource.URL, appConfig.helloRestResource());
         servletGateway.post(HelloRestResource.URL, appConfig.helloRestResource());
         servletGateway.getCsrfProtect(LoginResource.URL, new LoginResource());
+        servletGateway.postCsrfProtect(LoginResource.URL, new LoginResource());
     }
 }

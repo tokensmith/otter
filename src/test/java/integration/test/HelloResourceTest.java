@@ -25,7 +25,7 @@ public class HelloResourceTest {
     }
 
     @Test
-    public void getShouldReturn404() throws Exception {
+    public void getShouldReturn200() throws Exception {
         String helloURI = BASE_URI.toString() + "hello";
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()

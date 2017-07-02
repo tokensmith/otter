@@ -79,7 +79,6 @@ public class LoginResourceTest {
         assertThat(claims.getChallengeToken(), is(formCsrfValue));
     }
 
-    @Ignore
     @Test
     public void postShouldReturn404() throws Exception {
         String loginURI = BASE_URI.toString() + "login";
@@ -91,11 +90,11 @@ public class LoginResourceTest {
                 .prepareGet(loginURI)
                 .execute();
 
-        Response response = f.get();
+        Response getResponse = f.get();
 
         // get the csrf value from the form.
         Pattern csrfPattern = Pattern.compile(".*\"csrfToken\" value=\"([^\"]*)\".*", Pattern.DOTALL);
-        Matcher matcher = csrfPattern.matcher(response.getResponseBody());
+        Matcher matcher = csrfPattern.matcher(getResponse.getResponseBody());
         assertThat(matcher.matches(), is(true));
         String formCsrfValue = matcher.group(1);
 
@@ -108,10 +107,11 @@ public class LoginResourceTest {
         f = httpClient
                 .preparePost(loginURI)
                 .setFormParams(formData)
+                .setCookies(getResponse.getCookies())
                 .execute();
 
-        response = f.get();
+        Response postResponse = f.get();
 
-        assertThat(response.getStatusCode(), is(StatusCode.OK.getCode()));
+        assertThat(postResponse.getStatusCode(), is(StatusCode.OK.getCode()));
     }
 }

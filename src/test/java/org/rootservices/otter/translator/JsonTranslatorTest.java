@@ -1,5 +1,6 @@
 package org.rootservices.otter.translator;
 
+import helper.FixtureFactory;
 import helper.entity.Dummy;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,8 +13,8 @@ import org.rootservices.otter.translator.exception.UnknownKeyException;
 import suite.UnitTest;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringReader;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -34,8 +35,7 @@ public class JsonTranslatorTest {
 
     @Test
     public void fromShouldBeOk() throws Exception {
-        StringReader sr = new StringReader("{\"integer\": 5, \"string\": \"foo\", \"local_date\": \"2019-01-01\"}");
-        BufferedReader json = new BufferedReader(sr);
+        BufferedReader json = FixtureFactory.json("{\"integer\": 5, \"string\": \"foo\", \"local_date\": \"2019-01-01\"}");
 
         Dummy actual = (Dummy) subject.from(json, Dummy.class);
 
@@ -47,8 +47,7 @@ public class JsonTranslatorTest {
 
     @Test
     public void fromShouldThrowDuplicateKeyException() throws Exception {
-        StringReader sr = new StringReader("{\"integer\": 5, \"integer\": \"4\", \"local_date\": \"2019-01-01\"}");
-        BufferedReader json = new BufferedReader(sr);
+        BufferedReader json = FixtureFactory.json("{\"integer\": 5, \"integer\": \"4\", \"local_date\": \"2019-01-01\"}");
 
         DuplicateKeyException actual = null;
         try {
@@ -63,8 +62,7 @@ public class JsonTranslatorTest {
 
     @Test
     public void fromShouldThrowUnknownKeyException() throws Exception {
-        StringReader sr = new StringReader("{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}");
-        BufferedReader json = new BufferedReader(sr);
+        BufferedReader json = FixtureFactory.json("{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}");
 
         UnknownKeyException actual = null;
         try {
@@ -79,8 +77,7 @@ public class JsonTranslatorTest {
 
     @Test
     public void fromShouldThrowInvalidValueException() throws Exception {
-        StringReader sr = new StringReader("{\"integer\": \"not a integer\", \"string\": \"foo\", \"local_date\": \"2019-01-01\"}");
-        BufferedReader json = new BufferedReader(sr);
+        BufferedReader json = FixtureFactory.json("{\"integer\": \"not a integer\", \"string\": \"foo\", \"local_date\": \"2019-01-01\"}");
 
         InvalidValueException actual = null;
         try {
@@ -95,8 +92,7 @@ public class JsonTranslatorTest {
 
     @Test
     public void fromShouldThrowInvalidPayloadException() throws Exception {
-        StringReader sr = new StringReader("{");
-        BufferedReader json = new BufferedReader(sr);
+        BufferedReader json = FixtureFactory.json("{");
 
         InvalidPayloadException actual = null;
         try {

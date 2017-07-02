@@ -3,7 +3,6 @@ package org.rootservices.otter.controller.builder;
 
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.header.AuthScheme;
 import org.rootservices.otter.router.entity.Method;
 
 import java.io.BufferedReader;
@@ -16,13 +15,12 @@ public class RequestBuilder {
     private Optional<Matcher> matcher;
     private Method method;
     private String pathWithParams;
-    private Optional<AuthScheme> authScheme;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
     private Map<String, List<String>> queryParams;
-    private Map<String, String> formData;
-    private BufferedReader body;
-    private Optional<String> csrfChallenge;;
+    private Map<String, List<String>> formData;
+    private Optional<BufferedReader> payload;
+    private Optional<String> csrfChallenge;
 
     public RequestBuilder matcher(Optional<Matcher> matcher) {
         this.matcher = matcher;
@@ -36,11 +34,6 @@ public class RequestBuilder {
 
     public RequestBuilder pathWithParams(String pathWithParams) {
         this.pathWithParams = pathWithParams;
-        return this;
-    }
-
-    public RequestBuilder authScheme(Optional<AuthScheme> authScheme) {
-        this.authScheme = authScheme;
         return this;
     }
 
@@ -59,13 +52,13 @@ public class RequestBuilder {
         return this;
     }
 
-    public RequestBuilder formData(Map<String, String> formData) {
+    public RequestBuilder formData(Map<String, List<String>> formData) {
         this.formData = formData;
         return this;
     }
 
-    public RequestBuilder body(BufferedReader body) {
-        this.body = body;
+    public RequestBuilder payload(Optional<BufferedReader> payload) {
+        this.payload = payload;
         return this;
     }
 
@@ -75,6 +68,6 @@ public class RequestBuilder {
     }
 
     public Request build() {
-        return new Request(this.matcher, this.method, this.pathWithParams, this.authScheme, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge);
+        return new Request(this.matcher, this.method, this.pathWithParams, this.headers, this.cookies, this.queryParams, this.formData, this.payload, this.csrfChallenge);
     }
 }

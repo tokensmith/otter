@@ -3,7 +3,6 @@ package org.rootservices.otter.gateway.servlet;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.eclipse.jetty.jsp.JettyJspServlet;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.builder.ResponseBuilder;
@@ -19,7 +18,8 @@ import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.security.csrf.between.CheckCSRF;
 import org.rootservices.otter.security.csrf.between.PrepareCSRF;
 
-import javax.servlet.ServletException;
+
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -70,8 +70,10 @@ public class ServletGateway {
 
         } catch (IOException | ServletException e) {
             logger.error(e.getMessage(), e);
+            containerResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            containerResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 

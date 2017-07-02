@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  * to the servlet container. The need for this filter is for rendering jsp
  * servlets and possibly static assets.
  */
-@WebFilter(filterName = "EntryFilter")
+@WebFilter(filterName = "EntryFilter", asyncSupported = true)
 public class EntryFilter implements Filter {
     private static Pattern TEMPLATE_PATTERN = Pattern.compile("(.*).(jsp|jspf|jspx|xsp|JSP|JSPF|JSPX|XSP)");
     private static String OTTER_PREFIX = "/app";

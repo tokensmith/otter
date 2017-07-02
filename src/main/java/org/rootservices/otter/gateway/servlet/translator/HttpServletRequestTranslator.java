@@ -5,9 +5,12 @@ import org.rootservices.otter.QueryStringToMap;
 import org.rootservices.otter.controller.builder.RequestBuilder;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
+import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.router.entity.Method;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -48,21 +51,28 @@ public class HttpServletRequestTranslator {
         Optional<String> queryString = Optional.ofNullable(containerRequest.getQueryString());
         Map<String, List<String>> queryParams = queryStringToMap.run(queryString);
 
-        Map<String, String> formData = new HashMap<>();
-        if (method == Method.POST) {
+
+        Map<String, List<String>> formData = new HashMap<>();
+        if (method == Method.POST && ContentType.FORM_URL_ENCODED.getValue().equals(containerRequest.getContentType())) {
+            // Might be blocking.. getParameterMap()
             formData = getFormData(containerRequest.getParameterMap(), queryParams);
+        }
+
+        Optional<BufferedReader> payload = Optional.empty();
+        if (method == Method.POST && !ContentType.FORM_URL_ENCODED.getValue().equals(containerRequest.getContentType())) {
+            // Might be blocking.. getReader()
+            payload = Optional.of(containerRequest.getReader());
         }
 
         return new RequestBuilder()
                 .matcher(Optional.empty())
                 .method(method)
                 .pathWithParams(pathWithParams)
-                .authScheme(Optional.empty())
                 .cookies(otterCookies)
                 .headers(headers)
                 .queryParams(queryParams)
                 .formData(formData)
-                .body(containerRequest.getReader())
+                .payload(payload)
                 .csrfChallenge(Optional.empty())
                 .build();
     }
@@ -77,12 +87,36 @@ public class HttpServletRequestTranslator {
         return queryStringForUrl;
     }
 
-    protected Map<String, String> getFormData(Map<String, String[]> containerParameters, Map<String, List<String>> queryParams) {
-        Map<String, String> formData = new HashMap<>();
+    protected Map<String, List<String>> getFormData(Map<String, String[]> containerParameters, Map<String, List<String>> queryParams) {
+        Map<String, List<String>> formData = new HashMap<>();
 
         for (Map.Entry<String, String[]> formElement: containerParameters.entrySet()) {
-            if(queryParams.get(formElement.getKey()) == null) {
-                formData.put(formElement.getKey(), formElement.getValue()[0]);
+            List<String> queryValues = queryParams.get(formElement.getKey());
+
+            // no collision between query keys and form keys
+            if(queryValues == null) {
+                if (formData.get(formElement.getKey()) == null) {
+                    List<String> values = new ArrayList<>();
+                    formData.put(formElement.getKey(), values);
+                }
+                formData.get(formElement.getKey()).addAll(Arrays.asList(formElement.getValue()));
+            } else {
+                // collision - there is a matching key in the query params
+                if (formData.get(formElement.getKey()) == null) {
+                    List<String> values = new ArrayList<>();
+                    formData.put(formElement.getKey(), values);
+                }
+                formData.get(formElement.getKey()).addAll(Arrays.asList(formElement.getValue()));
+
+                // remove the values that were from the query params
+                for(String queryValue: queryValues) {
+                    formData.get(formElement.getKey()).remove(queryValue);
+                }
+
+                // were all the values from the query params? if yes, remove it from formData
+                if(formData.get(formElement.getKey()).size() == 0) {
+                    formData.remove(formElement.getKey());
+                }
             }
         }
 

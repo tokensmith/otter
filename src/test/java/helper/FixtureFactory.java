@@ -24,6 +24,11 @@ import org.rootservices.otter.router.entity.Regex;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.security.csrf.CsrfClaims;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -64,6 +69,7 @@ public class FixtureFactory {
         Request request = new Request();
         request.setFormData(new HashMap<>());
         request.setCookies(makeCookies());
+        request.setCsrfChallenge(Optional.empty());
         return request;
     }
 
@@ -147,6 +153,15 @@ public class FixtureFactory {
         }
 
         return jsonWebToken;
+    }
 
+    public static BufferedReader json(String value) {
+        StringReader sr = new StringReader(value);
+        return new BufferedReader(sr);
+    }
+
+    public static Optional<BufferedReader> payload(String value) {
+        StringReader sr = new StringReader(value);
+        return Optional.of(new BufferedReader(sr));
     }
 }

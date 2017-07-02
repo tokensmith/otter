@@ -13,7 +13,9 @@ import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.exception.*;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Optional;
@@ -62,7 +64,7 @@ public class RestResource<T extends Translatable> extends Resource {
         T entity;
 
         try {
-            entity = makeEntity(request.getBody());
+            entity = makeEntity(request.getPayload().get());
         } catch (DeserializationException e) {
             logger.debug(e.getMessage(), e);
             Optional<ByteArrayOutputStream> payload = makeError(e);
@@ -79,7 +81,7 @@ public class RestResource<T extends Translatable> extends Resource {
         T entity;
 
         try {
-            entity = makeEntity(request.getBody());
+            entity = makeEntity(request.getPayload().get());
         } catch (DeserializationException e) {
             logger.debug(e.getMessage(), e);
             Optional<ByteArrayOutputStream> payload = makeError(e);
@@ -102,7 +104,7 @@ public class RestResource<T extends Translatable> extends Resource {
         T entity;
 
         try {
-            entity = makeEntity(request.getBody());
+            entity = makeEntity(request.getPayload().get());
         } catch (DeserializationException e) {
             logger.debug(e.getMessage(), e);
             Optional<ByteArrayOutputStream> payload = makeError(e);
