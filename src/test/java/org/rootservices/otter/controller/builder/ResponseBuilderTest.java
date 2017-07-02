@@ -4,9 +4,11 @@ package org.rootservices.otter.controller.builder;
 import helper.entity.FakePresenter;
 import helper.FixtureFactory;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
+import suite.UnitTest;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
@@ -18,6 +20,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 
+@Category(UnitTest.class)
 public class ResponseBuilderTest {
 
     @Test

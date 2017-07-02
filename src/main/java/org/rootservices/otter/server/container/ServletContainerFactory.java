@@ -9,12 +9,18 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.webapp.WebXmlConfiguration;
 import org.rootservices.otter.server.path.CompiledClassPath;
 import org.rootservices.otter.server.path.WebAppPath;
+import org.rootservices.otter.servlet.EntryFilter;
 
+import javax.servlet.DispatcherType;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by tommackenzie on 4/3/16.
@@ -46,6 +52,13 @@ public class ServletContainerFactory {
     public ServletContainer makeServletContainer(String documentRoot, Class clazz, int port, File tempDirectory) throws URISyntaxException, IOException {
         URI compliedClassPath = compiledClassPath.getForClass(clazz);
         URI webApp = webAppPath.fromClassURI(compliedClassPath);
+
+        return makeServletContainer(documentRoot, webApp, compliedClassPath, port, tempDirectory);
+    }
+
+    public ServletContainer makeServletContainer(String documentRoot, Class clazz, String customWebAppLocation, int port, File tempDirectory) throws URISyntaxException, IOException {
+        URI compliedClassPath = compiledClassPath.getForClass(clazz);
+        URI webApp = webAppPath.fromClassURI(compliedClassPath, customWebAppLocation);
 
         return makeServletContainer(documentRoot, webApp, compliedClassPath, port, tempDirectory);
     }
@@ -95,6 +108,7 @@ public class ServletContainerFactory {
         context.setInitParameter(DIR_ALLOWED_KEY, "false");
         context.setContextPath(documentRoot);
         context.setParentLoaderPriority(true);
+        context.addFilter(EntryFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
 
         context.setAttribute(
             "org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",

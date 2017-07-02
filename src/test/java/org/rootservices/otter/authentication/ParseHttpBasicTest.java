@@ -2,7 +2,9 @@ package org.rootservices.otter.authentication;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.rootservices.otter.authentication.exception.HttpBasicException;
+import suite.UnitTest;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
@@ -11,10 +13,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 
-/**
- * Created by tommackenzie on 6/4/15.
- *
- */
+@Category(UnitTest.class)
 public class ParseHttpBasicTest {
 
     private ParseHttpBasic subject;

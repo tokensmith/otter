@@ -2,6 +2,8 @@ package org.rootservices.otter.gateway.servlet.translator;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import suite.UnitTest;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,6 +16,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
+@Category(UnitTest.class)
 public class HttpServletRequestHeaderTranslatorTest {
     private HttpServletRequestHeaderTranslator subject;
 

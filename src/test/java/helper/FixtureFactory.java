@@ -69,6 +69,7 @@ public class FixtureFactory {
         Request request = new Request();
         request.setFormData(new HashMap<>());
         request.setCookies(makeCookies());
+        request.setCsrfChallenge(Optional.empty());
         return request;
     }
 

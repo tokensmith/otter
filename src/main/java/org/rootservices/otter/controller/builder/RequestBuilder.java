@@ -20,6 +20,7 @@ public class RequestBuilder {
     private Map<String, List<String>> queryParams;
     private Map<String, List<String>> formData;
     private Optional<BufferedReader> payload;
+    private Optional<String> csrfChallenge;
 
     public RequestBuilder matcher(Optional<Matcher> matcher) {
         this.matcher = matcher;
@@ -61,7 +62,12 @@ public class RequestBuilder {
         return this;
     }
 
+    public RequestBuilder csrfChallenge(Optional<String> csrfChallenge) {
+        this.csrfChallenge = csrfChallenge;
+        return this;
+    }
+
     public Request build() {
-        return new Request(this.matcher, this.method, this.pathWithParams, this.headers, this.cookies, this.queryParams, this.formData, this.payload);
+        return new Request(this.matcher, this.method, this.pathWithParams, this.headers, this.cookies, this.queryParams, this.formData, this.payload, this.csrfChallenge);
     }
 }

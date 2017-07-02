@@ -31,6 +31,7 @@
         <jetty.version>9.3.14.v20161028</jetty.version>
         <jackson.version>2.8.8</jackson.version>
         <org.apache.logging.log4j.version>2.7</org.apache.logging.log4j.version>
+        <junit.version>4.12</junit.version>
     </properties>
 
     <dependencies>
@@ -120,7 +121,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -137,6 +138,13 @@
             <version>1.9.5</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.ning</groupId>
+            <artifactId>async-http-client</artifactId>
+            <version>1.9.15</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -148,6 +156,10 @@
                 <configuration>
                     <parallel>methods</parallel>
                     <threadCount>5</threadCount>
+                    <includes>
+                        <include>**/**Suite.java</include>
+                        <include>>**/**Test.java</include>
+                    </includes>
                 </configuration>
             </plugin>
             <plugin>

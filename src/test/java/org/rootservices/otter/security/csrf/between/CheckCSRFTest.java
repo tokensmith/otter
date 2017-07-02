@@ -3,6 +3,7 @@ package org.rootservices.otter.security.csrf.between;
 import helper.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.entity.Cookie;
@@ -11,6 +12,7 @@ import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
+import suite.UnitTest;
 
 import java.util.Arrays;
 
@@ -19,6 +21,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 
+@Category(UnitTest.class)
 public class CheckCSRFTest {
     private static String COOKIE_NAME = "CSRF";
     private static String FORM_FIELD_NAME = "CSRF";
@@ -37,15 +40,18 @@ public class CheckCSRFTest {
         Request request = FixtureFactory.makeRequest();
         Response response = FixtureFactory.makeResponse();
 
+        String challengeToken = "challenge-token";
         Cookie cookie = FixtureFactory.makeCookie(COOKIE_NAME);
         request.getCookies().put(COOKIE_NAME, cookie);
-        request.getFormData().put(FORM_FIELD_NAME, Arrays.asList("challenge-token"));
+        request.getFormData().put(FORM_FIELD_NAME, Arrays.asList(challengeToken));
 
-        when(mockDoubleSubmitCSRF.doTokensMatch(cookie.getValue(), "challenge-token")).thenReturn(true);
+        when(mockDoubleSubmitCSRF.doTokensMatch(cookie.getValue(), challengeToken)).thenReturn(true);
 
         Boolean actual = subject.process(Method.POST, request, response);
 
         assertThat(actual, is(true));
+        assertThat(request.getCsrfChallenge().isPresent(), is(true));
+        assertThat(request.getCsrfChallenge().get(), is(challengeToken));
     }
 
     @Test

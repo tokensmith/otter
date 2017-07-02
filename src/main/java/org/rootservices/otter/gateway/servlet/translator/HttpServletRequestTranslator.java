@@ -51,11 +51,12 @@ public class HttpServletRequestTranslator {
         Optional<String> queryString = Optional.ofNullable(containerRequest.getQueryString());
         Map<String, List<String>> queryParams = queryStringToMap.run(queryString);
 
+
         Map<String, List<String>> formData = new HashMap<>();
         if (method == Method.POST && ContentType.FORM_URL_ENCODED.getValue().equals(containerRequest.getContentType())) {
             formData = getFormData(containerRequest.getParameterMap(), queryParams);
         }
-
+        
         Optional<BufferedReader> payload = Optional.empty();
         if (method == Method.POST && !ContentType.FORM_URL_ENCODED.getValue().equals(containerRequest.getContentType())) {
             payload = Optional.of(containerRequest.getReader());
@@ -70,6 +71,7 @@ public class HttpServletRequestTranslator {
                 .queryParams(queryParams)
                 .formData(formData)
                 .payload(payload)
+                .csrfChallenge(Optional.empty())
                 .build();
     }
 
@@ -96,7 +98,7 @@ public class HttpServletRequestTranslator {
                     formData.put(formElement.getKey(), values);
                 }
                 formData.get(formElement.getKey()).addAll(Arrays.asList(formElement.getValue()));
-            } else { // is it
+            } else {
                 // collision - there is a matching key in the query params
                 if (formData.get(formElement.getKey()) == null) {
                     List<String> values = new ArrayList<>();

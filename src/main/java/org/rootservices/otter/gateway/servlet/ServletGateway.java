@@ -18,11 +18,14 @@ import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.security.csrf.between.CheckCSRF;
 import org.rootservices.otter.security.csrf.between.PrepareCSRF;
 
-import javax.servlet.ServletException;
+
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ServletGateway {
     protected static Logger logger = LogManager.getLogger(ServletGateway.class);
@@ -35,19 +38,19 @@ public class ServletGateway {
     private Between checkCSRF;
     private Route notFoundRoute;
 
-
     public ServletGateway(HttpServletRequestTranslator httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger httpServletResponseMerger, Engine engine, Between prepareCSRF, Between checkCSRF) {
         this.httpServletRequestTranslator = httpServletRequestTranslator;
         this.httpServletRequestMerger = httpServletRequestMerger;
         this.httpServletResponseMerger = httpServletResponseMerger;
         this.engine = engine;
-        this.checkCSRF = checkCSRF;
         this.prepareCSRF = prepareCSRF;
+        this.checkCSRF = checkCSRF;
     }
 
     public void processRequest(HttpServletRequest containerRequest, HttpServletResponse containerResponse) {
         try {
             Request request = httpServletRequestTranslator.from(containerRequest);
+
             Response response = new ResponseBuilder()
                     .headers(new HashMap<>())
                     .cookies(request.getCookies())
@@ -67,8 +70,10 @@ public class ServletGateway {
 
         } catch (IOException | ServletException e) {
             logger.error(e.getMessage(), e);
+            containerResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            containerResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 

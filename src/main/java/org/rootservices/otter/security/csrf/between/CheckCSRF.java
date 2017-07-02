@@ -10,6 +10,7 @@ import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 
 import java.util.List;
+import java.util.Optional;
 
 public class CheckCSRF implements Between {
     private String cookieName;
@@ -39,7 +40,10 @@ public class CheckCSRF implements Between {
 
         if(!ok) {
             response.setStatusCode(StatusCode.FORBIDDEN);
+        } else {
+            request.setCsrfChallenge(Optional.of(formValue.get(0)));
         }
+
         return ok;
     }
 
