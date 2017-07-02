@@ -2,11 +2,13 @@ package org.rootservices.otter.gateway.servlet.translator;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.QueryStringToMap;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.router.entity.Method;
+import suite.UnitTest;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,6 +21,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
+@Category(UnitTest.class)
 public class HttpServletRequestTranslatorTest {
     @Mock
     private HttpServletRequestCookieTranslator mockHttpServletCookieTranslator;
@@ -72,6 +75,7 @@ public class HttpServletRequestTranslatorTest {
         assertThat(actual.getMatcher().isPresent(), is(false));
         assertThat(actual.getFormData(), is(notNullValue()));
         assertThat(actual.getFormData().size(), is(0));
+        assertThat(actual.getCsrfChallenge().isPresent(), is(false));
     }
 
     @Test
@@ -113,6 +117,7 @@ public class HttpServletRequestTranslatorTest {
         assertThat(actual.getFormData(), is(notNullValue()));
         assertThat(actual.getFormData().size(), is(1));
         assertThat(actual.getFormData().get("form-field"), is("form-value"));
+        assertThat(actual.getCsrfChallenge().isPresent(), is(false));
     }
 
 

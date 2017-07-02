@@ -3,13 +3,16 @@ package org.rootservices.otter.router;
 import helper.entity.FakeResource;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.rootservices.otter.router.entity.Route;
+import suite.UnitTest;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 
+@Category(UnitTest.class)
 public class RouteBuilderTest {
     private RouteBuilder subject;
 

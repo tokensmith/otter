@@ -2,6 +2,8 @@ package org.rootservices.otter.gateway.servlet.translator;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import suite.UnitTest;
 
 import javax.servlet.http.Cookie;
 
@@ -10,6 +12,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 
+@Category(UnitTest.class)
 public class HttpServletRequestCookieTranslatorTest {
     private HttpServletRequestCookieTranslator subject;
 

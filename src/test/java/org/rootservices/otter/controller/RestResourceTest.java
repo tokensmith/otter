@@ -6,6 +6,7 @@ import helper.entity.Dummy;
 import helper.entity.FakeRestResource;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.entity.Request;
@@ -13,6 +14,7 @@ import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.exception.*;
+import suite.UnitTest;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -27,6 +29,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 
+@Category(UnitTest.class)
 public class RestResourceTest {
     @Mock
     private JsonTranslator<Dummy> mockJsonTranslator;

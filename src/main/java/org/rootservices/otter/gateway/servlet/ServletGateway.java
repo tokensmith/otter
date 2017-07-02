@@ -3,6 +3,7 @@ package org.rootservices.otter.gateway.servlet;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.eclipse.jetty.jsp.JettyJspServlet;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.builder.ResponseBuilder;
@@ -23,6 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ServletGateway {
     protected static Logger logger = LogManager.getLogger(ServletGateway.class);
@@ -35,19 +38,19 @@ public class ServletGateway {
     private Between checkCSRF;
     private Route notFoundRoute;
 
-
     public ServletGateway(HttpServletRequestTranslator httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger httpServletResponseMerger, Engine engine, Between prepareCSRF, Between checkCSRF) {
         this.httpServletRequestTranslator = httpServletRequestTranslator;
         this.httpServletRequestMerger = httpServletRequestMerger;
         this.httpServletResponseMerger = httpServletResponseMerger;
         this.engine = engine;
-        this.checkCSRF = checkCSRF;
         this.prepareCSRF = prepareCSRF;
+        this.checkCSRF = checkCSRF;
     }
 
     public void processRequest(HttpServletRequest containerRequest, HttpServletResponse containerResponse) {
         try {
             Request request = httpServletRequestTranslator.from(containerRequest);
+
             Response response = new ResponseBuilder()
                     .headers(new HashMap<>())
                     .cookies(request.getCookies())

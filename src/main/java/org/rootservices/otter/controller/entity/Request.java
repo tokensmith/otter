@@ -20,10 +20,11 @@ public class Request {
     private Map<String, List<String>> queryParams;
     private Map<String, String> formData;
     private BufferedReader body;
+    private Optional<String> csrfChallenge;
 
     public Request() {}
 
-    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, Optional<AuthScheme> authScheme, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, String> formData, BufferedReader body) {
+    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, Optional<AuthScheme> authScheme, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, String> formData, BufferedReader body, Optional<String> csrfChallenge) {
         this.matcher = matcher;
         this.method = method;
         this.pathWithParams = pathWithParams;
@@ -33,6 +34,7 @@ public class Request {
         this.queryParams = queryParams;
         this.formData = formData;
         this.body = body;
+        this.csrfChallenge = csrfChallenge;
     }
 
     public Optional<Matcher> getMatcher() {
@@ -105,5 +107,13 @@ public class Request {
 
     public void setBody(BufferedReader body) {
         this.body = body;
+    }
+
+    public Optional<String> getCsrfChallenge() {
+        return csrfChallenge;
+    }
+
+    public void setCsrfChallenge(Optional<String> csrfChallenge) {
+        this.csrfChallenge = csrfChallenge;
     }
 }

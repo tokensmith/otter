@@ -3,6 +3,7 @@ package org.rootservices.otter.security.csrf.between;
 import helper.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.entity.Cookie;
@@ -11,12 +12,14 @@ import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
+import suite.UnitTest;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 
+@Category(UnitTest.class)
 public class CheckCSRFTest {
     private static String COOKIE_NAME = "CSRF";
     private static String FORM_FIELD_NAME = "CSRF";

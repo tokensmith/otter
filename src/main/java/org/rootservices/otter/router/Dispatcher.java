@@ -11,6 +11,8 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 
 public class Dispatcher {
+    private static String OTTER_PREFIX = "/app";
+    private static String EMPTY = "";
     private List<Route> get = new ArrayList<>();
     private List<Route> post = new ArrayList<>();
     private List<Route> put = new ArrayList<>();
@@ -23,9 +25,11 @@ public class Dispatcher {
 
 
     public Optional<MatchedRoute> find(Method method, String url) {
+        // this allows urls to resources to not have the otter prefix, /app
+        String scrubbedUrl = url.replaceAll(OTTER_PREFIX, EMPTY);
 
         for(Route route: routes(method)) {
-            Matcher matcher = route.getPattern().matcher(url);
+            Matcher matcher = route.getPattern().matcher(scrubbedUrl);
             if (matcher.matches()) {
                 Optional<MatchedRoute> m = Optional.of(new MatchedRoute(matcher, route));
                 return m;
