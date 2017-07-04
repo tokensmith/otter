@@ -30,37 +30,41 @@ public class OtterEntryServlet extends HttpServlet {
     }
 
     public void doAsync(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        AsyncContext context = request.startAsync();
-
-        // context.addListener(new OtterAsyncListener(servletGateway));
+        AsyncContext context = request.startAsync(request, response);
+        ServletContext sc = context.getRequest().getServletContext();
+        context.dispatch(sc,"/WEB-INF/jsp/hello.jsp");
+        context.complete();
+        return;
+        /**
         ServletInputStream input = request.getInputStream();
-        ReadListener readListener = new ReadListenerImpl(servletGateway, input, request, response, context);
+        ReadListener readListener = new ReadListenerImpl(servletGateway, input, context);
         input.setReadListener(readListener);
+         */
     }
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        servletGateway.processRequest(req, resp);
+        doAsync(req, resp);
     }
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        servletGateway.processRequest(req, resp);
+        doAsync(req, resp);
     }
 
     @Override
     public void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        servletGateway.processRequest(req, resp);
+        doAsync(req, resp);
     }
 
     @Override
     public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        servletGateway.processRequest(req, resp);
+        doAsync(req, resp);
     }
 
     @Override
     protected void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        servletGateway.processRequest(req, resp);
+        doAsync(req, resp);
     }
 
 }

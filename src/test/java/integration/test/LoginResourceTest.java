@@ -40,7 +40,7 @@ public class LoginResourceTest {
     }
 
     @Test
-    public void getShouldReturn404() throws Exception {
+    public void getShouldReturn200() throws Exception {
         String loginURI = BASE_URI.toString() + "login";
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()

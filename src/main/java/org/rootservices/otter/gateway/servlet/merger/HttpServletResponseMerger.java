@@ -34,9 +34,9 @@ public class HttpServletResponseMerger {
 
         // BLOCKING - needs to move to write listener.
         // structured data.. json
-        if(response.getPayload().isPresent()) {
-            containerResponse.getOutputStream().write(response.getPayload().get().toByteArray());
-        }
+        // if(response.getPayload().isPresent()) {
+        //    containerResponse.getOutputStream().write(response.getPayload().get().toByteArray());
+        //}
 
         return containerResponse;
     }

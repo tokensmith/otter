@@ -122,7 +122,7 @@ public class HttpServletResponseMergerTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void mergeWhenPayloadShouldX() throws Exception {
+    public void mergeWhenPayloadShouldNotWritePayload() throws Exception {
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
         Cookie[] containerCookies = new Cookie[0];
         Response response = FixtureFactory.makeResponse();
@@ -135,8 +135,8 @@ public class HttpServletResponseMergerTest {
 
         subject.merge(mockContainerResponse, containerCookies, response);
 
-        // indicates json was set in response.
-        verify(mockServletOutputStream).write(payload.get().toByteArray());
+        // indicates json was not set in response.
+        verify(mockServletOutputStream, never()).write(payload.get().toByteArray());
     }
 
 }

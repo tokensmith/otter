@@ -8,7 +8,7 @@ import org.junit.experimental.categories.Category;
 import org.rootservices.otter.controller.entity.Response;
 import suite.UnitTest;
 
-import javax.servlet.RequestDispatcher;
+import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,6 +30,7 @@ public class HttpServletRequestMergerTest {
 
     @Test
     public void mergePresenterAndTemplateArePresent() throws Exception {
+        AsyncContext mockAsyncContext = mock(AsyncContext.class);
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
         Response response = FixtureFactory.makeResponse();
@@ -37,30 +38,25 @@ public class HttpServletRequestMergerTest {
         response.setPresenter(Optional.of(new FakePresenter()));
         response.setTemplate(Optional.of("path/to/template.jsp"));
 
-        RequestDispatcher mockRequestDispatcher = mock(RequestDispatcher.class);
-        when(mockContainerRequest.getRequestDispatcher(response.getTemplate().get())).thenReturn(mockRequestDispatcher);
-
-        subject.merge(mockContainerRequest, mockContainerResponse, response);
+        subject.merge(mockAsyncContext, mockContainerRequest, response);
 
         verify(mockContainerRequest).setAttribute(subject.getPresenterAttr(), response.getPresenter().get());
-        verify(mockContainerRequest).getRequestDispatcher(response.getTemplate().get());
-        verify(mockRequestDispatcher).forward(mockContainerRequest, mockContainerResponse);
     }
 
 
 
     @Test
     public void mergePresenterAndTemplateAreNotPresent() throws Exception {
+        AsyncContext mockAsyncContext = mock(AsyncContext.class);
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
-        HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
         Response response = FixtureFactory.makeResponse();
 
         response.setPresenter(Optional.empty());
         response.setTemplate(Optional.empty());
 
-        subject.merge(mockContainerRequest, mockContainerResponse, response);
+        subject.merge(mockAsyncContext, mockContainerRequest, response);
 
         verify(mockContainerRequest, never()).setAttribute(eq(subject.getPresenterAttr()), any(String.class));
-        verify(mockContainerRequest, never()).getRequestDispatcher(any(String.class));
+
     }
 }

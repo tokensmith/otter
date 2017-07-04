@@ -11,4 +11,9 @@
         <location>/notFound</location>
     </error-page>
 
+    <servlet id="jsp">
+        <servlet-name>jsp</servlet-name>
+        <async-supported>true</async-supported>
+    </servlet>
+
 </web-app>

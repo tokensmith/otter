@@ -9,7 +9,9 @@ import javax.servlet.AsyncContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 
 public class WriteListenerImpl implements WriteListener {
@@ -26,9 +28,16 @@ public class WriteListenerImpl implements WriteListener {
 
     @Override
     public void onWritePossible() throws IOException {
+        int i = 0;
         while (queue.peek() != null && output.isReady()) {
-            String data = (String) queue.poll();
-            output.print(data);
+            byte[] data = (byte[]) queue.poll();
+            output.write(data, i, data.length);
+
+            if(i==0) {
+                i++;
+            }
+
+            i=(i*data.length)+1;
         }
         if (queue.peek() == null) {
             context.complete();
