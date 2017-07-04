@@ -11,11 +11,8 @@ import java.io.IOException;
 
 public class OtterAsyncListener implements AsyncListener {
     protected static Logger logger = LogManager.getLogger(OtterAsyncListener.class);
-    private ServletGateway servletGateway;
 
-    public OtterAsyncListener(ServletGateway servletGateway) {
-        this.servletGateway = servletGateway;
-    }
+    public OtterAsyncListener() {}
 
     @Override
     public void onComplete(AsyncEvent event) throws IOException {

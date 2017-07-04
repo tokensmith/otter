@@ -6,6 +6,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.otter.config.AppFactory;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
+import org.rootservices.otter.servlet.async.OtterAsyncListener;
 import org.rootservices.otter.servlet.async.ReadListenerImpl;
 
 
@@ -31,8 +32,11 @@ public class OtterEntryServlet extends HttpServlet {
 
     public void doAsync(HttpServletRequest request, HttpServletResponse response) throws IOException {
         AsyncContext context = request.startAsync(request, response);
+        AsyncListener asyncListener = new OtterAsyncListener();
+        context.addListener(asyncListener);
+
         ServletContext sc = context.getRequest().getServletContext();
-        context.dispatch(sc,"/WEB-INF/jsp/hello.jsp");
+        context.dispatch(sc,"../../WEB-INF/jsp/hello.jsp");
         context.complete();
         return;
         /**
