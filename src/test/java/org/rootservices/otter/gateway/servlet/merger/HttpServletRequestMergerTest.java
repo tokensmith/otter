@@ -30,15 +30,13 @@ public class HttpServletRequestMergerTest {
 
     @Test
     public void mergePresenterAndTemplateArePresent() throws Exception {
-        AsyncContext mockAsyncContext = mock(AsyncContext.class);
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
-        HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
         Response response = FixtureFactory.makeResponse();
 
         response.setPresenter(Optional.of(new FakePresenter()));
         response.setTemplate(Optional.of("path/to/template.jsp"));
 
-        subject.merge(mockAsyncContext, mockContainerRequest, response);
+        subject.merge(mockContainerRequest, response);
 
         verify(mockContainerRequest).setAttribute(subject.getPresenterAttr(), response.getPresenter().get());
     }
@@ -47,14 +45,13 @@ public class HttpServletRequestMergerTest {
 
     @Test
     public void mergePresenterAndTemplateAreNotPresent() throws Exception {
-        AsyncContext mockAsyncContext = mock(AsyncContext.class);
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         Response response = FixtureFactory.makeResponse();
 
         response.setPresenter(Optional.empty());
         response.setTemplate(Optional.empty());
 
-        subject.merge(mockAsyncContext, mockContainerRequest, response);
+        subject.merge(mockContainerRequest, response);
 
         verify(mockContainerRequest, never()).setAttribute(eq(subject.getPresenterAttr()), any(String.class));
 

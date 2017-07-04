@@ -29,6 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -74,9 +76,9 @@ public class ServletGatewayTest {
 
     @Test
     public void processRequestResourceFoundShouldBeOk() throws Exception {
-        AsyncContext mockAsyncContext = mock(AsyncContext.class);
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
+        Queue in = new LinkedBlockingQueue();
 
         Request request = new Request();
 
@@ -85,13 +87,13 @@ public class ServletGatewayTest {
         Optional<Response> resourceResponse = Optional.of(FixtureFactory.makeResponse());
         when(mockEngine.route(eq(request), any(Response.class))).thenReturn(resourceResponse);
 
-        subject.processRequest(mockAsyncContext, mockContainerRequest, mockContainerResponse);
+        subject.processRequest(mockContainerRequest, mockContainerResponse, in);
 
         // should never call the not found resource.
         verify(mockEngine, never()).executeResourceMethod(any(Route.class), any(Request.class), any(Response.class));
 
         verify(mockHttpServletResponseMerger).merge(mockContainerResponse, null, resourceResponse.get());
-        verify(mockHttpServletRequestMerger).merge(mockAsyncContext, mockContainerRequest, resourceResponse.get());
+        verify(mockHttpServletRequestMerger).merge(mockContainerRequest, resourceResponse.get());
     }
 
     @Test
@@ -99,7 +101,7 @@ public class ServletGatewayTest {
         Route notFoundRoute = FixtureFactory.makeRoute("");
         subject.setNotFoundRoute(notFoundRoute);
 
-        AsyncContext mockAsyncContext = mock(AsyncContext.class);
+        Queue in = new LinkedBlockingQueue();
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
 
@@ -118,7 +120,7 @@ public class ServletGatewayTest {
                 any(Response.class)
         )).thenReturn(resourceResponse);
 
-        subject.processRequest(mockAsyncContext, mockContainerRequest, mockContainerResponse);
+        subject.processRequest(mockContainerRequest, mockContainerResponse, in);
 
         // should call the not found resource.
         verify(mockEngine).executeResourceMethod(
@@ -128,7 +130,7 @@ public class ServletGatewayTest {
         );
 
         verify(mockHttpServletResponseMerger).merge(mockContainerResponse, null, resourceResponse);
-        verify(mockHttpServletRequestMerger).merge(mockAsyncContext, mockContainerRequest, resourceResponse);
+        verify(mockHttpServletRequestMerger).merge(mockContainerRequest, resourceResponse);
 
     }
 

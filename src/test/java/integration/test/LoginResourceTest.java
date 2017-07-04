@@ -80,7 +80,7 @@ public class LoginResourceTest {
     }
 
     @Test
-    public void postShouldReturn404() throws Exception {
+    public void postShouldReturn200() throws Exception {
         String loginURI = BASE_URI.toString() + "login";
 
         AsyncHttpClient httpClient = IntegrationTestSuite.getHttpClient();

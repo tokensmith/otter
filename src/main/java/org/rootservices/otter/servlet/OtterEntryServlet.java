@@ -35,15 +35,10 @@ public class OtterEntryServlet extends HttpServlet {
         AsyncListener asyncListener = new OtterAsyncListener();
         context.addListener(asyncListener);
 
-        ServletContext sc = context.getRequest().getServletContext();
-        context.dispatch(sc,"../../WEB-INF/jsp/hello.jsp");
-        context.complete();
-        return;
-        /**
         ServletInputStream input = request.getInputStream();
         ReadListener readListener = new ReadListenerImpl(servletGateway, input, context);
         input.setReadListener(readListener);
-         */
+
     }
 
     @Override

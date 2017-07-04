@@ -47,8 +47,8 @@ public class ServletGateway {
         this.checkCSRF = checkCSRF;
     }
 
-    public Optional<byte[]> processRequest(AsyncContext asyncContext, HttpServletRequest containerRequest, HttpServletResponse containerResponse) {
-        Optional<byte[]> payload = Optional.empty();
+    public GatewayResponse processRequest(HttpServletRequest containerRequest, HttpServletResponse containerResponse, Queue in) {
+        GatewayResponse gatewayResponse = new GatewayResponse();
         try {
             Request request = httpServletRequestTranslator.from(containerRequest);
 
@@ -67,11 +67,15 @@ public class ServletGateway {
             }
 
             httpServletResponseMerger.merge(containerResponse, containerRequest.getCookies(), resourceResponse.get());
-            httpServletRequestMerger.merge(asyncContext, containerRequest, resourceResponse.get());
+            httpServletRequestMerger.merge(containerRequest, resourceResponse.get());
+
 
             if (resourceResponse.get().getPayload().isPresent()) {
-                payload = Optional.of(resourceResponse.get().getPayload().get().toByteArray());
+                gatewayResponse.setPayload(Optional.of(resourceResponse.get().getPayload().get().toByteArray()));
+            } else {
+                gatewayResponse.setPayload(Optional.empty());
             }
+            gatewayResponse.setTemplate(response.getTemplate());
 
         } catch (IOException | ServletException e) {
             logger.error(e.getMessage(), e);
@@ -80,7 +84,7 @@ public class ServletGateway {
             logger.error(e.getMessage(), e);
             containerResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
-        return payload;
+        return gatewayResponse;
     }
 
     public void get(String path, Resource resource) {

@@ -3,6 +3,7 @@ package org.rootservices.otter.servlet.async;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.rootservices.otter.gateway.servlet.GatewayResponse;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
 
 import javax.servlet.*;
@@ -10,16 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-/**
- * https://webtide.com/servlet-3-1-async-io-and-jetty/
- * http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/HTML5andServlet31/HTML5andServlet%203.1.html#section3
- * https://www.youtube.com/watch?v=uGXsnB2S_vc
- * https://www.youtube.com/watch?v=j1VjAHTxCBo&t=8s
- */
+
 public class ReadListenerImpl implements ReadListener {
     protected static Logger logger = LogManager.getLogger(ReadListenerImpl.class);
     private ServletGateway servletGateway;
@@ -49,18 +44,17 @@ public class ReadListenerImpl implements ReadListener {
     public void onAllDataRead() throws IOException {
         HttpServletRequest request = (HttpServletRequest) ac.getRequest();
         HttpServletResponse response = (HttpServletResponse) ac.getResponse();
-        Optional<byte[]> payload = servletGateway.processRequest(ac, request, response);
+        GatewayResponse gatewayResponse = servletGateway.processRequest(request, response, queue);
 
-        if (payload.isPresent()) {
-            Queue out = byteArrayToQueue(payload.get(), 1024);
+        if (gatewayResponse.getPayload().isPresent()) {
+            // its a API .. json
+            Queue out = byteArrayToQueue(gatewayResponse.getPayload().get(), 1024);
             ServletOutputStream output = response.getOutputStream();
             WriteListener writeListener = new WriteListenerImpl(output, out, ac);
             output.setWriteListener(writeListener);
         } else {
-            Queue out = new LinkedBlockingQueue();
-            ServletOutputStream output = response.getOutputStream();
-            WriteListener writeListener = new WriteListenerImpl(output, out, ac);
-            output.setWriteListener(writeListener);
+            // its a jsp.. dispatch to it.
+            ac.dispatch(request.getServletContext(), gatewayResponse.getTemplate().get());
         }
     }
 
