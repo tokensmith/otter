@@ -47,10 +47,10 @@ public class ServletGateway {
         this.checkCSRF = checkCSRF;
     }
 
-    public GatewayResponse processRequest(HttpServletRequest containerRequest, HttpServletResponse containerResponse, Queue in) {
+    public GatewayResponse processRequest(HttpServletRequest containerRequest, HttpServletResponse containerResponse, String body) {
         GatewayResponse gatewayResponse = new GatewayResponse();
         try {
-            Request request = httpServletRequestTranslator.from(containerRequest);
+            Request request = httpServletRequestTranslator.from(containerRequest, body);
 
             Response response = new ResponseBuilder()
                     .headers(new HashMap<>())

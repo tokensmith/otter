@@ -101,12 +101,11 @@ public class RequestBuilderTest {
 
     @Test
     public void buildWhenPayloadShouldBeOk() {
-        String json = "{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}";
-        Optional<BufferedReader> payload = FixtureFactory.payload(json);
+        Optional<String> json = Optional.of("{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}");
 
-        Request actual = subject.payload(payload).build();
+        Request actual = subject.body(json).build();
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getPayload(), is(payload));
+        assertThat(actual.getBody(), is(json));
     }
 }

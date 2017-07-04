@@ -44,7 +44,8 @@ public class ReadListenerImpl implements ReadListener {
     public void onAllDataRead() throws IOException {
         HttpServletRequest request = (HttpServletRequest) ac.getRequest();
         HttpServletResponse response = (HttpServletResponse) ac.getResponse();
-        GatewayResponse gatewayResponse = servletGateway.processRequest(request, response, queue);
+        String body = queueToString(queue);
+        GatewayResponse gatewayResponse = servletGateway.processRequest(request, response, body);
 
         if (gatewayResponse.getPayload().isPresent()) {
             // its a API .. json
@@ -56,6 +57,15 @@ public class ReadListenerImpl implements ReadListener {
             // its a jsp.. dispatch to it.
             ac.dispatch(request.getServletContext(), gatewayResponse.getTemplate().get());
         }
+    }
+
+    public String queueToString(Queue queue) {
+        StringBuilder sb = new StringBuilder();
+        while (queue.peek() != null) {
+            String data = (String) queue.poll();
+            sb.append(data);
+        }
+        return sb.toString();
     }
 
     @Override

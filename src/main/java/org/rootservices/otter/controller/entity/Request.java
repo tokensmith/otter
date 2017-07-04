@@ -3,7 +3,7 @@ package org.rootservices.otter.controller.entity;
 
 import org.rootservices.otter.router.entity.Method;
 
-import java.io.BufferedReader;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,12 +17,12 @@ public class Request {
     private Map<String, Cookie> cookies;
     private Map<String, List<String>> queryParams;
     private Map<String, List<String>> formData;
-    private Optional<BufferedReader> payload;
+    private Optional<String> body;
     private Optional<String> csrfChallenge;
 
     public Request() {}
 
-    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<BufferedReader> payload, Optional<String> csrfChallenge) {
+    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<String> body, Optional<String> csrfChallenge) {
         this.matcher = matcher;
         this.method = method;
         this.pathWithParams = pathWithParams;
@@ -30,7 +30,7 @@ public class Request {
         this.cookies = cookies;
         this.queryParams = queryParams;
         this.formData = formData;
-        this.payload = payload;
+        this.body = body;
         this.csrfChallenge = csrfChallenge;
     }
 
@@ -90,12 +90,12 @@ public class Request {
         this.formData = formData;
     }
 
-    public Optional<BufferedReader> getPayload() {
-        return payload;
+    public Optional<String> getBody() {
+        return body;
     }
 
-    public void setPayload(Optional<BufferedReader> payload) {
-        this.payload = payload;
+    public void setBody(Optional<String> body) {
+        this.body = body;
     }
 
     public Optional<String> getCsrfChallenge() {

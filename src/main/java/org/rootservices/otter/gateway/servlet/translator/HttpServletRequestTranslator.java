@@ -30,7 +30,7 @@ public class HttpServletRequestTranslator {
         this.queryStringToMap = queryStringToMap;
     }
 
-    public Request from(HttpServletRequest containerRequest) throws IOException {
+    public Request from(HttpServletRequest containerRequest, String containerBody) throws IOException {
 
         Method method = Method.valueOf(containerRequest.getMethod());
 
@@ -54,14 +54,12 @@ public class HttpServletRequestTranslator {
 
         Map<String, List<String>> formData = new HashMap<>();
         if (method == Method.POST && ContentType.FORM_URL_ENCODED.getValue().equals(containerRequest.getContentType())) {
-            // Might be blocking.. getParameterMap()
-            formData = getFormData(containerRequest.getParameterMap(), queryParams);
+            formData = queryStringToMap.run(Optional.of(containerBody));
         }
 
-        Optional<BufferedReader> payload = Optional.empty();
+        Optional<String> body = Optional.empty();
         if (method == Method.POST && !ContentType.FORM_URL_ENCODED.getValue().equals(containerRequest.getContentType())) {
-            // Might be blocking.. getReader()
-            payload = Optional.of(containerRequest.getReader());
+            body = Optional.of(containerBody);
         }
 
         return new RequestBuilder()
@@ -72,7 +70,7 @@ public class HttpServletRequestTranslator {
                 .headers(headers)
                 .queryParams(queryParams)
                 .formData(formData)
-                .payload(payload)
+                .body(body)
                 .csrfChallenge(Optional.empty())
                 .build();
     }
@@ -85,41 +83,5 @@ public class HttpServletRequestTranslator {
             queryStringForUrl = EMPTY;
         }
         return queryStringForUrl;
-    }
-
-    protected Map<String, List<String>> getFormData(Map<String, String[]> containerParameters, Map<String, List<String>> queryParams) {
-        Map<String, List<String>> formData = new HashMap<>();
-
-        for (Map.Entry<String, String[]> formElement: containerParameters.entrySet()) {
-            List<String> queryValues = queryParams.get(formElement.getKey());
-
-            // no collision between query keys and form keys
-            if(queryValues == null) {
-                if (formData.get(formElement.getKey()) == null) {
-                    List<String> values = new ArrayList<>();
-                    formData.put(formElement.getKey(), values);
-                }
-                formData.get(formElement.getKey()).addAll(Arrays.asList(formElement.getValue()));
-            } else {
-                // collision - there is a matching key in the query params
-                if (formData.get(formElement.getKey()) == null) {
-                    List<String> values = new ArrayList<>();
-                    formData.put(formElement.getKey(), values);
-                }
-                formData.get(formElement.getKey()).addAll(Arrays.asList(formElement.getValue()));
-
-                // remove the values that were from the query params
-                for(String queryValue: queryValues) {
-                    formData.get(formElement.getKey()).remove(queryValue);
-                }
-
-                // were all the values from the query params? if yes, remove it from formData
-                if(formData.get(formElement.getKey()).size() == 0) {
-                    formData.remove(formElement.getKey());
-                }
-            }
-        }
-
-        return formData;
     }
 }

@@ -155,10 +155,6 @@ public class FixtureFactory {
         return jsonWebToken;
     }
 
-    public static BufferedReader json(String value) {
-        StringReader sr = new StringReader(value);
-        return new BufferedReader(sr);
-    }
 
     public static Optional<BufferedReader> payload(String value) {
         StringReader sr = new StringReader(value);
