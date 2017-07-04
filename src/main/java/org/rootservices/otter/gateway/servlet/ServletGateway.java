@@ -47,9 +47,10 @@ public class ServletGateway {
         this.checkCSRF = checkCSRF;
     }
 
-    public void processRequest(HttpServletRequest containerRequest, HttpServletResponse containerResponse) {
+    public GatewayResponse processRequest(HttpServletRequest containerRequest, HttpServletResponse containerResponse, String body) {
+        GatewayResponse gatewayResponse = new GatewayResponse();
         try {
-            Request request = httpServletRequestTranslator.from(containerRequest);
+            Request request = httpServletRequestTranslator.from(containerRequest, body);
 
             Response response = new ResponseBuilder()
                     .headers(new HashMap<>())
@@ -66,7 +67,15 @@ public class ServletGateway {
             }
 
             httpServletResponseMerger.merge(containerResponse, containerRequest.getCookies(), resourceResponse.get());
-            httpServletRequestMerger.merge(containerRequest, containerResponse, resourceResponse.get());
+            httpServletRequestMerger.merge(containerRequest, resourceResponse.get());
+
+
+            if (resourceResponse.get().getPayload().isPresent()) {
+                gatewayResponse.setPayload(Optional.of(resourceResponse.get().getPayload().get().toByteArray()));
+            } else {
+                gatewayResponse.setPayload(Optional.empty());
+            }
+            gatewayResponse.setTemplate(response.getTemplate());
 
         } catch (IOException | ServletException e) {
             logger.error(e.getMessage(), e);
@@ -75,6 +84,7 @@ public class ServletGateway {
             logger.error(e.getMessage(), e);
             containerResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
+        return gatewayResponse;
     }
 
     public void get(String path, Resource resource) {

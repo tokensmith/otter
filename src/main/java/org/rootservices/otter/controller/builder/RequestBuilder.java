@@ -19,7 +19,7 @@ public class RequestBuilder {
     private Map<String, Cookie> cookies;
     private Map<String, List<String>> queryParams;
     private Map<String, List<String>> formData;
-    private Optional<BufferedReader> payload;
+    private Optional<String> body;
     private Optional<String> csrfChallenge;
 
     public RequestBuilder matcher(Optional<Matcher> matcher) {
@@ -57,8 +57,8 @@ public class RequestBuilder {
         return this;
     }
 
-    public RequestBuilder payload(Optional<BufferedReader> payload) {
-        this.payload = payload;
+    public RequestBuilder body(Optional<String> body) {
+        this.body = body;
         return this;
     }
 
@@ -68,6 +68,6 @@ public class RequestBuilder {
     }
 
     public Request build() {
-        return new Request(this.matcher, this.method, this.pathWithParams, this.headers, this.cookies, this.queryParams, this.formData, this.payload, this.csrfChallenge);
+        return new Request(this.matcher, this.method, this.pathWithParams, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge);
     }
 }

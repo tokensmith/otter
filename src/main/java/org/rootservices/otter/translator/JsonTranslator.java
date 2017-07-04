@@ -40,7 +40,7 @@ public class JsonTranslator<T extends Translatable> {
      * @throws UnknownKeyException a key was not expected
      * @throws InvalidValueException key value was incorrect for it's type
      */
-    public T from(BufferedReader json, Class<? extends Translatable> clazz) throws InvalidPayloadException, DuplicateKeyException, UnknownKeyException, InvalidValueException {
+    public T from(String json, Class<? extends Translatable> clazz) throws InvalidPayloadException, DuplicateKeyException, UnknownKeyException, InvalidValueException {
         T entity = null;
 
         try {

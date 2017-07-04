@@ -22,12 +22,15 @@ import org.rootservices.otter.security.csrf.between.CheckCSRF;
 import org.rootservices.otter.security.csrf.between.PrepareCSRF;
 import suite.UnitTest;
 
+import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -75,21 +78,22 @@ public class ServletGatewayTest {
     public void processRequestResourceFoundShouldBeOk() throws Exception {
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
+        String body = null;
 
         Request request = new Request();
 
-        when(mockHttpServletRequestTranslator.from(mockContainerRequest))
+        when(mockHttpServletRequestTranslator.from(mockContainerRequest, body))
                 .thenReturn(request);
         Optional<Response> resourceResponse = Optional.of(FixtureFactory.makeResponse());
         when(mockEngine.route(eq(request), any(Response.class))).thenReturn(resourceResponse);
 
-        subject.processRequest(mockContainerRequest, mockContainerResponse);
+        subject.processRequest(mockContainerRequest, mockContainerResponse, body);
 
         // should never call the not found resource.
         verify(mockEngine, never()).executeResourceMethod(any(Route.class), any(Request.class), any(Response.class));
 
         verify(mockHttpServletResponseMerger).merge(mockContainerResponse, null, resourceResponse.get());
-        verify(mockHttpServletRequestMerger).merge(mockContainerRequest, mockContainerResponse, resourceResponse.get());
+        verify(mockHttpServletRequestMerger).merge(mockContainerRequest, resourceResponse.get());
     }
 
     @Test
@@ -99,10 +103,11 @@ public class ServletGatewayTest {
 
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
+        String body = null;
 
         Request request = new Request();
 
-        when(mockHttpServletRequestTranslator.from(mockContainerRequest))
+        when(mockHttpServletRequestTranslator.from(mockContainerRequest, body))
                 .thenReturn(request);
 
         // original engine call does NOT return a response.
@@ -115,7 +120,7 @@ public class ServletGatewayTest {
                 any(Response.class)
         )).thenReturn(resourceResponse);
 
-        subject.processRequest(mockContainerRequest, mockContainerResponse);
+        subject.processRequest(mockContainerRequest, mockContainerResponse, body);
 
         // should call the not found resource.
         verify(mockEngine).executeResourceMethod(
@@ -125,7 +130,7 @@ public class ServletGatewayTest {
         );
 
         verify(mockHttpServletResponseMerger).merge(mockContainerResponse, null, resourceResponse);
-        verify(mockHttpServletRequestMerger).merge(mockContainerRequest, mockContainerResponse, resourceResponse);
+        verify(mockHttpServletRequestMerger).merge(mockContainerRequest, resourceResponse);
 
     }
 

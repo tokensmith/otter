@@ -35,7 +35,7 @@ public class JsonTranslatorTest {
 
     @Test
     public void fromShouldBeOk() throws Exception {
-        BufferedReader json = FixtureFactory.json("{\"integer\": 5, \"string\": \"foo\", \"local_date\": \"2019-01-01\"}");
+        String json="{\"integer\": 5, \"string\": \"foo\", \"local_date\": \"2019-01-01\"}";
 
         Dummy actual = (Dummy) subject.from(json, Dummy.class);
 
@@ -47,7 +47,7 @@ public class JsonTranslatorTest {
 
     @Test
     public void fromShouldThrowDuplicateKeyException() throws Exception {
-        BufferedReader json = FixtureFactory.json("{\"integer\": 5, \"integer\": \"4\", \"local_date\": \"2019-01-01\"}");
+        String json = "{\"integer\": 5, \"integer\": \"4\", \"local_date\": \"2019-01-01\"}";
 
         DuplicateKeyException actual = null;
         try {
@@ -62,7 +62,7 @@ public class JsonTranslatorTest {
 
     @Test
     public void fromShouldThrowUnknownKeyException() throws Exception {
-        BufferedReader json = FixtureFactory.json("{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}");
+        String json = "{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}";
 
         UnknownKeyException actual = null;
         try {
@@ -77,7 +77,7 @@ public class JsonTranslatorTest {
 
     @Test
     public void fromShouldThrowInvalidValueException() throws Exception {
-        BufferedReader json = FixtureFactory.json("{\"integer\": \"not a integer\", \"string\": \"foo\", \"local_date\": \"2019-01-01\"}");
+        String json = "{\"integer\": \"not a integer\", \"string\": \"foo\", \"local_date\": \"2019-01-01\"}";
 
         InvalidValueException actual = null;
         try {
@@ -92,7 +92,7 @@ public class JsonTranslatorTest {
 
     @Test
     public void fromShouldThrowInvalidPayloadException() throws Exception {
-        BufferedReader json = FixtureFactory.json("{");
+        String json = "{";
 
         InvalidPayloadException actual = null;
         try {
