@@ -7,18 +7,16 @@ import com.ning.http.client.Param;
 import com.ning.http.client.Response;
 import com.ning.http.client.cookie.Cookie;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.rootservices.jwt.config.AppFactory;
 import org.rootservices.jwt.entity.jwt.JsonWebToken;
 import org.rootservices.jwt.serializer.JWTSerializer;
-import org.rootservices.jwt.serializer.exception.JsonToJwtException;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.security.csrf.CsrfClaims;
 import suite.IntegrationTestSuite;
 import suite.ServletContainerTest;
-import suite.UnitTest;
+
 
 import java.net.URI;
 import java.util.ArrayList;

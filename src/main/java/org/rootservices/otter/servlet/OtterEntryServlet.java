@@ -38,7 +38,6 @@ public class OtterEntryServlet extends HttpServlet {
         ServletInputStream input = request.getInputStream();
         ReadListener readListener = new ReadListenerImpl(servletGateway, input, context);
         input.setReadListener(readListener);
-
     }
 
     @Override

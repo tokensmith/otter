@@ -53,9 +53,12 @@ public class ReadListenerImpl implements ReadListener {
             ServletOutputStream output = response.getOutputStream();
             WriteListener writeListener = new WriteListenerImpl(output, out, ac);
             output.setWriteListener(writeListener);
-        } else {
+        } else if (gatewayResponse.getTemplate().isPresent()){
             // its a jsp.. dispatch to it.
             ac.dispatch(request.getServletContext(), gatewayResponse.getTemplate().get());
+        } else {
+            // probably the not found resource.
+            ac.complete();
         }
     }
 
@@ -74,13 +77,6 @@ public class ReadListenerImpl implements ReadListener {
         ac.complete();
     }
 
-    /**
-     * https://stackoverflow.com/questions/3405195/divide-array-into-smaller-parts
-     *
-     * @param source
-     * @param chunksize
-     * @return
-     */
     public Queue byteArrayToQueue(byte[] source, int chunksize) {
         Queue out = new LinkedBlockingQueue();
 

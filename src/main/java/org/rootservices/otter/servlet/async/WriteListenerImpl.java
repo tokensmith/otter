@@ -28,16 +28,10 @@ public class WriteListenerImpl implements WriteListener {
 
     @Override
     public void onWritePossible() throws IOException {
-        int i = 0;
+
         while (queue.peek() != null && output.isReady()) {
             byte[] data = (byte[]) queue.poll();
-            output.write(data, i, data.length);
-
-            if(i==0) {
-                i++;
-            }
-
-            i=(i*data.length)+1;
+            output.write(data, 0, data.length);
         }
         if (queue.peek() == null) {
             context.complete();
