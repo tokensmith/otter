@@ -2,6 +2,7 @@ package org.rootservices.otter.servlet.async;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.eclipse.jetty.server.AsyncContextEvent;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
 
 import javax.servlet.AsyncEvent;
@@ -16,22 +17,23 @@ public class OtterAsyncListener implements AsyncListener {
 
     @Override
     public void onComplete(AsyncEvent event) throws IOException {
-        logger.debug("Async Done");
+        logger.debug("Async Done: " + ((AsyncContextEvent) event).getPath());
     }
 
     @Override
     public void onError(AsyncEvent event) {
         Throwable t  = event.getThrowable();
-        logger.error(t.getMessage(), t);
+        String msg = "Error: " + ((AsyncContextEvent) event).getPath() + " " + t.getMessage();
+        logger.error(msg, t);
     }
 
     @Override
     public void onStartAsync(AsyncEvent event) {
-        logger.debug("Async Started");
+        logger.debug("Async Started: " + ((AsyncContextEvent) event).getPath());
     }
 
     @Override
     public void onTimeout(AsyncEvent event) {
-        logger.error("timeout");
+        logger.error("Async timeout: " + ((AsyncContextEvent) event).getPath());
     }
 }

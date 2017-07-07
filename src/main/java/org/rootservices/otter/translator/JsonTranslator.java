@@ -32,9 +32,9 @@ public class JsonTranslator<T extends Translatable> {
 
     /**
      * Translates json from T.
-     * @param json
-     * @param clazz
-     * @return and instance of T
+     * @param json json to marshal
+     * @param clazz the POJO that is returned.
+     * @return an instance of T
      * @throws InvalidPayloadException unpredicted error occurred
      * @throws DuplicateKeyException a key was repeated
      * @throws UnknownKeyException a key was not expected

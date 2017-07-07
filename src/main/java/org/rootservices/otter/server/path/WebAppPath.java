@@ -13,7 +13,7 @@ public class WebAppPath {
     /**
      * @param classURI location of a project's target/classes
      * @return a absolute file path to a project's target/classes
-     * @throws URISyntaxException
+     * @throws URISyntaxException if an issue occurred constructing the URI
      */
     public URI fromClassURI(URI classURI) throws URISyntaxException {
         return fromClassURI(classURI, DEFAULT_WEB_APP);
