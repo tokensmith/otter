@@ -3,6 +3,7 @@ package org.rootservices.otter.servlet.async;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.eclipse.jetty.server.AsyncContextEvent;
 
 
 import javax.servlet.AsyncContext;
