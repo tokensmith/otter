@@ -35,7 +35,7 @@ public class EngineTest {
     }
 
     @Test
-    public void routeWhenMethodIsGetShouldMatch() {
+    public void routeWhenMethodIsGetShouldMatch() throws Exception {
         String url = "foo";
         Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
@@ -60,7 +60,7 @@ public class EngineTest {
     }
 
     @Test
-    public void routeWhenMethodIsPostShouldMatch() {
+    public void routeWhenMethodIsPostShouldMatch() throws Exception {
         String url = "foo";
         Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
@@ -85,7 +85,7 @@ public class EngineTest {
     }
 
     @Test
-    public void routeWhenMethodIsPutShouldMatch() {
+    public void routeWhenMethodIsPutShouldMatch() throws Exception {
         String url = "foo";
         Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
@@ -110,7 +110,7 @@ public class EngineTest {
     }
 
     @Test
-    public void routeWhenMethodIsDeleteShouldMatch() {
+    public void routeWhenMethodIsDeleteShouldMatch() throws Exception {
         String url = "foo";
         Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
@@ -135,7 +135,7 @@ public class EngineTest {
     }
 
     @Test
-    public void routeWhenMethodIsConnectShouldMatch() {
+    public void routeWhenMethodIsConnectShouldMatch() throws Exception {
         String url = "foo";
         Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
@@ -160,7 +160,7 @@ public class EngineTest {
     }
 
     @Test
-    public void routeWhenMethodIsOptionsShouldMatch() {
+    public void routeWhenMethodIsOptionsShouldMatch() throws Exception {
         String url = "foo";
         Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
@@ -185,7 +185,7 @@ public class EngineTest {
     }
 
     @Test
-    public void routeWhenMethodIsTraceShouldMatch() {
+    public void routeWhenMethodIsTraceShouldMatch() throws Exception {
         String url = "foo";
         Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
@@ -210,7 +210,7 @@ public class EngineTest {
     }
 
     @Test
-    public void routeWhenMethodIsHeadShouldMatch() {
+    public void routeWhenMethodIsHeadShouldMatch() throws Exception {
         String url = "foo";
         Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
@@ -236,7 +236,7 @@ public class EngineTest {
 
 
     @Test
-    public void routeWhenGetAndNoMatchedRouteShouldBeEmptyResponse() {
+    public void routeWhenGetAndNoMatchedRouteShouldBeEmptyResponse() throws Exception {
         String url = "foo";
         Optional<MatchedRoute> match = Optional.empty();
 

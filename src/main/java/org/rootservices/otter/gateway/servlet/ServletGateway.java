@@ -15,6 +15,7 @@ import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.RouteBuilder;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Route;
+import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.security.csrf.between.CheckCSRF;
 import org.rootservices.otter.security.csrf.between.PrepareCSRF;
 
@@ -60,15 +61,25 @@ public class ServletGateway {
                     .template(Optional.empty())
                     .build();
 
-            Optional<Response> resourceResponse =  engine.route(request, response);
 
-            if (!resourceResponse.isPresent()) {
+            Boolean shouldHalt = false;
+            Optional<Response> resourceResponse;
+            try {
+                resourceResponse = engine.route(request, response);
+            } catch (HaltException e) {
+                // should not route to the notFoundRoute.
+                shouldHalt = true;
+                resourceResponse = Optional.of(response);
+                logger.debug(e.getMessage(), e);
+            }
+
+            // route to not found if it wasn't halted.
+            if (!shouldHalt && !resourceResponse.isPresent()) {
                 resourceResponse = Optional.of(engine.executeResourceMethod(notFoundRoute, request, response));
             }
 
             httpServletResponseMerger.merge(containerResponse, containerRequest.getCookies(), resourceResponse.get());
             httpServletRequestMerger.merge(containerRequest, resourceResponse.get());
-
 
             if (resourceResponse.get().getPayload().isPresent()) {
                 gatewayResponse.setPayload(Optional.of(resourceResponse.get().getPayload().get().toByteArray()));

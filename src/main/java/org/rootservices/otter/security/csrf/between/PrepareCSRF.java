@@ -7,6 +7,7 @@ import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Method;
+import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import org.rootservices.otter.security.csrf.exception.CsrfException;
 
@@ -32,7 +33,7 @@ public class PrepareCSRF implements Between {
     }
 
     @Override
-    public Boolean process(Method method, Request request, Response response) {
+    public void process(Method method, Request request, Response response) throws HaltException {
         if (response.getCookies().get(cookieName) == null) {
             String challengeToken = doubleSubmitCSRF.makeChallengeToken();
             try {
@@ -45,7 +46,6 @@ public class PrepareCSRF implements Between {
                 logger.error(e.getMessage(), e);
             }
         }
-        return true;
     }
 
     public String getCookieName() {

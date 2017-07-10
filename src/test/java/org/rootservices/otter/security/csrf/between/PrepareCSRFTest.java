@@ -44,10 +44,8 @@ public class PrepareCSRFTest {
         Request request = FixtureFactory.makeRequest();
         Response response = FixtureFactory.makeResponse();
 
-        Boolean actual = subject.process(Method.GET, request, response);
+        subject.process(Method.GET, request, response);
 
-        assertThat(actual, is(notNullValue()));
-        assertThat(actual, is(true));
         assertThat(response.getCookies().get(COOKIE_NAME), is(notNullValue()));
         assertThat(response.getCookies().get(COOKIE_NAME), is(cookie));
         assertThat(request.getCsrfChallenge().isPresent(), is(true));
@@ -68,10 +66,8 @@ public class PrepareCSRFTest {
         Response response = FixtureFactory.makeResponse();
         response.getCookies().put(COOKIE_NAME, cookie);
 
-        Boolean actual = subject.process(Method.GET, request, response);
+        subject.process(Method.GET, request, response);
 
-        assertThat(actual, is(notNullValue()));
-        assertThat(actual, is(true));
         assertThat(response.getCookies().get(COOKIE_NAME), is(notNullValue()));
         assertThat(response.getCookies().get(COOKIE_NAME), is(cookie));
 
@@ -90,10 +86,8 @@ public class PrepareCSRFTest {
         Request request = FixtureFactory.makeRequest();
         Response response = FixtureFactory.makeResponse();
 
-        Boolean actual = subject.process(Method.GET, request, response);
+        subject.process(Method.GET, request, response);
 
-        assertThat(actual, is(notNullValue()));
-        assertThat(actual, is(true));
         assertThat(response.getCookies().get(COOKIE_NAME), is(nullValue()));
 
         verify(mockDoubleSubmitCSRF).makeChallengeToken();
