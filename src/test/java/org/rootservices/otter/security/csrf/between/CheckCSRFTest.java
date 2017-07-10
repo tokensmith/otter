@@ -11,11 +11,15 @@ import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.router.entity.Method;
+import org.rootservices.otter.router.exception.CsrfException;
+import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import suite.UnitTest;
 
 import java.util.Arrays;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -36,7 +40,7 @@ public class CheckCSRFTest {
     }
 
     @Test
-    public void processShouldBeOK() {
+    public void processShouldBeOK() throws Exception {
         Request request = FixtureFactory.makeRequest();
         Response response = FixtureFactory.makeResponse();
 
@@ -47,15 +51,14 @@ public class CheckCSRFTest {
 
         when(mockDoubleSubmitCSRF.doTokensMatch(cookie.getValue(), challengeToken)).thenReturn(true);
 
-        Boolean actual = subject.process(Method.POST, request, response);
+        subject.process(Method.POST, request, response);
 
-        assertThat(actual, is(true));
         assertThat(request.getCsrfChallenge().isPresent(), is(true));
         assertThat(request.getCsrfChallenge().get(), is(challengeToken));
     }
 
     @Test
-    public void processWhenDontMatchShouldReturnFalse() {
+    public void processWhenDontMatchShouldReturnFalse() throws Exception {
         Request request = FixtureFactory.makeRequest();
         Response response = FixtureFactory.makeResponse();
 
@@ -65,14 +68,23 @@ public class CheckCSRFTest {
 
         when(mockDoubleSubmitCSRF.doTokensMatch(cookie.getValue(), "challenge-token")).thenReturn(false);
 
-        Boolean actual = subject.process(Method.POST, request, response);
+        HaltException actual = null;
+        try {
+            subject.process(Method.POST, request, response);
+        } catch (HaltException e) {
+            actual = e;
+        }
 
-        assertThat(actual, is(false));
         assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
+
+        assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual, instanceOf(CsrfException.class));
+
     }
 
     @Test
-    public void processWhenFormValueIsNullReturnFalse() {
+    public void processWhenFormValueIsNullReturnFalse() throws Exception {
         Request request = FixtureFactory.makeRequest();
         Response response = FixtureFactory.makeResponse();
 
@@ -80,20 +92,36 @@ public class CheckCSRFTest {
         request.getCookies().put(COOKIE_NAME, cookie);
         request.getFormData().put(FORM_FIELD_NAME, null);
 
-        Boolean actual = subject.process(Method.POST, request, response);
+        HaltException actual = null;
+        try {
+            subject.process(Method.POST, request, response);
+        } catch (HaltException e) {
+            actual = e;
+        }
 
-        assertThat(actual, is(false));
         assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
+        verify(mockDoubleSubmitCSRF, never()).doTokensMatch(anyString(), anyString());
+
+        assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual, instanceOf(CsrfException.class));
     }
 
     @Test
-    public void processWhenCookieIsMissingShouldReturnFalse() {
+    public void processWhenCookieIsMissingShouldReturnFalse() throws Exception {
         Request request = FixtureFactory.makeRequest();
         Response response = FixtureFactory.makeResponse();
 
-        Boolean actual = subject.process(Method.POST, request, response);
+        HaltException actual = null;
+        try {
+            subject.process(Method.POST, request, response);
+        } catch (HaltException e) {
+            actual = e;
+        }
 
-        assertThat(actual, is(false));
+        assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual, instanceOf(CsrfException.class));
 
         verify(mockDoubleSubmitCSRF, never()).doTokensMatch(anyString(), anyString());
     }

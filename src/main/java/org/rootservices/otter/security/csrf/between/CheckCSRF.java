@@ -5,8 +5,11 @@ import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Method;
+import org.rootservices.otter.router.exception.CsrfException;
+import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 
 import java.util.List;
@@ -16,6 +19,7 @@ public class CheckCSRF implements Between {
     private String cookieName;
     private String formFieldName;
     private DoubleSubmitCSRF doubleSubmitCSRF;
+    private static String HALT_MSG = "CSRF failed";
 
     public CheckCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
         this.doubleSubmitCSRF = doubleSubmitCSRF;
@@ -28,7 +32,7 @@ public class CheckCSRF implements Between {
     }
 
     @Override
-    public Boolean process(Method method, Request request, Response response) {
+    public void process(Method method, Request request, Response response) throws HaltException {
         Boolean ok;
         Cookie csrfCookie = request.getCookies().get(cookieName);
         List<String> formValue = request.getFormData().get(formFieldName);
@@ -40,11 +44,10 @@ public class CheckCSRF implements Between {
 
         if(!ok) {
             response.setStatusCode(StatusCode.FORBIDDEN);
+            throw new CsrfException(HALT_MSG);
         } else {
             request.setCsrfChallenge(Optional.of(formValue.get(0)));
         }
-
-        return ok;
     }
 
     public String getCookieName() {

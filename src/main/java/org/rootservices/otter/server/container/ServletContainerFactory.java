@@ -47,7 +47,7 @@ public class ServletContainerFactory {
      * @param tempDirectory location to put temporary files.
      * @return a configured instance of ServletContainer
      * @throws URISyntaxException if an issue occurred constructing a URI
-     * @throws IOException
+     * @throws IOException if issues come up regarding webapp or containerResources
      */
     public ServletContainer makeServletContainer(String documentRoot, Class clazz, int port, File tempDirectory) throws URISyntaxException, IOException {
         URI compliedClassPath = compiledClassPath.getForClass(clazz);
@@ -71,7 +71,7 @@ public class ServletContainerFactory {
      * @param port the port the container should use. 0 will randomly assign a port.
      * @param tempDirectory location to put temporary files.
      * @return a configured instance of ServletContainer
-     * @throws IOException
+     * @throws IOException if issues come up regarding webapp or containerResources
      */
     public ServletContainer makeServletContainer(String documentRoot, URI webApp, URI compliedClassPath, int port, File tempDirectory) throws IOException {
         Server jetty = new Server(port);

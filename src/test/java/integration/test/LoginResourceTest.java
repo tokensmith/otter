@@ -112,4 +112,26 @@ public class LoginResourceTest {
 
         assertThat(postResponse.getStatusCode(), is(StatusCode.OK.getCode()));
     }
+
+    @Test
+    public void postShouldReturn403() throws Exception {
+        String loginURI = BASE_URI.toString() + "login";
+
+        List<Param> formData = new ArrayList<>();
+        formData.add(new Param("email", "obi-wan@rootservices.org"));
+        formData.add(new Param("password", "foo"));
+        formData.add(new Param("csrfToken", "foo"));
+
+        AsyncHttpClient httpClient = IntegrationTestSuite.getHttpClient();
+
+        // this is the POST request
+        ListenableFuture<Response> f = httpClient
+                .preparePost(loginURI)
+                .setFormParams(formData)
+                .execute();
+
+        Response postResponse = f.get();
+
+        assertThat(postResponse.getStatusCode(), is(StatusCode.FORBIDDEN.getCode()));
+    }
 }
