@@ -31,7 +31,7 @@ Otter can run in a Jetty powered [embedded servlet container](https://github.com
 
 ### Entry Servlet
 
-Otter needs a [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java) which will be used to route requests to the resources that handle the requests.
+Otter needs a [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java) which will be used to route requests to the resources. Resources are what handle the requests.
 
 Your implementation of the entry servlet class must be annotated with:
 ```java 
@@ -39,7 +39,7 @@ Your implementation of the entry servlet class must be annotated with:
 ```
 
 - The only value that can change is, `name="EntryServlet"`. All the other values must be as shown above.
-- The reason why `value="/app/\*` must not change is because the [entry filter](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/servlet/EntryFilter.java) will prepend `/app/` to all requests that are not templates which will forward the request to the entry servlet.
+- The reason why `value="/app/\*"` must not change is because the [entry filter](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/servlet/EntryFilter.java) will prepend `/app/` to all requests that are not templates which will forward the request to the entry servlet.
 
 
 ### Resources
@@ -48,9 +48,9 @@ A resource is what handles a request. There are two types of resources that otte
 - [Resource](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/controller/Resource.java)
 - [RestResource](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/controller/RestResource.java)
 
-Resource is designed to handle any type of content type, typically used to render text/html.
+Resource is designed to handle any content type, typically used to render text/html.
 
-RestResource is designed to handle the content type, application/json. 
+RestResource is designed to handle application/json. 
 
 ### Routing
 
