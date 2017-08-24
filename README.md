@@ -1,8 +1,14 @@
 # otter
-micro web framework for servlet api 3.1
+Otter is a micro web framework that sits on top of the servlet api 3.1. 
 
-Maven coordinates
------------------
+It's feature set includes:
+- Embedded servlet container
+- Regex routing
+- Restful support
+- CSRF protection
+- Async I/O
+
+## Maven coordinates
 ```
 <dependencies>
     <dependency>
@@ -13,54 +19,50 @@ Maven coordinates
 </dependencies>
 ```
 
-Run an embedded servlet container with Jetty
----------------------------------------------------
-```java
-package your.package;
+## Example Application
+An example application can be found [here](https://github.com/RootServices/otter/tree/development/src/test/java/integration/app). Which is used for integration tests and will be referenced throughout the documentation.
 
-import your.package.controller.SomeServlet;
-import org.rootservices.otter.server.container.ServletContainer;
-import org.rootservices.otter.server.container.ServletContainerFactory;
-import org.rootservices.otter.config.AppFactory;
 
-public class HttpServer {
-    public static String DOCUMENT_ROOT = "/";
-    public static int PORT = 8080;
+## Basic Usage
 
-    public static void main(String[] args) {
-        AppFactory otterAppFactory = new AppFactory();
-        ServletContainerFactory servletContainerFactory = otterAppFactory.servletContainerFactory();
-        File tempDirectory = new File("/tmp");
+### Embedded Container
 
-        ServletContainer server = null;
-        try {
-            server = servletContainerFactory.makeServletContainer(DOCUMENT_ROOT, SomeServlet.class, PORT, tempDirectory);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+Otter can run in a Jetty powered [embedded servlet container](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/server/HelloServer.java).
 
-        try {
-            server.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+### Entry Servlet
 
-        try {
-            server.join();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-}
-```
+Otter needs a [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java) which will be used to route requests to the resources that handle the requests.
+Your implementation of the entry servlet must be annotated with, ```@WebServlet(value="/app/*", name="EntryServlet", asyncSupported = true)```
 
-Maven uber jar
----------------
- There are probably a handful of ways to create a uber jar this works for me.
+
+### Resources
+
+A resource is what handles a request. There are two types of resources that otter supports.
+- [Resource](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/controller/Resource.java)
+- [RestResource](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/controller/RestResource.java)
+
+Resource is designed to handle any type of content type, typically used to render text/html.
+
+RestResource is designed to handle the content type, application/json. 
+
+### Routing
+
+Routing requests to resources is done in the [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L50-L51)
+. Given a resource it will need to register a route for each http method that should be handled.  
+
+### CSRF
+
+Otter supports CSRF protection by implementing the double submit strategy.
+
+To enable CSRF:
+- Configure a key to sign cookies with, which can be observed [here](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L28-L34).
+- Use the [csrf routing interface](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L52-L53) to route requests to your resource.
+- Configure the [presenter](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/LoginResource.java#L18) to set the value of the CSRF challenge token.
+- Render the [CSRF challenge token](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/webapp/WEB-INF/jsp/login.jsp#L12) on the page.
+
+
+## Maven uber jar
+There are probably a handful of ways to create a uber jar this works for me.
  
 ```
 <plugin>
@@ -105,8 +107,3 @@ Maven uber jar
     </configuration>
 </plugin>
 ```
-
-OutputStream and InputStream are blocking
-Asynchronous socket channel 28:35
-
-must call isReady between writes.
