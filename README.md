@@ -32,7 +32,14 @@ Otter can run in a Jetty powered [embedded servlet container](https://github.com
 ### Entry Servlet
 
 Otter needs a [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java) which will be used to route requests to the resources that handle the requests.
-Your implementation of the entry servlet must be annotated with, ```@WebServlet(value="/app/*", name="EntryServlet", asyncSupported = true)```
+
+Your implementation of the entry servlet class must be annotated with:
+```java 
+    @WebServlet(value="/app/*", name="EntryServlet", asyncSupported = true)
+```
+
+- The only value that can change is, `name="EntryServlet"`. All the other values must be as shown above.
+- The reason why `value="/app/\*` must not change is because the [entry filter](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/servlet/EntryFilter.java) will prepend `/app/` to all requests that are not templates which will forward the request to the entry servlet.
 
 
 ### Resources
