@@ -20,10 +20,10 @@ It's feature set includes:
 ```
 
 ## Example Application
-An example application can be found [here](https://github.com/RootServices/otter/tree/development/src/test/java/integration/app). Which is used for integration tests and will be referenced throughout the documentation..
+An example application can be found [here](https://github.com/RootServices/otter/tree/development/src/test/java/integration/app). Which is used for integration tests and will be referenced throughout the documentation.
 
 
-## Anatomy of a application
+## Basic Usage
 
 ### Embedded Container
 
@@ -42,22 +42,23 @@ A resource is what handles a request. There are two types of resources that otte
 - [RestResource](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/controller/RestResource.java)
 
 Resource is designed to handle any type of content type, typically used to render text/html.
+
 RestResource is designed to handle the content type, application/json. 
 
 ### Routing
 
-Routing requests is done in the entry servlet. Given a resource it will need to register a route for each http method that should be handled. An example of this is [here](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L50-L51)
-
+Routing requests to resources is done in the [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L50-L51)
+. Given a resource it will need to register a route for each http method that should be handled.  
 
 ### CSRF
 
-Otter supports CSRF protection by implementing the double submit strategy, which is setting a cookie with it's value the CSRF token and placing a form field with same CSRF token on the page. Both, the cookie and the form field must match for CSRF to pass. 
+Otter supports CSRF protection by implementing the double submit strategy.
 
 To enable CSRF:
 - Configure a key to sign cookies with, which can be observed [here](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L28-L34).
-- Use the (csrf routing interface)[https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L52-L53] to route requests to your resource.
-- Configure the (presenter)[https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/LoginResource.java#L18] to set the value of the CSRF challenge token.
-- Render the (CSRF challenge token)[https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/webapp/WEB-INF/jsp/login.jsp#L12] on the page.
+- Use the [csrf routing interface](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L52-L53) to route requests to your resource.
+- Configure the [presenter](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/LoginResource.java#L18) to set the value of the CSRF challenge token.
+- Render the [CSRF challenge token](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/webapp/WEB-INF/jsp/login.jsp#L12) on the page.
 
 
 ## Maven uber jar
