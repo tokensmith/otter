@@ -73,7 +73,7 @@ public class DoubleSubmitCSRF {
         return false;
     }
 
-    protected JsonWebToken csrfCookieValueToJwt(String encodedCsrfCookieValue) throws CsrfException {
+    public JsonWebToken csrfCookieValueToJwt(String encodedCsrfCookieValue) throws CsrfException {
         JWTSerializer jwtSerializer = jwtFactory.jwtSerializer();
 
         JsonWebToken jsonWebToken;
