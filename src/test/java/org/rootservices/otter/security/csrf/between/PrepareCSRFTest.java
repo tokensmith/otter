@@ -6,10 +6,12 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.rootservices.jwt.entity.jwt.JsonWebToken;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.router.entity.Method;
+import org.rootservices.otter.security.csrf.CsrfClaims;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import org.rootservices.otter.security.csrf.exception.CsrfException;
 import suite.UnitTest;
@@ -58,18 +60,27 @@ public class PrepareCSRFTest {
     @Test
     public void processWhenCookieAlreadyThereShouldNotSetCookie() throws Exception {
         String challengeToken = "challenge-token";
-        when(mockDoubleSubmitCSRF.makeChallengeToken()).thenReturn(challengeToken);
         Cookie cookie = FixtureFactory.makeCookie(COOKIE_NAME);
-        when(mockDoubleSubmitCSRF.makeCsrfCookie(COOKIE_NAME, challengeToken, false, -1)).thenReturn(cookie);
 
         Request request = FixtureFactory.makeRequest();
         Response response = FixtureFactory.makeResponse();
         response.getCookies().put(COOKIE_NAME, cookie);
 
+        // set up the csrf cookie value which is a jwt.
+        CsrfClaims csrfClaims = new CsrfClaims();
+        csrfClaims.setChallengeToken(challengeToken);
+        JsonWebToken csrfJwt = new JsonWebToken();
+        csrfJwt.setClaims(csrfClaims);
+
+        when(mockDoubleSubmitCSRF.csrfCookieValueToJwt(cookie.getValue())).thenReturn(csrfJwt);
+
         subject.process(Method.GET, request, response);
 
         assertThat(response.getCookies().get(COOKIE_NAME), is(notNullValue()));
         assertThat(response.getCookies().get(COOKIE_NAME), is(cookie));
+        assertThat(request.getCsrfChallenge(), is(notNullValue()));
+        assertThat(request.getCsrfChallenge().isPresent(), is(true));
+        assertThat(request.getCsrfChallenge().get(), is(challengeToken));
 
         verify(mockDoubleSubmitCSRF, never()).makeChallengeToken();
         verify(mockDoubleSubmitCSRF, never()).makeCsrfCookie(COOKIE_NAME, challengeToken, false, -1);
