@@ -54,8 +54,27 @@ RestResource is designed to handle application/json.
 
 ### Routing
 
-Routing requests to resources is done in the [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L50-L51)
-. Given a resource it will need to register a route for each http method that should be handled.  
+Routing requests to resources is done in your implementation of the [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L50-L51)
+. 
+
+```java
+    servletGateway.get(HelloResource.URL, new HelloResource());
+```
+
+### Not Found Resource
+
+You'll also want to set up a resource to handle 404s, [NotFoundResource](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/NotFoundResource.java)
+In addition you will need to register it in your [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L41-L47).
+
+```java
+    Route notFoundRoute = new RouteBuilder()
+        .resource(new NotFoundResource())
+        .before(new ArrayList<>())
+        .after(new ArrayList<>())
+        .build();
+
+    servletGateway.setNotFoundRoute(notFoundRoute);
+```
 
 ### CSRF
 
