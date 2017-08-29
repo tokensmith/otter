@@ -33,13 +33,13 @@ Otter can run in a Jetty powered [embedded servlet container](https://github.com
 
 Otter needs a [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java) which will be used to route requests to the resources. Resources are what handle the requests.
 
-Your implementation of the entry servlet class must be annotated with:
+Your implementation of the entry servlet must be annotated with:
 ```java 
     @WebServlet(value="/app/*", name="EntryServlet", asyncSupported = true)
 ```
 
 - The only value that can change is, `name="EntryServlet"`. All the other values must be as shown above.
-- The reason why `value="/app/\*"` must not change is because the [entry filter](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/servlet/EntryFilter.java) will prepend `/app/` to all requests that are not templates which will forward the request to the entry servlet.
+- `value="/app/\*"` must not change because the [entry filter](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/servlet/EntryFilter.java) prepends `/app/` to all requests that are not jsps. Which forwards requests to the entry servlet.
 
 
 ### Resources
@@ -63,7 +63,8 @@ Routing requests to resources is done in your implementation of the [entry servl
 
 ### Not Found Resource
 
-You'll also want to set up a resource to handle 404s, [NotFoundResource](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/NotFoundResource.java)
+You'll also want to set up a resource to handle 404s, [NotFoundResource](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/NotFoundResource.java).
+
 In addition you will need to register it in your [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L41-L47).
 
 ```java
