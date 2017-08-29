@@ -31,7 +31,7 @@ Otter can run in a Jetty powered [embedded servlet container](https://github.com
 
 ### Entry Servlet
 
-Otter needs a [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java) which will be used to route requests to the resources. Resources are what handle the requests.
+Otter needs a [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java) which will be used to route requests to resources. Resources are what handle requests.
 
 Your implementation of the entry servlet must be annotated with:
 ```java 
@@ -39,7 +39,7 @@ Your implementation of the entry servlet must be annotated with:
 ```
 
 - The only value that can change is, `name="EntryServlet"`. All the other values must be as shown above.
-- `value="/app/\*"` must not change because the [entry filter](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/servlet/EntryFilter.java) prepends `/app/` to all requests that are not jsps. Which forwards requests to the entry servlet.
+- `value="/app/\*"` must not change because the [entry filter](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/servlet/EntryFilter.java) prepends `/app/` to all requests that are not jsps.
 
 
 ### Resources
@@ -63,9 +63,9 @@ Routing requests to resources is done in your implementation of the [entry servl
 
 ### Not Found Resource
 
-You'll also want to set up a resource to handle 404s, [NotFoundResource](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/NotFoundResource.java).
+A resource is needed to handle 404s, [NotFoundResource](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/NotFoundResource.java).
 
-In addition you will need to register it in your [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L41-L47).
+In addition it must be registered it in your [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L41-L47).
 
 ```java
     Route notFoundRoute = new RouteBuilder()
@@ -81,11 +81,44 @@ In addition you will need to register it in your [entry servlet](https://github.
 
 Otter supports CSRF protection by implementing the double submit strategy.
 
-To enable CSRF:
-- Configure a key to sign cookies with, which can be observed [here](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L28-L34).
-- Use the [csrf routing interface](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L52-L53) to route requests to your resource.
-- Configure the [presenter](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/LoginResource.java#L18) to set the value of the CSRF challenge token.
-- Render the [CSRF challenge token](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/webapp/WEB-INF/jsp/login.jsp#L12) on the page.
+Here is an example of how to protect a login page:
+
+Configure a key to sign cookies with, which can be observed [here](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L28-L34).
+
+```java
+    SymmetricKey key = new SymmetricKey(
+    Optional.of("key-1"),
+    "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
+    Use.SIGNATURE
+    );
+
+    servletGateway.setSignKey(key);
+```
+
+Set cookie and csrf settings in the entry servlet. 
+```java
+    servletGateway.setCsrfCookieAge(-1);
+    servletGateway.setCsrfCookieName("csrf");
+    servletGateway.setCsrfCookieSecure(false);
+    servletGateway.setCsrfFormFieldName("csrfToken");
+```
+
+Use the [csrf routing interface](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L52-L53) to route requests to your resource.
+
+```java
+    servletGateway.getCsrfProtect(LoginResource.URL, new LoginResource());
+    servletGateway.postCsrfProtect(LoginResource.URL, new LoginResource());
+```
+
+Set the csrf challenge token value on the [login presenter](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/LoginResource.java#L18).
+```java
+    LoginPresenter presenter = new LoginPresenter("", request.getCsrfChallenge().get());
+```
+
+Render the [CSRF challenge token](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/webapp/WEB-INF/jsp/login.jsp#L12) on the page.
+```java
+    <input id="csrfToken" type="hidden" name="csrfToken" value="${presenter.getCsrfChallengeToken()}" / >
+```
 
 
 ## Maven uber jar
