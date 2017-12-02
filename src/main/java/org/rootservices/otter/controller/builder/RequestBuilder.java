@@ -21,6 +21,7 @@ public class RequestBuilder {
     private Map<String, List<String>> formData;
     private Optional<String> body;
     private Optional<String> csrfChallenge;
+    private String ipAddress;
 
     public RequestBuilder matcher(Optional<Matcher> matcher) {
         this.matcher = matcher;
@@ -67,7 +68,12 @@ public class RequestBuilder {
         return this;
     }
 
+    public RequestBuilder ipAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+        return this;
+    }
+
     public Request build() {
-        return new Request(this.matcher, this.method, this.pathWithParams, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge);
+        return new Request(this.matcher, this.method, this.pathWithParams, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge, this.ipAddress);
     }
 }

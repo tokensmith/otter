@@ -108,4 +108,14 @@ public class RequestBuilderTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getBody(), is(json));
     }
+
+    @Test
+    public void buildWhenIpAddressShouldBeOk() {
+
+        String ipAddress = "127.0.0.1";
+        Request actual = subject.ipAddress(ipAddress).build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getIpAddress(), is(ipAddress));
+    }
 }
