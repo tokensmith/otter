@@ -30,6 +30,7 @@ public class WebAppPathTest {
         URI actual = subject.fromClassURI(classPath);
         String actualPath = actual.getPath();
 
-        assertThat(actualPath.endsWith("/otter/src/main/webapp"), is(true));
+        String expected = "/otter/src/main/webapp";
+        assertThat(actualPath + " does not end with " + expected, actualPath.endsWith(expected), is(true));
     }
 }

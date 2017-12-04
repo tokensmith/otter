@@ -26,6 +26,8 @@ public class CompiledClassPathTest {
         URI actual = subject.getForClass(WebAppPath.class);
 
         String actualPath = actual.getPath();
-        assertThat(actualPath.endsWith("/otter/target/classes/"), is(true));
+
+        String expected = "/otter/build/classes/java/main/";
+        assertThat(actualPath + " does not end with " + expected, actualPath.endsWith(expected), is(true));
     }
 }
