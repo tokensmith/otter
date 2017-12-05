@@ -62,6 +62,8 @@ public class HttpServletRequestTranslator {
             body = Optional.of(containerBody);
         }
 
+        String ipAddress = containerRequest.getRemoteAddr();
+
         return new RequestBuilder()
                 .matcher(Optional.empty())
                 .method(method)
@@ -72,6 +74,7 @@ public class HttpServletRequestTranslator {
                 .formData(formData)
                 .body(body)
                 .csrfChallenge(Optional.empty())
+                .ipAddress(ipAddress)
                 .build();
     }
 

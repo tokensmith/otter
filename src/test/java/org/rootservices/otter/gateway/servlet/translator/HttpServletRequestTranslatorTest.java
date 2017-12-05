@@ -54,6 +54,7 @@ public class HttpServletRequestTranslatorTest {
         when(mockContainerRequest.getCookies()).thenReturn(null);
         when(mockHttpServletRequestHeaderTranslator.from(mockContainerRequest))
             .thenReturn(new HashMap<>());
+        when(mockContainerRequest.getRemoteAddr()).thenReturn("127.0.0.1");
 
         Map<String, List<String>> queryParams = new HashMap<>();
         queryParams.put("bar", new ArrayList<>());
@@ -80,6 +81,8 @@ public class HttpServletRequestTranslatorTest {
         assertThat(actual.getFormData(), is(notNullValue()));
         assertThat(actual.getFormData().size(), is(0));
         assertThat(actual.getCsrfChallenge().isPresent(), is(false));
+        assertThat(actual.getIpAddress(), is(notNullValue()));
+        assertThat(actual.getIpAddress(), is("127.0.0.1"));
     }
 
     @Test
@@ -91,6 +94,7 @@ public class HttpServletRequestTranslatorTest {
         when(mockContainerRequest.getCookies()).thenReturn(null);
         when(mockHttpServletRequestHeaderTranslator.from(mockContainerRequest))
                 .thenReturn(new HashMap<>());
+        when(mockContainerRequest.getRemoteAddr()).thenReturn("127.0.0.1");
 
         Map<String, List<String>> queryParams = new HashMap<>();
         queryParams.put("bar", new ArrayList<>());
@@ -120,6 +124,8 @@ public class HttpServletRequestTranslatorTest {
         assertThat(actual.getFormData(), is(notNullValue()));
         assertThat(actual.getFormData().size(), is(0));
         assertThat(actual.getCsrfChallenge().isPresent(), is(false));
+        assertThat(actual.getIpAddress(), is(notNullValue()));
+        assertThat(actual.getIpAddress(), is("127.0.0.1"));
     }
 
     @Test
@@ -131,6 +137,7 @@ public class HttpServletRequestTranslatorTest {
         when(mockContainerRequest.getCookies()).thenReturn(null);
         when(mockHttpServletRequestHeaderTranslator.from(mockContainerRequest))
                 .thenReturn(new HashMap<>());
+        when(mockContainerRequest.getRemoteAddr()).thenReturn("127.0.0.1");
 
         Map<String, List<String>> queryParams = new HashMap<>();
         queryParams.put("bar", Arrays.asList("bar-value"));
@@ -161,6 +168,9 @@ public class HttpServletRequestTranslatorTest {
         assertThat(actual.getPathWithParams(), is("/foo?bar=bar-value"));
         assertThat(actual.getMatcher(), is(notNullValue()));
         assertThat(actual.getMatcher().isPresent(), is(false));
+        assertThat(actual.getIpAddress(), is(notNullValue()));
+        assertThat(actual.getIpAddress(), is("127.0.0.1"));
+
         assertThat(actual.getFormData(), is(notNullValue()));
         assertThat(actual.getFormData().size(), is(1));
 

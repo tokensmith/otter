@@ -19,10 +19,11 @@ public class Request {
     private Map<String, List<String>> formData;
     private Optional<String> body;
     private Optional<String> csrfChallenge;
+    private String ipAddress;
 
     public Request() {}
 
-    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<String> body, Optional<String> csrfChallenge) {
+    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<String> body, Optional<String> csrfChallenge, String ipAddress) {
         this.matcher = matcher;
         this.method = method;
         this.pathWithParams = pathWithParams;
@@ -32,6 +33,7 @@ public class Request {
         this.formData = formData;
         this.body = body;
         this.csrfChallenge = csrfChallenge;
+        this.ipAddress = ipAddress;
     }
 
     public Optional<Matcher> getMatcher() {
@@ -104,5 +106,13 @@ public class Request {
 
     public void setCsrfChallenge(Optional<String> csrfChallenge) {
         this.csrfChallenge = csrfChallenge;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
     }
 }

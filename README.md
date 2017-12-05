@@ -120,6 +120,10 @@ Render the [CSRF challenge token](https://github.com/RootServices/otter/blob/dev
     <input id="csrfToken" type="hidden" name="csrfToken" value="${presenter.getCsrfChallengeToken()}" / >
 ```
 
+## Releasing to maven central
+```bash
+$ gradle clean signArchives uploadArchives
+```
 
 ## Maven uber jar
 There are probably a handful of ways to create a uber jar this works for me.

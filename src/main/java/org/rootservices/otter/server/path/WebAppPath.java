@@ -9,10 +9,12 @@ import java.net.URISyntaxException;
 public class WebAppPath {
     private static String FILE = "file:";
     private static String DEFAULT_WEB_APP = "/src/main/webapp";
+    private static String GRADLE_PATH = "/build";
+    private static String MVN_PATH = "/target";
 
     /**
-     * @param classURI location of a project's target/classes
-     * @return a absolute file path to a project's target/classes
+     * @param classURI location of a project's classes
+     * @return a absolute file path to a project's classes
      * @throws URISyntaxException if an issue occurred constructing the URI
      */
     public URI fromClassURI(URI classURI) throws URISyntaxException {
@@ -20,7 +22,14 @@ public class WebAppPath {
     }
 
     public URI fromClassURI(URI classURI, String customWebAppLocation) throws URISyntaxException {
-        String projectPath = classURI.getPath().split("/target")[0];
+        String projectPath;
+
+        if (classURI.getPath().contains(MVN_PATH)) {
+            projectPath = classURI.getPath().split(MVN_PATH)[0];
+        } else {
+            projectPath = classURI.getPath().split(GRADLE_PATH)[0];
+        }
+
         String webAppPath = FILE + projectPath + customWebAppLocation;
         URI webAppURI = new URI(webAppPath);
 
