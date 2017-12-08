@@ -109,6 +109,7 @@ public class ServletContainerFactory {
         context.setContextPath(documentRoot);
         context.setParentLoaderPriority(true);
         context.addFilter(EntryFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+        // context.getSessionHandler().setUsingCookies(false);
 
         context.setAttribute(
             "org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",
