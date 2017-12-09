@@ -31,6 +31,7 @@ public class WebAppPathTest {
         String actualPath = actual.getPath();
 
         String expected = "/otter/src/main/webapp";
-        assertThat(actualPath + " does not end with " + expected, actualPath.endsWith(expected), is(true));
+        String errorMsg = "the class uri " + classPath + "was changed to " + actualPath + " and it does not end with " + expected;
+        assertThat(errorMsg, actualPath.endsWith(expected), is(true));
     }
 }
