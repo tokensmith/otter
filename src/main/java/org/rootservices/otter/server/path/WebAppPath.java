@@ -22,15 +22,17 @@ public class WebAppPath {
     }
 
     public URI fromClassURI(URI classURI, String customWebAppLocation) throws URISyntaxException {
-        String projectPath;
+        StringBuilder projectPath = new StringBuilder();
 
         if (classURI.getPath().contains(MVN_PATH)) {
-            projectPath = classURI.getPath().split(MVN_PATH)[0];
+            projectPath.append(classURI.getPath().split(MVN_PATH)[0]);
         } else {
-            projectPath = classURI.getPath().split(GRADLE_PATH)[0];
+            String[] parts = classURI.getPath().split(GRADLE_PATH);
+            for(int i = 0; i < parts.length - 1; i++)
+                projectPath.append(parts[i]);
         }
 
-        String webAppPath = FILE + projectPath + customWebAppLocation;
+        String webAppPath = FILE + projectPath.toString() + customWebAppLocation;
         URI webAppURI = new URI(webAppPath);
 
         return webAppURI;

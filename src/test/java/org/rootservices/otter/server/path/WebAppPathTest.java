@@ -31,7 +31,20 @@ public class WebAppPathTest {
         String actualPath = actual.getPath();
 
         String expected = "/otter/src/main/webapp";
-        String errorMsg = "the class uri " + classPath + "was changed to " + actualPath + " and it does not end with " + expected;
+        String errorMsg = "the class uri " + classPath + " was changed to " + actualPath + " and it does not end with " + expected;
         assertThat(errorMsg, actualPath.endsWith(expected), is(true));
+    }
+
+    @Test
+    public void foo() throws Exception {
+        URI classPath = new URI("file:/home/travis/build/RootServices/otter/build/classes/java/main/");
+
+        URI actual = subject.fromClassURI(classPath);
+        String actualPath = actual.getPath();
+
+        String expected = "/otter/src/main/webapp";
+        String errorMsg = "the class uri " + classPath + " was changed to " + actualPath + " and it does not end with " + expected;
+        assertThat(errorMsg, actualPath.endsWith(expected), is(true));
+
     }
 }
