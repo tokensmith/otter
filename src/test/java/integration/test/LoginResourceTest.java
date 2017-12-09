@@ -110,6 +110,7 @@ public class LoginResourceTest {
 
         Response postResponse = f.get();
 
+        String errorMsg = "Attempted POST " + loginURI;
         assertThat(postResponse.getStatusCode(), is(StatusCode.OK.getCode()));
     }
 
@@ -132,6 +133,7 @@ public class LoginResourceTest {
 
         Response postResponse = f.get();
 
-        assertThat(postResponse.getStatusCode(), is(StatusCode.FORBIDDEN.getCode()));
+        String errorMsg = "Attempted POST " + loginURI;
+        assertThat(errorMsg, postResponse.getStatusCode(), is(StatusCode.FORBIDDEN.getCode()));
     }
 }

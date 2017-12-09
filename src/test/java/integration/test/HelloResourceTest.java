@@ -34,7 +34,8 @@ public class HelloResourceTest {
 
         Response response = f.get();
 
-        assertThat(response.getStatusCode(), is(StatusCode.OK.getCode()));
+        String errorMsg = "Attempted GET " + helloURI;
+        assertThat(errorMsg, response.getStatusCode(), is(StatusCode.OK.getCode()));
 
         // make sure jsp was executed.
         assertThat(response.getResponseBody().contains("<div id=\"hello\">Hello World</>"), is(true));
