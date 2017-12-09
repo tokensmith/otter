@@ -36,7 +36,7 @@ public class WebAppPathTest {
     }
 
     @Test
-    public void foo() throws Exception {
+    public void fromClassUriWhenMultBuildDirsShouldReturnPathToWebApp() throws Exception {
         URI classPath = new URI("file:/home/travis/build/RootServices/otter/build/classes/java/main/");
 
         URI actual = subject.fromClassURI(classPath);
