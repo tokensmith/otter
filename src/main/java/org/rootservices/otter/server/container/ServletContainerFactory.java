@@ -2,6 +2,7 @@ package org.rootservices.otter.server.container;
 
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.util.log.Slf4jLog;
 import org.eclipse.jetty.util.resource.PathResource;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.Configuration;
@@ -49,18 +50,18 @@ public class ServletContainerFactory {
      * @throws URISyntaxException if an issue occurred constructing a URI
      * @throws IOException if issues come up regarding webapp or containerResources
      */
-    public ServletContainer makeServletContainer(String documentRoot, Class clazz, int port, File tempDirectory) throws URISyntaxException, IOException {
+    public ServletContainer makeServletContainer(String documentRoot, Class clazz, int port, File tempDirectory, String requestLog) throws URISyntaxException, IOException {
         URI compliedClassPath = compiledClassPath.getForClass(clazz);
         URI webApp = webAppPath.fromClassURI(compliedClassPath);
 
-        return makeServletContainer(documentRoot, webApp, compliedClassPath, port, tempDirectory);
+        return makeServletContainer(documentRoot, webApp, compliedClassPath, port, tempDirectory, requestLog);
     }
 
-    public ServletContainer makeServletContainer(String documentRoot, Class clazz, String customWebAppLocation, int port, File tempDirectory) throws URISyntaxException, IOException {
+    public ServletContainer makeServletContainer(String documentRoot, Class clazz, String customWebAppLocation, int port, File tempDirectory, String requestLog) throws URISyntaxException, IOException {
         URI compliedClassPath = compiledClassPath.getForClass(clazz);
         URI webApp = webAppPath.fromClassURI(compliedClassPath, customWebAppLocation);
 
-        return makeServletContainer(documentRoot, webApp, compliedClassPath, port, tempDirectory);
+        return makeServletContainer(documentRoot, webApp, compliedClassPath, port, tempDirectory, requestLog);
     }
 
     /**
@@ -73,7 +74,7 @@ public class ServletContainerFactory {
      * @return a configured instance of ServletContainer
      * @throws IOException if issues come up regarding webapp or containerResources
      */
-    public ServletContainer makeServletContainer(String documentRoot, URI webApp, URI compliedClassPath, int port, File tempDirectory) throws IOException {
+    public ServletContainer makeServletContainer(String documentRoot, URI webApp, URI compliedClassPath, int port, File tempDirectory, String requestLog) throws IOException {
         Server jetty = new Server(port);
 
         // dependencies for, WebAppContext
@@ -92,12 +93,25 @@ public class ServletContainerFactory {
 
         // Add server context
         jetty.setHandler(context);
+
+        // request logs
+        NCSARequestLog log = makeRequestLog(requestLog);
+
+        jetty.setRequestLog(log);
+
+
         ServletContainer server = new ServletContainerImpl(jetty);
         return server;
     }
 
-    protected WebAppContext makeWebAppContext(String documentRoot, String resourceBase, String webXmlPath, Configuration[] configurations, File tempDirectory, PathResource containerResources)  {
+    protected WebAppContext makeWebAppContext(String documentRoot, String resourceBase, String webXmlPath, Configuration[] configurations, File tempDirectory, PathResource containerResources) {
         WebAppContext context = new WebAppContext();
+
+        try {
+            Slf4jLog log = new Slf4jLog();
+            log.setDebugEnabled(true);
+            context.setLogger(log);
+        } catch (Exception e) {}
 
         context.setClassLoader(Thread.currentThread().getContextClassLoader());
         context.setResourceBase(resourceBase);
@@ -148,5 +162,17 @@ public class ServletContainerFactory {
         serverConnector.setPort(port);
 
         return serverConnector;
+    }
+
+    protected NCSARequestLog makeRequestLog(String logFile) {
+        NCSARequestLog requestLog = new NCSARequestLog(logFile);
+        requestLog.setAppend(true);
+        requestLog.setExtended(false);
+        requestLog.setLogTimeZone("GMT");
+        requestLog.setLogLatency(true);
+        requestLog.setRetainDays(90);
+
+        return requestLog;
+
     }
 }

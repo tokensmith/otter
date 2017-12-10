@@ -36,6 +36,7 @@ public class IntegrationTestSuite {
     private static String COMPILED_JSP_PATH = "/tmp";
     private static String DOCUMENT_ROOT = "/";
     private static int RANDOM_PORT = 0;
+    private static String REQUEST_LOG = "logs/jetty/jetty-test-yyyy_mm_dd.request.log";
 
     /**
      * Configures a servlet container then starts it.
@@ -48,8 +49,9 @@ public class IntegrationTestSuite {
         otterTestAppFactory = new AppFactory();
         servletContainerFactory = otterTestAppFactory.servletContainerFactory();
 
+        String webAppLocation = "/src/test/java/integration/app/webapp";
         File tempDirectory = new File(COMPILED_JSP_PATH);
-        servletContainer = servletContainerFactory.makeServletContainer(DOCUMENT_ROOT, HelloResource.class, "/src/test/java/integration/app/webapp", RANDOM_PORT, tempDirectory);
+        servletContainer = servletContainerFactory.makeServletContainer(DOCUMENT_ROOT, HelloResource.class, webAppLocation, RANDOM_PORT, tempDirectory, REQUEST_LOG);
         servletContainer.start();
 
         servletContainerURI = servletContainer.getURI();
