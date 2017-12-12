@@ -26,7 +26,9 @@ public class HelloResourceTest {
 
     @Test
     public void getShouldReturn200() throws Exception {
+
         String helloURI = BASE_URI.toString() + "hello";
+        // String helloURI = "http://127.0.0.1:" + BASE_URI.getPort() + "/hello";
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(helloURI)

@@ -1,5 +1,7 @@
 package org.rootservices.otter.server.container;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.util.resource.PathResource;
@@ -17,10 +19,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
+
 
 /**
  * Created by tommackenzie on 4/3/16.
@@ -28,7 +28,7 @@ import java.util.Set;
  * A factory that creates a ServletContainer.
  */
 public class ServletContainerFactory {
-
+    protected static Logger logger = LogManager.getLogger(ServletContainerFactory.class);
     private static String DIR_ALLOWED_KEY = "org.eclipse.jetty.servlet.Default.dirAllowed";
     private static String WEB_XML = "/WEB-INF/web.xml";
     private CompiledClassPath compiledClassPath;
@@ -74,6 +74,9 @@ public class ServletContainerFactory {
      * @throws IOException if issues come up regarding webapp or containerResources
      */
     public ServletContainer makeServletContainer(String documentRoot, URI webApp, URI compliedClassPath, int port, File tempDirectory) throws IOException {
+        logger.debug("web app location: " + webApp.toURL());
+        logger.debug("compiled class path: " + compliedClassPath.toURL());
+
         Server jetty = new Server(port);
 
         // dependencies for, WebAppContext

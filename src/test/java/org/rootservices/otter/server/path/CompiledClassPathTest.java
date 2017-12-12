@@ -1,11 +1,13 @@
 package org.rootservices.otter.server.path;
 
+import integration.app.hello.controller.HelloResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import suite.UnitTest;
 
 import java.net.URI;
+import java.security.ProtectionDomain;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;

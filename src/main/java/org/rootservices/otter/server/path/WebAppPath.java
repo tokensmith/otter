@@ -1,5 +1,8 @@
 package org.rootservices.otter.server.path;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -7,6 +10,7 @@ import java.net.URISyntaxException;
  * Created by tommackenzie on 4/3/16.
  */
 public class WebAppPath {
+    protected static Logger logger = LogManager.getLogger(WebAppPath.class);
     private static String FILE = "file:";
     private static String DEFAULT_WEB_APP = "/src/main/webapp";
     private static String GRADLE_PATH = "/build";
@@ -22,19 +26,38 @@ public class WebAppPath {
     }
 
     public URI fromClassURI(URI classURI, String customWebAppLocation) throws URISyntaxException {
-        StringBuilder projectPath = new StringBuilder();
+        String projectPath;
 
         if (classURI.getPath().contains(MVN_PATH)) {
-            projectPath.append(classURI.getPath().split(MVN_PATH)[0]);
+            projectPath = makeProjectPath(classURI.getPath(), MVN_PATH);
         } else {
-            String[] parts = classURI.getPath().split(GRADLE_PATH);
-            for(int i = 0; i < parts.length - 1; i++)
-                projectPath.append(parts[i]);
+            projectPath = makeProjectPath(classURI.getPath(), GRADLE_PATH);
         }
 
         String webAppPath = FILE + projectPath.toString() + customWebAppLocation;
         URI webAppURI = new URI(webAppPath);
 
         return webAppURI;
+    }
+
+    /**
+     * Given a classURI Then return it's project path.
+     *
+     * @param classURI 
+     * @param splitter /build or /target
+     * @return
+     */
+    protected String makeProjectPath(String classURI, String splitter) {
+        StringBuilder projectPath = new StringBuilder();
+        String[] parts = classURI.split(splitter);
+
+        for(int i = 0; i < parts.length - 1; i++) {
+            projectPath.append(parts[i]);
+            if (i < parts.length - 2) {
+                projectPath.append(splitter);
+            }
+        }
+
+        return projectPath.toString();
     }
 }
