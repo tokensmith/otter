@@ -17,6 +17,7 @@ public class HelloServer {
     private static final Logger logger = LogManager.getLogger(HelloServer.class);
     public static String DOCUMENT_ROOT = "/";
     public static int PORT = 8080;
+    private static String REQUEST_LOG = "logs/jetty/jetty-test-yyyy_mm_dd.request.log";
 
     public static void main(String[] args) {
         AppFactory otterAppFactory = new AppFactory();
@@ -25,7 +26,7 @@ public class HelloServer {
 
         ServletContainer server = null;
         try {
-            server = servletContainerFactory.makeServletContainer(DOCUMENT_ROOT, HelloResource.class, PORT, tempDirectory);
+            server = servletContainerFactory.makeServletContainer(DOCUMENT_ROOT, HelloResource.class, PORT, tempDirectory, REQUEST_LOG);
         } catch (URISyntaxException e) {
             logger.error(e.getMessage(), e);
         } catch (MalformedURLException e) {

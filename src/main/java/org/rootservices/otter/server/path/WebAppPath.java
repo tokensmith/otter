@@ -43,7 +43,7 @@ public class WebAppPath {
     /**
      * Given a classURI Then return it's project path.
      *
-     * @param classURI 
+     * @param classURI
      * @param splitter /build or /target
      * @return
      */

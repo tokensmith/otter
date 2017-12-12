@@ -21,3 +21,5 @@ target/*
 !gradle-wrapper.jar
 .gradle
 /build/
+
+logs
