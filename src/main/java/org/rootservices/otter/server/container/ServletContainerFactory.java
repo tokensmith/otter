@@ -75,8 +75,8 @@ public class ServletContainerFactory {
      * @throws IOException if issues come up regarding webapp or containerResources
      */
     public ServletContainer makeServletContainer(String documentRoot, URI webApp, URI compliedClassPath, int port, File tempDirectory, String requestLog) throws IOException {
-        logger.debug("web app location: " + webApp.toURL());
-        logger.debug("compiled class path: " + compliedClassPath.toURL());
+        logger.debug("Web App location: " + webApp.toURL());
+        logger.debug("Compiled Class path: " + compliedClassPath.toURL());
         Server jetty = new Server(port);
 
         // dependencies for, WebAppContext

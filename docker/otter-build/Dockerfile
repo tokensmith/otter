@@ -46,7 +46,7 @@ VOLUME "$USER_HOME_DIR/gradle/.gradle"
 VOLUME "$USER_HOME_DIR/.m2"
 
 # Define working directory.
-WORKDIR /data
+WORKDIR /build/rootservices
 
 
 # Define default command.

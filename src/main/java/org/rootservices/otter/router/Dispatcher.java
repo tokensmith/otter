@@ -15,7 +15,6 @@ import java.util.regex.Matcher;
 
 public class Dispatcher {
     protected static Logger logger = LogManager.getLogger(Dispatcher.class);
-    private static String NOT_FOUND_MSG = "Could not find %s with routes %s";
     private static String OTTER_PREFIX = "/app";
     private static String EMPTY = "";
     private List<Route> get = new ArrayList<>();
@@ -40,7 +39,6 @@ public class Dispatcher {
                 return m;
             }
         }
-        logger.debug(String.format(NOT_FOUND_MSG, scrubbedUrl, routes(method)));
         return Optional.empty();
     }
 

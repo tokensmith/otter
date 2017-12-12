@@ -18,13 +18,19 @@ public class WebAppPath {
 
     /**
      * @param classURI location of a project's classes
-     * @return a absolute file path to a project's classes
+     * @return an absolute file path to a project's webapp directory
      * @throws URISyntaxException if an issue occurred constructing the URI
      */
     public URI fromClassURI(URI classURI) throws URISyntaxException {
         return fromClassURI(classURI, DEFAULT_WEB_APP);
     }
 
+    /**
+     * @param classURI location of a project's classes
+     * @param customWebAppLocation the webapp location to append to the project's path, /src/main/webapp
+     * @return an absolute file path to a project's webapp directory
+     * @throws URISyntaxException
+     */
     public URI fromClassURI(URI classURI, String customWebAppLocation) throws URISyntaxException {
         String projectPath;
 
@@ -45,7 +51,7 @@ public class WebAppPath {
      *
      * @param classURI
      * @param splitter /build or /target
-     * @return
+     * @return an absolute file path to a project
      */
     protected String makeProjectPath(String classURI, String splitter) {
         StringBuilder projectPath = new StringBuilder();

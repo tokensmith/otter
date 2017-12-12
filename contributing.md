@@ -1,7 +1,7 @@
 # Contributing
 
-## Docker 
+## Docker
 ```bash
-docker build /path/to/otter -t otter-build
+docker build docker/otter-build -t otter-build
 docker run -i -t otter-build
 ```
