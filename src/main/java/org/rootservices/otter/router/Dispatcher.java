@@ -1,6 +1,9 @@
 package org.rootservices.otter.router;
 
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.rootservices.otter.gateway.servlet.ServletGateway;
 import org.rootservices.otter.router.entity.MatchedRoute;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
@@ -11,6 +14,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 
 public class Dispatcher {
+    protected static Logger logger = LogManager.getLogger(Dispatcher.class);
     private static String OTTER_PREFIX = "/app";
     private static String EMPTY = "";
     private List<Route> get = new ArrayList<>();

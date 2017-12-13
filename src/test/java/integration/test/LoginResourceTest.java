@@ -47,7 +47,8 @@ public class LoginResourceTest {
 
         Response response = f.get();
 
-        assertThat(response.getStatusCode(), is(StatusCode.OK.getCode()));
+        String errorMsg = "Attempted GET " + loginURI;
+        assertThat(errorMsg, response.getStatusCode(), is(StatusCode.OK.getCode()));
 
         // there should be a csrf cookie
         Cookie csrfCookie = null;
@@ -90,6 +91,9 @@ public class LoginResourceTest {
 
         Response getResponse = f.get();
 
+        String errorMsg = "Attempted GET " + loginURI;
+        assertThat(errorMsg, getResponse.getStatusCode(), is(StatusCode.OK.getCode()));
+
         // get the csrf value from the form.
         Pattern csrfPattern = Pattern.compile(".*\"csrfToken\" value=\"([^\"]*)\".*", Pattern.DOTALL);
         Matcher matcher = csrfPattern.matcher(getResponse.getResponseBody());
@@ -110,7 +114,8 @@ public class LoginResourceTest {
 
         Response postResponse = f.get();
 
-        assertThat(postResponse.getStatusCode(), is(StatusCode.OK.getCode()));
+        errorMsg = "Attempted POST " + loginURI;
+        assertThat(errorMsg, postResponse.getStatusCode(), is(StatusCode.OK.getCode()));
     }
 
     @Test
@@ -132,6 +137,7 @@ public class LoginResourceTest {
 
         Response postResponse = f.get();
 
-        assertThat(postResponse.getStatusCode(), is(StatusCode.FORBIDDEN.getCode()));
+        String errorMsg = "Attempted POST " + loginURI;
+        assertThat(errorMsg, postResponse.getStatusCode(), is(StatusCode.FORBIDDEN.getCode()));
     }
 }

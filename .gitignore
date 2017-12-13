@@ -17,5 +17,9 @@ hs_err_pid*
 
 target/*
 
+# gradle
+!gradle-wrapper.jar
 .gradle
 /build/
+
+logs

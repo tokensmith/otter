@@ -53,4 +53,9 @@ public class Route {
     public void setAfter(List<Between> after) {
         this.after = after;
     }
+
+    @Override
+    public String toString() {
+        return pattern.toString();
+    }
 }
