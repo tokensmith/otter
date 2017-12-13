@@ -83,6 +83,7 @@ signing {
 uploadArchives {
     repositories {
         mavenDeployer {
+
             if(!project.ext.properties.containsKey("ossrhUser")) {
                 project.ext.ossrhUser = 'wrongUser'
                 project.ext.ossrhPassword = 'wrongPassword'
@@ -94,15 +95,6 @@ uploadArchives {
             }
             repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
                 authentication(userName: ossrhUser, password: ossrhPassword)
-            }
-            pom.project {
-                groupId 'org.rootservices'
-                artifactId project.name
-                version project.version
-
-                description project.description
-                packaging 'jar'
-                url 'https://github.com/RootServices/otter'
             }
 
             pom.project {
