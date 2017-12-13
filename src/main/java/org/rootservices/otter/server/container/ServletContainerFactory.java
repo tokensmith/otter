@@ -46,6 +46,7 @@ public class ServletContainerFactory {
      * @param clazz a class in your project.
      * @param port the port the container should use. 0 will randomly assign a port.
      * @param tempDirectory location to put temporary files.
+     * @param requestLog the path and file name of the request log, logs/jetty/jetty-test-yyyy_mm_dd.request.log
      * @return a configured instance of ServletContainer
      * @throws URISyntaxException if an issue occurred constructing a URI
      * @throws IOException if issues come up regarding webapp or containerResources
@@ -71,6 +72,7 @@ public class ServletContainerFactory {
      * @param compliedClassPath absolute file path to, target/classes/ in your project.
      * @param port the port the container should use. 0 will randomly assign a port.
      * @param tempDirectory location to put temporary files.
+     * @param requestLog the path and file name of the request log, logs/jetty/jetty-test-yyyy_mm_dd.request.log
      * @return a configured instance of ServletContainer
      * @throws IOException if issues come up regarding webapp or containerResources
      */
