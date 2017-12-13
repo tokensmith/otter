@@ -3,6 +3,7 @@ apply plugin: 'signing'
 apply plugin: 'maven'
 
 group = 'org.rootservices'
+archivesBaseName = "otter"
 version = '1.1-SNAPSHOT'
 
 description = """Otter"""
@@ -60,6 +61,21 @@ test {
     }
 }
 
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+
 signing {
     sign configurations.archives
 }
@@ -83,10 +99,38 @@ uploadArchives {
                 groupId 'org.rootservices'
                 artifactId project.name
                 version project.version
-                name project.name
+
                 description project.description
                 packaging 'jar'
                 url 'https://github.com/RootServices/otter'
+            }
+
+            pom.project {
+                name project.name
+                packaging 'jar'
+                description 'A micro web framework'
+                url 'https://github.com/RootServices/otter'
+
+                scm {
+                    connection 'git@github.com:RootServices/otter.git'
+                    developerConnection 'git@github.com:RootServices/otter.git'
+                    url 'https://github.com/RootServices/otter'
+                }
+
+                licenses {
+                    license {
+                        name 'The MIT License (MIT)'
+                        url 'https://github.com/RootServices/otter/blob/development/LICENSE'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'tmackenzie'
+                        name 'Tom MacKenzie'
+                        email 'tom@rootservices.org'
+                    }
+                }
             }
         }
     }
