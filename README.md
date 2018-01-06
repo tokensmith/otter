@@ -9,7 +9,7 @@ It's feature set includes:
 - Async I/O
 
 ## Maven coordinates
-```
+```xml
 <dependencies>
     <dependency>
         <groupId>org.rootservices</groupId>
@@ -19,9 +19,14 @@ It's feature set includes:
 </dependencies>
 ```
 
-## Example Application
-An example application can be found [here](https://github.com/RootServices/otter/tree/development/src/test/java/integration/app). Which is used for integration tests and will be referenced throughout the documentation.
+## Gradle
+```groovy
+compile group: 'org.rootservices', name: 'otter', version: '1.1-SNAPSHOT'
+```
 
+## Example Application
+A [hello world](https://github.com/RootServices/hello-world) example is available which demonstrates CSRF, Rest, and tex/html responses.
+A clone of the hello world application is included in the test suite and will be referenced throughout the documentation. 
 
 ## Basic Usage
 
@@ -123,51 +128,4 @@ Render the [CSRF challenge token](https://github.com/RootServices/otter/blob/dev
 ## Releasing to maven central
 ```bash
 $ gradle clean signArchives uploadArchives
-```
-
-## Maven uber jar
-There are probably a handful of ways to create a uber jar this works for me.
- 
-```
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-dependency-plugin</artifactId>
-    <version>2.10</version>
-    <executions>
-        <execution>
-            <id>copy-dependencies</id>
-            <phase>package</phase>
-            <goals>
-                <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-                <includeScope>compile</includeScope>
-            </configuration>
-        </execution>
-    </executions>
-</plugin>
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-shade-plugin</artifactId>
-    <version>2.4.3</version>
-        <executions>
-            <execution>
-                <phase>package</phase>
-                    <goals>
-                        <goal>shade</goal>
-                    </goals>
-            </execution>
-    </executions>
-    <configuration>
-        <minimizeJar>true</minimizeJar>
-        <transformers>
-            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                <mainClass>your.package.HttpServer</mainClass>
-            </transformer>
-            <transformer implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
-                <resource>.SF</resource>
-            </transformer>
-        </transformers>
-    </configuration>
-</plugin>
 ```
