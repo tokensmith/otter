@@ -22,11 +22,10 @@ public class HelloServer {
     public static void main(String[] args) {
         AppFactory otterAppFactory = new AppFactory();
         ServletContainerFactory servletContainerFactory = otterAppFactory.servletContainerFactory();
-        File tempDirectory = new File("/tmp");
 
         ServletContainer server = null;
         try {
-            server = servletContainerFactory.makeServletContainer(DOCUMENT_ROOT, HelloResource.class, PORT, tempDirectory, REQUEST_LOG);
+            server = servletContainerFactory.makeServletContainer(DOCUMENT_ROOT, HelloResource.class, PORT, REQUEST_LOG);
         } catch (URISyntaxException e) {
             logger.error(e.getMessage(), e);
         } catch (MalformedURLException e) {

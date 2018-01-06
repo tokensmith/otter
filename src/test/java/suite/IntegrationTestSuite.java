@@ -33,7 +33,6 @@ public class IntegrationTestSuite {
     private static ServletContainer servletContainer;
     private static URI servletContainerURI;
     private static AsyncHttpClient httpClient;
-    private static String COMPILED_JSP_PATH = "/tmp";
     private static String DOCUMENT_ROOT = "/";
     private static int RANDOM_PORT = 0;
     private static String REQUEST_LOG = "logs/jetty/jetty-test-yyyy_mm_dd.request.log";
@@ -50,8 +49,8 @@ public class IntegrationTestSuite {
         servletContainerFactory = otterTestAppFactory.servletContainerFactory();
 
         String webAppLocation = "/src/test/java/integration/app/webapp";
-        File tempDirectory = new File(COMPILED_JSP_PATH);
-        servletContainer = servletContainerFactory.makeServletContainer(DOCUMENT_ROOT, HelloResource.class, webAppLocation, RANDOM_PORT, tempDirectory, REQUEST_LOG);
+
+        servletContainer = servletContainerFactory.makeServletContainer(DOCUMENT_ROOT, HelloResource.class, webAppLocation, RANDOM_PORT, REQUEST_LOG);
         servletContainer.start();
 
         servletContainerURI = servletContainer.getURI();
