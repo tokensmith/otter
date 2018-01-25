@@ -5,7 +5,6 @@ import helper.entity.FakeResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.Resource;
@@ -16,23 +15,19 @@ import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
 import org.rootservices.otter.router.Dispatcher;
 import org.rootservices.otter.router.Engine;
+import org.rootservices.otter.router.RouteBuilder;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Route;
-import org.rootservices.otter.security.csrf.between.CheckCSRF;
-import org.rootservices.otter.security.csrf.between.PrepareCSRF;
 import suite.UnitTest;
 
-import javax.servlet.AsyncContext;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -347,4 +342,124 @@ public class ServletGatewayTest {
         assertThat(routes.get(0).getAfter().size(), is(0));
     }
 
+    @Test
+    public void getRouteShouldAddRoute() throws Exception {
+        List<Route> routes = new ArrayList<>();
+        when(mockDispatcher.getGet()).thenReturn(routes);
+
+        Route route = new RouteBuilder().build();
+        subject.getRoute(route);
+
+        assertThat(routes, is(notNullValue()));
+        assertThat(routes.size(), is(1));
+        assertThat(routes.get(0), is(route));
+
+    }
+
+    @Test
+    public void postRouteShouldAddRoute() throws Exception {
+        List<Route> routes = new ArrayList<>();
+        when(mockDispatcher.getPost()).thenReturn(routes);
+
+        Route route = new RouteBuilder().build();
+        subject.postRoute(route);
+
+        assertThat(routes, is(notNullValue()));
+        assertThat(routes.size(), is(1));
+        assertThat(routes.get(0), is(route));
+    }
+
+    @Test
+    public void putRouteShouldAddRoute() throws Exception {
+        List<Route> routes = new ArrayList<>();
+        when(mockDispatcher.getPut()).thenReturn(routes);
+
+        Route route = new RouteBuilder().build();
+        subject.putRoute(route);
+
+        assertThat(routes, is(notNullValue()));
+        assertThat(routes.size(), is(1));
+        assertThat(routes.get(0), is(route));
+
+    }
+
+    @Test
+    public void patchRouteShouldAddRoute() throws Exception {
+        List<Route> routes = new ArrayList<>();
+        when(mockDispatcher.getPatch()).thenReturn(routes);
+
+        Route route = new RouteBuilder().build();
+        subject.patchRoute(route);
+
+        assertThat(routes, is(notNullValue()));
+        assertThat(routes.size(), is(1));
+        assertThat(routes.get(0), is(route));
+
+    }
+
+    @Test
+    public void deleteRouteShouldAddRoute() throws Exception {
+        List<Route> routes = new ArrayList<>();
+        when(mockDispatcher.getDelete()).thenReturn(routes);
+
+        Route route = new RouteBuilder().build();
+        subject.deleteRoute(route);
+
+        assertThat(routes, is(notNullValue()));
+        assertThat(routes.size(), is(1));
+        assertThat(routes.get(0), is(route));
+    }
+
+    @Test
+    public void connectRouteShouldAddRoute() throws Exception {
+        List<Route> routes = new ArrayList<>();
+        when(mockDispatcher.getConnect()).thenReturn(routes);
+
+        Route route = new RouteBuilder().build();
+        subject.connectRoute(route);
+
+        assertThat(routes, is(notNullValue()));
+        assertThat(routes.size(), is(1));
+        assertThat(routes.get(0), is(route));
+    }
+
+    @Test
+    public void optionsRouteShouldAddRoute() throws Exception {
+        List<Route> routes = new ArrayList<>();
+        when(mockDispatcher.getOptions()).thenReturn(routes);
+
+        Route route = new RouteBuilder().build();
+        subject.optionsRoute(route);
+
+        assertThat(routes, is(notNullValue()));
+        assertThat(routes.size(), is(1));
+        assertThat(routes.get(0), is(route));
+    }
+
+    @Test
+    public void traceRouteShouldAddRoute() throws Exception {
+        List<Route> routes = new ArrayList<>();
+        when(mockDispatcher.getTrace()).thenReturn(routes);
+
+        Route route = new RouteBuilder().build();
+        subject.traceRoute(route);
+
+        assertThat(routes, is(notNullValue()));
+        assertThat(routes.size(), is(1));
+        assertThat(routes.get(0), is(route));
+    }
+
+    @Test
+    public void headRouteShouldAddRoute() throws Exception {
+        List<Route> routes = new ArrayList<>();
+        when(mockDispatcher.getHead()).thenReturn(routes);
+
+        Route route = new RouteBuilder().build();
+        subject.headRoute(route);
+
+        assertThat(routes, is(notNullValue()));
+        assertThat(routes.size(), is(1));
+        assertThat(routes.get(0), is(route));
+
+    }
 }
