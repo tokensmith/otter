@@ -215,8 +215,43 @@ public class ServletGateway {
         engine.getDispatcher().getHead().add(route);
     }
 
-    // configuration methods below.
+    public void getRoute(Route route) {
+        engine.getDispatcher().getGet().add(route);
+    }
 
+    public void postRoute(Route route) {
+        engine.getDispatcher().getPost().add(route);
+    }
+
+    public void putRoute(Route route) {
+        engine.getDispatcher().getPut().add(route);
+    }
+
+    public void patchRoute(Route route) {
+        engine.getDispatcher().getPatch().add(route);
+    }
+
+    public void deleteRoute(Route route) {
+        engine.getDispatcher().getDelete().add(route);
+    }
+
+    public void connectRoute(Route route) {
+        engine.getDispatcher().getConnect().add(route);
+    }
+
+    public void optionsRoute(Route route) {
+        engine.getDispatcher().getOptions().add(route);
+    }
+
+    public void traceRoute(Route route) {
+        engine.getDispatcher().getTrace().add(route);
+    }
+
+    public void headRoute(Route route) {
+        engine.getDispatcher().getHead().add(route);
+    }
+
+    // configuration methods below.
     public void setNotFoundRoute(Route notFoundRoute) {
         this.notFoundRoute = notFoundRoute;
     }

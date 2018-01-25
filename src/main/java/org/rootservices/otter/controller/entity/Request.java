@@ -20,6 +20,7 @@ public class Request {
     private Optional<String> body;
     private Optional<String> csrfChallenge;
     private String ipAddress;
+    private Optional<Object> user;
 
     public Request() {}
 
@@ -114,5 +115,13 @@ public class Request {
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
+    }
+
+    public Optional<Object> getUser() {
+        return user;
+    }
+
+    public void setUser(Optional<Object> user) {
+        this.user = user;
     }
 }
