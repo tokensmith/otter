@@ -1,8 +1,5 @@
 package org.rootservices.otter.servlet;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.rootservices.otter.controller.RestResource;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -16,11 +13,12 @@ import java.util.regex.Pattern;
  * to the servlet container. The need for this filter is for rendering jsp
  * servlets and possibly static assets.
  */
-@WebFilter(filterName = "EntryFilter", asyncSupported = true)
+@WebFilter(filterName = "EntryFilter", asyncSupported = true, urlPatterns = {"/*"})
 public class EntryFilter implements Filter {
-    private static Pattern TEMPLATE_PATTERN = Pattern.compile("(.*).(jsp|jspf|jspx|xsp|JSP|JSPF|JSPX|XSP|js|css)");
-    private static String OTTER_PREFIX = "/app";
-    private static String FORWARD_URI = OTTER_PREFIX + "%s";
+    protected static Pattern TEMPLATE_PATTERN = Pattern.compile("(.*).(jsp|jspf|jspx|xsp|JSP|JSPF|JSPX|XSP|js|css)");
+    protected static Pattern STATIC_ASSETS_PATTERN = Pattern.compile("(.*).(js|css)");
+    protected static String OTTER_PREFIX = "/app";
+    protected static String FORWARD_URI = OTTER_PREFIX + "%s";
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -32,8 +30,9 @@ public class EntryFilter implements Filter {
 
         HttpServletRequest req = (HttpServletRequest) request;
         String context = req.getRequestURI();
-        Matcher matcher = TEMPLATE_PATTERN.matcher(context);
-        if(matcher.matches() || context.toString().equals("/")) {
+        Matcher templateMatcher = TEMPLATE_PATTERN.matcher(context);
+        Matcher staticAssetsMatcher = STATIC_ASSETS_PATTERN.matcher(context);
+        if(templateMatcher.matches() || staticAssetsMatcher.matches()) {
             // this will go to the container, not otter's entry servlet.
             chain.doFilter(request, response);
         } else {
