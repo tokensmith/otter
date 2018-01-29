@@ -126,16 +126,16 @@ Render the [CSRF challenge token](https://github.com/RootServices/otter/blob/dev
     <input id="csrfToken" type="hidden" name="csrfToken" value="${presenter.getCsrfChallengeToken()}" / >
 ```
 
-### Aync I/O
-Everything is read and written asynchronously. That journey begins in the [OtterEntryServlet](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/servlet/OtterEntryServlet.java#L33).
+### Async I/O
+I/O is handled asynchronously. That journey begins in the [OtterEntryServlet](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/servlet/OtterEntryServlet.java#L33).
 
 JSPs also are delivered async via [Jetty](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/server/container/builder/WebAppContextBuilder.java#L82).
 
 ### Static Assets
 
-Any static assets in, `src/main/webapp/public` is available.
+Any files that are placed in, `src/main/webapp/public` are public.
 
-For example, `src/main/webapp/public/assets/js/jquery-3.3.1.min.js` can be retrieved with the context path, `assets/js/jquery-3.3.1.min.js`.
+For example, `src/main/webapp/public/assets/js/jquery-3.3.1.min.js` can be retrieved from, `assets/js/jquery-3.3.1.min.js`
 
 
 ## Releasing to maven central
