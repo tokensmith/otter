@@ -133,7 +133,7 @@ JSPs also are delivered async via [Jetty](https://github.com/RootServices/otter/
 
 ### Static Assets
 
-Any files that are placed in, `src/main/webapp/public` are public.
+Files that are placed in, `src/main/webapp/public` are public as long as they pass the entry filter [regex](https://github.com/RootServices/otter/blob/assets/src/main/java/org/rootservices/otter/servlet/EntryFilter.java#L19).
 
 For example, `src/main/webapp/public/assets/js/jquery-3.3.1.min.js` can be retrieved from, `assets/js/jquery-3.3.1.min.js`
 
