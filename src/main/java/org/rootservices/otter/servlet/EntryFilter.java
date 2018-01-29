@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  */
 @WebFilter(filterName = "EntryFilter", asyncSupported = true)
 public class EntryFilter implements Filter {
-    private static Pattern TEMPLATE_PATTERN = Pattern.compile("(.*).(jsp|jspf|jspx|xsp|JSP|JSPF|JSPX|XSP)");
+    private static Pattern TEMPLATE_PATTERN = Pattern.compile("(.*).(jsp|jspf|jspx|xsp|JSP|JSPF|JSPX|XSP|js|css)");
     private static String OTTER_PREFIX = "/app";
     private static String FORWARD_URI = OTTER_PREFIX + "%s";
 
@@ -33,7 +33,7 @@ public class EntryFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         String context = req.getRequestURI();
         Matcher matcher = TEMPLATE_PATTERN.matcher(context);
-        if(matcher.matches()) {
+        if(matcher.matches() || context.toString().equals("/")) {
             // this will go to the container, not otter's entry servlet.
             chain.doFilter(request, response);
         } else {

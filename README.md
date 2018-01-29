@@ -2,11 +2,12 @@
 Otter is a micro web framework that sits on top of the servlet api 3.1. 
 
 It's feature set includes:
-- Embedded servlet container
-- Regex routing
-- Restful support
-- CSRF protection
-- Async I/O
+- [Embedded servlet container](#embedded-container)
+- [Regex routing](#routing)
+- [Restful support](#resources)
+- [CSRF protection](#csrf)
+- [Async I/O](#async-i/o)
+- [Delivery of static assets](#static-assets)
 
 ## Maven coordinates
 ```xml
@@ -14,14 +15,14 @@ It's feature set includes:
     <dependency>
         <groupId>org.rootservices</groupId>
         <artifactId>otter</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.2-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
 
 ## Gradle
 ```groovy
-compile group: 'org.rootservices', name: 'otter', version: '1.1-SNAPSHOT'
+compile group: 'org.rootservices', name: 'otter', version: '1.2-SNAPSHOT'
 ```
 
 ## Example Application
@@ -124,6 +125,18 @@ Render the [CSRF challenge token](https://github.com/RootServices/otter/blob/dev
 ```java
     <input id="csrfToken" type="hidden" name="csrfToken" value="${presenter.getCsrfChallengeToken()}" / >
 ```
+
+### Aync I/O
+Everything is read and written asynchronously. That journey begins in the [OtterEntryServlet](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/servlet/OtterEntryServlet.java#L33).
+
+JSPs also are delivered async via [Jetty](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/server/container/builder/WebAppContextBuilder.java#L82).
+
+### Static Assets
+
+Any static assets in, `src/main/webapp/public` is available.
+
+For example, `src/main/webapp/public/assets/js/jquery-3.3.1.min.js` can be retrieved with the context path, `assets/js/jquery-3.3.1.min.js`.
+
 
 ## Releasing to maven central
 ```bash

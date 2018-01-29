@@ -27,11 +27,15 @@ import java.util.EnumSet;
  * Created by tommackenzie on 4/3/16.
  *
  * A factory that creates a ServletContainer.
+ * System.setProperty("org.eclipse.jetty.LEVEL","INFO");
  */
 public class ServletContainerFactory {
     protected static Logger logger = LogManager.getLogger(ServletContainerFactory.class);
     private static String DIR_ALLOWED_KEY = "org.eclipse.jetty.servlet.Default.dirAllowed";
-    private static String WEB_XML = "/WEB-INF/web.xml";
+    private static String INCLUDE_JAR_PATTERN = "org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern";
+    private static String JARS_TO_INCLUDE = ".*/[^/]*servlet-api-[^/]*\\.jar$|.*/javax.servlet.jsp.jstl-.*\\.jar$|.*/[^/]*taglibs.*\\.jar$";
+    private static String JSP_SERVLET = "org.eclipse.jetty.jsp.JettyJspServlet";
+    private static String FALSE = "false";
     private CompiledClassPath compiledClassPath;
     private WebAppPath webAppPath;
 
@@ -125,8 +129,6 @@ public class ServletContainerFactory {
 
         jetty.setRequestLog(log);
 
-
-
         ServletContainer server = new ServletContainerImpl(jetty);
         return server;
     }
@@ -138,15 +140,14 @@ public class ServletContainerFactory {
                 .resourceBase(resourceBase)
                 .configurations(configurations)
                 .containerResource(containerResources)
-                .initParameter(DIR_ALLOWED_KEY, "false")
+                .initParameter(DIR_ALLOWED_KEY, FALSE)
                 .contextPath(documentRoot)
                 .parentLoaderPriority(true)
-                .attribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",
-                        ".*/[^/]*servlet-api-[^/]*\\.jar$|.*/javax.servlet.jsp.jstl-.*\\.jar$|.*/[^/]*taglibs.*\\.jar$")
-
-                .jspServet("org.eclipse.jetty.jsp.JettyJspServlet")
+                .attribute(INCLUDE_JAR_PATTERN, JARS_TO_INCLUDE)
+                .jspServlet(JSP_SERVLET)
                 .errorPageHandler(404, "/notFound")
                 .stateless()
+                .staticAssetServlet(resourceBase + "/public/")
                 .build();
 
         webAppContext.addFilter(EntryFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
@@ -160,14 +161,14 @@ public class ServletContainerFactory {
         WebAppContext webAppContext = new WebAppContextBuilder()
                 .classLoader(Thread.currentThread().getContextClassLoader())
                 .configurations(configurations)
-                .initParameter(DIR_ALLOWED_KEY, "false")
+                .initParameter(DIR_ALLOWED_KEY, FALSE)
                 .contextPath(documentRoot)
                 .parentLoaderPriority(true)
-                .attribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",
-                        ".*/[^/]*servlet-api-[^/]*\\.jar$|.*/javax.servlet.jsp.jstl-.*\\.jar$|.*/[^/]*taglibs.*\\.jar$")
-                .jspServet("org.eclipse.jetty.jsp.JettyJspServlet")
+                .attribute(INCLUDE_JAR_PATTERN, JARS_TO_INCLUDE)
+                .jspServlet(JSP_SERVLET)
                 .errorPageHandler(404, "/notFound")
                 .stateless()
+                .staticAssetServletWar("/public/")
                 .build();
 
         webAppContext.addFilter(EntryFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
@@ -180,10 +181,6 @@ public class ServletContainerFactory {
     protected String makeResourceBase(URI webApp) throws MalformedURLException {
         Resource resourceBase = Resource.newResource(webApp);
         return String.valueOf(resourceBase);
-    }
-
-    protected String makeWebXmlPath(URI webApp) {
-        return webApp.getPath() + WEB_XML;
     }
 
     protected PathResource makeFileResource(URI classPath) throws IOException {
