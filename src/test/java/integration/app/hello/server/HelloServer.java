@@ -7,9 +7,9 @@ import org.rootservices.otter.config.AppFactory;
 import org.rootservices.otter.server.container.ServletContainer;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 
 
@@ -20,6 +20,25 @@ public class HelloServer {
     private static String REQUEST_LOG = "logs/jetty/jetty-test-yyyy_mm_dd.request.log";
 
     public static void main(String[] args) {
+
+        // ServletContainer server = makeServer();
+        ServletContainer server = makeServer();
+
+        try {
+            logger.info("server starting");
+            server.start();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        try {
+            server.join();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    public static ServletContainer makeServer() {
         AppFactory otterAppFactory = new AppFactory();
         ServletContainerFactory servletContainerFactory = otterAppFactory.servletContainerFactory();
 
@@ -34,17 +53,30 @@ public class HelloServer {
             logger.error(e.getMessage(), e);
         }
 
+        return server;
+    }
+
+
+    public static ServletContainer makeServerFromWar() {
+        AppFactory otterAppFactory = new AppFactory();
+        ServletContainerFactory servletContainerFactory = otterAppFactory.servletContainerFactory();
+
+        URI war = null;
         try {
-            logger.info("server starting");
-            server.start();
-        } catch (Exception e) {
+            war = new URI("");
+        } catch (URISyntaxException e) {
             logger.error(e.getMessage(), e);
         }
 
+        ServletContainer server = null;
         try {
-            server.join();
-        } catch (Exception e) {
+            server = servletContainerFactory.makeServletContainerFromWar(DOCUMENT_ROOT, war, PORT, REQUEST_LOG);
+        } catch (MalformedURLException e) {
+            logger.error(e.getMessage(), e);
+        } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
+
+        return server;
     }
 }

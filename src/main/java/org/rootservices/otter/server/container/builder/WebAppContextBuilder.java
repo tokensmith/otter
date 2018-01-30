@@ -4,6 +4,7 @@ package org.rootservices.otter.server.container.builder;
 import org.apache.tomcat.util.descriptor.web.ErrorPage;
 import org.eclipse.jetty.server.session.Session;
 import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.PathResource;
@@ -75,7 +76,7 @@ public class WebAppContextBuilder {
         return this;
     }
 
-    public WebAppContextBuilder jspServet(String className) {
+    public WebAppContextBuilder jspServlet(String className) {
         ServletHolder jspHolder = new ServletHolder();
         jspHolder.setName("jsp");
         jspHolder.setClassName(className);
@@ -84,6 +85,34 @@ public class WebAppContextBuilder {
 
         servletHolders.add(jspHolder);
 
+        return this;
+    }
+
+    /**
+     * Configure delivery of static assets if you know the absolute path to the assets.
+     *
+     * @param resourceBase
+     * @return an instance of, WebAppContextBuilder
+     */
+    public WebAppContextBuilder staticAssetServlet(String resourceBase) {
+        ServletHolder defaultServletHolder = new ServletHolder("default", DefaultServlet.class);
+        defaultServletHolder.setInitParameter("resourceBase", resourceBase);
+
+        servletHolders.add(defaultServletHolder);
+        return this;
+    }
+
+    /**
+     * Configure delivery of static assets if they are included in the war file.
+     *
+     * @param relativeResourceBase
+     * @return an instance of, WebAppContextBuilder
+     */
+    public WebAppContextBuilder staticAssetServletWar(String relativeResourceBase) {
+        ServletHolder defaultServletHolder = new ServletHolder("default", DefaultServlet.class);
+        defaultServletHolder.setInitParameter("relativeResourceBase", resourceBase);
+
+        servletHolders.add(defaultServletHolder);
         return this;
     }
 
