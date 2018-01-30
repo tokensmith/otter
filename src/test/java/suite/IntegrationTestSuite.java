@@ -3,10 +3,7 @@ package suite;
 
 import com.ning.http.client.AsyncHttpClient;
 import integration.app.hello.controller.HelloResource;
-import integration.test.HelloResourceTest;
-import integration.test.HelloRestResourceTest;
-import integration.test.LoginResourceTest;
-import integration.test.NotFoundResourceTest;
+import integration.test.*;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.experimental.categories.Categories;
@@ -25,7 +22,8 @@ import java.net.URI;
     NotFoundResourceTest.class,
     HelloResourceTest.class,
     HelloRestResourceTest.class,
-    LoginResourceTest.class
+    LoginResourceTest.class,
+    AssetsTest.class
 })
 public class IntegrationTestSuite {
     private static AppFactory otterTestAppFactory;
