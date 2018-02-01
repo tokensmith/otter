@@ -1,5 +1,5 @@
 # otter
-Otter is a micro web framework that sits on top of the servlet api 3.1. 
+Otter is a micro web framework that sits on top of the servlet api 4.0 
 
 It's feature set includes:
 - [Embedded servlet container](#embedded-container)
