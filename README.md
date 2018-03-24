@@ -15,14 +15,14 @@ It's feature set includes:
     <dependency>
         <groupId>org.rootservices</groupId>
         <artifactId>otter</artifactId>
-        <version>1.2-SNAPSHOT</version>
+        <version>1.2</version>
     </dependency>
 </dependencies>
 ```
 
 ## Gradle
 ```groovy
-compile group: 'org.rootservices', name: 'otter', version: '1.2-SNAPSHOT'
+compile group: 'org.rootservices', name: 'otter', version: '1.2'
 ```
 
 ## Example Application
