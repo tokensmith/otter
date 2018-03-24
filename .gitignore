@@ -16,3 +16,10 @@ hs_err_pid*
 *.iml
 
 target/*
+
+# gradle
+!gradle-wrapper.jar
+.gradle
+/build/
+
+logs

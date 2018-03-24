@@ -5,9 +5,12 @@ import org.rootservices.otter.QueryStringToMap;
 import org.rootservices.otter.controller.builder.RequestBuilder;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
+import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.router.entity.Method;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,7 +30,7 @@ public class HttpServletRequestTranslator {
         this.queryStringToMap = queryStringToMap;
     }
 
-    public Request from(HttpServletRequest containerRequest) throws IOException {
+    public Request from(HttpServletRequest containerRequest, String containerBody) throws IOException {
 
         Method method = Method.valueOf(containerRequest.getMethod());
 
@@ -48,21 +51,30 @@ public class HttpServletRequestTranslator {
         Optional<String> queryString = Optional.ofNullable(containerRequest.getQueryString());
         Map<String, List<String>> queryParams = queryStringToMap.run(queryString);
 
-        Map<String, String> formData = new HashMap<>();
-        if (method == Method.POST) {
-            formData = getFormData(containerRequest.getParameterMap(), queryParams);
+
+        Map<String, List<String>> formData = new HashMap<>();
+        if (method == Method.POST && ContentType.FORM_URL_ENCODED.getValue().equals(containerRequest.getContentType())) {
+            formData = queryStringToMap.run(Optional.of(containerBody));
         }
+
+        Optional<String> body = Optional.empty();
+        if (method == Method.POST && !ContentType.FORM_URL_ENCODED.getValue().equals(containerRequest.getContentType())) {
+            body = Optional.of(containerBody);
+        }
+
+        String ipAddress = containerRequest.getRemoteAddr();
 
         return new RequestBuilder()
                 .matcher(Optional.empty())
                 .method(method)
                 .pathWithParams(pathWithParams)
-                .authScheme(Optional.empty())
                 .cookies(otterCookies)
                 .headers(headers)
                 .queryParams(queryParams)
                 .formData(formData)
-                .body(containerRequest.getReader())
+                .body(body)
+                .csrfChallenge(Optional.empty())
+                .ipAddress(ipAddress)
                 .build();
     }
 
@@ -74,17 +86,5 @@ public class HttpServletRequestTranslator {
             queryStringForUrl = EMPTY;
         }
         return queryStringForUrl;
-    }
-
-    protected Map<String, String> getFormData(Map<String, String[]> containerParameters, Map<String, List<String>> queryParams) {
-        Map<String, String> formData = new HashMap<>();
-
-        for (Map.Entry<String, String[]> formElement: containerParameters.entrySet()) {
-            if(queryParams.get(formElement.getKey()) == null) {
-                formData.put(formElement.getKey(), formElement.getValue()[0]);
-            }
-        }
-
-        return formData;
     }
 }

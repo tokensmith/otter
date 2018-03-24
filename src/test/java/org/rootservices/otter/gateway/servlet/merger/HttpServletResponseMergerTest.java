@@ -3,20 +3,27 @@ package org.rootservices.otter.gateway.servlet.merger;
 import helper.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestCookieTranslator;
+import suite.UnitTest;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.util.Optional;
 import java.util.function.Function;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 
+@Category(UnitTest.class)
 public class HttpServletResponseMergerTest {
     private HttpServletResponseMerger subject;
     @Mock
@@ -111,6 +118,25 @@ public class HttpServletResponseMergerTest {
         // indicates cookie was added
         verify(mockHttpServletRequestCookieTranslator.to).apply(response.getCookies().get(cookieName));
         verify(mockContainerResponse).addCookie(mockContainerCookieToCreate);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mergeWhenPayloadShouldNotWritePayload() throws Exception {
+        HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
+        Cookie[] containerCookies = new Cookie[0];
+        Response response = FixtureFactory.makeResponse();
+
+        Optional<ByteArrayOutputStream> payload = Optional.of(new ByteArrayOutputStream());
+        response.setPayload(payload);
+
+        ServletOutputStream mockServletOutputStream = mock(ServletOutputStream.class);
+        when(mockContainerResponse.getOutputStream()).thenReturn(mockServletOutputStream);
+
+        subject.merge(mockContainerResponse, containerCookies, response);
+
+        // indicates json was not set in response.
+        verify(mockServletOutputStream, never()).write(payload.get().toByteArray());
     }
 
 }

@@ -1,16 +1,19 @@
 package org.rootservices.otter.translator;
 
+import helper.FixtureFactory;
 import helper.entity.Dummy;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.rootservices.otter.config.AppFactory;
 import org.rootservices.otter.translator.exception.DuplicateKeyException;
 import org.rootservices.otter.translator.exception.InvalidPayloadException;
 import org.rootservices.otter.translator.exception.InvalidValueException;
 import org.rootservices.otter.translator.exception.UnknownKeyException;
+import suite.UnitTest;
 
-import java.io.BufferedReader;
-import java.io.StringReader;
+
+import java.io.OutputStream;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -19,19 +22,19 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 
+@Category(UnitTest.class)
 public class JsonTranslatorTest {
-    private JsonTranslator subject;
+    private JsonTranslator<Dummy> subject;
 
     @Before
     public void setUp() {
         AppFactory factory = new AppFactory();
-        subject = new JsonTranslator(factory.objectMapper());
+        subject = new JsonTranslator<Dummy>(factory.objectMapper());
     }
 
     @Test
     public void fromShouldBeOk() throws Exception {
-        StringReader sr = new StringReader("{\"integer\": 5, \"string\": \"foo\", \"local_date\": \"2019-01-01\"}");
-        BufferedReader json = new BufferedReader(sr);
+        String json="{\"integer\": 5, \"string\": \"foo\", \"local_date\": \"2019-01-01\"}";
 
         Dummy actual = (Dummy) subject.from(json, Dummy.class);
 
@@ -43,8 +46,7 @@ public class JsonTranslatorTest {
 
     @Test
     public void fromShouldThrowDuplicateKeyException() throws Exception {
-        StringReader sr = new StringReader("{\"integer\": 5, \"integer\": \"4\", \"local_date\": \"2019-01-01\"}");
-        BufferedReader json = new BufferedReader(sr);
+        String json = "{\"integer\": 5, \"integer\": \"4\", \"local_date\": \"2019-01-01\"}";
 
         DuplicateKeyException actual = null;
         try {
@@ -59,8 +61,7 @@ public class JsonTranslatorTest {
 
     @Test
     public void fromShouldThrowUnknownKeyException() throws Exception {
-        StringReader sr = new StringReader("{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}");
-        BufferedReader json = new BufferedReader(sr);
+        String json = "{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}";
 
         UnknownKeyException actual = null;
         try {
@@ -75,8 +76,7 @@ public class JsonTranslatorTest {
 
     @Test
     public void fromShouldThrowInvalidValueException() throws Exception {
-        StringReader sr = new StringReader("{\"integer\": \"not a integer\", \"string\": \"foo\", \"local_date\": \"2019-01-01\"}");
-        BufferedReader json = new BufferedReader(sr);
+        String json = "{\"integer\": \"not a integer\", \"string\": \"foo\", \"local_date\": \"2019-01-01\"}";
 
         InvalidValueException actual = null;
         try {
@@ -91,8 +91,7 @@ public class JsonTranslatorTest {
 
     @Test
     public void fromShouldThrowInvalidPayloadException() throws Exception {
-        StringReader sr = new StringReader("{");
-        BufferedReader json = new BufferedReader(sr);
+        String json = "{";
 
         InvalidPayloadException actual = null;
         try {
@@ -113,9 +112,9 @@ public class JsonTranslatorTest {
         dummy.setLocalDate(LocalDate.of(2017, 05, 20));
         dummy.setIntegerOptional(Optional.empty());
 
-        String json = subject.to(dummy);
+        OutputStream out = subject.to(dummy);
 
-        assertThat(json, is(notNullValue()));
-        assertThat(json, is("{\"integer\":5,\"string\":\"string\",\"local_date\":\"2017-05-20\",\"integer_optional\":null}"));
+        assertThat(out, is(notNullValue()));
+        assertThat(out.toString(), is("{\"integer\":5,\"string\":\"string\",\"local_date\":\"2017-05-20\",\"integer_optional\":null}"));
     }
 }

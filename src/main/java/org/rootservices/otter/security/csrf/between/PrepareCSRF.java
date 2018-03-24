@@ -2,13 +2,18 @@ package org.rootservices.otter.security.csrf.between;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.rootservices.jwt.entity.jwt.JsonWebToken;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Method;
+import org.rootservices.otter.router.exception.HaltException;
+import org.rootservices.otter.security.csrf.CsrfClaims;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import org.rootservices.otter.security.csrf.exception.CsrfException;
+
+import java.util.Optional;
 
 
 public class PrepareCSRF implements Between {
@@ -30,7 +35,7 @@ public class PrepareCSRF implements Between {
     }
 
     @Override
-    public Boolean process(Method method, Request request, Response response) {
+    public void process(Method method, Request request, Response response) throws HaltException {
         if (response.getCookies().get(cookieName) == null) {
             String challengeToken = doubleSubmitCSRF.makeChallengeToken();
             try {
@@ -38,11 +43,20 @@ public class PrepareCSRF implements Between {
                     cookieName, challengeToken, isSecure, maxAge
                 );
                 response.getCookies().put(cookieName, csrfCookie);
+                request.setCsrfChallenge(Optional.of(challengeToken));
             } catch (CsrfException e) {
                 logger.error(e.getMessage(), e);
             }
+        } else {
+            JsonWebToken csrfJwt = null;
+            try {
+                csrfJwt = doubleSubmitCSRF.csrfCookieValueToJwt(response.getCookies().get(cookieName).getValue());
+            } catch (CsrfException e) {
+                logger.error(e.getMessage(), e);
+            }
+            CsrfClaims claims = (CsrfClaims) csrfJwt.getClaims();
+            request.setCsrfChallenge(Optional.of(claims.getChallengeToken()));
         }
-        return true;
     }
 
     public String getCookieName() {

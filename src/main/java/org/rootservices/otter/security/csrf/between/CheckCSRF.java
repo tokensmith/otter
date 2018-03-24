@@ -5,14 +5,21 @@ import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Method;
+import org.rootservices.otter.router.exception.CsrfException;
+import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
+
+import java.util.List;
+import java.util.Optional;
 
 public class CheckCSRF implements Between {
     private String cookieName;
     private String formFieldName;
     private DoubleSubmitCSRF doubleSubmitCSRF;
+    private static String HALT_MSG = "CSRF failed";
 
     public CheckCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
         this.doubleSubmitCSRF = doubleSubmitCSRF;
@@ -25,20 +32,22 @@ public class CheckCSRF implements Between {
     }
 
     @Override
-    public Boolean process(Method method, Request request, Response response) {
+    public void process(Method method, Request request, Response response) throws HaltException {
         Boolean ok;
         Cookie csrfCookie = request.getCookies().get(cookieName);
-        String formValue = request.getFormData().get(formFieldName);
-        if ( csrfCookie != null && formValue != null) {
-            ok = doubleSubmitCSRF.doTokensMatch(csrfCookie.getValue(), formValue);
+        List<String> formValue = request.getFormData().get(formFieldName);
+        if ( csrfCookie != null && formValue != null && formValue.size() == 1) {
+            ok = doubleSubmitCSRF.doTokensMatch(csrfCookie.getValue(), formValue.get(0));
         } else {
             ok = false;
         }
 
         if(!ok) {
             response.setStatusCode(StatusCode.FORBIDDEN);
+            throw new CsrfException(HALT_MSG);
+        } else {
+            request.setCsrfChallenge(Optional.of(formValue.get(0)));
         }
-        return ok;
     }
 
     public String getCookieName() {

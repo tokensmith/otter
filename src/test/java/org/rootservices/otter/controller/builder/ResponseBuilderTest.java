@@ -4,10 +4,13 @@ package org.rootservices.otter.controller.builder;
 import helper.entity.FakePresenter;
 import helper.FixtureFactory;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
+import suite.UnitTest;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -17,6 +20,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 
+@Category(UnitTest.class)
 public class ResponseBuilderTest {
 
     @Test
@@ -41,7 +45,7 @@ public class ResponseBuilderTest {
 
     @Test
     public void bodyShouldBeOk() {
-        Optional<String> body = Optional.empty();
+        Optional<ByteArrayOutputStream> body = Optional.empty();
 
         ResponseBuilder subject = new ResponseBuilder();
         Response actual = subject.payload(body).build();

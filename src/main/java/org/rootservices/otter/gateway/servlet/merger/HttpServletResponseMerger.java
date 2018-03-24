@@ -32,11 +32,6 @@ public class HttpServletResponseMerger {
         // status code
         containerResponse.setStatus(response.getStatusCode().getCode());
 
-        // structured data.. json
-        if(response.getPayload().isPresent()) {
-            containerResponse.getWriter().write(response.getPayload().get());
-        }
-
         return containerResponse;
     }
 

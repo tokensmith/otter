@@ -3,23 +3,25 @@ package org.rootservices.otter.controller.builder;
 import helper.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.header.AuthScheme;
 import org.rootservices.otter.router.entity.Method;
+import suite.UnitTest;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.StringReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
-
+@Category(UnitTest.class)
 public class RequestBuilderTest {
     private RequestBuilder subject;
 
@@ -51,14 +53,6 @@ public class RequestBuilderTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMethod(), is(Method.GET));
-    }
-
-    @Test
-    public void buildWhenSchemeShouldBeOk() {
-        Request actual = subject.authScheme(Optional.of(AuthScheme.BEARER)).build();
-
-        assertThat(actual, is(notNullValue()));
-        assertThat(actual.getAuthScheme().isPresent(), is(true));
     }
 
     @Test
@@ -96,8 +90,8 @@ public class RequestBuilderTest {
 
     @Test
     public void buildWhenFormDataShouldBeOk() {
-        Map<String, String> formData = new HashMap<>();
-        formData.put("foo", "bar");
+        Map<String, List<String>> formData = new HashMap<>();
+        formData.put("foo", Arrays.asList("bar"));
 
         Request actual = subject.formData(formData).build();
 
@@ -106,13 +100,22 @@ public class RequestBuilderTest {
     }
 
     @Test
-    public void buildWhenBodyShouldBeOk() {
-        StringReader sr = new StringReader("{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}");
-        BufferedReader body = new BufferedReader(sr);
+    public void buildWhenPayloadShouldBeOk() {
+        Optional<String> json = Optional.of("{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}");
 
-        Request actual = subject.body(body).build();
+        Request actual = subject.body(json).build();
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getBody(), is(body));
+        assertThat(actual.getBody(), is(json));
+    }
+
+    @Test
+    public void buildWhenIpAddressShouldBeOk() {
+
+        String ipAddress = "127.0.0.1";
+        Request actual = subject.ipAddress(ipAddress).build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getIpAddress(), is(ipAddress));
     }
 }
