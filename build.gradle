@@ -81,13 +81,31 @@ uploadArchives {
                 authentication(userName: ossrhUser, password: ossrhPassword)
             }
             pom.project {
-                groupId 'org.rootservices'
-                artifactId project.name
-                version project.version
                 name project.name
-                description project.description
                 packaging 'jar'
+                description 'Micro web framework for servlet api 4.0'
                 url 'https://github.com/RootServices/otter'
+
+                scm {
+                    connection 'git@github.com:RootServices/otter.git'
+                    developerConnection 'git@github.com:RootServices/otter.git'
+                    url 'https://github.com/RootServices/otter'
+                }
+
+                licenses {
+                    license {
+                        name 'The MIT License (MIT)'
+                        url 'https://github.com/RootServices/otter/blob/development/LICENSE'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'tmackenzie'
+                        name 'Tom MacKenzie'
+                        email 'tom@rootservices.org'
+                    }
+                }
             }
         }
     }
