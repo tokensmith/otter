@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwt.JsonWebToken;
-import org.rootservices.jwt.serializer.exception.JsonToJwtException;
+import org.rootservices.jwt.serialization.exception.JsonToJwtException;
 import org.rootservices.otter.config.AppFactory;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.security.csrf.exception.CsrfException;
@@ -85,9 +85,9 @@ public class DoubleSubmitCSRFTest {
     @Test
     public void csrfCookieValueToJwtShouldReturnJwt() throws Exception {
         SymmetricKey key = FixtureFactory.signKey("key-1");
-        String encodedCsrfJwt = FixtureFactory.encodedCsrfJwt(key, "challenge-token");
+        String compactJwtForCSRF = FixtureFactory.compactJwtForCSRF(key, "challenge-token");
 
-        JsonWebToken actual = subject.csrfCookieValueToJwt(encodedCsrfJwt);
+        JsonWebToken actual = subject.csrfCookieValueToJwt(compactJwtForCSRF);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getHeader(), is(notNullValue()));
@@ -117,8 +117,8 @@ public class DoubleSubmitCSRFTest {
     @Test
     public void verifyCsrfCookieSignatureShouldBeTrue() throws Exception {
         SymmetricKey key = FixtureFactory.signKey("key-1");
-        String encodedCsrfJwt = FixtureFactory.encodedCsrfJwt(key, "challenge-token");
-        JsonWebToken csrfJwt = FixtureFactory.csrfJwt(encodedCsrfJwt);
+        String compactJwtForCSRF = FixtureFactory.compactJwtForCSRF(key, "challenge-token");
+        JsonWebToken csrfJwt = FixtureFactory.csrfJwt(compactJwtForCSRF);
 
         Boolean actual = subject.verifyCsrfCookieSignature(csrfJwt, key);
 
@@ -129,8 +129,8 @@ public class DoubleSubmitCSRFTest {
     @Test
     public void verifyCsrfCookieSignatureShouldBeFalse() throws Exception {
         SymmetricKey key = FixtureFactory.signKey("key-1");
-        String encodedCsrfJwt = FixtureFactory.encodedCsrfJwt(key, "challenge-token");
-        JsonWebToken csrfJwt = FixtureFactory.csrfJwt(encodedCsrfJwt);
+        String compactJwtForCSRF = FixtureFactory.compactJwtForCSRF(key, "challenge-token");
+        JsonWebToken csrfJwt = FixtureFactory.csrfJwt(compactJwtForCSRF);
 
         SymmetricKey key2 = FixtureFactory.signKey("key-2");
         key2.setKey("key-2-value");

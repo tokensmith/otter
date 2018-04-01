@@ -1,9 +1,10 @@
 package suite;
 
 
-import com.ning.http.client.AsyncHttpClient;
+
 import integration.app.hello.controller.HelloResource;
 import integration.test.*;
+import org.asynchttpclient.AsyncHttpClient;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.experimental.categories.Categories;
@@ -13,8 +14,10 @@ import org.rootservices.otter.config.AppFactory;
 import org.rootservices.otter.server.container.ServletContainer;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 
-import java.io.File;
+
 import java.net.URI;
+
+import static org.asynchttpclient.Dsl.asyncHttpClient;
 
 @RunWith(Categories.class)
 @Categories.IncludeCategory(ServletContainerTest.class)
@@ -53,7 +56,7 @@ public class IntegrationTestSuite {
 
         servletContainerURI = servletContainer.getURI();
 
-        httpClient = new AsyncHttpClient();
+        httpClient = asyncHttpClient();
     }
 
     /**
@@ -74,6 +77,7 @@ public class IntegrationTestSuite {
     @AfterClass
     public static void afterClass() throws Exception {
         servletContainer.stop();
+        httpClient.close();
     }
 
     /**
