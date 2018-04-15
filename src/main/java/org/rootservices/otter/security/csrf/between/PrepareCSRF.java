@@ -3,6 +3,7 @@ package org.rootservices.otter.security.csrf.between;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.jwt.entity.jwt.JsonWebToken;
+import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
@@ -22,31 +23,27 @@ import java.util.Optional;
  */
 public class PrepareCSRF implements Between {
     protected static Logger logger = LogManager.getLogger(PrepareCSRF.class);
-    private String cookieName;
-    private Boolean isSecure;
-    private Integer maxAge;
+    private CookieConfig cookieConfig;
     private DoubleSubmitCSRF doubleSubmitCSRF;
 
     public PrepareCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
         this.doubleSubmitCSRF = doubleSubmitCSRF;
     }
 
-    public PrepareCSRF(String cookieName, Boolean isSecure, Integer maxAge, DoubleSubmitCSRF doubleSubmitCSRF) {
-        this.cookieName = cookieName;
-        this.isSecure = isSecure;
-        this.maxAge = maxAge;
+    public PrepareCSRF(CookieConfig cookieConfig, DoubleSubmitCSRF doubleSubmitCSRF) {
+        this.cookieConfig = cookieConfig;
         this.doubleSubmitCSRF = doubleSubmitCSRF;
     }
 
     @Override
     public void process(Method method, Request request, Response response) throws HaltException {
-        if (response.getCookies().get(cookieName) == null) {
+        if (response.getCookies().get(cookieConfig.getName()) == null) {
             String challengeToken = doubleSubmitCSRF.makeChallengeToken();
             try {
                 Cookie csrfCookie = doubleSubmitCSRF.makeCsrfCookie(
-                    cookieName, challengeToken, isSecure, maxAge
+                        cookieConfig.getName(), challengeToken, cookieConfig.getSecure(), cookieConfig.getAge()
                 );
-                response.getCookies().put(cookieName, csrfCookie);
+                response.getCookies().put(cookieConfig.getName(), csrfCookie);
                 request.setCsrfChallenge(Optional.of(challengeToken));
             } catch (CsrfException e) {
                 logger.error(e.getMessage(), e);
@@ -54,7 +51,7 @@ public class PrepareCSRF implements Between {
         } else {
             JsonWebToken csrfJwt = null;
             try {
-                csrfJwt = doubleSubmitCSRF.csrfCookieValueToJwt(response.getCookies().get(cookieName).getValue());
+                csrfJwt = doubleSubmitCSRF.csrfCookieValueToJwt(response.getCookies().get(cookieConfig.getName()).getValue());
             } catch (CsrfException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -63,28 +60,12 @@ public class PrepareCSRF implements Between {
         }
     }
 
-    public String getCookieName() {
-        return cookieName;
+    public CookieConfig getCookieConfig() {
+        return cookieConfig;
     }
 
-    public void setCookieName(String cookieName) {
-        this.cookieName = cookieName;
-    }
-
-    public Boolean getSecure() {
-        return isSecure;
-    }
-
-    public void setSecure(Boolean secure) {
-        isSecure = secure;
-    }
-
-    public Integer getMaxAge() {
-        return maxAge;
-    }
-
-    public void setMaxAge(Integer maxAge) {
-        this.maxAge = maxAge;
+    public void setCookieConfig(CookieConfig cookieConfig) {
+        this.cookieConfig = cookieConfig;
     }
 
     public DoubleSubmitCSRF getDoubleSubmitCSRF() {

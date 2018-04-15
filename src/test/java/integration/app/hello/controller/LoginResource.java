@@ -8,6 +8,7 @@ import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public class LoginResource extends Resource {
     public static String URL = "/login";
@@ -28,6 +29,11 @@ public class LoginResource extends Resource {
         response.setPresenter(Optional.of(presenter));
         response.setStatusCode(StatusCode.OK);
         response.setTemplate(Optional.of(JSP_PATH));
+
+        // example of how to set a session for a user.
+        TokenSession tokenSession = new TokenSession();
+        tokenSession.setAccessToken(UUID.randomUUID());
+        response.setSession(Optional.of(tokenSession));
         return response;
     }
 }

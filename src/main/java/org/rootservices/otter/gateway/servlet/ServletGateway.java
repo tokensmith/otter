@@ -4,6 +4,7 @@ package org.rootservices.otter.gateway.servlet;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
+import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.builder.ResponseBuilder;
 import org.rootservices.otter.controller.entity.Request;
@@ -256,21 +257,13 @@ public class ServletGateway {
         this.notFoundRoute = notFoundRoute;
     }
 
-    public void setCsrfCookieName(String cookieName) {
-        ((CheckCSRF) this.checkCSRF).setCookieName(cookieName);
-        ((PrepareCSRF) this.prepareCSRF).setCookieName(cookieName);
+    public void setCsrfCookieConfig(CookieConfig csrfCookieConfig) {
+        ((CheckCSRF) this.checkCSRF).setCookieName(csrfCookieConfig.getName());
+        ((PrepareCSRF) this.prepareCSRF).setCookieConfig(csrfCookieConfig);
     }
 
     public void setCsrfFormFieldName(String fieldName) {
         ((CheckCSRF) this.checkCSRF).setFormFieldName(fieldName);
-    }
-
-    public void setCsrfCookieAge(Integer csrfCookieAge) {
-        ((PrepareCSRF) this.prepareCSRF).setMaxAge(csrfCookieAge);
-    }
-
-    public void setCsrfCookieSecure(Boolean csrfCookieSecure) {
-        ((PrepareCSRF) this.prepareCSRF).setSecure(csrfCookieSecure);
     }
 
     public void setSignKey(SymmetricKey signKey) {

@@ -4,6 +4,7 @@ package integration.app.hello.controller;
 import integration.app.hello.config.AppConfig;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwk.Use;
+import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.router.RouteBuilder;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.servlet.OtterEntryServlet;
@@ -20,9 +21,8 @@ public class EntryServlet extends OtterEntryServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        servletGateway.setCsrfCookieAge(-1);
-        servletGateway.setCsrfCookieName("csrf");
-        servletGateway.setCsrfCookieSecure(false);
+        CookieConfig csrfCookieConfig = new CookieConfig("csrf", false, -1);
+        servletGateway.setCsrfCookieConfig(csrfCookieConfig);
         servletGateway.setCsrfFormFieldName("csrfToken");
 
         SymmetricKey key = new SymmetricKey(
