@@ -35,6 +35,7 @@ import java.util.Optional;
  */
 public class EncryptSession implements Between {
     public static final String NO_SESSION = "Response did not have a session. Unable to set cookie session for response";
+    public static final String COULD_NOT_ENCRYPT_SESSION = "Could not encrypt session cookie";
     protected static Logger LOGGER = LogManager.getLogger(EncryptSession.class);
 
     private CookieConfig cookieConfig;
@@ -60,7 +61,7 @@ public class EncryptSession implements Between {
                 session = encrypt(response.getSession().get());
             } catch (EncryptSessionException e) {
                 LOGGER.error(e.getMessage(), e);
-                return;
+                throw new HaltException(COULD_NOT_ENCRYPT_SESSION, e);
             }
 
             Cookie cookie = new Cookie();
@@ -72,6 +73,7 @@ public class EncryptSession implements Between {
             response.getCookies().put(cookieConfig.getName(), cookie);
         } else {
             LOGGER.error(NO_SESSION);
+            throw new HaltException(NO_SESSION);
         }
     }
 
