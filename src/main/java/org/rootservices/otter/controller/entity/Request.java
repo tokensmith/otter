@@ -1,6 +1,7 @@
 package org.rootservices.otter.controller.entity;
 
 
+import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.router.entity.Method;
 
 
@@ -20,6 +21,7 @@ public class Request {
     private Optional<String> body;
     private Optional<String> csrfChallenge;
     private String ipAddress;
+    private Optional<Session> session = Optional.empty();
     private Optional<Object> user;
 
     public Request() {}
@@ -123,5 +125,13 @@ public class Request {
 
     public void setUser(Optional<Object> user) {
         this.user = user;
+    }
+
+    public Optional<Session> getSession() {
+        return session;
+    }
+
+    public void setSession(Optional<Session> session) {
+        this.session = session;
     }
 }

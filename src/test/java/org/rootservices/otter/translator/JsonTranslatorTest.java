@@ -1,11 +1,10 @@
 package org.rootservices.otter.translator;
 
-import helper.FixtureFactory;
-import helper.entity.Dummy;
+import helper.entity.DummyPayload;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.rootservices.otter.config.AppFactory;
+import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.translator.exception.DuplicateKeyException;
 import org.rootservices.otter.translator.exception.InvalidPayloadException;
 import org.rootservices.otter.translator.exception.InvalidValueException;
@@ -24,19 +23,19 @@ import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
 public class JsonTranslatorTest {
-    private JsonTranslator<Dummy> subject;
+    private JsonTranslator<DummyPayload> subject;
 
     @Before
     public void setUp() {
-        AppFactory factory = new AppFactory();
-        subject = new JsonTranslator<Dummy>(factory.objectMapper());
+        OtterAppFactory factory = new OtterAppFactory();
+        subject = new JsonTranslator<DummyPayload>(factory.objectMapper());
     }
 
     @Test
     public void fromShouldBeOk() throws Exception {
         String json="{\"integer\": 5, \"string\": \"foo\", \"local_date\": \"2019-01-01\"}";
 
-        Dummy actual = (Dummy) subject.from(json, Dummy.class);
+        DummyPayload actual = (DummyPayload) subject.from(json, DummyPayload.class);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getInteger(), is(5));
@@ -50,7 +49,7 @@ public class JsonTranslatorTest {
 
         DuplicateKeyException actual = null;
         try {
-            subject.from(json, Dummy.class);
+            subject.from(json, DummyPayload.class);
         } catch(DuplicateKeyException e) {
             actual = e;
         }
@@ -65,7 +64,7 @@ public class JsonTranslatorTest {
 
         UnknownKeyException actual = null;
         try {
-            subject.from(json, Dummy.class);
+            subject.from(json, DummyPayload.class);
         } catch(UnknownKeyException e) {
             actual = e;
         }
@@ -80,7 +79,7 @@ public class JsonTranslatorTest {
 
         InvalidValueException actual = null;
         try {
-            subject.from(json, Dummy.class);
+            subject.from(json, DummyPayload.class);
         } catch(InvalidValueException e) {
             actual = e;
         }
@@ -95,7 +94,7 @@ public class JsonTranslatorTest {
 
         InvalidPayloadException actual = null;
         try {
-            subject.from(json, Dummy.class);
+            subject.from(json, DummyPayload.class);
         } catch(InvalidPayloadException e) {
             actual = e;
         }
@@ -106,7 +105,7 @@ public class JsonTranslatorTest {
 
     @Test
     public void toShouldBeOk() throws Exception {
-        Dummy dummy = new Dummy();
+        DummyPayload dummy = new DummyPayload();
         dummy.setInteger(5);
         dummy.setString("string");
         dummy.setLocalDate(LocalDate.of(2017, 05, 20));

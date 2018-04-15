@@ -8,7 +8,7 @@ import org.rootservices.otter.translatable.Translatable;
 import java.time.LocalDate;
 import java.util.Optional;
 
-public class Dummy implements Translatable {
+public class DummyPayload implements Translatable {
     private Integer integer;
     private String string;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

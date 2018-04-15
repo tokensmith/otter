@@ -2,7 +2,7 @@ package org.rootservices.otter.controller;
 
 
 import helper.FixtureFactory;
-import helper.entity.Dummy;
+import helper.entity.DummyPayload;
 import helper.entity.FakeRestResource;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 @Category(UnitTest.class)
 public class RestResourceTest {
     @Mock
-    private JsonTranslator<Dummy> mockJsonTranslator;
+    private JsonTranslator<DummyPayload> mockJsonTranslator;
     private RestResource subject;
 
     @Before
@@ -75,8 +75,8 @@ public class RestResourceTest {
 
         Response response = FixtureFactory.makeResponse();
 
-        Dummy dummy = new Dummy();
-        when(mockJsonTranslator.from(request.getBody().get(), Dummy.class)).thenReturn(dummy);
+        DummyPayload dummy = new DummyPayload();
+        when(mockJsonTranslator.from(request.getBody().get(), DummyPayload.class)).thenReturn(dummy);
 
         Response actual = subject.post(request, response);
 
@@ -97,7 +97,7 @@ public class RestResourceTest {
         Response response = FixtureFactory.makeResponse();
 
         DuplicateKeyException e = new DuplicateKeyException("test", null, "key");
-        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), Dummy.class);
+        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
@@ -121,7 +121,7 @@ public class RestResourceTest {
         Response response = FixtureFactory.makeResponse();
 
         InvalidValueException e = new InvalidValueException("test", null, "key");
-        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), Dummy.class);
+        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
@@ -145,7 +145,7 @@ public class RestResourceTest {
         Response response = FixtureFactory.makeResponse();
 
         UnknownKeyException e = new UnknownKeyException("test", null, "key");
-        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), Dummy.class);
+        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
@@ -169,7 +169,7 @@ public class RestResourceTest {
         Response response = FixtureFactory.makeResponse();
 
         InvalidPayloadException e = new InvalidPayloadException("test", null);
-        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), Dummy.class);
+        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
@@ -193,7 +193,7 @@ public class RestResourceTest {
         Response response = FixtureFactory.makeResponse();
 
         InvalidPayloadException e = new InvalidPayloadException("test", null);
-        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), Dummy.class);
+        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ToJsonException e2 = new ToJsonException("test", null);
         doThrow(e2).when(mockJsonTranslator).to(any(Error.class));
@@ -216,8 +216,8 @@ public class RestResourceTest {
 
         Response response = FixtureFactory.makeResponse();
 
-        Dummy dummy = new Dummy();
-        when(mockJsonTranslator.from(request.getBody().get(), Dummy.class)).thenReturn(dummy);
+        DummyPayload dummy = new DummyPayload();
+        when(mockJsonTranslator.from(request.getBody().get(), DummyPayload.class)).thenReturn(dummy);
 
         Response actual = subject.put(request, response);
 
@@ -238,7 +238,7 @@ public class RestResourceTest {
         Response response = FixtureFactory.makeResponse();
 
         DuplicateKeyException e = new DuplicateKeyException("test", null, "key");
-        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), Dummy.class);
+        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
@@ -262,7 +262,7 @@ public class RestResourceTest {
         Response response = FixtureFactory.makeResponse();
 
         InvalidValueException e = new InvalidValueException("test", null, "key");
-        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), Dummy.class);
+        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
@@ -286,7 +286,7 @@ public class RestResourceTest {
         Response response = FixtureFactory.makeResponse();
 
         UnknownKeyException e = new UnknownKeyException("test", null, "key");
-        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), Dummy.class);
+        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
@@ -310,7 +310,7 @@ public class RestResourceTest {
         Response response = FixtureFactory.makeResponse();
 
         InvalidPayloadException e = new InvalidPayloadException("test", null);
-        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), Dummy.class);
+        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
@@ -334,7 +334,7 @@ public class RestResourceTest {
         Response response = FixtureFactory.makeResponse();
 
         InvalidPayloadException e = new InvalidPayloadException("test", null);
-        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), Dummy.class);
+        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ToJsonException e2 = new ToJsonException("test", null);
         doThrow(e2).when(mockJsonTranslator).to(any(Error.class));
@@ -421,8 +421,8 @@ public class RestResourceTest {
 
         Response response = FixtureFactory.makeResponse();
 
-        Dummy dummy = new Dummy();
-        when(mockJsonTranslator.from(request.getBody().get(), Dummy.class)).thenReturn(dummy);
+        DummyPayload dummy = new DummyPayload();
+        when(mockJsonTranslator.from(request.getBody().get(), DummyPayload.class)).thenReturn(dummy);
 
         Response actual = subject.patch(request, response);
 
@@ -443,7 +443,7 @@ public class RestResourceTest {
         Response response = FixtureFactory.makeResponse();
 
         DuplicateKeyException e = new DuplicateKeyException("test", null, "key");
-        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), Dummy.class);
+        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
@@ -467,7 +467,7 @@ public class RestResourceTest {
         Response response = FixtureFactory.makeResponse();
 
         InvalidValueException e = new InvalidValueException("test", null, "key");
-        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), Dummy.class);
+        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
@@ -491,7 +491,7 @@ public class RestResourceTest {
         Response response = FixtureFactory.makeResponse();
 
         UnknownKeyException e = new UnknownKeyException("test", null, "key");
-        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), Dummy.class);
+        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
@@ -515,7 +515,7 @@ public class RestResourceTest {
         Response response = FixtureFactory.makeResponse();
 
         InvalidPayloadException e = new InvalidPayloadException("test", null);
-        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), Dummy.class);
+        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
@@ -539,7 +539,7 @@ public class RestResourceTest {
         Response response = FixtureFactory.makeResponse();
 
         InvalidPayloadException e = new InvalidPayloadException("test", null);
-        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), Dummy.class);
+        doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ToJsonException e2 = new ToJsonException("test", null);
         doThrow(e2).when(mockJsonTranslator).to(any(Error.class));

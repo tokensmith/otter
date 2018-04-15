@@ -10,7 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.experimental.categories.Categories;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.rootservices.otter.config.AppFactory;
+import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.server.container.ServletContainer;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 
@@ -29,7 +29,7 @@ import static org.asynchttpclient.Dsl.asyncHttpClient;
     AssetsTest.class
 })
 public class IntegrationTestSuite {
-    private static AppFactory otterTestAppFactory;
+    private static OtterAppFactory otterTestAppFactory;
     private static ServletContainerFactory servletContainerFactory;
     private static ServletContainer servletContainer;
     private static URI servletContainerURI;
@@ -46,7 +46,7 @@ public class IntegrationTestSuite {
      */
     private static void configureAndStartServletContainer() throws Exception {
 
-        otterTestAppFactory = new AppFactory();
+        otterTestAppFactory = new OtterAppFactory();
         servletContainerFactory = otterTestAppFactory.servletContainerFactory();
 
         String webAppLocation = "/src/test/java/integration/app/webapp";

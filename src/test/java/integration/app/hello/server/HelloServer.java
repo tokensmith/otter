@@ -3,7 +3,7 @@ package integration.app.hello.server;
 import integration.app.hello.controller.HelloResource;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.rootservices.otter.config.AppFactory;
+import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.server.container.ServletContainer;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 
@@ -39,7 +39,7 @@ public class HelloServer {
     }
 
     public static ServletContainer makeServer() {
-        AppFactory otterAppFactory = new AppFactory();
+        OtterAppFactory otterAppFactory = new OtterAppFactory();
         ServletContainerFactory servletContainerFactory = otterAppFactory.servletContainerFactory();
 
         ServletContainer server = null;
@@ -58,7 +58,7 @@ public class HelloServer {
 
 
     public static ServletContainer makeServerFromWar() {
-        AppFactory otterAppFactory = new AppFactory();
+        OtterAppFactory otterAppFactory = new OtterAppFactory();
         ServletContainerFactory servletContainerFactory = otterAppFactory.servletContainerFactory();
 
         URI war = null;

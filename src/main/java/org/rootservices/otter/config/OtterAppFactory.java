@@ -25,12 +25,14 @@ import org.rootservices.otter.server.path.CompiledClassPath;
 import org.rootservices.otter.server.path.WebAppPath;
 import org.rootservices.otter.translator.JsonTranslator;
 
+import java.util.Base64;
 
 
 /**
  * Application Factory to construct objects in project.
  */
-public class AppFactory {
+public class OtterAppFactory {
+    private static ObjectMapper objectMapper;
 
     public CompiledClassPath compiledClassPath() {
         return new CompiledClassPath();
@@ -69,14 +71,16 @@ public class AppFactory {
     }
 
     public ObjectMapper objectMapper() {
-        ObjectMapper om =  new ObjectMapper()
-                .setPropertyNamingStrategy(
-                        PropertyNamingStrategy.SNAKE_CASE
-                )
-                .configure(JsonParser.Feature.STRICT_DUPLICATE_DETECTION, true)
-                .registerModule(new Jdk8Module())
-                .registerModule(new JavaTimeModule());
-        return om;
+        if (objectMapper == null) {
+            objectMapper = new ObjectMapper()
+                    .setPropertyNamingStrategy(
+                            PropertyNamingStrategy.SNAKE_CASE
+                    )
+                    .configure(JsonParser.Feature.STRICT_DUPLICATE_DETECTION, true)
+                    .registerModule(new Jdk8Module())
+                    .registerModule(new JavaTimeModule());
+        }
+        return objectMapper;
     }
 
     public HttpServletRequestTranslator httpServletRequestTranslator() {
@@ -115,4 +119,7 @@ public class AppFactory {
         return new PrepareCSRF(doubleSubmitCSRF);
     }
 
+    public Base64.Decoder urlDecoder() {
+        return Base64.getUrlDecoder();
+    }
 }

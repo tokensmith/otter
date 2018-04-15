@@ -8,7 +8,7 @@ import org.asynchttpclient.Response;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.rootservices.otter.config.AppFactory;
+import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.StatusCode;
 import suite.IntegrationTestSuite;
 import suite.ServletContainerTest;
@@ -40,7 +40,7 @@ public class HelloRestResourceTest {
 
         assertThat(response.getStatusCode(), is(StatusCode.OK.getCode()));
 
-        AppFactory appFactory = new AppFactory();
+        OtterAppFactory appFactory = new OtterAppFactory();
         ObjectMapper om = appFactory.objectMapper();
         Hello hello = om.readValue(response.getResponseBody(), Hello.class);
 
@@ -53,7 +53,7 @@ public class HelloRestResourceTest {
     public void postShouldReturn201() throws Exception {
         String helloURI = BASE_URI.toString() + "rest/hello";
 
-        AppFactory appFactory = new AppFactory();
+        OtterAppFactory appFactory = new OtterAppFactory();
         ObjectMapper om = appFactory.objectMapper();
         Hello hello = new Hello("Hello World");
 

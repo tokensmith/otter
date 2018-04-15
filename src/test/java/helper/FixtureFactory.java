@@ -113,6 +113,25 @@ public class FixtureFactory {
         );
     }
 
+    public static SymmetricKey encKey(String keyId) {
+        return new SymmetricKey(
+                Optional.of(keyId),
+                "MMNj8rE5m7NIDhwKYDmHSnlU1wfKuVvW6G--GKPYkRA",
+                Use.ENCRYPTION
+        );
+    }
+
+    public static Map<String, SymmetricKey> encRotationKey(String keyId) {
+        Map<String, SymmetricKey> encRotationKey = new HashMap<>();
+        SymmetricKey key = new SymmetricKey(
+                Optional.of(keyId),
+                "MMNj8rE5m7NIDhwKYDmHSnlU1wfKuVvW6G--GKPYkRA",
+                Use.ENCRYPTION
+        );
+        encRotationKey.put(keyId, key);
+        return encRotationKey;
+    }
+
     public static String compactJwtForCSRF(SymmetricKey signKey, String challengeToken) {
         CsrfClaims csrfClaims = new CsrfClaims();
         csrfClaims.setChallengeToken(challengeToken);

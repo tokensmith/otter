@@ -16,6 +16,10 @@ import org.rootservices.otter.security.csrf.exception.CsrfException;
 import java.util.Optional;
 
 
+/**
+ * Executed before a request reaches a resource to set the CSRF cookie and
+ * assign it to the request.
+ */
 public class PrepareCSRF implements Between {
     protected static Logger logger = LogManager.getLogger(PrepareCSRF.class);
     private String cookieName;

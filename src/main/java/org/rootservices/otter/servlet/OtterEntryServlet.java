@@ -4,7 +4,7 @@ package org.rootservices.otter.servlet;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.rootservices.otter.config.AppFactory;
+import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
 import org.rootservices.otter.servlet.async.OtterAsyncListener;
 import org.rootservices.otter.servlet.async.ReadListenerImpl;
@@ -20,12 +20,12 @@ import java.io.IOException;
 
 public class OtterEntryServlet extends HttpServlet {
     protected static Logger logger = LogManager.getLogger(OtterEntryServlet.class);
-    protected AppFactory appFactory;
+    protected OtterAppFactory appFactory;
     protected ServletGateway servletGateway;
 
     @Override
     public void init() throws ServletException {
-        appFactory = new AppFactory();
+        appFactory = new OtterAppFactory();
         servletGateway = appFactory.servletGateway();
 
     }
