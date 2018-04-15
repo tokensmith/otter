@@ -39,6 +39,8 @@ public class DecryptSession<T extends Session> implements Between {
     public static final String COULD_NOT_DESERIALIZE_JWE = "Session cookie could not be de-serialized to JSON: %s";
     public static final String COULD_NOT_DECRYPT_JWE = "Session cookie could not be decrypted: %s";
     public static final String COULD_NOT_DESERIALIZE = "decrypted payload could be deserialized to session: %s";
+    public static final String INVALID_SESSION_COOKIE = "Invalid value for the session cookie";
+    public static final String COULD_NOT_DECRYPT_SESSION = "Could not decrypt the session cookie";
     protected static Logger LOGGER = LogManager.getLogger(DecryptSession.class);
 
     private Class clazz = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
@@ -58,17 +60,17 @@ public class DecryptSession<T extends Session> implements Between {
 
     @Override
     public void process(Method method, Request request, Response response) throws HaltException {
-        Optional<Session> session = Optional.empty();
+        Optional<Session> session;
         Cookie sessionCookie = request.getCookies().get(sessionCookieName);
 
         try {
             session = Optional.of(decrypt(sessionCookie.getValue()));
         } catch (InvalidSessionException e) {
             LOGGER.error(e.getMessage(), e);
-            // session was not a JWE, or could not be Deserialized.
+            throw new HaltException(INVALID_SESSION_COOKIE, e);
         } catch (SessionDecryptException e) {
             LOGGER.error(e.getMessage(), e);
-            // TODO: send alarms - key was wrong, or something with a cipher.
+            throw new HaltException(COULD_NOT_DECRYPT_SESSION, e);
         }
 
         request.setSession(session);
