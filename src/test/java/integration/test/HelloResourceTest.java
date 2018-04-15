@@ -1,8 +1,8 @@
 package integration.test;
 
 
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Response;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Response;
 import suite.IntegrationTestSuite;
 import suite.ServletContainerTest;
 import org.junit.BeforeClass;

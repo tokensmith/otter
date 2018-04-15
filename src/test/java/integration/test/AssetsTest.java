@@ -1,13 +1,14 @@
 package integration.test;
 
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Response;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.rootservices.otter.controller.entity.StatusCode;
 import suite.IntegrationTestSuite;
 import suite.ServletContainerTest;
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Response;
+
 
 import java.net.URI;
 

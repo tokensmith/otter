@@ -1,17 +1,17 @@
 package integration.test;
 
 
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Param;
-import com.ning.http.client.Response;
-import com.ning.http.client.cookie.Cookie;
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Param;
+import org.asynchttpclient.Response;
+import io.netty.handler.codec.http.cookie.Cookie;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.rootservices.jwt.config.AppFactory;
+import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwt.JsonWebToken;
-import org.rootservices.jwt.serializer.JWTSerializer;
+import org.rootservices.jwt.serialization.JwtSerde;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.security.csrf.CsrfClaims;
 import suite.IntegrationTestSuite;
@@ -53,7 +53,7 @@ public class LoginResourceTest {
         // there should be a csrf cookie
         Cookie csrfCookie = null;
         for(Cookie cookie: response.getCookies()){
-            if("csrf".equals(cookie.getName())) {
+            if("csrf".equals(cookie.name())) {
                 csrfCookie = cookie;
                 break;
             }
@@ -71,9 +71,9 @@ public class LoginResourceTest {
         String formCsrfValue = matcher.group(1);
 
         // cookie csrf value should match the form's value.
-        AppFactory appFactory = new AppFactory();
-        JWTSerializer jwtSerializer = appFactory.jwtSerializer();
-        JsonWebToken jsonWebToken = jwtSerializer.stringToJwt(csrfCookie.getValue(), CsrfClaims.class);
+        JwtAppFactory jwtAppFactory = new JwtAppFactory();
+        JwtSerde jwtSerializer = jwtAppFactory.jwtSerde();
+        JsonWebToken jsonWebToken = jwtSerializer.stringToJwt(csrfCookie.value(), CsrfClaims.class);
         CsrfClaims claims = (CsrfClaims) jsonWebToken.getClaims();
         assertThat(claims.getChallengeToken(), is(formCsrfValue));
     }

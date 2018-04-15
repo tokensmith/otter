@@ -49,6 +49,7 @@ public class EntryServlet extends OtterEntryServlet {
         servletGateway.get(HelloResource.URL, new HelloResource());
         servletGateway.get(HelloRestResource.URL, appConfig.helloRestResource());
         servletGateway.post(HelloRestResource.URL, appConfig.helloRestResource());
+
         servletGateway.getCsrfProtect(LoginResource.URL, new LoginResource());
         servletGateway.postCsrfProtect(LoginResource.URL, new LoginResource());
     }

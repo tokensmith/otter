@@ -1,6 +1,8 @@
 package org.rootservices.otter.controller.entity;
 
 
+import org.rootservices.otter.security.session.Session;
+
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import java.util.Optional;
@@ -12,6 +14,10 @@ public class Response {
     private Optional<ByteArrayOutputStream> payload;
     private Optional<String> template;
     private Optional<Object> presenter;
+    private Optional<Session> session = Optional.empty();
+
+    public Response() {
+    }
 
     public Response(StatusCode statusCode, Map<String, String> headers, Map<String, Cookie> cookies, Optional<ByteArrayOutputStream> payload, Optional<String> template, Optional<Object> presenter) {
         this.statusCode = statusCode;
@@ -68,5 +74,13 @@ public class Response {
 
     public void setPresenter(Optional<Object> presenter) {
         this.presenter = presenter;
+    }
+
+    public Optional<Session> getSession() {
+        return session;
+    }
+
+    public void setSession(Optional<Session> session) {
+        this.session = session;
     }
 }

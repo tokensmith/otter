@@ -2,17 +2,17 @@ package helper;
 
 
 import helper.entity.FakeResource;
-import org.rootservices.jwt.SecureJwtEncoder;
-import org.rootservices.jwt.config.AppFactory;
+import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwk.Use;
 import org.rootservices.jwt.entity.jwt.JsonWebToken;
 import org.rootservices.jwt.entity.jwt.header.Algorithm;
-import org.rootservices.jwt.serializer.JWTSerializer;
-import org.rootservices.jwt.serializer.exception.JsonToJwtException;
-import org.rootservices.jwt.serializer.exception.JwtToJsonException;
-import org.rootservices.jwt.signature.signer.factory.exception.InvalidAlgorithmException;
-import org.rootservices.jwt.signature.signer.factory.exception.InvalidJsonWebKeyException;
+import org.rootservices.jwt.exception.InvalidJWT;
+import org.rootservices.jwt.exception.SignatureException;
+import org.rootservices.jwt.jws.serialization.SecureJwtSerializer;
+import org.rootservices.jwt.serialization.JwtSerde;
+import org.rootservices.jwt.serialization.exception.JsonToJwtException;
+import org.rootservices.jwt.serialization.exception.JwtToJsonException;
 import org.rootservices.otter.controller.builder.ResponseBuilder;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
@@ -24,18 +24,13 @@ import org.rootservices.otter.router.entity.Regex;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.security.csrf.CsrfClaims;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FixtureFactory {
-    private static AppFactory jwtFactory = new AppFactory();
+    private static JwtAppFactory jwtAppFactory = new JwtAppFactory();
 
     public static Optional<MatchedRoute> makeMatch(String url) {
         Route route = makeRoute(url);
@@ -118,38 +113,57 @@ public class FixtureFactory {
         );
     }
 
-    public static String encodedCsrfJwt(SymmetricKey signKey, String challengeToken) {
+    public static SymmetricKey encKey(String keyId) {
+        return new SymmetricKey(
+                Optional.of(keyId),
+                "MMNj8rE5m7NIDhwKYDmHSnlU1wfKuVvW6G--GKPYkRA",
+                Use.ENCRYPTION
+        );
+    }
+
+    public static Map<String, SymmetricKey> encRotationKey(String keyId) {
+        Map<String, SymmetricKey> encRotationKey = new HashMap<>();
+        SymmetricKey key = new SymmetricKey(
+                Optional.of(keyId),
+                "MMNj8rE5m7NIDhwKYDmHSnlU1wfKuVvW6G--GKPYkRA",
+                Use.ENCRYPTION
+        );
+        encRotationKey.put(keyId, key);
+        return encRotationKey;
+    }
+
+    public static String compactJwtForCSRF(SymmetricKey signKey, String challengeToken) {
         CsrfClaims csrfClaims = new CsrfClaims();
         csrfClaims.setChallengeToken(challengeToken);
         csrfClaims.setIssuedAt(Optional.of(OffsetDateTime.now().toEpochSecond()));
 
-        SecureJwtEncoder secureJwtEncoder = null;
+        SecureJwtSerializer secureJwtSerializer = null;
         try {
-            secureJwtEncoder = jwtFactory.secureJwtEncoder(Algorithm.HS256, signKey);
-        } catch (InvalidAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidJsonWebKeyException e) {
+            secureJwtSerializer = jwtAppFactory.secureJwtSerializer(Algorithm.HS256, signKey);
+        } catch (SignatureException e) {
             e.printStackTrace();
         }
 
-        String encodedJwt = null;
+        String compactJwt = null;
         try {
-            encodedJwt = secureJwtEncoder.encode(csrfClaims);
+            compactJwt = secureJwtSerializer.compactJwtToString(csrfClaims);
         } catch (JwtToJsonException e) {
             e.printStackTrace();
         }
 
-        return encodedJwt;
+        return compactJwt;
     }
 
     public static JsonWebToken csrfJwt(String encodedCsrfJwt) {
-        JWTSerializer jwtSerializer = jwtFactory.jwtSerializer();
+        JwtSerde jwtSerde = jwtAppFactory.jwtSerde();
 
         JsonWebToken jsonWebToken = null;
         try {
-            jsonWebToken = jwtSerializer.stringToJwt(encodedCsrfJwt, CsrfClaims.class);
+            jsonWebToken = jwtSerde.stringToJwt(encodedCsrfJwt, CsrfClaims.class);
         } catch (JsonToJwtException e) {
-            // could not create a JsonWebToken from the jwt json.
+            e.printStackTrace();
+        } catch (InvalidJWT e) {
+            e.printStackTrace();
         }
 
         return jsonWebToken;

@@ -1,20 +1,23 @@
 package suite;
 
 
-import com.ning.http.client.AsyncHttpClient;
+
 import integration.app.hello.controller.HelloResource;
 import integration.test.*;
+import org.asynchttpclient.AsyncHttpClient;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.experimental.categories.Categories;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.rootservices.otter.config.AppFactory;
+import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.server.container.ServletContainer;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 
-import java.io.File;
+
 import java.net.URI;
+
+import static org.asynchttpclient.Dsl.asyncHttpClient;
 
 @RunWith(Categories.class)
 @Categories.IncludeCategory(ServletContainerTest.class)
@@ -26,7 +29,7 @@ import java.net.URI;
     AssetsTest.class
 })
 public class IntegrationTestSuite {
-    private static AppFactory otterTestAppFactory;
+    private static OtterAppFactory otterTestAppFactory;
     private static ServletContainerFactory servletContainerFactory;
     private static ServletContainer servletContainer;
     private static URI servletContainerURI;
@@ -43,7 +46,7 @@ public class IntegrationTestSuite {
      */
     private static void configureAndStartServletContainer() throws Exception {
 
-        otterTestAppFactory = new AppFactory();
+        otterTestAppFactory = new OtterAppFactory();
         servletContainerFactory = otterTestAppFactory.servletContainerFactory();
 
         String webAppLocation = "/src/test/java/integration/app/webapp";
@@ -53,7 +56,7 @@ public class IntegrationTestSuite {
 
         servletContainerURI = servletContainer.getURI();
 
-        httpClient = new AsyncHttpClient();
+        httpClient = asyncHttpClient();
     }
 
     /**
@@ -74,6 +77,7 @@ public class IntegrationTestSuite {
     @AfterClass
     public static void afterClass() throws Exception {
         servletContainer.stop();
+        httpClient.close();
     }
 
     /**

@@ -2,16 +2,16 @@ package integration.app.hello.config;
 
 
 import integration.app.hello.controller.HelloRestResource;
-import org.rootservices.otter.config.AppFactory;
+import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.translator.JsonTranslator;
 
 public class AppConfig {
-    public AppFactory appFactory() {
-        return new AppFactory();
+    public OtterAppFactory otterAppFactory() {
+        return new OtterAppFactory();
     }
 
     public JsonTranslator jsonTranslator() {
-        return appFactory().jsonTranslator();
+        return otterAppFactory().jsonTranslator();
     }
 
     public HelloRestResource helloRestResource() {
