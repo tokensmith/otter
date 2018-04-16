@@ -44,6 +44,12 @@ public class EncryptSession implements Between {
     private SymmetricKey preferredKey;
     private ObjectMapper objectMapper;
 
+    public EncryptSession(JwtAppFactory jwtAppFactory, Base64.Decoder decoder, ObjectMapper objectMapper) {
+        this.jwtAppFactory = jwtAppFactory;
+        this.decoder = decoder;
+        this.objectMapper = objectMapper;
+    }
+
     public EncryptSession(CookieConfig cookieConfig, JwtAppFactory jwtAppFactory, Base64.Decoder decoder, SymmetricKey preferredKey, ObjectMapper objectMapper) {
         this.cookieConfig = cookieConfig;
         this.jwtAppFactory = jwtAppFactory;
@@ -105,5 +111,21 @@ public class EncryptSession implements Between {
             throw new EncryptSessionException(e.getMessage(), e);
         }
         return compactJwe;
+    }
+
+    public CookieConfig getCookieConfig() {
+        return cookieConfig;
+    }
+
+    public void setCookieConfig(CookieConfig cookieConfig) {
+        this.cookieConfig = cookieConfig;
+    }
+
+    public SymmetricKey getPreferredKey() {
+        return preferredKey;
+    }
+
+    public void setPreferredKey(SymmetricKey preferredKey) {
+        this.preferredKey = preferredKey;
     }
 }

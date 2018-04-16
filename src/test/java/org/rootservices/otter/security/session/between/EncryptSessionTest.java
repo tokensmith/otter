@@ -134,4 +134,40 @@ public class EncryptSessionTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.toString().split("\\.").length, is(5));
     }
+
+    @Test
+    public void setPreferredKey() {
+        CookieConfig cookieConfig = new CookieConfig("session", true, -1);
+        EncryptSession subject = new EncryptSession(
+                cookieConfig,
+                new JwtAppFactory(),
+                otterAppFactory.urlDecoder(),
+                FixtureFactory.encKey("1234"),
+                otterAppFactory.objectMapper()
+        );
+
+        SymmetricKey encKey = FixtureFactory.encKey("1000");
+        subject.setPreferredKey(encKey);
+
+        SymmetricKey actual = subject.getPreferredKey();
+        assertThat(actual, is(encKey));
+    }
+
+    @Test
+    public void setCookieConfig() {
+        CookieConfig cookieConfig = new CookieConfig("session", true, -1);
+        EncryptSession subject = new EncryptSession(
+                cookieConfig,
+                new JwtAppFactory(),
+                otterAppFactory.urlDecoder(),
+                FixtureFactory.encKey("1234"),
+                otterAppFactory.objectMapper()
+        );
+
+        CookieConfig sessionCookieConfig = new CookieConfig("session_store", true, -1);
+        subject.setCookieConfig(sessionCookieConfig);
+
+        CookieConfig actual = subject.getCookieConfig();
+        assertThat(actual, is(sessionCookieConfig));
+    }
 }

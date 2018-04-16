@@ -7,6 +7,13 @@ import java.util.UUID;
 public class TokenSession implements Session {
     private UUID accessToken;
 
+    public TokenSession() {
+    }
+
+    public TokenSession(UUID accessToken) {
+        this.accessToken = accessToken;
+    }
+
     public UUID getAccessToken() {
         return accessToken;
     }

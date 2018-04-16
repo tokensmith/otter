@@ -19,6 +19,7 @@ import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.security.csrf.between.CheckCSRF;
 import org.rootservices.otter.security.csrf.between.PrepareCSRF;
+import org.rootservices.otter.security.session.between.EncryptSession;
 
 
 import javax.servlet.*;
@@ -37,15 +38,17 @@ public class ServletGateway {
     private Engine engine;
     private Between prepareCSRF;
     private Between checkCSRF;
+    private EncryptSession encryptSession;
     private Route notFoundRoute;
 
-    public ServletGateway(HttpServletRequestTranslator httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger httpServletResponseMerger, Engine engine, Between prepareCSRF, Between checkCSRF) {
+    public ServletGateway(HttpServletRequestTranslator httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger httpServletResponseMerger, Engine engine, Between prepareCSRF, Between checkCSRF, EncryptSession encryptSession) {
         this.httpServletRequestTranslator = httpServletRequestTranslator;
         this.httpServletRequestMerger = httpServletRequestMerger;
         this.httpServletResponseMerger = httpServletResponseMerger;
         this.engine = engine;
         this.prepareCSRF = prepareCSRF;
         this.checkCSRF = checkCSRF;
+        this.encryptSession = encryptSession;
     }
 
     public GatewayResponse processRequest(HttpServletRequest containerRequest, HttpServletResponse containerResponse, String body) {
@@ -141,6 +144,23 @@ public class ServletGateway {
                 .resource(resource)
                 .before(before)
                 .after(new ArrayList<>())
+                .build();
+
+        engine.getDispatcher().getPost().add(route);
+    }
+
+    public void postCsrfAndSessionProtect(String path, Resource resource) {
+        List<Between> before = new ArrayList<>();
+        before.add(checkCSRF);
+
+        List<Between> after = new ArrayList<>();
+        after.add(encryptSession);
+
+        Route route = new RouteBuilder()
+                .path(path)
+                .resource(resource)
+                .before(before)
+                .after(after)
                 .build();
 
         engine.getDispatcher().getPost().add(route);
@@ -271,9 +291,17 @@ public class ServletGateway {
         ((PrepareCSRF) this.prepareCSRF).getDoubleSubmitCSRF().setPreferredSignKey(signKey);
     }
 
-    public void setRotationKeys(Map<String, SymmetricKey> rotationSignKeys) {
+    public void setRotationSignKeys(Map<String, SymmetricKey> rotationSignKeys) {
         ((CheckCSRF) this.checkCSRF).getDoubleSubmitCSRF().setRotationSignKeys(rotationSignKeys);
         ((PrepareCSRF) this.prepareCSRF).getDoubleSubmitCSRF().setRotationSignKeys(rotationSignKeys);
+    }
+
+    public void setSessionCookieConfig(CookieConfig sessionCookieConfig) {
+        this.encryptSession.setCookieConfig(sessionCookieConfig);
+    }
+
+    public void setEncKey(SymmetricKey encKey) {
+        this.encryptSession.setPreferredKey(encKey);
     }
 
 }

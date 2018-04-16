@@ -26,6 +26,7 @@ import static org.asynchttpclient.Dsl.asyncHttpClient;
     HelloResourceTest.class,
     HelloRestResourceTest.class,
     LoginResourceTest.class,
+    LoginSessionResourceTest.class,
     AssetsTest.class
 })
 public class IntegrationTestSuite {

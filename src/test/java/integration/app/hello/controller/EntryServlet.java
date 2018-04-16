@@ -21,18 +21,23 @@ public class EntryServlet extends OtterEntryServlet {
     @Override
     public void init() throws ServletException {
         super.init();
+        appConfig = new AppConfig();
+
+        // csrf
         CookieConfig csrfCookieConfig = new CookieConfig("csrf", false, -1);
         servletGateway.setCsrfCookieConfig(csrfCookieConfig);
         servletGateway.setCsrfFormFieldName("csrfToken");
 
-        SymmetricKey key = new SymmetricKey(
-                Optional.of("key-1"),
-                "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
-                Use.SIGNATURE
-        );
 
-        servletGateway.setSignKey(key);
-        appConfig = new AppConfig();
+        SymmetricKey signkey = appConfig.signKey();
+        servletGateway.setSignKey(signkey);
+
+        // session
+        CookieConfig sessionCookieConfig = new CookieConfig("session", false, -1);
+        SymmetricKey encKey = appConfig.encKey();
+
+        servletGateway.setSessionCookieConfig(sessionCookieConfig);
+        servletGateway.setEncKey(encKey);
         routes();
     }
 
@@ -50,7 +55,14 @@ public class EntryServlet extends OtterEntryServlet {
         servletGateway.get(HelloRestResource.URL, appConfig.helloRestResource());
         servletGateway.post(HelloRestResource.URL, appConfig.helloRestResource());
 
-        servletGateway.getCsrfProtect(LoginResource.URL, new LoginResource());
-        servletGateway.postCsrfProtect(LoginResource.URL, new LoginResource());
+        // csrf
+        LoginResource login = new LoginResource();
+        servletGateway.getCsrfProtect(login.URL, login);
+        servletGateway.postCsrfProtect(login.URL, login);
+
+        // session
+        LoginSessionResource loginWithSession = new LoginSessionResource();
+        servletGateway.getCsrfProtect(loginWithSession.URL, loginWithSession);
+        servletGateway.postCsrfAndSessionProtect(loginWithSession.URL, loginWithSession);
     }
 }
