@@ -6,6 +6,7 @@ It's feature set includes:
 - [Regex routing](#routing)
 - [Restful support](#resources)
 - [CSRF protection](#csrf)
+- [Stateless with encrypted sessions](#stateless)
 - [Async I/O](#async-i/o)
 - [Delivery of static assets](#static-assets)
 
@@ -126,6 +127,55 @@ Render the [CSRF challenge token](https://github.com/RootServices/otter/blob/dev
     <input id="csrfToken" type="hidden" name="csrfToken" value="${presenter.getCsrfChallengeToken()}" / >
 ```
 
+### Stateless
+
+Otter is stateless. It maintains user sessions with a cookie whose value is encrypted by using JWE.
+
+To use them the following is needed:
+- Implement a session class
+- Define and inject your encryption key into the servletGateway.
+- Implement your DecryptSession between.
+- Inject you DecryptSession into the servletGateway.
+- Add routes that use the betweens.
+
+#### Implement session class
+You will need to implement a session class which must have a copy constructor and a equals method.
+If either of those are not there Otter internals will Halt your requests.
+
+#### Encryption key
+Inject your encryption symmetric key into the servletGateway.
+It's highly recommended that keys are not in plain text. They should be vaulted.
+
+```java
+    SymmetricKey encKey = new SymmetricKey(
+        Optional.of("key-2"),
+        "MMNj8rE5m7NIDhwKYDmHSnlU1wfKuVvW6G--GKPYkRA",
+        Use.ENCRYPTION
+    );
+
+    servletGateway.setEncKey(key);
+```
+
+#### Inject your DecryptSession
+Inject your implementation of the `DecryptSession`.
+
+```java
+    SessionBeforeBetween sessionBeforeBetween = appConfig.sessionBeforeBetween("session", encKey, new HashMap<>());
+    servletGateway.setDecryptSession(sessionBeforeBetween);
+```
+
+#### Add Routes
+```java
+    // csrf & session
+    LoginSessionResource loginWithSession = new LoginSessionResource();
+    servletGateway.getCsrfAndSessionProtect(loginWithSession.URL, loginWithSession);
+    servletGateway.postCsrfAndSessionProtect(loginWithSession.URL, loginWithSession);
+
+    // session
+    servletGateway.getSessionProtect(ProtectedResource.URL, new ProtectedResource());
+    servletGateway.postSessionProtect(ProtectedResource.URL, new ProtectedResource());
+```
+
 ### Async I/O
 I/O is handled asynchronously. That journey begins in the [OtterEntryServlet](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/servlet/OtterEntryServlet.java#L33).
 
@@ -136,7 +186,6 @@ JSPs also are delivered async via [Jetty](https://github.com/RootServices/otter/
 Files that are placed in, `src/main/webapp/public` are public as long as they pass the entry filter [regex](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/servlet/EntryFilter.java#L19)
 
 For example, `src/main/webapp/public/assets/js/jquery-3.3.1.min.js` can be retrieved from, `assets/js/jquery-3.3.1.min.js`
-
 
 ## Releasing to maven central
 ```bash
