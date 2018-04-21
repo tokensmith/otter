@@ -72,8 +72,6 @@ public class ProtectedResourceTest {
         assertThat(errorMsg, response.getStatusCode(), is(StatusCode.UNAUTHORIZED.getCode()));
     }
 
-    // GET 302. maybe?
-
     @Test
     public void postShouldReturn200() throws Exception {
         Cookie sessionCookie = FixtureFactory.sessionCookie();
@@ -114,6 +112,4 @@ public class ProtectedResourceTest {
         String errorMsg = "Attempted POST " + SUBJECT_URI;
         assertThat(errorMsg, postResponse.getStatusCode(), is(StatusCode.UNAUTHORIZED.getCode()));
     }
-
-    // POST 302. maybe?
 }

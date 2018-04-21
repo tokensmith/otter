@@ -149,7 +149,7 @@ public class ServletGateway {
         before.add(decryptSession);
 
         List<Between> after = new ArrayList<>();
-        // after.add(encryptSession);
+        after.add(encryptSession);
 
         Route route = new RouteBuilder()
                 .path(path)
@@ -188,6 +188,7 @@ public class ServletGateway {
     public void postCsrfAndSessionProtect(String path, Resource resource) {
         List<Between> before = new ArrayList<>();
         before.add(checkCSRF);
+        before.add(decryptSession);
 
         List<Between> after = new ArrayList<>();
         after.add(encryptSession);
@@ -207,7 +208,7 @@ public class ServletGateway {
         before.add(decryptSession);
 
         List<Between> after = new ArrayList<>();
-        // after.add(encryptSession);
+        after.add(encryptSession);
 
         Route route = new RouteBuilder()
                 .path(path)

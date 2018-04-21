@@ -49,11 +49,11 @@ public class EncryptSessionTest {
         request.setSession(Optional.of(requestSession));
 
         DummySession responseSession = new DummySession(requestSession);
+        // change the response session so it will re-encrypt.
+        responseSession.setAccessToken("1617181920");
+
         Response response = FixtureFactory.makeResponse();
         response.setSession(Optional.of(responseSession));
-
-        // change the response session so it will re-encrypt.
-        ((DummySession) response.getSession().get()).setAccessToken("1617181920");
 
         subject.process(Method.GET, request, response);
 
@@ -141,6 +141,79 @@ public class EncryptSessionTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.toString().split("\\.").length, is(5));
+    }
+
+    @Test
+    public void shouldEncryptWhenSessionsDiffShouldReturnTrue() {
+        DummySession requestSession = new DummySession();
+        requestSession.setAccessToken("123456789");
+        requestSession.setRefreshToken("101112131415");
+
+        Request request = FixtureFactory.makeRequest();
+        request.setSession(Optional.of(requestSession));
+
+        DummySession responseSession = new DummySession(requestSession);
+        // change the response session so it will re-encrypt.
+        responseSession.setAccessToken("1617181920");
+
+        Response response = FixtureFactory.makeResponse();
+        response.setSession(Optional.of(responseSession));
+
+        Boolean actual = subject.shouldEncrypt(request, response);
+
+        assertThat(actual, is(true));
+    }
+
+    @Test
+    public void shouldEncryptWhenSessionsEqualShouldReturnFalse() {
+        DummySession requestSession = new DummySession();
+        requestSession.setAccessToken("123456789");
+        requestSession.setRefreshToken("101112131415");
+
+        Request request = FixtureFactory.makeRequest();
+        request.setSession(Optional.of(requestSession));
+
+        DummySession responseSession = new DummySession(requestSession);
+
+        Response response = FixtureFactory.makeResponse();
+        response.setSession(Optional.of(responseSession));
+
+        Boolean actual = subject.shouldEncrypt(request, response);
+
+        assertThat(actual, is(false));
+    }
+
+    @Test
+    public void shouldEncryptWhenRequestSessionNotPresentShouldReturnFalse() {
+
+        Request request = FixtureFactory.makeRequest();
+
+        DummySession responseSession = new DummySession();
+        responseSession.setAccessToken("123456789");
+        responseSession.setRefreshToken("101112131415");
+
+        Response response = FixtureFactory.makeResponse();
+        response.setSession(Optional.of(responseSession));
+
+        Boolean actual = subject.shouldEncrypt(request, response);
+
+        assertThat(actual, is(false));
+    }
+
+    @Test
+    public void shouldEncryptWhenResponseSessionNotPresentShouldReturnFalse() {
+        DummySession requestSession = new DummySession();
+        requestSession.setAccessToken("123456789");
+        requestSession.setRefreshToken("101112131415");
+
+        Request request = FixtureFactory.makeRequest();
+        request.setSession(Optional.of(requestSession));
+
+        Response response = FixtureFactory.makeResponse();
+
+        Boolean actual = subject.shouldEncrypt(request, response);
+
+        assertThat(actual, is(false));
     }
 
     @Test

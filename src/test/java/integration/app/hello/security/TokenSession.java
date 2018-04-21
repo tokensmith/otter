@@ -5,7 +5,7 @@ import org.rootservices.otter.security.session.Session;
 import java.util.Objects;
 import java.util.UUID;
 
-public class TokenSession extends Session {
+public class TokenSession implements Session {
     private UUID accessToken;
 
     public TokenSession() {

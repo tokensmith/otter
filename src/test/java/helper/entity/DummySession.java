@@ -5,7 +5,7 @@ import org.rootservices.otter.security.session.Session;
 
 import java.util.Objects;
 
-public class DummySession extends Session {
+public class DummySession implements Session {
     private String accessToken;
     private String refreshToken;
 

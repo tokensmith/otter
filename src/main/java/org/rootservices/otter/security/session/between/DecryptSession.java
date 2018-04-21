@@ -23,6 +23,7 @@ import org.rootservices.otter.security.session.between.exception.SessionDecryptE
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.exception.HaltException;
+import org.rootservices.otter.security.session.between.exception.SessionCtorException;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -44,6 +45,9 @@ public class DecryptSession<T extends Session> implements Between {
     public static final String COULD_NOT_DESERIALIZE = "decrypted payload could be deserialized to session: %s";
     public static final String INVALID_SESSION_COOKIE = "Invalid value for the session cookie";
     public static final String COOKIE_NOT_PRESENT = "session cookie not present.";
+    public static final String FAILED_TO_COPY_REQUEST_SESSION = "failed to copy request session";
+    public static final String COULD_NOT_ACCESS_SESSION_CTORS = "Could not access session constructors";
+    public static final String COULD_NOT_CALL_THE_SESSION_COPY_CONSTRUCTOR = "Could not call the session's copy constructor";
     protected static Logger LOGGER = LogManager.getLogger(DecryptSession.class);
 
     private Class clazz = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
@@ -87,28 +91,37 @@ public class DecryptSession<T extends Session> implements Between {
         }
 
         request.setSession(session);
-
-        T responseSession = copy((T)session.get());
+        T responseSession;
+        try {
+            responseSession = copy((T)session.get());
+        } catch (SessionCtorException e) {
+            LOGGER.error(e.getMessage(), e);
+            HaltException halt = new HaltException(FAILED_TO_COPY_REQUEST_SESSION, e);
+            onHalt(halt, response);
+            throw halt;
+        }
         response.setSession(Optional.of(responseSession));
     }
 
-    protected T copy(T session) {
+    /**
+     * Copies the input parameter and then returns the copy.
+     *
+     * @param session
+     * @return an instance of T that is a copy of session
+     */
+    protected T copy(T session) throws SessionCtorException {
         T copy = null;
-        Constructor ctor = null;
+        Constructor ctor;
         try {
             ctor = clazz.getConstructor(clazz);
         } catch (NoSuchMethodException e) {
-            LOGGER.error(e.getMessage(), e);
+            throw new SessionCtorException(COULD_NOT_ACCESS_SESSION_CTORS,e);
         }
 
         try {
             copy = (T) ctor.newInstance(session);
-        } catch (InstantiationException e) {
-            LOGGER.error(e.getMessage(), e);
-        } catch (IllegalAccessException e) {
-            LOGGER.error(e.getMessage(), e);
-        } catch (InvocationTargetException e) {
-            LOGGER.error(e.getMessage(), e);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new SessionCtorException(COULD_NOT_CALL_THE_SESSION_COPY_CONSTRUCTOR,e);
         }
         return copy;
     }

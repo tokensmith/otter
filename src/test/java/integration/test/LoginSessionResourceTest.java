@@ -40,13 +40,23 @@ import static org.junit.Assert.assertThat;
 
 @Category(ServletContainerTest.class)
 public class LoginSessionResourceTest {
-    protected static Logger LOGGER = LogManager.getLogger(LoginSessionResourceTest.class);
     private static String SUBJECT_URI;
     private static String SUBJECT_PATH = "login-with-session";
 
     @BeforeClass
     public static void beforeClass() {
         SUBJECT_URI = IntegrationTestSuite.getServletContainerURI().toString() + SUBJECT_PATH;
+    }
+
+    private Cookie getCookie(Response response, String cookieName) {
+        Cookie cookie = null;
+        for(Cookie c: response.getCookies()){
+            if(cookieName.equals(c.name())) {
+                cookie = c;
+                break;
+            }
+        }
+        return cookie;
     }
 
     @Test
@@ -63,13 +73,7 @@ public class LoginSessionResourceTest {
         assertThat(errorMsg, response.getStatusCode(), is(StatusCode.OK.getCode()));
 
         // there should be a csrf cookie
-        Cookie csrfCookie = null;
-        for(Cookie cookie: response.getCookies()){
-            if("csrf".equals(cookie.name())) {
-                csrfCookie = cookie;
-                break;
-            }
-        }
+        Cookie csrfCookie = getCookie(response, "csrf");
         assertThat(csrfCookie, is(notNullValue()));
 
         // there should be a csrf challenge in the form
@@ -131,13 +135,8 @@ public class LoginSessionResourceTest {
         assertThat(errorMsg, postResponse.getStatusCode(), is(StatusCode.OK.getCode()));
 
         // should also have a session.
-        Cookie actualSessionCookie = null;
-        for(Cookie cookie: postResponse.getCookies()){
-            if("session".equals(cookie.name())) {
-                actualSessionCookie = cookie;
-                break;
-            }
-        }
+        Cookie actualSessionCookie = getCookie(getResponse, "session");
+
         assertThat(actualSessionCookie, is(notNullValue()));
         assertThat(actualSessionCookie.isHttpOnly(), is(false));
         assertThat(actualSessionCookie.maxAge(), is(-9223372036854775808L));
@@ -183,7 +182,46 @@ public class LoginSessionResourceTest {
     }
 
     @Test
-    public void postWhenNoSessionCookieShouldReturn403() throws Exception {
-        // TBD.
+    public void postWhenNoSessionCookieShouldReturn401() throws Exception {
+        Cookie sessionCookie = FixtureFactory.sessionCookie();
+        AsyncHttpClient httpClient = IntegrationTestSuite.getHttpClient();
+
+        // this is the GET request to get the csrf cookie & form value
+        ListenableFuture<Response> f = httpClient
+                .prepareGet(SUBJECT_URI)
+                .addCookie(sessionCookie)
+                .execute();
+
+        Response getResponse = f.get();
+
+        String errorMsg = "Attempted GET " + SUBJECT_URI;
+        assertThat(errorMsg, getResponse.getStatusCode(), is(StatusCode.OK.getCode()));
+
+        // get the csrf value from the form.
+        Pattern csrfPattern = Pattern.compile(".*\"csrfToken\" value=\"([^\"]*)\".*", Pattern.DOTALL);
+        Matcher matcher = csrfPattern.matcher(getResponse.getResponseBody());
+        assertThat(matcher.matches(), is(true));
+        String formCsrfValue = matcher.group(1);
+
+        List<Param> formData = new ArrayList<>();
+        formData.add(new Param("email", "obi-wan@rootservices.org"));
+        formData.add(new Param("password", "foo"));
+        formData.add(new Param("csrfToken", formCsrfValue));
+
+        // get the csrf cookie only.
+        Cookie csrfCookie = getCookie(getResponse, "csrf");
+        assertThat(csrfCookie, is(notNullValue()));
+
+        // this is the POST request
+        f = httpClient
+                .preparePost(SUBJECT_URI)
+                .setFormParams(formData)
+                .addCookie(csrfCookie)
+                .execute();
+
+        Response postResponse = f.get();
+
+        errorMsg = "Attempted POST " + SUBJECT_URI;
+        assertThat(errorMsg, postResponse.getStatusCode(), is(StatusCode.UNAUTHORIZED.getCode()));
     }
 }
