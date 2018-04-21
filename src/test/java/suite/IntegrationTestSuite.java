@@ -5,6 +5,7 @@ package suite;
 import integration.app.hello.controller.HelloResource;
 import integration.test.*;
 import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.experimental.categories.Categories;
@@ -17,6 +18,7 @@ import org.rootservices.otter.server.container.ServletContainerFactory;
 
 import java.net.URI;
 
+
 import static org.asynchttpclient.Dsl.asyncHttpClient;
 
 @RunWith(Categories.class)
@@ -27,6 +29,7 @@ import static org.asynchttpclient.Dsl.asyncHttpClient;
     HelloRestResourceTest.class,
     LoginResourceTest.class,
     LoginSessionResourceTest.class,
+    ProtectedResourceTest.class,
     AssetsTest.class
 })
 public class IntegrationTestSuite {
@@ -57,7 +60,7 @@ public class IntegrationTestSuite {
 
         servletContainerURI = servletContainer.getURI();
 
-        httpClient = asyncHttpClient();
+        httpClient = asyncHttpClient(new DefaultAsyncHttpClientConfig.Builder().setCookieStore(null).build());
     }
 
     /**

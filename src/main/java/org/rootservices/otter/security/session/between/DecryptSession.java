@@ -16,6 +16,7 @@ import org.rootservices.jwt.serialization.exception.JsonToJwtException;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.security.session.between.exception.InvalidSessionException;
 import org.rootservices.otter.security.session.between.exception.SessionDecryptException;
@@ -24,6 +25,8 @@ import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.exception.HaltException;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -40,7 +43,7 @@ public class DecryptSession<T extends Session> implements Between {
     public static final String COULD_NOT_DECRYPT_JWE = "Session cookie could not be decrypted: %s";
     public static final String COULD_NOT_DESERIALIZE = "decrypted payload could be deserialized to session: %s";
     public static final String INVALID_SESSION_COOKIE = "Invalid value for the session cookie";
-    public static final String COULD_NOT_DECRYPT_SESSION = "Could not decrypt the session cookie";
+    public static final String COOKIE_NOT_PRESENT = "session cookie not present.";
     protected static Logger LOGGER = LogManager.getLogger(DecryptSession.class);
 
     private Class clazz = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
@@ -63,18 +66,65 @@ public class DecryptSession<T extends Session> implements Between {
         Optional<Session> session;
         Cookie sessionCookie = request.getCookies().get(sessionCookieName);
 
+        if (sessionCookie == null) {
+            HaltException halt = new HaltException(COOKIE_NOT_PRESENT);
+            onHalt(halt, response);
+            throw halt;
+        }
+
         try {
             session = Optional.of(decrypt(sessionCookie.getValue()));
         } catch (InvalidSessionException e) {
             LOGGER.error(e.getMessage(), e);
-            throw new HaltException(INVALID_SESSION_COOKIE, e);
+            HaltException halt = new HaltException(INVALID_SESSION_COOKIE, e);
+            onHalt(halt, response);
+            throw halt;
         } catch (SessionDecryptException e) {
             LOGGER.error(e.getMessage(), e);
-            throw new HaltException(COULD_NOT_DECRYPT_SESSION, e);
+            HaltException halt = new HaltException(INVALID_SESSION_COOKIE, e);
+            onHalt(halt, response);
+            throw halt;
         }
 
         request.setSession(session);
-        response.setSession(session);
+
+        T responseSession = copy((T)session.get());
+        response.setSession(Optional.of(responseSession));
+    }
+
+    protected T copy(T session) {
+        T copy = null;
+        Constructor ctor = null;
+        try {
+            ctor = clazz.getConstructor(clazz);
+        } catch (NoSuchMethodException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+
+        try {
+            copy = (T) ctor.newInstance(session);
+        } catch (InstantiationException e) {
+            LOGGER.error(e.getMessage(), e);
+        } catch (IllegalAccessException e) {
+            LOGGER.error(e.getMessage(), e);
+        } catch (InvocationTargetException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        return copy;
+    }
+
+    /**
+     * This method will be called before a Halt Exception is thrown.
+     * Override this method if you wish to change the behavior on the
+     * response right before a Halt Exception is going to be thrown.
+     * An Example would be, you may want to redirect the user to a login page.
+     *
+     * @param e a HaltException
+     * @param response a Response
+     */
+    protected void onHalt(HaltException e, Response response) {
+        response.setStatusCode(StatusCode.UNAUTHORIZED);
+        response.getCookies().remove(sessionCookieName);
     }
 
     protected T decrypt(String encryptedSession) throws InvalidSessionException, SessionDecryptException {

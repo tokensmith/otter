@@ -1,12 +1,20 @@
 package helper.entity;
 
+
 import org.rootservices.otter.security.session.Session;
 
-public class DummySession implements Session {
+import java.util.Objects;
+
+public class DummySession extends Session {
     private String accessToken;
     private String refreshToken;
 
     public DummySession() {
+    }
+
+    public DummySession(DummySession from) {
+        this.accessToken = from.accessToken;
+        this.refreshToken = from.refreshToken;
     }
 
     public DummySession(String accessToken, String refreshToken) {
@@ -28,5 +36,19 @@ public class DummySession implements Session {
 
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DummySession that = (DummySession) o;
+        return Objects.equals(accessToken, that.accessToken) &&
+                Objects.equals(refreshToken, that.refreshToken);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(accessToken, refreshToken);
     }
 }

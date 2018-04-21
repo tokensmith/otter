@@ -15,9 +15,7 @@ import org.rootservices.otter.security.session.between.exception.InvalidSessionE
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.security.session.between.exception.SessionDecryptException;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 public class DecryptSessionTest {
@@ -60,6 +58,23 @@ public class DecryptSessionTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is("123456789"));
         assertThat(actual.getRefreshToken(), is("101112131415"));
+    }
+
+    @Test
+    public void processWhenNoSessionShouldHalt() throws Exception {
+
+        Request request = FixtureFactory.makeRequest();
+        Response response = FixtureFactory.makeResponse();
+
+        HaltException actual = null;
+        try {
+            subject.process(Method.GET, request, response);
+        } catch (HaltException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCause(), is(nullValue()));
     }
 
     @Test

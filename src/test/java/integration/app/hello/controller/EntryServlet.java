@@ -2,6 +2,7 @@ package integration.app.hello.controller;
 
 
 import integration.app.hello.config.AppConfig;
+import integration.app.hello.security.SessionBeforeBetween;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwk.Use;
 import org.rootservices.otter.config.CookieConfig;
@@ -12,6 +13,7 @@ import org.rootservices.otter.servlet.OtterEntryServlet;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 
 @WebServlet(value="/app/*", name="EntryServlet", asyncSupported = true)
@@ -38,6 +40,10 @@ public class EntryServlet extends OtterEntryServlet {
 
         servletGateway.setSessionCookieConfig(sessionCookieConfig);
         servletGateway.setEncKey(encKey);
+
+        SessionBeforeBetween sessionBeforeBetween = appConfig.sessionBeforeBetween("session", encKey, new HashMap<>());
+        servletGateway.setDecryptSession(sessionBeforeBetween);
+
         routes();
     }
 
@@ -60,9 +66,13 @@ public class EntryServlet extends OtterEntryServlet {
         servletGateway.getCsrfProtect(login.URL, login);
         servletGateway.postCsrfProtect(login.URL, login);
 
-        // session
+        // csrf & session
         LoginSessionResource loginWithSession = new LoginSessionResource();
-        servletGateway.getCsrfProtect(loginWithSession.URL, loginWithSession);
+        servletGateway.getCsrfAndSessionProtect(loginWithSession.URL, loginWithSession);
         servletGateway.postCsrfAndSessionProtect(loginWithSession.URL, loginWithSession);
+
+        // session
+        servletGateway.getSessionProtect(ProtectedResource.URL, new ProtectedResource());
+        servletGateway.postSessionProtect(ProtectedResource.URL, new ProtectedResource());
     }
 }

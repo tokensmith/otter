@@ -2,8 +2,10 @@ package org.rootservices.otter.security.session.between;
 
 import helper.FixtureFactory;
 import helper.entity.DummySession;
+import integration.app.hello.security.TokenSession;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.theories.suppliers.TestedOn;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.config.CookieConfig;
@@ -38,14 +40,20 @@ public class EncryptSessionTest {
     }
 
     @Test
-    public void processShouldBeOk() throws Exception {
-        DummySession session = new DummySession();
-        session.setAccessToken("123456789");
-        session.setRefreshToken("101112131415");
+    public void processShouldSetSession() throws Exception {
+        DummySession requestSession = new DummySession();
+        requestSession.setAccessToken("123456789");
+        requestSession.setRefreshToken("101112131415");
 
         Request request = FixtureFactory.makeRequest();
+        request.setSession(Optional.of(requestSession));
+
+        DummySession responseSession = new DummySession(requestSession);
         Response response = FixtureFactory.makeResponse();
-        response.setSession(Optional.of(session));
+        response.setSession(Optional.of(responseSession));
+
+        // change the response session so it will re-encrypt.
+        ((DummySession) response.getSession().get()).setAccessToken("1617181920");
 
         subject.process(Method.GET, request, response);
 

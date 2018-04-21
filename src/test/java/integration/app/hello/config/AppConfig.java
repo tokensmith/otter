@@ -2,11 +2,13 @@ package integration.app.hello.config;
 
 
 import integration.app.hello.controller.HelloRestResource;
+import integration.app.hello.security.SessionBeforeBetween;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwk.Use;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.translator.JsonTranslator;
 
+import java.util.Map;
 import java.util.Optional;
 
 public class AppConfig {
@@ -48,5 +50,9 @@ public class AppConfig {
                 "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
                 Use.SIGNATURE
         );
+    }
+
+    public SessionBeforeBetween sessionBeforeBetween(String cookieName, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys) {
+        return new SessionBeforeBetween(cookieName, otterAppFactory().jwtAppFactory(), preferredKey, rotationKeys, otterAppFactory().objectMapper());
     }
 }

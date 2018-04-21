@@ -19,6 +19,7 @@ import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.security.csrf.between.CheckCSRF;
 import org.rootservices.otter.security.csrf.between.PrepareCSRF;
+import org.rootservices.otter.security.session.between.DecryptSession;
 import org.rootservices.otter.security.session.between.EncryptSession;
 
 
@@ -39,6 +40,7 @@ public class ServletGateway {
     private Between prepareCSRF;
     private Between checkCSRF;
     private EncryptSession encryptSession;
+    private DecryptSession decryptSession;
     private Route notFoundRoute;
 
     public ServletGateway(HttpServletRequestTranslator httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger httpServletResponseMerger, Engine engine, Between prepareCSRF, Between checkCSRF, EncryptSession encryptSession) {
@@ -125,6 +127,40 @@ public class ServletGateway {
         engine.getDispatcher().getGet().add(route);
     }
 
+    public void getCsrfAndSessionProtect(String path, Resource resource) {
+        List<Between> before = new ArrayList<>();
+        before.add(prepareCSRF);
+
+        List<Between> after = new ArrayList<>();
+        after.add(encryptSession);
+
+        Route route = new RouteBuilder()
+                .path(path)
+                .resource(resource)
+                .before(before)
+                .after(after)
+                .build();
+
+        engine.getDispatcher().getGet().add(route);
+    }
+
+    public void getSessionProtect(String path, Resource resource) {
+        List<Between> before = new ArrayList<>();
+        before.add(decryptSession);
+
+        List<Between> after = new ArrayList<>();
+        // after.add(encryptSession);
+
+        Route route = new RouteBuilder()
+                .path(path)
+                .resource(resource)
+                .before(before)
+                .after(after)
+                .build();
+
+        engine.getDispatcher().getGet().add(route);
+    }
+
     public void post(String path, Resource resource) {
         Route route = new RouteBuilder()
                 .path(path)
@@ -155,6 +191,23 @@ public class ServletGateway {
 
         List<Between> after = new ArrayList<>();
         after.add(encryptSession);
+
+        Route route = new RouteBuilder()
+                .path(path)
+                .resource(resource)
+                .before(before)
+                .after(after)
+                .build();
+
+        engine.getDispatcher().getPost().add(route);
+    }
+
+    public void postSessionProtect(String path, Resource resource) {
+        List<Between> before = new ArrayList<>();
+        before.add(decryptSession);
+
+        List<Between> after = new ArrayList<>();
+        // after.add(encryptSession);
 
         Route route = new RouteBuilder()
                 .path(path)
@@ -304,4 +357,11 @@ public class ServletGateway {
         this.encryptSession.setPreferredKey(encKey);
     }
 
+    public DecryptSession getDecryptSession() {
+        return decryptSession;
+    }
+
+    public void setDecryptSession(DecryptSession decryptSession) {
+        this.decryptSession = decryptSession;
+    }
 }

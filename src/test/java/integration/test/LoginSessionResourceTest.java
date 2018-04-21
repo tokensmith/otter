@@ -2,8 +2,9 @@ package integration.test;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import helper.FixtureFactory;
 import integration.app.hello.config.AppConfig;
-import integration.app.hello.controller.TokenSession;
+import integration.app.hello.security.TokenSession;
 import io.netty.handler.codec.http.cookie.Cookie;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -18,18 +19,11 @@ import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwt.JsonWebToken;
 import org.rootservices.jwt.jwe.entity.JWE;
-import org.rootservices.jwt.jwe.factory.exception.CipherException;
 import org.rootservices.jwt.jwe.serialization.JweDeserializer;
-import org.rootservices.jwt.jwe.serialization.exception.KeyException;
 import org.rootservices.jwt.serialization.JwtSerde;
-import org.rootservices.jwt.serialization.exception.DecryptException;
-import org.rootservices.jwt.serialization.exception.JsonToJwtException;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.security.csrf.CsrfClaims;
-import org.rootservices.otter.security.session.between.DecryptSession;
-import org.rootservices.otter.security.session.between.exception.InvalidSessionException;
-import org.rootservices.otter.security.session.between.exception.SessionDecryptException;
 import suite.IntegrationTestSuite;
 import suite.ServletContainerTest;
 
@@ -57,8 +51,10 @@ public class LoginSessionResourceTest {
 
     @Test
     public void getShouldReturn200() throws Exception {
+        Cookie sessionCookie = FixtureFactory.sessionCookie();
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(SUBJECT_URI)
+                .addCookie(sessionCookie)
                 .execute();
 
         Response response = f.get();
@@ -96,11 +92,14 @@ public class LoginSessionResourceTest {
 
     @Test
     public void postShouldReturn200() throws Exception {
+
+        Cookie sessionCookie = FixtureFactory.sessionCookie();
         AsyncHttpClient httpClient = IntegrationTestSuite.getHttpClient();
 
         // this is the GET request to get the csrf cookie & form value
         ListenableFuture<Response> f = httpClient
                 .prepareGet(SUBJECT_URI)
+                .addCookie(sessionCookie)
                 .execute();
 
         Response getResponse = f.get();
@@ -132,18 +131,19 @@ public class LoginSessionResourceTest {
         assertThat(errorMsg, postResponse.getStatusCode(), is(StatusCode.OK.getCode()));
 
         // should also have a session.
-        Cookie sessionCookie = null;
+        Cookie actualSessionCookie = null;
         for(Cookie cookie: postResponse.getCookies()){
             if("session".equals(cookie.name())) {
-                sessionCookie = cookie;
+                actualSessionCookie = cookie;
                 break;
             }
         }
-        assertThat(sessionCookie, is(notNullValue()));
-        assertThat(sessionCookie.isHttpOnly(), is(false));
-        assertThat(sessionCookie.maxAge(), is(-9223372036854775808L));
+        assertThat(actualSessionCookie, is(notNullValue()));
+        assertThat(actualSessionCookie.isHttpOnly(), is(false));
+        assertThat(actualSessionCookie.maxAge(), is(-9223372036854775808L));
         // until the browser shutsdown.. dont ask me its teh sevlet api.
-        assertThat(sessionCookie.name(), is("session"));
+        assertThat(actualSessionCookie.name(), is("session"));
+
 
         // check session cookie value.
         AppConfig appConfig = new AppConfig();
@@ -162,7 +162,7 @@ public class LoginSessionResourceTest {
     }
 
     @Test
-    public void postShouldReturn403() throws Exception {
+    public void postWhenNoCsrfCookieShouldReturn403() throws Exception {
         List<Param> formData = new ArrayList<>();
         formData.add(new Param("email", "obi-wan@rootservices.org"));
         formData.add(new Param("password", "foo"));
@@ -180,5 +180,10 @@ public class LoginSessionResourceTest {
 
         String errorMsg = "Attempted POST " + SUBJECT_URI;
         assertThat(errorMsg, postResponse.getStatusCode(), is(StatusCode.FORBIDDEN.getCode()));
+    }
+
+    @Test
+    public void postWhenNoSessionCookieShouldReturn403() throws Exception {
+        // TBD.
     }
 }

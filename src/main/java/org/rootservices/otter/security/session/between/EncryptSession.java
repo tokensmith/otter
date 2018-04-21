@@ -34,7 +34,7 @@ import java.util.Optional;
  * session which will become a cookie.
  */
 public class EncryptSession implements Between {
-    public static final String NO_SESSION = "Response did not have a session. Unable to set cookie session for response";
+    public static final String NOT_ENCRPTING = "Not re-encrypting session cookie";
     public static final String COULD_NOT_ENCRYPT_SESSION = "Could not encrypt session cookie";
     protected static Logger LOGGER = LogManager.getLogger(EncryptSession.class);
 
@@ -60,7 +60,7 @@ public class EncryptSession implements Between {
 
     @Override
     public void process(Method method, Request request, Response response) throws HaltException {
-        if (response.getSession().isPresent()) {
+        if (shouldEncrypt(request, response)) {
             ByteArrayOutputStream session;
 
             try {
@@ -78,9 +78,18 @@ public class EncryptSession implements Between {
 
             response.getCookies().put(cookieConfig.getName(), cookie);
         } else {
-            LOGGER.error(NO_SESSION);
-            throw new HaltException(NO_SESSION);
+            LOGGER.debug(NOT_ENCRPTING);
         }
+    }
+
+    protected Boolean shouldEncrypt(Request request, Response response) {
+        if (request.getSession().isPresent() && response.getSession().isPresent()) {
+            if ( response.getSession().get().equals(request.getSession().get()) ) {
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     protected ByteArrayOutputStream encrypt(Session session) throws EncryptSessionException {

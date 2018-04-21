@@ -1,6 +1,7 @@
 package integration.app.hello.controller;
 
 import integration.app.hello.controller.presenter.LoginPresenter;
+import integration.app.hello.security.TokenSession;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
