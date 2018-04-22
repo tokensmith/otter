@@ -28,6 +28,7 @@ A clone of the hello world application is included in the test suite and will be
 
 ## Introduction
 - [Resource](#resource)
+- [Configuration](#configuration)
 - [Embedded servlet container](#embedded-container)
 - [Regex routing](#routing)
 - [Restful support](#resources)
@@ -57,7 +58,62 @@ Implementing a resource is rather straight forward.
 - If needed assign the template path to the response's template path variable.
 
 The examples should be sufficient to get started.
+
+### Configuration
+Otter needs to be configured for CSRF, Session, and Routes. To configure Otter implement the [Configure](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/gateway/Configure.java)
+interface. 
+
+##### implement configure(Gateway gateway)
+The implementation of `configure(Gateway gateway)` should configure CSRF and Sessions. Both need
+a cookie configuration and symmetric key configuration.
+
+```java
+    // CSRF cookie configuration
+    CookieConfig csrfCookieConfig = new CookieConfig("csrf", false, -1);
+    gateway.setCsrfCookieConfig(csrfCookieConfig);
+
+    // Session cookie configuration.
+    CookieConfig sessionCookieConfig = new CookieConfig("session", false, -1);
+    gateway.setSessionCookieConfig(sessionCookieConfig);
+
+    // CSRF key configuration.
+    SymmetricKey csrfKey = new SymmetricKey(
+        Optional.of("key-1"),
+        "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
+        Use.SIGNATURE
+    );
+    gateway.setSignKey(csrfKey);
+
+    //Session key configuration.
+    SymmetricKey encKey = new SymmetricKey(
+        Optional.of("key-2"),
+        "MMNj8rE5m7NIDhwKYDmHSnlU1wfKuVvW6G--GKPYkRA",
+        Use.ENCRYPTION
+    );
+    gateway.setEncKey(key);
+```
+
+##### implement routes(Gateway gateway)
+Generally, routes instruct Otter which Resource should handle a given request.
  
+```java
+    // route a get request.
+    gateway.get(HelloResource.URL, new HelloResource());
+```
+
+A resource is needed to handle 404s, [NotFoundResource](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/NotFoundResource.java).
+Which should be configured in this method as well.
+
+```java
+    Route notFoundRoute = new RouteBuilder()
+        .resource(new NotFoundResource())
+        .before(new ArrayList<>())
+        .after(new ArrayList<>())
+        .build();
+
+    gateway.setNotFoundRoute(notFoundRoute);
+```
+
 ### Embedded Container
 
 Otter can run in a Jetty powered [embedded servlet container](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/server/HelloServer.java).
@@ -84,75 +140,10 @@ and the implementation must be annotated with following  `@WebSerlvet` annotatio
 - `value` must not change.
 
 Extending the [entry servlet](https://github.com/RootServices/otter/blob/57/src/main/java/org/rootservices/otter/servlet/OtterEntryServlet.java) 
-is required. Your implementation will configure the [servlet gateway](https://github.com/RootServices/otter/blob/57/src/main/java/org/rootservices/otter/gateway/servlet/ServletGateway.java)
-which instructs Otter how to route your requests to Resources.
+is required.
 
-###### Override `init`
-Your entry servlet must override `init` and it's first line must execute `super.init()`. If you would like to use CSRF 
-and sessions then they should be configured in `init` as well.
-
-First, start by passing in the cookie configuration for CSRF and Session.
-
-```java
-    // CSRF cookie configuration
-    CookieConfig csrfCookieConfig = new CookieConfig("csrf", false, -1);
-    servletGateway.setCsrfCookieConfig(csrfCookieConfig);
-
-    // Session cookie configuration.
-    CookieConfig sessionCookieConfig = new CookieConfig("session", false, -1);
-    servletGateway.setSessionCookieConfig(sessionCookieConfig);
-```
-
-Next, configure the Symmetric keys.
-
-```java
-    // CSRF key configuration.
-    SymmetricKey csrfKey = new SymmetricKey(
-        Optional.of("key-1"),
-        "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
-        Use.SIGNATURE
-    );
-
-    servletGateway.setSignKey(csrfKey);
-
-    //Session key configuration.
-    SymmetricKey encKey = new SymmetricKey(
-        Optional.of("key-2"),
-        "MMNj8rE5m7NIDhwKYDmHSnlU1wfKuVvW6G--GKPYkRA",
-        Use.ENCRYPTION
-    );
-
-    servletGateway.setEncKey(key);
-```
-
-Lastly, configuration is needed for routes.
-
-### Routing
-Generally, routes instruct Otter which Resource should handle a given request.
-  
-The example entry servlet has a method `routes()` which is called in `init()`.
- 
-
-```java
-    // route a get request.
-    servletGateway.get(HelloResource.URL, new HelloResource());
-```
-
-### Not Found Resource
-
-
-A resource is needed to handle 404s, [NotFoundResource](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/NotFoundResource.java).
-Which should be configured in your entry servlet as well.
-
-```java
-    Route notFoundRoute = new RouteBuilder()
-        .resource(new NotFoundResource())
-        .before(new ArrayList<>())
-        .after(new ArrayList<>())
-        .build();
-
-    servletGateway.setNotFoundRoute(notFoundRoute);
-```
+##### Override `makeConfigure()`
+This method must return an instance of the [configruation](#configuration) interface.  
 
 ### CSRF 
 
@@ -189,7 +180,7 @@ To use them the following is needed:
 - Add routes to the servletGateway
 
 #### Configure
-See the [Entry Servlet](#entry-servlet) section.
+See the [Configuration](#configuration) section.
 
 #### Implement session class
 You will need to implement a session class which must have a copy constructor and a equals method.
