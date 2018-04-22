@@ -42,10 +42,14 @@ A resource is what handles a request. There are two types of resources that Otte
 - [Resource](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/controller/Resource.java)
 - [RestResource](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/controller/RestResource.java)
 
-Resource is designed to handle any content type, typically used to render `text/html`. A simple [example](https://github.com/RootServices/otter/blob/57/src/test/java/integration/app/hello/controller/HelloResource.java) can be found in the test suite. 
+A Resource is designed to handle any content type. It's typically used to render `text/html`. 
 
-RestResource is designed to handle `application/json`. A simple [example](https://github.com/RootServices/otter/blob/57/src/test/java/integration/app/hello/controller/HelloRestResource.java) can be found in the test suite as well.
+Have a look at [HelloResource](https://github.com/RootServices/otter/blob/57/src/test/java/integration/app/hello/controller/HelloResource.java) as an example. 
 
+A RestResource is designed to handle `application/json`.
+
+Have a look at [HelloRestResource](https://github.com/RootServices/otter/blob/57/src/test/java/integration/app/hello/controller/HelloRestResource.java) as an example.
+ 
 Implementing a resource is rather straight forward. 
 - Override the methods that handle http methods (get, post, put, delete).
 - The response status code must be assigned.
@@ -62,7 +66,7 @@ The [servlet container factory](https://github.com/RootServices/otter/blob/devel
 
 ##### Entry Filter
 An [entry filter](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/servlet/EntryFilter.java) 
-is added for all requests and is configured do so in the [servlet container factory](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/server/container/ServletContainerFactory.java#L153).
+is added for all requests and is configured in the [servlet container factory](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/server/container/ServletContainerFactory.java#L153).
 It's responsibility is to determine if requests should be forwarded onto the [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java) or the container. 
 The entry servlet will dispatch the request to Otter. The container handles requests to render JSPs and static assets. 
 When a request should be handled by the entry servlet then `/app` is prepended to the url path. This is needed 
@@ -70,7 +74,8 @@ so the entry servlet the will handle the request.
 
 ##### Entry Servlet
 
-Applications must extend the [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java) and the implementation must be annotated with following  `@WebSerlvet` annotation.
+Applications must extend the [entry servlet](https://github.com/RootServices/otter/blob/57/src/main/java/org/rootservices/otter/servlet/OtterEntryServlet.java)
+and the implementation must be annotated with following  `@WebSerlvet` annotation.
 ```java 
     @WebServlet(value="/app/*", name="EntryServlet", asyncSupported = true)
 ```
@@ -78,7 +83,7 @@ Applications must extend the [entry servlet](https://github.com/RootServices/ott
 - `name` may change to a different value
 - `value` must not change.
 
-Extending the [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java) 
+Extending the [entry servlet](https://github.com/RootServices/otter/blob/57/src/main/java/org/rootservices/otter/servlet/OtterEntryServlet.java) 
 is required. Your implementation will configure the [servlet gateway](https://github.com/RootServices/otter/blob/57/src/main/java/org/rootservices/otter/gateway/servlet/ServletGateway.java)
 which instructs Otter how to route your requests to Resources.
 
