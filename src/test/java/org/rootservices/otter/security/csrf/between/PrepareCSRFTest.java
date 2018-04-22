@@ -7,6 +7,7 @@ import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.jwt.entity.jwt.JsonWebToken;
+import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
@@ -33,7 +34,8 @@ public class PrepareCSRFTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new PrepareCSRF(COOKIE_NAME, false, -1, mockDoubleSubmitCSRF);
+        CookieConfig cookieConfig = new CookieConfig(COOKIE_NAME, false, -1);
+        subject = new PrepareCSRF(cookieConfig, mockDoubleSubmitCSRF);
     }
 
     @Test

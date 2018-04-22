@@ -20,6 +20,7 @@ import org.rootservices.otter.security.RandomString;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import org.rootservices.otter.security.csrf.between.CheckCSRF;
 import org.rootservices.otter.security.csrf.between.PrepareCSRF;
+import org.rootservices.otter.security.session.between.EncryptSession;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 import org.rootservices.otter.server.path.CompiledClassPath;
 import org.rootservices.otter.server.path.WebAppPath;
@@ -58,7 +59,8 @@ public class OtterAppFactory {
                 httpServletResponseMerger(),
                 engine(),
                 prepareCSRF(doubleSubmitCSRF),
-                checkCSRF(doubleSubmitCSRF)
+                checkCSRF(doubleSubmitCSRF),
+                encryptSession()
         );
     }
 
@@ -121,5 +123,13 @@ public class OtterAppFactory {
 
     public Base64.Decoder urlDecoder() {
         return Base64.getUrlDecoder();
+    }
+
+    public EncryptSession encryptSession() {
+        return new EncryptSession(
+                jwtAppFactory(),
+                urlDecoder(),
+                objectMapper()
+        );
     }
 }

@@ -20,13 +20,13 @@ import java.io.IOException;
 
 public class OtterEntryServlet extends HttpServlet {
     protected static Logger logger = LogManager.getLogger(OtterEntryServlet.class);
-    protected OtterAppFactory appFactory;
+    protected OtterAppFactory otterAppFactory;
     protected ServletGateway servletGateway;
 
     @Override
     public void init() throws ServletException {
-        appFactory = new OtterAppFactory();
-        servletGateway = appFactory.servletGateway();
+        otterAppFactory = new OtterAppFactory();
+        servletGateway = otterAppFactory.servletGateway();
 
     }
 
