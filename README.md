@@ -91,6 +91,7 @@ Otter supports CSRF protection by implementing the double submit strategy.
 Here is an example of how to protect a login page:
 
 Configure a key to sign cookies with, which can be observed [here](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L28-L34).
+It's highly recommended that keys are not in plain text. They should be vaulted.
 
 ```java
     SymmetricKey key = new SymmetricKey(
@@ -136,11 +137,13 @@ To use them the following is needed:
 - Define and inject your encryption key into the servletGateway.
 - Implement your DecryptSession between.
 - Inject you DecryptSession into the servletGateway.
-- Add routes that use the betweens.
+- Add routes that to the servletGateway
 
 #### Implement session class
 You will need to implement a session class which must have a copy constructor and a equals method.
 If either of those are not there Otter internals will Halt your requests.
+
+An example [session](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/security/TokenSession.java) can be found in the test suite.
 
 #### Encryption key
 Inject your encryption symmetric key into the servletGateway.
@@ -155,6 +158,9 @@ It's highly recommended that keys are not in plain text. They should be vaulted.
 
     servletGateway.setEncKey(key);
 ```
+
+#### Implement DecryptSession
+An example [implementation](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/security/SessionBeforeBetween.java) can be found in the test suite.
 
 #### Inject your DecryptSession
 Inject your implementation of the `DecryptSession`.
