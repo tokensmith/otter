@@ -1,58 +1,71 @@
 package integration.app.hello.config;
 
-
-import integration.app.hello.controller.HelloRestResource;
+import integration.app.hello.controller.*;
 import integration.app.hello.security.SessionBeforeBetween;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
-import org.rootservices.jwt.entity.jwk.Use;
-import org.rootservices.otter.config.OtterAppFactory;
-import org.rootservices.otter.translator.JsonTranslator;
+import org.rootservices.otter.config.CookieConfig;
+import org.rootservices.otter.gateway.Configure;
+import org.rootservices.otter.gateway.Gateway;
+import org.rootservices.otter.router.RouteBuilder;
+import org.rootservices.otter.router.entity.Route;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.HashMap;
 
-public class AppConfig {
-    public OtterAppFactory otterAppFactory() {
-        return new OtterAppFactory();
+public class AppConfig implements Configure {
+    private AppFactory appFactory;
+
+    public AppConfig(AppFactory appFactory) {
+        this.appFactory = appFactory;
     }
 
-    public JsonTranslator jsonTranslator() {
-        return otterAppFactory().jsonTranslator();
+    @Override
+    public void configure(Gateway gateway) {
+        // csrf
+        CookieConfig csrfCookieConfig = new CookieConfig("csrf", false, -1);
+        gateway.setCsrfCookieConfig(csrfCookieConfig);
+        gateway.setCsrfFormFieldName("csrfToken");
+
+        SymmetricKey signkey = appFactory.signKey();
+        gateway.setSignKey(signkey);
+
+        // session
+        CookieConfig sessionCookieConfig = new CookieConfig("session", false, -1);
+        SymmetricKey encKey = appFactory.encKey();
+
+        gateway.setSessionCookieConfig(sessionCookieConfig);
+        gateway.setEncKey(encKey);
+
+        SessionBeforeBetween sessionBeforeBetween = appFactory.sessionBeforeBetween("session", encKey, new HashMap<>());
+        gateway.setDecryptSession(sessionBeforeBetween);
     }
 
-    public HelloRestResource helloRestResource() {
-        return new HelloRestResource(jsonTranslator());
-    }
+    @Override
+    public void routes(Gateway gateway) {
+        Route notFoundRoute = new RouteBuilder()
+                .resource(new NotFoundResource())
+                .before(new ArrayList<>())
+                .after(new ArrayList<>())
+                .build();
 
-    /**
-     * Definitely do not have your keys in code :)
-     * This key should be vaulted. It's in plaintext here for ease of use.
-     *
-     * @return A Symmetric Key used to encrypt the session.
-     */
-    public SymmetricKey encKey() {
-        return new SymmetricKey(
-                Optional.of("key-2"),
-                "MMNj8rE5m7NIDhwKYDmHSnlU1wfKuVvW6G--GKPYkRA",
-                Use.ENCRYPTION
-        );
-    }
+        gateway.setNotFoundRoute(notFoundRoute);
 
-    /**
-     * Definitely do not have your keys in code :)
-     * This key should be vaulted. It's in plaintext here for ease of use.
-     *
-     * @return A Symmetric Key used to sign CSRF tokens.
-     */
-    public SymmetricKey signKey() {
-        return new SymmetricKey(
-                Optional.of("key-1"),
-                "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
-                Use.SIGNATURE
-        );
-    }
+        gateway.get(HelloResource.URL, new HelloResource());
+        gateway.get(HelloRestResource.URL, appFactory.helloRestResource());
+        gateway.post(HelloRestResource.URL, appFactory.helloRestResource());
 
-    public SessionBeforeBetween sessionBeforeBetween(String cookieName, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys) {
-        return new SessionBeforeBetween(cookieName, otterAppFactory().jwtAppFactory(), preferredKey, rotationKeys, otterAppFactory().objectMapper());
+        // csrf
+        LoginResource login = new LoginResource();
+        gateway.getCsrfProtect(login.URL, login);
+        gateway.postCsrfProtect(login.URL, login);
+
+        // csrf & session
+        LoginSessionResource loginWithSession = new LoginSessionResource();
+        gateway.getCsrfAndSessionProtect(loginWithSession.URL, loginWithSession);
+        gateway.postCsrfAndSessionProtect(loginWithSession.URL, loginWithSession);
+
+        // session
+        gateway.getSessionProtect(ProtectedResource.URL, new ProtectedResource());
+        gateway.postSessionProtect(ProtectedResource.URL, new ProtectedResource());
     }
 }
