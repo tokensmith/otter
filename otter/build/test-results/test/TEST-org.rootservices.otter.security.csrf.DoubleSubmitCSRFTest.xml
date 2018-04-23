@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.rootservices.otter.security.csrf.DoubleSubmitCSRFTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2018-04-23T13:03:50" hostname="Kristins-MBP" time="0.027">
+  <properties/>
+  <testcase name="doTokensMatchShouldBeFalse" classname="org.rootservices.otter.security.csrf.DoubleSubmitCSRFTest" time="0.004"/>
+  <testcase name="csrfCookieValueToJwtShouldReturnJwt" classname="org.rootservices.otter.security.csrf.DoubleSubmitCSRFTest" time="0.002"/>
+  <testcase name="getSignKeyShouldBePreferred" classname="org.rootservices.otter.security.csrf.DoubleSubmitCSRFTest" time="0.0"/>
+  <testcase name="verifyCsrfCookieSignatureShouldBeTrue" classname="org.rootservices.otter.security.csrf.DoubleSubmitCSRFTest" time="0.006"/>
+  <testcase name="makeChallengeTokenShouldBeOk" classname="org.rootservices.otter.security.csrf.DoubleSubmitCSRFTest" time="0.001"/>
+  <testcase name="doTokensMatchShouldBeOk" classname="org.rootservices.otter.security.csrf.DoubleSubmitCSRFTest" time="0.004"/>
+  <testcase name="csrfCookieValueToJwtShouldShouldThrowCsrfException" classname="org.rootservices.otter.security.csrf.DoubleSubmitCSRFTest" time="0.002"/>
+  <testcase name="makeCsrfCookieShouldBeOk" classname="org.rootservices.otter.security.csrf.DoubleSubmitCSRFTest" time="0.004"/>
+  <testcase name="getSignKeyShouldBeRotation" classname="org.rootservices.otter.security.csrf.DoubleSubmitCSRFTest" time="0.0"/>
+  <testcase name="verifyCsrfCookieSignatureShouldBeFalse" classname="org.rootservices.otter.security.csrf.DoubleSubmitCSRFTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.rootservices.otter.security.csrf.SynchronizerTokenTest" tests="16" skipped="0" failures="0" errors="0" timestamp="2018-04-23T13:03:50" hostname="Kristins-MBP" time="0.03">
+  <properties/>
+  <testcase name="challengeTokensMatchWhenDifferentShouldBeFalse" classname="org.rootservices.otter.security.csrf.SynchronizerTokenTest" time="0.004"/>
+  <testcase name="challengeTokensMatchShouldBeTrue" classname="org.rootservices.otter.security.csrf.SynchronizerTokenTest" time="0.001"/>
+  <testcase name="insertChallengeTokenIntoSessionShouldInsert" classname="org.rootservices.otter.security.csrf.SynchronizerTokenTest" time="0.008"/>
+  <testcase name="requestMethodRequiresChallengeTokenWhenPutShouldBeTrue" classname="org.rootservices.otter.security.csrf.SynchronizerTokenTest" time="0.001"/>
+  <testcase name="checkTokensShouldBeOk" classname="org.rootservices.otter.security.csrf.SynchronizerTokenTest" time="0.001"/>
+  <testcase name="requestMethodRequiresChallengeTokenWhenDeleteShouldBeTrue" classname="org.rootservices.otter.security.csrf.SynchronizerTokenTest" time="0.001"/>
+  <testcase name="getChallengeTokenFromFormShouldReturnEmpty" classname="org.rootservices.otter.security.csrf.SynchronizerTokenTest" time="0.001"/>
+  <testcase name="getChallengeTokenFromFormShouldReturnToken" classname="org.rootservices.otter.security.csrf.SynchronizerTokenTest" time="0.001"/>
+  <testcase name="getChallengeTokenFromSessionShouldReturnEmpty" classname="org.rootservices.otter.security.csrf.SynchronizerTokenTest" time="0.001"/>
+  <testcase name="challengeTokensMatchWhenSessionIsNotPresentShouldBeFalse" classname="org.rootservices.otter.security.csrf.SynchronizerTokenTest" time="0.0"/>
+  <testcase name="getChallengeTokenFromSessionShouldReturnToken" classname="org.rootservices.otter.security.csrf.SynchronizerTokenTest" time="0.001"/>
+  <testcase name="requestMethodRequiresChallengeTokenWhenGetShouldBeFalse" classname="org.rootservices.otter.security.csrf.SynchronizerTokenTest" time="0.0"/>
+  <testcase name="checkTokensShouldInsertTokenToSession" classname="org.rootservices.otter.security.csrf.SynchronizerTokenTest" time="0.002"/>
+  <testcase name="requestMethodRequiresChallengeTokenWhenPostShouldBeTrue" classname="org.rootservices.otter.security.csrf.SynchronizerTokenTest" time="0.0"/>
+  <testcase name="challengeTokensMatchWhenFormIsNotPresentShouldBeFalse" classname="org.rootservices.otter.security.csrf.SynchronizerTokenTest" time="0.001"/>
+  <testcase name="checkTokensShouldThrowCsrfException" classname="org.rootservices.otter.security.csrf.SynchronizerTokenTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - Class integration.test.ProtectedResourceTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>Class integration.test.ProtectedResourceTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/integration.test.html">integration.test</a> &gt; ProtectedResourceTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">4</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.029s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">getShouldReturn200</td>
+<td>0.006s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">getWhenNoSessionShouldReturn401</td>
+<td>0.009s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">postShouldReturn200</td>
+<td>0.006s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">postWhenNoSessionShouldReturn403</td>
+<td>0.008s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>2018-04-23T08:03:49,741 DEBUG qtp811595527-17 servlet.ServletGateway:61 - session cookie not present.
+org.rootservices.otter.router.exception.HaltException: session cookie not present.
+	at org.rootservices.otter.security.session.between.DecryptSession.process(DecryptSession.java:74) ~[main/:?]
+	at org.rootservices.otter.router.Engine.executeBetween(Engine.java:86) ~[main/:?]
+	at org.rootservices.otter.router.Engine.executeResourceMethod(Engine.java:49) ~[main/:?]
+	at org.rootservices.otter.router.Engine.route(Engine.java:32) ~[main/:?]
+	at org.rootservices.otter.gateway.servlet.ServletGateway.processRequest(ServletGateway.java:56) [main/:?]
+	at org.rootservices.otter.servlet.async.ReadListenerImpl.onAllDataRead(ReadListenerImpl.java:48) [main/:?]
+	at org.eclipse.jetty.server.HttpInput.run(HttpInput.java:894) [jetty-server-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.server.handler.ContextHandler.handle(ContextHandler.java:1339) [jetty-server-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.server.HttpChannel.handle(HttpChannel.java:454) [jetty-server-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.server.HttpConnection.onFillable(HttpConnection.java:260) [jetty-server-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.io.AbstractConnection$ReadCallback.succeeded(AbstractConnection.java:281) [jetty-io-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.io.FillInterest.fillable(FillInterest.java:102) [jetty-io-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.io.ChannelEndPoint$2.run(ChannelEndPoint.java:118) [jetty-io-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:319) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:175) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.run(EatWhatYouKill.java:133) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.ReservedThreadExecutor$ReservedThread.run(ReservedThreadExecutor.java:366) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:754) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$2.run(QueuedThreadPool.java:672) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at java.lang.Thread.run(Thread.java:844) [?:?]
+2018-04-23T08:03:49,745 DEBUG qtp811595527-17 async.OtterAsyncListener:23 - Async Done: GET /app/protected
+2018-04-23T08:03:49,750 DEBUG qtp811595527-18 between.EncryptSession:81 - Not re-encrypting session cookie
+2018-04-23T08:03:49,751 DEBUG qtp811595527-18 async.OtterAsyncListener:23 - Async Done: POST /app/protected
+2018-04-23T08:03:49,756 DEBUG qtp811595527-17 servlet.ServletGateway:61 - session cookie not present.
+org.rootservices.otter.router.exception.HaltException: session cookie not present.
+	at org.rootservices.otter.security.session.between.DecryptSession.process(DecryptSession.java:74) ~[main/:?]
+	at org.rootservices.otter.router.Engine.executeBetween(Engine.java:86) ~[main/:?]
+	at org.rootservices.otter.router.Engine.executeResourceMethod(Engine.java:49) ~[main/:?]
+	at org.rootservices.otter.router.Engine.route(Engine.java:32) ~[main/:?]
+	at org.rootservices.otter.gateway.servlet.ServletGateway.processRequest(ServletGateway.java:56) [main/:?]
+	at org.rootservices.otter.servlet.async.ReadListenerImpl.onAllDataRead(ReadListenerImpl.java:48) [main/:?]
+	at org.eclipse.jetty.server.HttpInput.run(HttpInput.java:894) [jetty-server-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.server.handler.ContextHandler.handle(ContextHandler.java:1339) [jetty-server-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.server.HttpChannel.handle(HttpChannel.java:454) [jetty-server-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.server.HttpConnection.onFillable(HttpConnection.java:260) [jetty-server-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.io.AbstractConnection$ReadCallback.succeeded(AbstractConnection.java:281) [jetty-io-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.io.FillInterest.fillable(FillInterest.java:102) [jetty-io-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.io.ChannelEndPoint$2.run(ChannelEndPoint.java:118) [jetty-io-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:319) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:175) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.run(EatWhatYouKill.java:133) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.ReservedThreadExecutor$ReservedThread.run(ReservedThreadExecutor.java:366) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:754) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$2.run(QueuedThreadPool.java:672) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at java.lang.Thread.run(Thread.java:844) [?:?]
+2018-04-23T08:03:49,759 DEBUG qtp811595527-17 async.OtterAsyncListener:23 - Async Done: POST /app/protected
+2018-04-23T08:03:49,764 DEBUG qtp811595527-18 between.EncryptSession:81 - Not re-encrypting session cookie
+2018-04-23T08:03:49,765 DEBUG qtp811595527-18 async.OtterAsyncListener:23 - Async Done: GET /app/protected
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 4.4</a> at Apr 23, 2018, 8:03:50 AM</p>
+</div>
+</div>
+</body>
+</html>

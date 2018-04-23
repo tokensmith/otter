@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.rootservices.otter.security.csrf.between.CheckCSRFTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2018-04-23T13:03:50" hostname="Kristins-MBP" time="0.01">
+  <properties/>
+  <testcase name="processWhenCookieIsMissingShouldReturnFalse" classname="org.rootservices.otter.security.csrf.between.CheckCSRFTest" time="0.008"/>
+  <testcase name="processShouldBeOK" classname="org.rootservices.otter.security.csrf.between.CheckCSRFTest" time="0.001"/>
+  <testcase name="processWhenFormValueIsNullReturnFalse" classname="org.rootservices.otter.security.csrf.between.CheckCSRFTest" time="0.001"/>
+  <testcase name="processWhenDontMatchShouldReturnFalse" classname="org.rootservices.otter.security.csrf.between.CheckCSRFTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

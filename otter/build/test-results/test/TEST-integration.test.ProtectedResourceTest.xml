@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="integration.test.ProtectedResourceTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2018-04-23T13:03:49" hostname="Kristins-MBP" time="0.03">
+  <properties/>
+  <testcase name="getWhenNoSessionShouldReturn401" classname="integration.test.ProtectedResourceTest" time="0.009"/>
+  <testcase name="postShouldReturn200" classname="integration.test.ProtectedResourceTest" time="0.006"/>
+  <testcase name="postWhenNoSessionShouldReturn403" classname="integration.test.ProtectedResourceTest" time="0.008"/>
+  <testcase name="getShouldReturn200" classname="integration.test.ProtectedResourceTest" time="0.006"/>
+  <system-out><![CDATA[2018-04-23T08:03:49,741 DEBUG qtp811595527-17 servlet.ServletGateway:61 - session cookie not present.
+org.rootservices.otter.router.exception.HaltException: session cookie not present.
+	at org.rootservices.otter.security.session.between.DecryptSession.process(DecryptSession.java:74) ~[main/:?]
+	at org.rootservices.otter.router.Engine.executeBetween(Engine.java:86) ~[main/:?]
+	at org.rootservices.otter.router.Engine.executeResourceMethod(Engine.java:49) ~[main/:?]
+	at org.rootservices.otter.router.Engine.route(Engine.java:32) ~[main/:?]
+	at org.rootservices.otter.gateway.servlet.ServletGateway.processRequest(ServletGateway.java:56) [main/:?]
+	at org.rootservices.otter.servlet.async.ReadListenerImpl.onAllDataRead(ReadListenerImpl.java:48) [main/:?]
+	at org.eclipse.jetty.server.HttpInput.run(HttpInput.java:894) [jetty-server-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.server.handler.ContextHandler.handle(ContextHandler.java:1339) [jetty-server-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.server.HttpChannel.handle(HttpChannel.java:454) [jetty-server-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.server.HttpConnection.onFillable(HttpConnection.java:260) [jetty-server-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.io.AbstractConnection$ReadCallback.succeeded(AbstractConnection.java:281) [jetty-io-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.io.FillInterest.fillable(FillInterest.java:102) [jetty-io-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.io.ChannelEndPoint$2.run(ChannelEndPoint.java:118) [jetty-io-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:319) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:175) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.run(EatWhatYouKill.java:133) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.ReservedThreadExecutor$ReservedThread.run(ReservedThreadExecutor.java:366) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:754) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$2.run(QueuedThreadPool.java:672) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at java.lang.Thread.run(Thread.java:844) [?:?]
+2018-04-23T08:03:49,745 DEBUG qtp811595527-17 async.OtterAsyncListener:23 - Async Done: GET /app/protected
+2018-04-23T08:03:49,750 DEBUG qtp811595527-18 between.EncryptSession:81 - Not re-encrypting session cookie
+2018-04-23T08:03:49,751 DEBUG qtp811595527-18 async.OtterAsyncListener:23 - Async Done: POST /app/protected
+2018-04-23T08:03:49,756 DEBUG qtp811595527-17 servlet.ServletGateway:61 - session cookie not present.
+org.rootservices.otter.router.exception.HaltException: session cookie not present.
+	at org.rootservices.otter.security.session.between.DecryptSession.process(DecryptSession.java:74) ~[main/:?]
+	at org.rootservices.otter.router.Engine.executeBetween(Engine.java:86) ~[main/:?]
+	at org.rootservices.otter.router.Engine.executeResourceMethod(Engine.java:49) ~[main/:?]
+	at org.rootservices.otter.router.Engine.route(Engine.java:32) ~[main/:?]
+	at org.rootservices.otter.gateway.servlet.ServletGateway.processRequest(ServletGateway.java:56) [main/:?]
+	at org.rootservices.otter.servlet.async.ReadListenerImpl.onAllDataRead(ReadListenerImpl.java:48) [main/:?]
+	at org.eclipse.jetty.server.HttpInput.run(HttpInput.java:894) [jetty-server-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.server.handler.ContextHandler.handle(ContextHandler.java:1339) [jetty-server-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.server.HttpChannel.handle(HttpChannel.java:454) [jetty-server-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.server.HttpConnection.onFillable(HttpConnection.java:260) [jetty-server-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.io.AbstractConnection$ReadCallback.succeeded(AbstractConnection.java:281) [jetty-io-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.io.FillInterest.fillable(FillInterest.java:102) [jetty-io-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.io.ChannelEndPoint$2.run(ChannelEndPoint.java:118) [jetty-io-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:319) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:175) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.run(EatWhatYouKill.java:133) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.ReservedThreadExecutor$ReservedThread.run(ReservedThreadExecutor.java:366) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:754) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$2.run(QueuedThreadPool.java:672) [jetty-util-9.4.9.v20180320.jar:9.4.9.v20180320]
+	at java.lang.Thread.run(Thread.java:844) [?:?]
+2018-04-23T08:03:49,759 DEBUG qtp811595527-17 async.OtterAsyncListener:23 - Async Done: POST /app/protected
+2018-04-23T08:03:49,764 DEBUG qtp811595527-18 between.EncryptSession:81 - Not re-encrypting session cookie
+2018-04-23T08:03:49,765 DEBUG qtp811595527-18 async.OtterAsyncListener:23 - Async Done: GET /app/protected
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
