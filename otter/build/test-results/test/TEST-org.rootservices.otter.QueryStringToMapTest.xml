@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.rootservices.otter.QueryStringToMapTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2018-04-23T15:41:00" hostname="Kristins-MacBook-Pro.local" time="0.003">
-  <properties/>
-  <testcase name="noQueryParameters" classname="org.rootservices.otter.QueryStringToMapTest" time="0.001"/>
-  <testcase name="testParamsToMap" classname="org.rootservices.otter.QueryStringToMapTest" time="0.001"/>
-  <testcase name="paramValueIsEmptyShouldBeEmptyList" classname="org.rootservices.otter.QueryStringToMapTest" time="0.001"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

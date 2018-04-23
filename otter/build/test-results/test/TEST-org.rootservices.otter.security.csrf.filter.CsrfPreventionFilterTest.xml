@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.rootservices.otter.security.csrf.filter.CsrfPreventionFilterTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2018-04-23T15:41:01" hostname="Kristins-MacBook-Pro.local" time="0.011">
-  <properties/>
-  <testcase name="doFilterShouldBeOk" classname="org.rootservices.otter.security.csrf.filter.CsrfPreventionFilterTest" time="0.009"/>
-  <testcase name="doFilterShouldSendError" classname="org.rootservices.otter.security.csrf.filter.CsrfPreventionFilterTest" time="0.001"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

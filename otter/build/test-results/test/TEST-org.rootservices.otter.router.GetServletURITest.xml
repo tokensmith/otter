@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.rootservices.otter.router.GetServletURITest" tests="2" skipped="0" failures="0" errors="0" timestamp="2018-04-23T15:41:00" hostname="Kristins-MacBook-Pro.local" time="0.015">
-  <properties/>
-  <testcase name="testRun" classname="org.rootservices.otter.router.GetServletURITest" time="0.014"/>
-  <testcase name="testRunRemovForwardSlash" classname="org.rootservices.otter.router.GetServletURITest" time="0.001"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

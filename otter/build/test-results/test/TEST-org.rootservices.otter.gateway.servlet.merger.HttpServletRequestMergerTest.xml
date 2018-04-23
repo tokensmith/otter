@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMergerTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2018-04-23T15:41:00" hostname="Kristins-MacBook-Pro.local" time="0.048">
-  <properties/>
-  <testcase name="mergePresenterAndTemplateAreNotPresent" classname="org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMergerTest" time="0.045"/>
-  <testcase name="mergePresenterAndTemplateArePresent" classname="org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMergerTest" time="0.002"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
