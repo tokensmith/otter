@@ -106,7 +106,7 @@ public class DecryptSession<T extends Session> implements Between {
     /**
      * Copies the input parameter and then returns the copy.
      *
-     * @param session
+     * @param session the session to copy
      * @return an instance of T that is a copy of session
      */
     protected T copy(T session) throws SessionCtorException {
