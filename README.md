@@ -23,7 +23,7 @@ compile group: 'org.rootservices', name: 'otter', version: '1.2-SNAPSHOT'
 ```
 
 ## Example Application
-A [hello world](https://github.com/RootServices/hello-world) example is available which demonstrates CSRF, Rest, and tex/html responses.
+A [hello world](https://github.com/RootServices/hello-world) example is available which demonstrates CSRF, Rest, and `tex/html` responses.
 A clone of the hello world application is included in the test suite and will be referenced throughout the documentation. 
 
 ## Introduction
@@ -41,13 +41,9 @@ A resource is what handles a request. There are two types of resources that Otte
 - [Resource](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/controller/Resource.java)
 - [RestResource](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/controller/RestResource.java)
 
-A Resource is designed to handle any content type. It's typically used to render `text/html`. 
+A **Resource** is designed to handle any content type. It's typically used to render `text/html`. Have a look at [HelloResource](https://github.com/RootServices/otter/blob/57/src/test/java/integration/app/hello/controller/HelloResource.java) as an example. 
 
-Have a look at [HelloResource](https://github.com/RootServices/otter/blob/57/src/test/java/integration/app/hello/controller/HelloResource.java) as an example. 
-
-A RestResource is designed to handle `application/json`.
-
-Have a look at [HelloRestResource](https://github.com/RootServices/otter/blob/57/src/test/java/integration/app/hello/controller/HelloRestResource.java) as an example.
+A **RestResource** is designed to handle `application/json`. Have a look at [HelloRestResource](https://github.com/RootServices/otter/blob/57/src/test/java/integration/app/hello/controller/HelloRestResource.java) as an example.
  
 Implementing a resource is rather straight forward. 
 - Override the methods that handle http methods (get, post, put, delete).
