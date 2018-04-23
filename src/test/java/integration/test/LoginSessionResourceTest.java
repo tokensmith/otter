@@ -3,11 +3,9 @@ package integration.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import helper.FixtureFactory;
-import integration.app.hello.config.AppConfig;
+import integration.app.hello.config.AppFactory;
 import integration.app.hello.security.TokenSession;
 import io.netty.handler.codec.http.cookie.Cookie;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.Param;
@@ -145,7 +143,7 @@ public class LoginSessionResourceTest {
 
 
         // check session cookie value.
-        AppConfig appConfig = new AppConfig();
+        AppFactory appConfig = new AppFactory();
         SymmetricKey encKey = appConfig.encKey();
 
         OtterAppFactory otterAppFactory = new OtterAppFactory();

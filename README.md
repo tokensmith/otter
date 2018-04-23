@@ -23,14 +23,13 @@ compile group: 'org.rootservices', name: 'otter', version: '1.2-SNAPSHOT'
 ```
 
 ## Example Application
-A [hello world](https://github.com/RootServices/hello-world) example is available which demonstrates CSRF, Rest, and tex/html responses.
+A [hello world](https://github.com/RootServices/hello-world) example is available which demonstrates CSRF, Rest, and `tex/html` responses.
 A clone of the hello world application is included in the test suite and will be referenced throughout the documentation. 
 
 ## Introduction
 - [Resource](#resource)
+- [Configuration](#configuration)
 - [Embedded servlet container](#embedded-container)
-- [Regex routing](#routing)
-- [Restful support](#resources)
 - [CSRF protection](#csrf)
 - [Stateless with encrypted sessions](#stateless)
 - [Async I/O](#async-i/o)
@@ -42,13 +41,9 @@ A resource is what handles a request. There are two types of resources that Otte
 - [Resource](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/controller/Resource.java)
 - [RestResource](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/controller/RestResource.java)
 
-A Resource is designed to handle any content type. It's typically used to render `text/html`. 
+A **Resource** is designed to handle any content type. It's typically used to render `text/html`. Have a look at [HelloResource](https://github.com/RootServices/otter/blob/57/src/test/java/integration/app/hello/controller/HelloResource.java) as an example. 
 
-Have a look at [HelloResource](https://github.com/RootServices/otter/blob/57/src/test/java/integration/app/hello/controller/HelloResource.java) as an example. 
-
-A RestResource is designed to handle `application/json`.
-
-Have a look at [HelloRestResource](https://github.com/RootServices/otter/blob/57/src/test/java/integration/app/hello/controller/HelloRestResource.java) as an example.
+A **RestResource** is designed to handle `application/json`. Have a look at [HelloRestResource](https://github.com/RootServices/otter/blob/57/src/test/java/integration/app/hello/controller/HelloRestResource.java) as an example.
  
 Implementing a resource is rather straight forward. 
 - Override the methods that handle http methods (get, post, put, delete).
@@ -57,20 +52,77 @@ Implementing a resource is rather straight forward.
 - If needed assign the template path to the response's template path variable.
 
 The examples should be sufficient to get started.
+
+### Configuration
+Otter needs to be configured for CSRF, Session, and Routes. To configure Otter implement the [Configure](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/gateway/Configure.java)
+interface. 
+
+##### `configure(Gateway gateway)`
+The implementation of `configure(Gateway gateway)` should configure CSRF and Sessions. Both need
+a cookie configuration and symmetric key configuration.
+
+```java
+    // CSRF cookie configuration
+    CookieConfig csrfCookieConfig = new CookieConfig("csrf", false, -1);
+    gateway.setCsrfCookieConfig(csrfCookieConfig);
+
+    // Session cookie configuration.
+    CookieConfig sessionCookieConfig = new CookieConfig("session", false, -1);
+    gateway.setSessionCookieConfig(sessionCookieConfig);
+
+    // CSRF key configuration.
+    SymmetricKey csrfKey = new SymmetricKey(
+        Optional.of("key-1"),
+        "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
+        Use.SIGNATURE
+    );
+    gateway.setSignKey(csrfKey);
+
+    //Session key configuration.
+    SymmetricKey encKey = new SymmetricKey(
+        Optional.of("key-2"),
+        "MMNj8rE5m7NIDhwKYDmHSnlU1wfKuVvW6G--GKPYkRA",
+        Use.ENCRYPTION
+    );
+    gateway.setEncKey(key);
+```
+
+##### `routes(Gateway gateway)`
+Generally, routes instruct Otter which Resource should handle a given request. Below is an example of a `GET` request 
+that will be handled by the `HelloResorce`. 
  
+```java
+    // route a get request.
+    gateway.get(HelloResource.URL, new HelloResource());
+```
+
+When Otter cannot find a route to satisfy a request it will use it's `notFoundRoute`.
+This should be configured in the `routes(Gateway gateway)` implementation.
+
+```java
+    Route notFoundRoute = new RouteBuilder()
+        .resource(new NotFoundResource())
+        .before(new ArrayList<>())
+        .after(new ArrayList<>())
+        .build();
+
+    gateway.setNotFoundRoute(notFoundRoute);
+```
+
 ### Embedded Container
 
 Otter can run in a Jetty powered [embedded servlet container](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/server/HelloServer.java).
-The embedded container can be configured to specify the port, document root, and the location of the request log.
-The [servlet container factory](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/server/container/ServletContainerFactory.java) is how the container is configured to run Otter.
+The port, document root, and the request log are all configurable. The [servlet container factory](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/server/container/ServletContainerFactory.java) 
+is how the container is configured to run Otter.
 
 ##### Entry Filter
 An [entry filter](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/servlet/EntryFilter.java) 
 is added for all requests and is configured in the [servlet container factory](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/server/container/ServletContainerFactory.java#L153).
 It's responsibility is to determine if requests should be forwarded onto the [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java) or the container. 
-The entry servlet will dispatch the request to Otter. The container handles requests to render JSPs and static assets. 
+The entry servlet will dispatch requests to Otter. The container handles requests to render JSPs and static assets. 
 When a request should be handled by the entry servlet then `/app` is prepended to the url path. This is needed 
-so the entry servlet the will handle the request.
+so the entry servlet the will handle the request. Your resource urls do not need to have `/app` Otter's dispatcher 
+ignores `/app` when searching for the resource to handle the request.
 
 ##### Entry Servlet
 
@@ -84,75 +136,10 @@ and the implementation must be annotated with following  `@WebSerlvet` annotatio
 - `value` must not change.
 
 Extending the [entry servlet](https://github.com/RootServices/otter/blob/57/src/main/java/org/rootservices/otter/servlet/OtterEntryServlet.java) 
-is required. Your implementation will configure the [servlet gateway](https://github.com/RootServices/otter/blob/57/src/main/java/org/rootservices/otter/gateway/servlet/ServletGateway.java)
-which instructs Otter how to route your requests to Resources.
+is required.
 
-###### Override `init`
-Your entry servlet must override `init` and it's first line must execute `super.init()`. If you would like to use CSRF 
-and sessions then they should be configured in `init` as well.
-
-First, start by passing in the cookie configuration for CSRF and Session.
-
-```java
-    // CSRF cookie configuration
-    CookieConfig csrfCookieConfig = new CookieConfig("csrf", false, -1);
-    servletGateway.setCsrfCookieConfig(csrfCookieConfig);
-
-    // Session cookie configuration.
-    CookieConfig sessionCookieConfig = new CookieConfig("session", false, -1);
-    servletGateway.setSessionCookieConfig(sessionCookieConfig);
-```
-
-Next, configure the Symmetric keys.
-
-```java
-    // CSRF key configuration.
-    SymmetricKey csrfKey = new SymmetricKey(
-        Optional.of("key-1"),
-        "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
-        Use.SIGNATURE
-    );
-
-    servletGateway.setSignKey(csrfKey);
-
-    //Session key configuration.
-    SymmetricKey encKey = new SymmetricKey(
-        Optional.of("key-2"),
-        "MMNj8rE5m7NIDhwKYDmHSnlU1wfKuVvW6G--GKPYkRA",
-        Use.ENCRYPTION
-    );
-
-    servletGateway.setEncKey(key);
-```
-
-Lastly, configuration is needed for routes.
-
-### Routing
-Generally, routes instruct Otter which Resource should handle a given request.
-  
-The example entry servlet has a method `routes()` which is called in `init()`.
- 
-
-```java
-    // route a get request.
-    servletGateway.get(HelloResource.URL, new HelloResource());
-```
-
-### Not Found Resource
-
-
-A resource is needed to handle 404s, [NotFoundResource](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/NotFoundResource.java).
-Which should be configured in your entry servlet as well.
-
-```java
-    Route notFoundRoute = new RouteBuilder()
-        .resource(new NotFoundResource())
-        .before(new ArrayList<>())
-        .after(new ArrayList<>())
-        .build();
-
-    servletGateway.setNotFoundRoute(notFoundRoute);
-```
+##### Override `makeConfigure()`
+This method must return an instance of the [configruation](#configuration) interface.  
 
 ### CSRF 
 
@@ -189,7 +176,7 @@ To use them the following is needed:
 - Add routes to the servletGateway
 
 #### Configure
-See the [Entry Servlet](#entry-servlet) section.
+See the [Configuration](#configuration) section.
 
 #### Implement session class
 You will need to implement a session class which must have a copy constructor and a equals method.
