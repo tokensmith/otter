@@ -2,19 +2,15 @@ package org.rootservices.otter.gateway.servlet.translator;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.QueryStringToMap;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.router.entity.Method;
-import suite.UnitTest;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.io.BufferedReader;
-import java.io.StringReader;
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -24,7 +20,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
-@Category(UnitTest.class)
 public class HttpServletRequestTranslatorTest {
     @Mock
     private HttpServletRequestCookieTranslator mockHttpServletCookieTranslator;

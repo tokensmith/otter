@@ -3,7 +3,6 @@ package org.rootservices.otter.router;
 import helper.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.Resource;
@@ -11,7 +10,6 @@ import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.router.entity.MatchedRoute;
 import org.rootservices.otter.router.entity.Method;
-import suite.UnitTest;
 
 import java.util.Optional;
 
@@ -22,7 +20,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
-@Category(UnitTest.class)
 public class EngineTest {
     @Mock
     private Dispatcher mockDispatcher;

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="integration.test.HelloResourceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2018-04-23T13:03:48" hostname="Kristins-MBP" time="0.807">
-  <properties/>
-  <testcase name="getShouldReturn200" classname="integration.test.HelloResourceTest" time="0.807"/>
-  <system-out><![CDATA[2018-04-23T08:03:48,342 DEBUG qtp811595527-16 async.OtterAsyncListener:23 - Async Done: GET /app/notFound
-2018-04-23T08:03:49,142 DEBUG qtp811595527-20 async.OtterAsyncListener:23 - Async Done: GET /WEB-INF/jsp/hello.jsp
-]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

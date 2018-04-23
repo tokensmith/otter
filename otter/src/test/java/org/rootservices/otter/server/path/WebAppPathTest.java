@@ -1,10 +1,9 @@
 package org.rootservices.otter.server.path;
 
-import integration.app.hello.controller.HelloResource;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import suite.UnitTest;
+
 
 import java.net.URI;
 
@@ -12,7 +11,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 
-@Category(UnitTest.class)
+
 public class WebAppPathTest {
 
     private CompiledClassPath compiledClassPath;

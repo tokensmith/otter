@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.rootservices.otter.router.EngineTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2018-04-23T13:03:50" hostname="Kristins-MBP" time="0.016">
+<testsuite name="org.rootservices.otter.router.EngineTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2018-04-23T15:41:00" hostname="Kristins-MacBook-Pro.local" time="0.019">
   <properties/>
-  <testcase name="routeWhenMethodIsPutShouldMatch" classname="org.rootservices.otter.router.EngineTest" time="0.008"/>
+  <testcase name="routeWhenMethodIsPutShouldMatch" classname="org.rootservices.otter.router.EngineTest" time="0.007"/>
   <testcase name="routeWhenGetAndNoMatchedRouteShouldBeEmptyResponse" classname="org.rootservices.otter.router.EngineTest" time="0.0"/>
   <testcase name="routeWhenMethodIsGetShouldMatch" classname="org.rootservices.otter.router.EngineTest" time="0.001"/>
-  <testcase name="routeWhenMethodIsPostShouldMatch" classname="org.rootservices.otter.router.EngineTest" time="0.001"/>
+  <testcase name="routeWhenMethodIsPostShouldMatch" classname="org.rootservices.otter.router.EngineTest" time="0.002"/>
   <testcase name="routeWhenMethodIsHeadShouldMatch" classname="org.rootservices.otter.router.EngineTest" time="0.001"/>
   <testcase name="routeWhenMethodIsDeleteShouldMatch" classname="org.rootservices.otter.router.EngineTest" time="0.001"/>
   <testcase name="routeWhenMethodIsConnectShouldMatch" classname="org.rootservices.otter.router.EngineTest" time="0.001"/>

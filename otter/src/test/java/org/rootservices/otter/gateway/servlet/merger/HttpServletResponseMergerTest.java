@@ -3,27 +3,22 @@ package org.rootservices.otter.gateway.servlet.merger;
 import helper.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestCookieTranslator;
-import suite.UnitTest;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 
-@Category(UnitTest.class)
 public class HttpServletResponseMergerTest {
     private HttpServletResponseMerger subject;
     @Mock

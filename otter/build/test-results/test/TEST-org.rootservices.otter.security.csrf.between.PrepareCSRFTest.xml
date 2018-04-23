@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.rootservices.otter.security.csrf.between.PrepareCSRFTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2018-04-23T13:03:50" hostname="Kristins-MBP" time="0.007">
+<testsuite name="org.rootservices.otter.security.csrf.between.PrepareCSRFTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2018-04-23T15:41:00" hostname="Kristins-MacBook-Pro.local" time="0.012">
   <properties/>
-  <testcase name="processWhenCookieAlreadyThereShouldNotSetCookie" classname="org.rootservices.otter.security.csrf.between.PrepareCSRFTest" time="0.001"/>
-  <testcase name="processWhenCsrfExceptionShouldNotSetCookie" classname="org.rootservices.otter.security.csrf.between.PrepareCSRFTest" time="0.004"/>
-  <testcase name="processShouldSetCookie" classname="org.rootservices.otter.security.csrf.between.PrepareCSRFTest" time="0.002"/>
-  <system-out><![CDATA[2018-04-23T08:03:50,435 ERROR Test worker between.PrepareCSRF:49 - 
+  <testcase name="processWhenCookieAlreadyThereShouldNotSetCookie" classname="org.rootservices.otter.security.csrf.between.PrepareCSRFTest" time="0.002"/>
+  <testcase name="processWhenCsrfExceptionShouldNotSetCookie" classname="org.rootservices.otter.security.csrf.between.PrepareCSRFTest" time="0.007"/>
+  <testcase name="processShouldSetCookie" classname="org.rootservices.otter.security.csrf.between.PrepareCSRFTest" time="0.001"/>
+  <system-out><![CDATA[2018-04-23T10:41:00,750 ERROR Test worker between.PrepareCSRF:49 - 
 org.rootservices.otter.security.csrf.exception.CsrfException: 
 	at org.rootservices.otter.security.csrf.between.PrepareCSRF.process(PrepareCSRF.java:43) [main/:?]
-	at org.rootservices.otter.security.csrf.between.PrepareCSRFTest.processWhenCsrfExceptionShouldNotSetCookie(PrepareCSRFTest.java:102) [test/:?]
+	at org.rootservices.otter.security.csrf.between.PrepareCSRFTest.processWhenCsrfExceptionShouldNotSetCookie(PrepareCSRFTest.java:100) [test/:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
@@ -26,19 +26,11 @@ org.rootservices.otter.security.csrf.exception.CsrfException:
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:128) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:27) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.GeneratedMethodAccessor9.invoke(Unknown Source) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -47,7 +39,7 @@ org.rootservices.otter.security.csrf.exception.CsrfException:
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93) [gradle-messaging-4.4.jar:4.4]
 	at com.sun.proxy.$Proxy1.processTestClass(Unknown Source) [?:?]
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor1.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.GeneratedMethodAccessor8.invoke(Unknown Source) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]

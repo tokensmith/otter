@@ -3,25 +3,17 @@ package org.rootservices.otter.controller.builder;
 import helper.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.header.AuthScheme;
 import org.rootservices.otter.router.entity.Method;
-import suite.UnitTest;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
-@Category(UnitTest.class)
+
 public class RequestBuilderTest {
     private RequestBuilder subject;
 

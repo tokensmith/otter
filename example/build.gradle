@@ -38,6 +38,7 @@ dependencies {
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version:'2.7'
 
     testCompile 'junit:junit:4.12'
+    testCompile "org.asynchttpclient:async-http-client:2.4.4"
 }
 
 task fatJar(type: Jar) {
@@ -80,6 +81,5 @@ test {
     mkdir 'logs/jetty'
     filter {
         includeTestsMatching "*IntegrationTestSuite"
-        includeTestsMatching "*UnitTestSuite"
     }
 }

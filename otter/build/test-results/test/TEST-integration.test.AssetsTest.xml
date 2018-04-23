@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="integration.test.AssetsTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2018-04-23T13:03:49" hostname="Kristins-MBP" time="0.022">
-  <properties/>
-  <testcase name="getJavaScriptShouldReturn200" classname="integration.test.AssetsTest" time="0.015"/>
-  <testcase name="getCssShouldReturn200" classname="integration.test.AssetsTest" time="0.006"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

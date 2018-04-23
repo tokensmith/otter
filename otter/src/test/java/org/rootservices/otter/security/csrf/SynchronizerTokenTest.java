@@ -2,12 +2,10 @@ package org.rootservices.otter.security.csrf;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.security.RandomString;
 import org.rootservices.otter.security.csrf.exception.CsrfException;
-import suite.UnitTest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -18,7 +16,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 
-@Category(UnitTest.class)
 public class SynchronizerTokenTest {
 
     @Mock

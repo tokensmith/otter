@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.rootservices.otter.controller.ResourceTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2018-04-23T13:03:49" hostname="Kristins-MBP" time="0.002">
+<testsuite name="org.rootservices.otter.controller.ResourceTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2018-04-23T15:40:59" hostname="Kristins-MacBook-Pro.local" time="0.004">
   <properties/>
   <testcase name="traceShouldNotBeImplemented" classname="org.rootservices.otter.controller.ResourceTest" time="0.0"/>
   <testcase name="putShouldNotBeImplemented" classname="org.rootservices.otter.controller.ResourceTest" time="0.0"/>

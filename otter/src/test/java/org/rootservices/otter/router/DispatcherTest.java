@@ -3,11 +3,9 @@ package org.rootservices.otter.router;
 import helper.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.rootservices.otter.router.entity.MatchedRoute;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
-import suite.UnitTest;
 
 
 import java.util.List;
@@ -15,12 +13,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 
-@Category(UnitTest.class)
 public class DispatcherTest {
     private Dispatcher subject;
 

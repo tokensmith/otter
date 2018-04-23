@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.rootservices.otter.gateway.servlet.translator.HttpServletRequestHeaderTranslatorTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2018-04-23T13:03:50" hostname="Kristins-MBP" time="0.003">
+<testsuite name="org.rootservices.otter.gateway.servlet.translator.HttpServletRequestHeaderTranslatorTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2018-04-23T15:41:00" hostname="Kristins-MacBook-Pro.local" time="0.003">
   <properties/>
-  <testcase name="fromShouldTranslateOk" classname="org.rootservices.otter.gateway.servlet.translator.HttpServletRequestHeaderTranslatorTest" time="0.002"/>
-  <testcase name="fromWhenNoHeadersShouldBeEmptyMap" classname="org.rootservices.otter.gateway.servlet.translator.HttpServletRequestHeaderTranslatorTest" time="0.001"/>
+  <testcase name="fromShouldTranslateOk" classname="org.rootservices.otter.gateway.servlet.translator.HttpServletRequestHeaderTranslatorTest" time="0.003"/>
+  <testcase name="fromWhenNoHeadersShouldBeEmptyMap" classname="org.rootservices.otter.gateway.servlet.translator.HttpServletRequestHeaderTranslatorTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

@@ -17,7 +17,7 @@ public class OtterAsyncListener implements AsyncListener {
     public OtterAsyncListener() {}
 
     @Override
-    public void onComplete(AsyncEvent event) throws IOException {
+    public void onComplete(AsyncEvent event)  {
         AsyncContextEvent ace = (AsyncContextEvent) event;
         HttpServletRequest hsr = (HttpServletRequest) ace.getAsyncContext().getRequest();
         logger.debug("Async Done: " + hsr.getMethod() + " " + ace.getPath());

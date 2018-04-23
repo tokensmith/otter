@@ -3,7 +3,6 @@ package org.rootservices.otter.security.csrf.between;
 import helper.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.entity.Cookie;
@@ -14,7 +13,6 @@ import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.exception.CsrfException;
 import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
-import suite.UnitTest;
 
 import java.util.Arrays;
 
@@ -25,7 +23,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 
-@Category(UnitTest.class)
 public class CheckCSRFTest {
     private static String COOKIE_NAME = "CSRF";
     private static String FORM_FIELD_NAME = "CSRF";

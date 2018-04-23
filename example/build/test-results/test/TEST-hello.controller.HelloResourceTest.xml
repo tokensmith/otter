@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="hello.controller.HelloResourceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2018-04-23T15:40:55" hostname="Kristins-MacBook-Pro.local" time="0.756">
+  <properties/>
+  <testcase name="getShouldReturn200" classname="hello.controller.HelloResourceTest" time="0.756"/>
+  <system-out><![CDATA[2018-04-23T10:40:55,165 DEBUG qtp1271118938-15 async.OtterAsyncListener:23 - Async Done: GET /app/notFound
+2018-04-23T10:40:55,916 DEBUG qtp1271118938-15 async.OtterAsyncListener:23 - Async Done: GET /WEB-INF/jsp/hello.jsp
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

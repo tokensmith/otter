@@ -3,7 +3,6 @@ package org.rootservices.otter.security.csrf.between;
 import helper.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.jwt.entity.jwt.JsonWebToken;
@@ -15,7 +14,6 @@ import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.security.csrf.CsrfClaims;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import org.rootservices.otter.security.csrf.exception.CsrfException;
-import suite.UnitTest;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -24,7 +22,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 
-@Category(UnitTest.class)
+
 public class PrepareCSRFTest {
     private static String COOKIE_NAME = "CSRF";
     @Mock

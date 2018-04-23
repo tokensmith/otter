@@ -3,14 +3,12 @@ package org.rootservices.otter.security.csrf;
 import helper.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwt.JsonWebToken;
 import org.rootservices.jwt.serialization.exception.JsonToJwtException;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.security.csrf.exception.CsrfException;
-import suite.UnitTest;
 
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -24,7 +22,6 @@ import static org.hamcrest.number.OrderingComparison.lessThanOrEqualTo;
 import static org.junit.Assert.*;
 
 
-@Category(UnitTest.class)
 public class DoubleSubmitCSRFTest {
 
     private DoubleSubmitCSRF subject;

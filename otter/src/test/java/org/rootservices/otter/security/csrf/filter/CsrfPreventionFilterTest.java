@@ -2,23 +2,19 @@ package org.rootservices.otter.security.csrf.filter;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.security.csrf.Csrf;
 import org.rootservices.otter.security.csrf.exception.CsrfException;
-import suite.UnitTest;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 
 
-@Category(UnitTest.class)
 public class CsrfPreventionFilterTest {
 
     @Mock

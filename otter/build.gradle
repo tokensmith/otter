@@ -61,10 +61,6 @@ dependencies {
 
 test {
     mkdir 'logs/jetty'
-    filter {
-        includeTestsMatching "*IntegrationTestSuite"
-        includeTestsMatching "*UnitTestSuite"
-    }
 }
 
 task javadocJar(type: Jar) {

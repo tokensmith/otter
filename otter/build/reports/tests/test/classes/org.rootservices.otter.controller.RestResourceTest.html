@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.307s</div>
+<div class="counter">0.373s</div>
 <p>duration</p>
 </div>
 </td>
@@ -94,17 +94,17 @@
 </tr>
 <tr>
 <td class="success">getTypeShouldBeOk</td>
-<td>0.163s</td>
+<td>0.175s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">optionsShouldBeNotImplemented</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">patchShouldBeNotImplemented</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -114,22 +114,22 @@
 </tr>
 <tr>
 <td class="success">patchWhenInvalidPayloadExceptionShouldBeBadRequest</td>
-<td>0.004s</td>
+<td>0.008s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">patchWhenInvalidValueExceptionShouldBeBadRequest</td>
-<td>0.034s</td>
+<td>0.054s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">patchWhenToJsonExceptionShouldBeBadRequest</td>
-<td>0.010s</td>
+<td>0.015s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">patchWhenUnknownKeyExceptionShouldBeBadRequest</td>
-<td>0.005s</td>
+<td>0.008s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -139,7 +139,7 @@
 </tr>
 <tr>
 <td class="success">postWhenDuplicateKeyExceptionShouldBeBadRequest</td>
-<td>0.006s</td>
+<td>0.008s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -149,52 +149,52 @@
 </tr>
 <tr>
 <td class="success">postWhenInvalidValueExceptionShouldBeBadRequest</td>
-<td>0.004s</td>
+<td>0.006s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">postWhenToJsonExceptionShouldBeBadRequest</td>
-<td>0.015s</td>
+<td>0.019s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">postWhenUnknownKeyExceptionShouldBeBadRequest</td>
-<td>0.008s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">putShouldBeNotImplemented</td>
-<td>0.002s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">putWhenDuplicateKeyExceptionShouldBeBadRequest</td>
-<td>0.005s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">putWhenInvalidPayloadExceptionShouldBeBadRequest</td>
-<td>0.008s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">putWhenInvalidValueExceptionShouldBeBadRequest</td>
-<td>0.007s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">putWhenToJsonExceptionShouldBeBadRequest</td>
 <td>0.010s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">putWhenUnknownKeyExceptionShouldBeBadRequest</td>
+<td class="success">putShouldBeNotImplemented</td>
+<td>0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">putWhenDuplicateKeyExceptionShouldBeBadRequest</td>
+<td>0.006s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">putWhenInvalidPayloadExceptionShouldBeBadRequest</td>
+<td>0.011s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">putWhenInvalidValueExceptionShouldBeBadRequest</td>
 <td>0.009s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
+<td class="success">putWhenToJsonExceptionShouldBeBadRequest</td>
+<td>0.015s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">putWhenUnknownKeyExceptionShouldBeBadRequest</td>
+<td>0.012s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
 <td class="success">traceShouldBeNotImplemented</td>
-<td>0s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -202,11 +202,11 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>2018-04-23T08:03:50,050 DEBUG Test worker controller.RestResource:107 - Invalid Value
+<pre>2018-04-23T10:41:00,125 DEBUG Test worker controller.RestResource:107 - Invalid Value
 org.rootservices.otter.controller.exception.DeserializationException: Invalid Value
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:140) ~[main/:?]
 	at org.rootservices.otter.controller.RestResource.patch(RestResource.java:105) [main/:?]
-	at org.rootservices.otter.controller.RestResourceTest.patchWhenInvalidValueExceptionShouldBeBadRequest(RestResourceTest.java:475) [test/:?]
+	at org.rootservices.otter.controller.RestResourceTest.patchWhenInvalidValueExceptionShouldBeBadRequest(RestResourceTest.java:473) [test/:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
@@ -225,19 +225,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Va
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:128) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:27) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -246,7 +239,8 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Va
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93) [gradle-messaging-4.4.jar:4.4]
 	at com.sun.proxy.$Proxy1.processTestClass(Unknown Source) [?:?]
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor1.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -262,12 +256,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Va
 	at java.lang.Thread.run(Thread.java:844) [?:?]
 Caused by: org.rootservices.otter.translator.exception.InvalidValueException: test
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:134) ~[main/:?]
-	... 55 more
-2018-04-23T08:03:50,063 DEBUG Test worker controller.RestResource:67 - Invalid Payload
+	... 49 more
+2018-04-23T10:41:00,158 DEBUG Test worker controller.RestResource:67 - Invalid Payload
 org.rootservices.otter.controller.exception.DeserializationException: Invalid Payload
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:145) ~[main/:?]
 	at org.rootservices.otter.controller.RestResource.post(RestResource.java:65) [main/:?]
-	at org.rootservices.otter.controller.RestResourceTest.postWhenToJsonExceptionShouldBeBadRequest(RestResourceTest.java:201) [test/:?]
+	at org.rootservices.otter.controller.RestResourceTest.postWhenToJsonExceptionShouldBeBadRequest(RestResourceTest.java:199) [test/:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
@@ -286,19 +280,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Pa
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:128) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:27) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -307,7 +294,8 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Pa
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93) [gradle-messaging-4.4.jar:4.4]
 	at com.sun.proxy.$Proxy1.processTestClass(Unknown Source) [?:?]
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor1.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -323,12 +311,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Pa
 	at java.lang.Thread.run(Thread.java:844) [?:?]
 Caused by: org.rootservices.otter.translator.exception.InvalidPayloadException: test
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:134) ~[main/:?]
-	... 55 more
-2018-04-23T08:03:50,071 ERROR Test worker controller.RestResource:125 - test
+	... 49 more
+2018-04-23T10:41:00,167 ERROR Test worker controller.RestResource:125 - test
 org.rootservices.otter.translator.exception.ToJsonException: test
 	at org.rootservices.otter.controller.RestResource.makeError(RestResource.java:122) [main/:?]
 	at org.rootservices.otter.controller.RestResource.post(RestResource.java:68) [main/:?]
-	at org.rootservices.otter.controller.RestResourceTest.postWhenToJsonExceptionShouldBeBadRequest(RestResourceTest.java:201) [test/:?]
+	at org.rootservices.otter.controller.RestResourceTest.postWhenToJsonExceptionShouldBeBadRequest(RestResourceTest.java:199) [test/:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
@@ -347,19 +335,12 @@ org.rootservices.otter.translator.exception.ToJsonException: test
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:128) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:27) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -368,7 +349,8 @@ org.rootservices.otter.translator.exception.ToJsonException: test
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93) [gradle-messaging-4.4.jar:4.4]
 	at com.sun.proxy.$Proxy1.processTestClass(Unknown Source) [?:?]
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor1.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -382,11 +364,11 @@ org.rootservices.otter.translator.exception.ToJsonException: test
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641) [?:?]
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55) [gradle-base-services-4.4.jar:4.4]
 	at java.lang.Thread.run(Thread.java:844) [?:?]
-2018-04-23T08:03:50,079 DEBUG Test worker controller.RestResource:84 - Invalid Payload
+2018-04-23T10:41:00,178 DEBUG Test worker controller.RestResource:84 - Invalid Payload
 org.rootservices.otter.controller.exception.DeserializationException: Invalid Payload
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:145) ~[main/:?]
 	at org.rootservices.otter.controller.RestResource.put(RestResource.java:82) [main/:?]
-	at org.rootservices.otter.controller.RestResourceTest.putWhenInvalidPayloadExceptionShouldBeBadRequest(RestResourceTest.java:318) [test/:?]
+	at org.rootservices.otter.controller.RestResourceTest.putWhenInvalidPayloadExceptionShouldBeBadRequest(RestResourceTest.java:316) [test/:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
@@ -405,19 +387,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Pa
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:128) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:27) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -426,7 +401,8 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Pa
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93) [gradle-messaging-4.4.jar:4.4]
 	at com.sun.proxy.$Proxy1.processTestClass(Unknown Source) [?:?]
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor1.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -442,12 +418,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Pa
 	at java.lang.Thread.run(Thread.java:844) [?:?]
 Caused by: org.rootservices.otter.translator.exception.InvalidPayloadException: test
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:134) ~[main/:?]
-	... 55 more
-2018-04-23T08:03:50,088 DEBUG Test worker controller.RestResource:84 - Unknown Key
+	... 49 more
+2018-04-23T10:41:00,190 DEBUG Test worker controller.RestResource:84 - Unknown Key
 org.rootservices.otter.controller.exception.DeserializationException: Unknown Key
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:143) ~[main/:?]
 	at org.rootservices.otter.controller.RestResource.put(RestResource.java:82) [main/:?]
-	at org.rootservices.otter.controller.RestResourceTest.putWhenUnknownKeyExceptionShouldBeBadRequest(RestResourceTest.java:294) [test/:?]
+	at org.rootservices.otter.controller.RestResourceTest.putWhenUnknownKeyExceptionShouldBeBadRequest(RestResourceTest.java:292) [test/:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
@@ -466,19 +442,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Unknown Ke
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:128) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:27) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -487,7 +456,8 @@ org.rootservices.otter.controller.exception.DeserializationException: Unknown Ke
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93) [gradle-messaging-4.4.jar:4.4]
 	at com.sun.proxy.$Proxy1.processTestClass(Unknown Source) [?:?]
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor1.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -503,12 +473,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Unknown Ke
 	at java.lang.Thread.run(Thread.java:844) [?:?]
 Caused by: org.rootservices.otter.translator.exception.UnknownKeyException: test
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:134) ~[main/:?]
-	... 55 more
-2018-04-23T08:03:50,097 DEBUG Test worker controller.RestResource:84 - Invalid Value
+	... 49 more
+2018-04-23T10:41:00,203 DEBUG Test worker controller.RestResource:84 - Invalid Value
 org.rootservices.otter.controller.exception.DeserializationException: Invalid Value
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:140) ~[main/:?]
 	at org.rootservices.otter.controller.RestResource.put(RestResource.java:82) [main/:?]
-	at org.rootservices.otter.controller.RestResourceTest.putWhenInvalidValueExceptionShouldBeBadRequest(RestResourceTest.java:270) [test/:?]
+	at org.rootservices.otter.controller.RestResourceTest.putWhenInvalidValueExceptionShouldBeBadRequest(RestResourceTest.java:268) [test/:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
@@ -527,19 +497,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Va
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:128) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:27) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -548,7 +511,8 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Va
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93) [gradle-messaging-4.4.jar:4.4]
 	at com.sun.proxy.$Proxy1.processTestClass(Unknown Source) [?:?]
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor1.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -564,12 +528,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Va
 	at java.lang.Thread.run(Thread.java:844) [?:?]
 Caused by: org.rootservices.otter.translator.exception.InvalidValueException: test
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:134) ~[main/:?]
-	... 55 more
-2018-04-23T08:03:50,104 DEBUG Test worker controller.RestResource:67 - Unknown Key
+	... 49 more
+2018-04-23T10:41:00,212 DEBUG Test worker controller.RestResource:67 - Unknown Key
 org.rootservices.otter.controller.exception.DeserializationException: Unknown Key
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:143) ~[main/:?]
 	at org.rootservices.otter.controller.RestResource.post(RestResource.java:65) [main/:?]
-	at org.rootservices.otter.controller.RestResourceTest.postWhenUnknownKeyExceptionShouldBeBadRequest(RestResourceTest.java:153) [test/:?]
+	at org.rootservices.otter.controller.RestResourceTest.postWhenUnknownKeyExceptionShouldBeBadRequest(RestResourceTest.java:151) [test/:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
@@ -588,19 +552,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Unknown Ke
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:128) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:27) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -609,7 +566,8 @@ org.rootservices.otter.controller.exception.DeserializationException: Unknown Ke
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93) [gradle-messaging-4.4.jar:4.4]
 	at com.sun.proxy.$Proxy1.processTestClass(Unknown Source) [?:?]
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor1.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -625,12 +583,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Unknown Ke
 	at java.lang.Thread.run(Thread.java:844) [?:?]
 Caused by: org.rootservices.otter.translator.exception.UnknownKeyException: test
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:134) ~[main/:?]
-	... 55 more
-2018-04-23T08:03:50,112 DEBUG Test worker controller.RestResource:67 - Duplicate Key
+	... 49 more
+2018-04-23T10:41:00,222 DEBUG Test worker controller.RestResource:67 - Duplicate Key
 org.rootservices.otter.controller.exception.DeserializationException: Duplicate Key
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:137) ~[main/:?]
 	at org.rootservices.otter.controller.RestResource.post(RestResource.java:65) [main/:?]
-	at org.rootservices.otter.controller.RestResourceTest.postWhenDuplicateKeyExceptionShouldBeBadRequest(RestResourceTest.java:105) [test/:?]
+	at org.rootservices.otter.controller.RestResourceTest.postWhenDuplicateKeyExceptionShouldBeBadRequest(RestResourceTest.java:103) [test/:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
@@ -649,19 +607,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Duplicate 
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:128) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:27) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -670,7 +621,8 @@ org.rootservices.otter.controller.exception.DeserializationException: Duplicate 
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93) [gradle-messaging-4.4.jar:4.4]
 	at com.sun.proxy.$Proxy1.processTestClass(Unknown Source) [?:?]
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor1.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -686,12 +638,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Duplicate 
 	at java.lang.Thread.run(Thread.java:844) [?:?]
 Caused by: org.rootservices.otter.translator.exception.DuplicateKeyException: test
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:134) ~[main/:?]
-	... 55 more
-2018-04-23T08:03:50,120 DEBUG Test worker controller.RestResource:84 - Invalid Payload
+	... 49 more
+2018-04-23T10:41:00,232 DEBUG Test worker controller.RestResource:84 - Invalid Payload
 org.rootservices.otter.controller.exception.DeserializationException: Invalid Payload
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:145) ~[main/:?]
 	at org.rootservices.otter.controller.RestResource.put(RestResource.java:82) [main/:?]
-	at org.rootservices.otter.controller.RestResourceTest.putWhenToJsonExceptionShouldBeBadRequest(RestResourceTest.java:342) [test/:?]
+	at org.rootservices.otter.controller.RestResourceTest.putWhenToJsonExceptionShouldBeBadRequest(RestResourceTest.java:340) [test/:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
@@ -710,19 +662,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Pa
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:128) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:27) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -731,7 +676,8 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Pa
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93) [gradle-messaging-4.4.jar:4.4]
 	at com.sun.proxy.$Proxy1.processTestClass(Unknown Source) [?:?]
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor1.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -747,12 +693,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Pa
 	at java.lang.Thread.run(Thread.java:844) [?:?]
 Caused by: org.rootservices.otter.translator.exception.InvalidPayloadException: test
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:134) ~[main/:?]
-	... 55 more
-2018-04-23T08:03:50,125 ERROR Test worker controller.RestResource:125 - test
+	... 49 more
+2018-04-23T10:41:00,240 ERROR Test worker controller.RestResource:125 - test
 org.rootservices.otter.translator.exception.ToJsonException: test
 	at org.rootservices.otter.controller.RestResource.makeError(RestResource.java:122) [main/:?]
 	at org.rootservices.otter.controller.RestResource.put(RestResource.java:85) [main/:?]
-	at org.rootservices.otter.controller.RestResourceTest.putWhenToJsonExceptionShouldBeBadRequest(RestResourceTest.java:342) [test/:?]
+	at org.rootservices.otter.controller.RestResourceTest.putWhenToJsonExceptionShouldBeBadRequest(RestResourceTest.java:340) [test/:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
@@ -771,19 +717,12 @@ org.rootservices.otter.translator.exception.ToJsonException: test
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:128) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:27) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -792,7 +731,8 @@ org.rootservices.otter.translator.exception.ToJsonException: test
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93) [gradle-messaging-4.4.jar:4.4]
 	at com.sun.proxy.$Proxy1.processTestClass(Unknown Source) [?:?]
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor1.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -806,11 +746,11 @@ org.rootservices.otter.translator.exception.ToJsonException: test
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641) [?:?]
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55) [gradle-base-services-4.4.jar:4.4]
 	at java.lang.Thread.run(Thread.java:844) [?:?]
-2018-04-23T08:03:50,131 DEBUG Test worker controller.RestResource:107 - Unknown Key
+2018-04-23T10:41:00,249 DEBUG Test worker controller.RestResource:107 - Unknown Key
 org.rootservices.otter.controller.exception.DeserializationException: Unknown Key
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:143) ~[main/:?]
 	at org.rootservices.otter.controller.RestResource.patch(RestResource.java:105) [main/:?]
-	at org.rootservices.otter.controller.RestResourceTest.patchWhenUnknownKeyExceptionShouldBeBadRequest(RestResourceTest.java:499) [test/:?]
+	at org.rootservices.otter.controller.RestResourceTest.patchWhenUnknownKeyExceptionShouldBeBadRequest(RestResourceTest.java:497) [test/:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
@@ -829,19 +769,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Unknown Ke
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:128) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:27) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -850,7 +783,8 @@ org.rootservices.otter.controller.exception.DeserializationException: Unknown Ke
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93) [gradle-messaging-4.4.jar:4.4]
 	at com.sun.proxy.$Proxy1.processTestClass(Unknown Source) [?:?]
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor1.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -866,12 +800,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Unknown Ke
 	at java.lang.Thread.run(Thread.java:844) [?:?]
 Caused by: org.rootservices.otter.translator.exception.UnknownKeyException: test
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:134) ~[main/:?]
-	... 55 more
-2018-04-23T08:03:50,136 DEBUG Test worker controller.RestResource:107 - Duplicate Key
+	... 49 more
+2018-04-23T10:41:00,257 DEBUG Test worker controller.RestResource:107 - Duplicate Key
 org.rootservices.otter.controller.exception.DeserializationException: Duplicate Key
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:137) ~[main/:?]
 	at org.rootservices.otter.controller.RestResource.patch(RestResource.java:105) [main/:?]
-	at org.rootservices.otter.controller.RestResourceTest.patchWhenDuplicateKeyExceptionShouldBeBadRequest(RestResourceTest.java:451) [test/:?]
+	at org.rootservices.otter.controller.RestResourceTest.patchWhenDuplicateKeyExceptionShouldBeBadRequest(RestResourceTest.java:449) [test/:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
@@ -890,19 +824,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Duplicate 
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:128) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:27) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -911,7 +838,8 @@ org.rootservices.otter.controller.exception.DeserializationException: Duplicate 
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93) [gradle-messaging-4.4.jar:4.4]
 	at com.sun.proxy.$Proxy1.processTestClass(Unknown Source) [?:?]
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor1.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -927,12 +855,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Duplicate 
 	at java.lang.Thread.run(Thread.java:844) [?:?]
 Caused by: org.rootservices.otter.translator.exception.DuplicateKeyException: test
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:134) ~[main/:?]
-	... 55 more
-2018-04-23T08:03:50,144 DEBUG Test worker controller.RestResource:107 - Invalid Payload
+	... 49 more
+2018-04-23T10:41:00,263 DEBUG Test worker controller.RestResource:107 - Invalid Payload
 org.rootservices.otter.controller.exception.DeserializationException: Invalid Payload
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:145) ~[main/:?]
 	at org.rootservices.otter.controller.RestResource.patch(RestResource.java:105) [main/:?]
-	at org.rootservices.otter.controller.RestResourceTest.patchWhenInvalidPayloadExceptionShouldBeBadRequest(RestResourceTest.java:523) [test/:?]
+	at org.rootservices.otter.controller.RestResourceTest.patchWhenInvalidPayloadExceptionShouldBeBadRequest(RestResourceTest.java:521) [test/:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
@@ -951,19 +879,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Pa
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:128) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:27) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -972,7 +893,8 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Pa
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93) [gradle-messaging-4.4.jar:4.4]
 	at com.sun.proxy.$Proxy1.processTestClass(Unknown Source) [?:?]
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor1.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -988,12 +910,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Pa
 	at java.lang.Thread.run(Thread.java:844) [?:?]
 Caused by: org.rootservices.otter.translator.exception.InvalidPayloadException: test
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:134) ~[main/:?]
-	... 55 more
-2018-04-23T08:03:50,149 DEBUG Test worker controller.RestResource:107 - Invalid Payload
+	... 49 more
+2018-04-23T10:41:00,272 DEBUG Test worker controller.RestResource:107 - Invalid Payload
 org.rootservices.otter.controller.exception.DeserializationException: Invalid Payload
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:145) ~[main/:?]
 	at org.rootservices.otter.controller.RestResource.patch(RestResource.java:105) [main/:?]
-	at org.rootservices.otter.controller.RestResourceTest.patchWhenToJsonExceptionShouldBeBadRequest(RestResourceTest.java:547) [test/:?]
+	at org.rootservices.otter.controller.RestResourceTest.patchWhenToJsonExceptionShouldBeBadRequest(RestResourceTest.java:545) [test/:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
@@ -1012,19 +934,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Pa
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:128) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:27) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -1033,7 +948,8 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Pa
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93) [gradle-messaging-4.4.jar:4.4]
 	at com.sun.proxy.$Proxy1.processTestClass(Unknown Source) [?:?]
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor1.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -1049,12 +965,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Pa
 	at java.lang.Thread.run(Thread.java:844) [?:?]
 Caused by: org.rootservices.otter.translator.exception.InvalidPayloadException: test
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:134) ~[main/:?]
-	... 55 more
-2018-04-23T08:03:50,153 ERROR Test worker controller.RestResource:125 - test
+	... 49 more
+2018-04-23T10:41:00,281 ERROR Test worker controller.RestResource:125 - test
 org.rootservices.otter.translator.exception.ToJsonException: test
 	at org.rootservices.otter.controller.RestResource.makeError(RestResource.java:122) [main/:?]
 	at org.rootservices.otter.controller.RestResource.patch(RestResource.java:108) [main/:?]
-	at org.rootservices.otter.controller.RestResourceTest.patchWhenToJsonExceptionShouldBeBadRequest(RestResourceTest.java:547) [test/:?]
+	at org.rootservices.otter.controller.RestResourceTest.patchWhenToJsonExceptionShouldBeBadRequest(RestResourceTest.java:545) [test/:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
@@ -1073,19 +989,12 @@ org.rootservices.otter.translator.exception.ToJsonException: test
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:128) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:27) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -1094,7 +1003,8 @@ org.rootservices.otter.translator.exception.ToJsonException: test
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93) [gradle-messaging-4.4.jar:4.4]
 	at com.sun.proxy.$Proxy1.processTestClass(Unknown Source) [?:?]
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor1.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -1108,11 +1018,11 @@ org.rootservices.otter.translator.exception.ToJsonException: test
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641) [?:?]
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55) [gradle-base-services-4.4.jar:4.4]
 	at java.lang.Thread.run(Thread.java:844) [?:?]
-2018-04-23T08:03:50,159 DEBUG Test worker controller.RestResource:67 - Invalid Value
+2018-04-23T10:41:00,289 DEBUG Test worker controller.RestResource:67 - Invalid Value
 org.rootservices.otter.controller.exception.DeserializationException: Invalid Value
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:140) ~[main/:?]
 	at org.rootservices.otter.controller.RestResource.post(RestResource.java:65) [main/:?]
-	at org.rootservices.otter.controller.RestResourceTest.postWhenInvalidValueExceptionShouldBeBadRequest(RestResourceTest.java:129) [test/:?]
+	at org.rootservices.otter.controller.RestResourceTest.postWhenInvalidValueExceptionShouldBeBadRequest(RestResourceTest.java:127) [test/:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
@@ -1131,19 +1041,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Va
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:128) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:27) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -1152,7 +1055,8 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Va
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93) [gradle-messaging-4.4.jar:4.4]
 	at com.sun.proxy.$Proxy1.processTestClass(Unknown Source) [?:?]
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor1.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -1168,12 +1072,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Va
 	at java.lang.Thread.run(Thread.java:844) [?:?]
 Caused by: org.rootservices.otter.translator.exception.InvalidValueException: test
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:134) ~[main/:?]
-	... 55 more
-2018-04-23T08:03:50,166 DEBUG Test worker controller.RestResource:67 - Invalid Payload
+	... 49 more
+2018-04-23T10:41:00,297 DEBUG Test worker controller.RestResource:67 - Invalid Payload
 org.rootservices.otter.controller.exception.DeserializationException: Invalid Payload
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:145) ~[main/:?]
 	at org.rootservices.otter.controller.RestResource.post(RestResource.java:65) [main/:?]
-	at org.rootservices.otter.controller.RestResourceTest.postWhenInvalidPayloadExceptionShouldBeBadRequest(RestResourceTest.java:177) [test/:?]
+	at org.rootservices.otter.controller.RestResourceTest.postWhenInvalidPayloadExceptionShouldBeBadRequest(RestResourceTest.java:175) [test/:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
@@ -1192,19 +1096,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Pa
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:128) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:27) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -1213,7 +1110,8 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Pa
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93) [gradle-messaging-4.4.jar:4.4]
 	at com.sun.proxy.$Proxy1.processTestClass(Unknown Source) [?:?]
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor1.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -1229,12 +1127,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Invalid Pa
 	at java.lang.Thread.run(Thread.java:844) [?:?]
 Caused by: org.rootservices.otter.translator.exception.InvalidPayloadException: test
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:134) ~[main/:?]
-	... 55 more
-2018-04-23T08:03:50,171 DEBUG Test worker controller.RestResource:84 - Duplicate Key
+	... 49 more
+2018-04-23T10:41:00,303 DEBUG Test worker controller.RestResource:84 - Duplicate Key
 org.rootservices.otter.controller.exception.DeserializationException: Duplicate Key
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:137) ~[main/:?]
 	at org.rootservices.otter.controller.RestResource.put(RestResource.java:82) [main/:?]
-	at org.rootservices.otter.controller.RestResourceTest.putWhenDuplicateKeyExceptionShouldBeBadRequest(RestResourceTest.java:246) [test/:?]
+	at org.rootservices.otter.controller.RestResourceTest.putWhenDuplicateKeyExceptionShouldBeBadRequest(RestResourceTest.java:244) [test/:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
@@ -1253,19 +1151,12 @@ org.rootservices.otter.controller.exception.DeserializationException: Duplicate 
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:128) [junit-4.12.jar:4.12]
-	at org.junit.runners.Suite.runChild(Suite.java:27) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268) [junit-4.12.jar:4.12]
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363) [junit-4.12.jar:4.12]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66) [gradle-testing-jvm-4.4.jar:4.4]
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -1274,7 +1165,8 @@ org.rootservices.otter.controller.exception.DeserializationException: Duplicate 
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93) [gradle-messaging-4.4.jar:4.4]
 	at com.sun.proxy.$Proxy1.processTestClass(Unknown Source) [?:?]
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108) [gradle-testing-base-4.4.jar:4.4]
-	at jdk.internal.reflect.GeneratedMethodAccessor1.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
 	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?]
 	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35) [gradle-messaging-4.4.jar:4.4]
@@ -1290,7 +1182,7 @@ org.rootservices.otter.controller.exception.DeserializationException: Duplicate 
 	at java.lang.Thread.run(Thread.java:844) [?:?]
 Caused by: org.rootservices.otter.translator.exception.DuplicateKeyException: test
 	at org.rootservices.otter.controller.RestResource.makeEntity(RestResource.java:134) ~[main/:?]
-	... 55 more
+	... 49 more
 </pre>
 </span>
 </div>
@@ -1302,7 +1194,7 @@ Caused by: org.rootservices.otter.translator.exception.DuplicateKeyException: te
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 4.4</a> at Apr 23, 2018, 8:03:50 AM</p>
+<a href="http://www.gradle.org">Gradle 4.4</a> at Apr 23, 2018, 10:41:01 AM</p>
 </div>
 </div>
 </body>

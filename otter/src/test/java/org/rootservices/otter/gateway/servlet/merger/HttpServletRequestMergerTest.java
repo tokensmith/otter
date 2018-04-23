@@ -4,22 +4,17 @@ import helper.FixtureFactory;
 import helper.entity.FakePresenter;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.rootservices.otter.controller.entity.Response;
-import suite.UnitTest;
 
-import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 
 import java.util.Optional;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 
-@Category(UnitTest.class)
 public class HttpServletRequestMergerTest {
     private HttpServletRequestMerger subject;
 

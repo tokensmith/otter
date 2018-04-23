@@ -4,7 +4,6 @@ import helper.FixtureFactory;
 import helper.entity.FakeResource;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.Resource;
@@ -19,7 +18,6 @@ import org.rootservices.otter.router.RouteBuilder;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.security.session.between.EncryptSession;
-import suite.UnitTest;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +34,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 
-@Category(UnitTest.class)
 public class ServletGatewayTest {
     @Mock
     private HttpServletRequestTranslator mockHttpServletRequestTranslator;

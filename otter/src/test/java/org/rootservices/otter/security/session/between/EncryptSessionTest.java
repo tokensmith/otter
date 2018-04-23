@@ -2,10 +2,9 @@ package org.rootservices.otter.security.session.between;
 
 import helper.FixtureFactory;
 import helper.entity.DummySession;
-import integration.app.hello.security.TokenSession;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.theories.suppliers.TestedOn;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.config.CookieConfig;
@@ -84,13 +83,17 @@ public class EncryptSessionTest {
                 otterAppFactory.objectMapper()
         );
 
-        DummySession session = new DummySession();
-        session.setAccessToken("123456789");
-        session.setRefreshToken("101112131415");
+        DummySession requestSession = new DummySession();
+        requestSession.setAccessToken("123456789");
+        requestSession.setRefreshToken("101112131415");
 
         Request request = FixtureFactory.makeRequest();
+        request.setSession(Optional.of(requestSession));
+
         Response response = FixtureFactory.makeResponse();
-        response.setSession(Optional.of(session));
+        DummySession responseSession = new DummySession(requestSession);
+        responseSession.setAccessToken("1617181920");
+        response.setSession(Optional.of(responseSession));
 
         HaltException actual = null;
         try {
@@ -103,31 +106,6 @@ public class EncryptSessionTest {
         assertThat(actual.getCause(), instanceOf(EncryptSessionException.class));
 
         assertThat(response.getSession().isPresent(), is(true));
-        assertThat(response.getCookies().get("session"), is(nullValue()));
-    }
-
-    @Test
-    public void processWhenSessionEmptyShouldHalt() throws Exception {
-        DummySession session = new DummySession();
-        session.setAccessToken("123456789");
-        session.setRefreshToken("101112131415");
-
-        Request request = FixtureFactory.makeRequest();
-        Response response = FixtureFactory.makeResponse();
-
-        assertThat(response.getSession().isPresent(), is(false));
-
-        HaltException actual = null;
-        try {
-            subject.process(Method.GET, request, response);
-        } catch (HaltException e) {
-            actual = e;
-        }
-
-        assertThat(actual, is(notNullValue()));
-        assertThat(actual.getCause(), is(nullValue()));
-
-        assertThat(response.getSession().isPresent(), is(false));
         assertThat(response.getCookies().get("session"), is(nullValue()));
     }
 
