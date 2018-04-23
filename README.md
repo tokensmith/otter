@@ -30,8 +30,6 @@ A clone of the hello world application is included in the test suite and will be
 - [Resource](#resource)
 - [Configuration](#configuration)
 - [Embedded servlet container](#embedded-container)
-- [Regex routing](#routing)
-- [Restful support](#resources)
 - [CSRF protection](#csrf)
 - [Stateless with encrypted sessions](#stateless)
 - [Async I/O](#async-i/o)
