@@ -3,7 +3,7 @@ package hello.config;
 
 
 import hello.controller.HelloRestResource;
-import hello.security.SessionBeforeBetween;
+import hello.security.SessionBefore;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwk.Use;
 import org.rootservices.otter.config.OtterAppFactory;
@@ -53,7 +53,7 @@ public class AppFactory {
         );
     }
 
-    public SessionBeforeBetween sessionBeforeBetween(String cookieName, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys) {
-        return new SessionBeforeBetween(cookieName, otterAppFactory().jwtAppFactory(), preferredKey, rotationKeys, otterAppFactory().objectMapper());
+    public SessionBefore sessionBefore(String cookieName, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys) {
+        return new SessionBefore(cookieName, otterAppFactory().jwtAppFactory(), preferredKey, rotationKeys, otterAppFactory().objectMapper());
     }
 }

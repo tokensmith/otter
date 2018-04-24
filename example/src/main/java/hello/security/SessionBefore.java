@@ -7,9 +7,9 @@ import org.rootservices.otter.security.session.between.DecryptSession;
 
 import java.util.Map;
 
-public class SessionBeforeBetween extends DecryptSession<TokenSession> {
+public class SessionBefore extends DecryptSession<TokenSession> {
 
-    public SessionBeforeBetween(String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectMapper objectMapper) {
+    public SessionBefore(String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectMapper objectMapper) {
         super(sessionCookieName, jwtAppFactory, preferredKey, rotationKeys, objectMapper);
     }
 }
