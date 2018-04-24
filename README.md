@@ -23,8 +23,9 @@ compile group: 'org.rootservices', name: 'otter', version: '1.2-SNAPSHOT'
 ```
 
 ## Example Application
-A [hello world](https://github.com/RootServices/hello-world) example is available which demonstrates CSRF, Rest, and `tex/html` responses.
-A clone of the hello world application is included in the test suite and will be referenced throughout the documentation. 
+A [hello world](https://github.com/RootServices/otter/tree/development/example) 
+example application is available which demonstrates CSRF, Sessions, Rest, and `tex/html` responses.
+That application will be referenced throughout the documentation. 
 
 ## Introduction
 - [Resource](#resource)
@@ -38,12 +39,13 @@ A clone of the hello world application is included in the test suite and will be
 ### Resource
 
 A resource is what handles a request. There are two types of resources that Otter supports.
-- [Resource](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/controller/Resource.java)
-- [RestResource](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/controller/RestResource.java)
+- [Resource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/controller/Resource.java)
+- [RestResource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/controller/RestResource.java)
 
 A **Resource** is designed to handle any content type. It's typically used to render `text/html`. Have a look at [HelloResource](https://github.com/RootServices/otter/blob/57/src/test/java/integration/app/hello/controller/HelloResource.java) as an example. 
 
-A **RestResource** is designed to handle `application/json`. Have a look at [HelloRestResource](https://github.com/RootServices/otter/blob/57/src/test/java/integration/app/hello/controller/HelloRestResource.java) as an example.
+A **RestResource** is designed to handle `application/json`. Have a look at [HelloRestResource](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/controller/HelloResource.java)
+as an example.
  
 Implementing a resource is rather straight forward. 
 - Override the methods that handle http methods (get, post, put, delete).
@@ -54,7 +56,7 @@ Implementing a resource is rather straight forward.
 The examples should be sufficient to get started.
 
 ### Configuration
-Otter needs to be configured for CSRF, Session, and Routes. To configure Otter implement the [Configure](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/gateway/Configure.java)
+Otter needs to be configured for CSRF, Session, and Routes. To configure Otter implement the [Configure](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/Configure.java)
 interface. 
 
 ##### `configure(Gateway gateway)`
@@ -111,22 +113,22 @@ This should be configured in the `routes(Gateway gateway)` implementation.
 
 ### Embedded Container
 
-Otter can run in a Jetty powered [embedded servlet container](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/server/HelloServer.java).
+Otter runs in a Jetty powered [embedded servlet container](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/server/HelloServer.java).
 The port, document root, and the request log are all configurable. The [servlet container factory](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/server/container/ServletContainerFactory.java) 
 is how the container is configured to run Otter.
 
 ##### Entry Filter
-An [entry filter](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/servlet/EntryFilter.java) 
-is added for all requests and is configured in the [servlet container factory](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/server/container/ServletContainerFactory.java#L153).
-It's responsibility is to determine if requests should be forwarded onto the [entry servlet](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java) or the container. 
-The entry servlet will dispatch requests to Otter. The container handles requests to render JSPs and static assets. 
-When a request should be handled by the entry servlet then `/app` is prepended to the url path. This is needed 
-so the entry servlet the will handle the request. Your resource urls do not need to have `/app` Otter's dispatcher 
+An [entry filter](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/servlet/EntryFilter.java) 
+is added for all requests and is configured in the [servlet container factory](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/server/container/ServletContainerFactory.java#L174).
+It's responsibility is to determine if requests should be forwarded onto the [entry servlet](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/servlet/OtterEntryServlet.java) 
+or the container. The entry servlet will dispatch requests to Otter. The container handles requests to render JSPs and 
+static assets. When a request should be handled by the entry servlet then `/app` is prepended to the url path. This is 
+needed so the entry servlet the will handle the request. Your resource urls do not need to have `/app` Otter's dispatcher 
 ignores `/app` when searching for the resource to handle the request.
 
 ##### Entry Servlet
 
-Applications must extend the [entry servlet](https://github.com/RootServices/otter/blob/57/src/main/java/org/rootservices/otter/servlet/OtterEntryServlet.java)
+Applications must extend the [entry servlet](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/servlet/OtterEntryServlet.java)
 and the implementation must be annotated with following  `@WebSerlvet` annotation.
 ```java 
     @WebServlet(value="/app/*", name="EntryServlet", asyncSupported = true)
@@ -135,7 +137,7 @@ and the implementation must be annotated with following  `@WebSerlvet` annotatio
 - `name` may change to a different value
 - `value` must not change.
 
-Extending the [entry servlet](https://github.com/RootServices/otter/blob/57/src/main/java/org/rootservices/otter/servlet/OtterEntryServlet.java) 
+Extending the [entry servlet](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/servlet/OtterEntryServlet.java) 
 is required.
 
 ##### Override `makeConfigure()`
@@ -147,19 +149,20 @@ Otter supports CSRF protection by implementing the double submit strategy.
 
 Here is an example of how to protect a login page:
 
-Use the [csrf routing interface](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/EntryServlet.java#L52-L53) to route requests to your resource.
+Use the csrf routing interface to route requests to your resource.
 
 ```java
     servletGateway.getCsrfProtect(LoginResource.URL, new LoginResource());
     servletGateway.postCsrfProtect(LoginResource.URL, new LoginResource());
 ```
 
-Set the csrf challenge token value on the [login presenter](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/controller/LoginResource.java#L18).
+Set the csrf challenge token value on the [login presenter](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/controller/presenter/LoginPresenter.java#L18).
 ```java
     LoginPresenter presenter = new LoginPresenter("", request.getCsrfChallenge().get());
 ```
 
-Render the [CSRF challenge token](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/webapp/WEB-INF/jsp/login.jsp#L12) on the page.
+Render the [CSRF challenge token](https://github.com/RootServices/otter/blob/development/example/src/main/webapp/WEB-INF/jsp/login.jsp#L12) 
+on the page.
 ```java
     <input id="csrfToken" type="hidden" name="csrfToken" value="${presenter.getCsrfChallengeToken()}" / >
 ```
@@ -182,17 +185,19 @@ See the [Configuration](#configuration) section.
 You will need to implement a session class which must have a copy constructor and a equals method.
 If either of those are not there Otter internals will Halt your requests.
 
-An example [session](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/security/TokenSession.java) can be found in the test suite.
+An example [session](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/security/TokenSession.java)
+can be found in the test suite.
 
 #### Implement DecryptSession
-An example [implementation](https://github.com/RootServices/otter/blob/development/src/test/java/integration/app/hello/security/SessionBeforeBetween.java) can be found in the test suite.
+An example [implementation](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/security/SessionBefore.java) 
+can be found in the test suite.
 
 #### Inject your DecryptSession
 Inject your implementation of the `DecryptSession` into the servletGateway.
 
 ```java
-    SessionBeforeBetween sessionBeforeBetween = appConfig.sessionBeforeBetween("session", encKey, new HashMap<>());
-    servletGateway.setDecryptSession(sessionBeforeBetween);
+    SessionBefore sessionBefore = appFactory.sessionBefore("session", encKey, new HashMap<>());
+    gateway.setDecryptSession(sessionBefore);
 ```
 
 #### Add Routes
@@ -208,13 +213,13 @@ Inject your implementation of the `DecryptSession` into the servletGateway.
 ```
 
 ### Async I/O
-I/O is handled asynchronously. That journey begins in the [OtterEntryServlet](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/servlet/OtterEntryServlet.java#L33).
+I/O is handled asynchronously. That journey begins in the [OtterEntryServlet](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/servlet/OtterEntryServlet.java#L33).
 
-JSPs also are delivered async via [Jetty](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/server/container/builder/WebAppContextBuilder.java#L82).
+JSPs also are delivered async via [Jetty](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/server/container/builder/WebAppContextBuilder.java#L82).
 
 ### Static Assets
 
-Files that are placed in, `src/main/webapp/public` are public as long as they pass the entry filter [regex](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/servlet/EntryFilter.java#L19)
+Files that are placed in, `src/main/webapp/public` are public as long as they pass the entry filter [regex](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/servlet/EntryFilter.java#L19)
 
 For example, `src/main/webapp/public/assets/js/jquery-3.3.1.min.js` can be retrieved from, `assets/js/jquery-3.3.1.min.js`
 
