@@ -42,9 +42,12 @@ A resource is what handles a request. There are two types of resources that Otte
 - [Resource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/controller/Resource.java)
 - [RestResource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/controller/RestResource.java)
 
-A **Resource** is designed to handle any content type. It's typically used to render `text/html`. Have a look at [HelloResource](https://github.com/RootServices/otter/blob/57/src/test/java/integration/app/hello/controller/HelloResource.java) as an example. 
+A **Resource** is designed to handle any content type. It's typically used to render `text/html`. Have a look at 
+[HelloResource](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/controller/HelloResource.java)
+ as an example. 
 
-A **RestResource** is designed to handle `application/json`. Have a look at [HelloRestResource](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/controller/HelloResource.java)
+A **RestResource** is designed to handle `application/json`. Have a look at 
+[HelloRestResource](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/controller/HelloRestResource.java)
 as an example.
  
 Implementing a resource is rather straight forward. 
