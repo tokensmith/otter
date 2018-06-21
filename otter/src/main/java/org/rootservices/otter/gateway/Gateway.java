@@ -1,14 +1,9 @@
 package org.rootservices.otter.gateway;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.controller.Resource;
-import org.rootservices.otter.gateway.servlet.ServletGateway;
-import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
-import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
-import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.RouteBuilder;
 import org.rootservices.otter.router.entity.Between;
@@ -123,6 +118,23 @@ public class Gateway {
         List<Between> before = new ArrayList<>();
         before.add(checkCSRF);
         before.add(decryptSession);
+
+        List<Between> after = new ArrayList<>();
+        after.add(encryptSession);
+
+        Route route = new RouteBuilder()
+                .path(path)
+                .resource(resource)
+                .before(before)
+                .after(after)
+                .build();
+
+        engine.getDispatcher().getPost().add(route);
+    }
+
+    public void postCsrfAndSetSession(String path, Resource resource) {
+        List<Between> before = new ArrayList<>();
+        before.add(checkCSRF);
 
         List<Between> after = new ArrayList<>();
         after.add(encryptSession);

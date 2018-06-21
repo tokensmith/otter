@@ -12,11 +12,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Example of a resource that depends on a CSRF and Session before and a Encrypted Session after.
+ * Example of a resource that depends on a CSRF before and a Encrypted Session after.
  */
-public class LoginSessionResource extends Resource {
-    public static String URL = "/login-with-session";
-    private static String JSP_PATH = "/WEB-INF/jsp/login-with-session.jsp";
+public class LoginSetSessionResource extends Resource {
+    public static String URL = "/login-set-session";
+    private static String JSP_PATH = "/WEB-INF/jsp/login-set-session.jsp";
 
     @Override
     public Response get(Request request, Response response) {
