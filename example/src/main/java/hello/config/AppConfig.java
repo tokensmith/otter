@@ -65,6 +65,11 @@ public class AppConfig implements Configure {
         gateway.getCsrfAndSessionProtect(loginWithSession.URL, loginWithSession);
         gateway.postCsrfAndSessionProtect(loginWithSession.URL, loginWithSession);
 
+        // set session
+        LoginSetSessionResource loginSetSessionResource = new LoginSetSessionResource();
+        gateway.getCsrfProtect(LoginSetSessionResource.URL, loginSetSessionResource);
+        gateway.postCsrfAndSetSession(LoginSetSessionResource.URL, loginSetSessionResource);
+
         // session
         gateway.getSessionProtect(ProtectedResource.URL, new ProtectedResource());
         gateway.postSessionProtect(ProtectedResource.URL, new ProtectedResource());

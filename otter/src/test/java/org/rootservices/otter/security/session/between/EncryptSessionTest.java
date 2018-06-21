@@ -162,7 +162,7 @@ public class EncryptSessionTest {
     }
 
     @Test
-    public void shouldEncryptWhenRequestSessionNotPresentShouldReturnFalse() {
+    public void shouldEncryptWhenRequestSessionNotPresentAndResponseSessionPresentShouldReturnTrue() {
 
         Request request = FixtureFactory.makeRequest();
 
@@ -175,7 +175,7 @@ public class EncryptSessionTest {
 
         Boolean actual = subject.shouldEncrypt(request, response);
 
-        assertThat(actual, is(false));
+        assertThat(actual, is(true));
     }
 
     @Test

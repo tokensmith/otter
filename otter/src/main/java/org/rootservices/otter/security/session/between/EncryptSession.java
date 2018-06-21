@@ -88,6 +88,8 @@ public class EncryptSession implements Between {
                 return false;
             }
             return true;
+        } else if (response.getSession().isPresent()) {
+            return true;
         }
         return false;
     }
