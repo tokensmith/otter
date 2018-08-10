@@ -3,6 +3,8 @@ package org.rootservices.otter.security.csrf;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.rootservices.jwt.builder.compact.SecureCompactBuilder;
+import org.rootservices.jwt.builder.exception.CompactException;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwt.JsonWebToken;
@@ -18,6 +20,7 @@ import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.security.RandomString;
 import org.rootservices.otter.security.csrf.exception.CsrfException;
 
+import java.io.ByteArrayOutputStream;
 import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.Optional;
@@ -123,17 +126,15 @@ public class DoubleSubmitCSRF {
         csrfClaims.setChallengeToken(challengeToken);
         csrfClaims.setIssuedAt(issuedAt);
 
-        SecureJwtSerializer secureJwtSerializer;
-        try {
-            secureJwtSerializer = jwtAppFactory.secureJwtSerializer(Algorithm.HS256, preferredSignKey);
-        } catch (SignatureException e) {
-            throw new CsrfException(SERIALIZE_JWT, e);
-        }
+        SecureCompactBuilder compactBuilder = new SecureCompactBuilder();
 
-        String compactJwt;
+        ByteArrayOutputStream compactJwt;
         try {
-            compactJwt = secureJwtSerializer.compactJwtToString(csrfClaims);
-        } catch (JwtToJsonException e) {
+            compactJwt = compactBuilder.alg(Algorithm.HS256)
+                    .key(preferredSignKey)
+                    .claims(csrfClaims)
+                    .build();
+        } catch (CompactException e) {
             throw new CsrfException(SERIALIZE_JWT, e);
         }
 
@@ -141,7 +142,7 @@ public class DoubleSubmitCSRF {
         csrfCookie.setSecure(secure);
         csrfCookie.setName(name);
         csrfCookie.setMaxAge(maxAge);
-        csrfCookie.setValue(compactJwt);
+        csrfCookie.setValue(compactJwt.toString());
 
         return csrfCookie;
     }
