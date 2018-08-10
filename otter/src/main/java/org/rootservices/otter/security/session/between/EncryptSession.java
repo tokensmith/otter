@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.rootservices.jwt.builder.compact.EncryptedCompactBuilder;
+import org.rootservices.jwt.builder.exception.CompactException;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwe.EncryptionAlgorithm;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
@@ -103,24 +105,18 @@ public class EncryptSession implements Between {
             throw new EncryptSessionException(e.getMessage(), e);
         }
 
-        JweSerializer jweSerializer = jwtAppFactory.jweDirectSerializer();
-
-        Header header = new Header();
-        header.setAlgorithm(Algorithm.DIRECT);
-        header.setEncryptionAlgorithm(Optional.of(EncryptionAlgorithm.AES_GCM_256));
-        header.setKeyId(preferredKey.getKeyId());
-
-        JWE jwe = new JWE();
-        jwe.setHeader(header);
-        jwe.setCek(decoder.decode(preferredKey.getKey().getBytes()));
-        jwe.setPayload(payload);
-
+        EncryptedCompactBuilder compactBuilder = new EncryptedCompactBuilder();
         ByteArrayOutputStream compactJwe;
         try {
-            compactJwe = jweSerializer.JWEToCompact(jwe);
-        } catch (JsonToJwtException | CipherException | EncryptException e) {
+            compactJwe = compactBuilder.encAlg(EncryptionAlgorithm.AES_GCM_256)
+                    .alg(Algorithm.DIRECT)
+                    .payload(payload)
+                    .cek(preferredKey)
+                    .build();
+        } catch (CompactException e) {
             throw new EncryptSessionException(e.getMessage(), e);
         }
+
         return compactJwe;
     }
 
