@@ -1,6 +1,8 @@
 package org.rootservices.otter.security.csrf.between;
 
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
@@ -19,7 +21,7 @@ public class CheckCSRF implements Between {
     private String cookieName;
     private String formFieldName;
     private DoubleSubmitCSRF doubleSubmitCSRF;
-    private static String HALT_MSG = "CSRF failed";
+    private static String HALT_MSG = "CSRF failed.";
 
     public CheckCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
         this.doubleSubmitCSRF = doubleSubmitCSRF;
