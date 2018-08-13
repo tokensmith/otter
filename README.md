@@ -12,14 +12,14 @@ Otter is a micro web framework that sits on top of the servlet api 4.0
     <dependency>
         <groupId>org.rootservices</groupId>
         <artifactId>otter</artifactId>
-        <version>1.2</version>
+        <version>1.3</version>
     </dependency>
 </dependencies>
 ```
 
 #### Gradle
 ```groovy
-compile group: 'org.rootservices', name: 'otter', version: '1.2'
+compile group: 'org.rootservices', name: 'otter', version: '1.3'
 ```
 
 ## Example Application
