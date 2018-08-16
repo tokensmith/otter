@@ -7,7 +7,7 @@ public enum Header {
     ACCEPT ("Accept"),
     CACHE_CONTROL ("Cache-Control"),
     PRAGMA ("Pragma"),
-    CONTENT_TYPE ("Content-Type"),
+    CONTENT_TYPE ("Content-TopLevelType"),
     LOCATION ("Location");
 
     private String value;

@@ -35,6 +35,7 @@ public class Gateway {
     public void get(String path, Resource resource) {
         Route route = new RouteBuilder()
                 .path(path)
+                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(new ArrayList<>())
                 .after(new ArrayList<>())
@@ -48,6 +49,7 @@ public class Gateway {
 
         Route route = new RouteBuilder()
                 .path(path)
+                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(before)
                 .after(new ArrayList<>())
@@ -65,6 +67,7 @@ public class Gateway {
 
         Route route = new RouteBuilder()
                 .path(path)
+                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(before)
                 .after(after)
@@ -82,6 +85,7 @@ public class Gateway {
 
         Route route = new RouteBuilder()
                 .path(path)
+                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(before)
                 .after(after)
@@ -93,6 +97,7 @@ public class Gateway {
     public void post(String path, Resource resource) {
         Route route = new RouteBuilder()
                 .path(path)
+                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .after(new ArrayList<>())
                 .before(new ArrayList<>())
@@ -106,6 +111,7 @@ public class Gateway {
 
         Route route = new RouteBuilder()
                 .path(path)
+                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(before)
                 .after(new ArrayList<>())
@@ -124,6 +130,7 @@ public class Gateway {
 
         Route route = new RouteBuilder()
                 .path(path)
+                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(before)
                 .after(after)
@@ -141,6 +148,7 @@ public class Gateway {
 
         Route route = new RouteBuilder()
                 .path(path)
+                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(before)
                 .after(after)
@@ -158,6 +166,7 @@ public class Gateway {
 
         Route route = new RouteBuilder()
                 .path(path)
+                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(before)
                 .after(after)
@@ -169,6 +178,7 @@ public class Gateway {
     public void put(String path, Resource resource) {
         Route route = new RouteBuilder()
                 .path(path)
+                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(new ArrayList<>())
                 .after(new ArrayList<>())
@@ -179,6 +189,7 @@ public class Gateway {
     public void patch(String path, Resource resource) {
         Route route = new RouteBuilder()
                 .path(path)
+                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(new ArrayList<>())
                 .after(new ArrayList<>())
@@ -189,6 +200,7 @@ public class Gateway {
     public void delete(String path, Resource resource) {
         Route route = new RouteBuilder()
                 .path(path)
+                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(new ArrayList<>())
                 .after(new ArrayList<>())
@@ -199,6 +211,7 @@ public class Gateway {
     public void connect(String path, Resource resource) {
         Route route = new RouteBuilder()
                 .path(path)
+                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(new ArrayList<>())
                 .after(new ArrayList<>())
@@ -209,6 +222,7 @@ public class Gateway {
     public void options(String path, Resource resource) {
         Route route = new RouteBuilder()
                 .path(path)
+                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(new ArrayList<>())
                 .after(new ArrayList<>())
@@ -219,6 +233,7 @@ public class Gateway {
     public void trace(String path, Resource resource) {
         Route route = new RouteBuilder()
                 .path(path)
+                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(new ArrayList<>())
                 .after(new ArrayList<>())
@@ -229,6 +244,7 @@ public class Gateway {
     public void head(String path, Resource resource) {
         Route route = new RouteBuilder()
                 .path(path)
+                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(new ArrayList<>())
                 .after(new ArrayList<>())

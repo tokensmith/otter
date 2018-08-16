@@ -3,6 +3,7 @@ package org.rootservices.otter.controller.builder;
 
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
+import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.Method;
 
 import java.io.BufferedReader;
@@ -15,6 +16,7 @@ public class RequestBuilder {
     private Optional<Matcher> matcher;
     private Method method;
     private String pathWithParams;
+    private MimeType contentType;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
     private Map<String, List<String>> queryParams;
@@ -35,6 +37,11 @@ public class RequestBuilder {
 
     public RequestBuilder pathWithParams(String pathWithParams) {
         this.pathWithParams = pathWithParams;
+        return this;
+    }
+
+    public RequestBuilder contentType(MimeType contentType) {
+        this.contentType = contentType;
         return this;
     }
 
@@ -74,6 +81,6 @@ public class RequestBuilder {
     }
 
     public Request build() {
-        return new Request(this.matcher, this.method, this.pathWithParams, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge, this.ipAddress);
+        return new Request(this.matcher, this.method, this.pathWithParams, this.contentType, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge, this.ipAddress);
     }
 }

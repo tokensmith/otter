@@ -25,6 +25,7 @@ import org.rootservices.otter.server.container.ServletContainerFactory;
 import org.rootservices.otter.server.path.CompiledClassPath;
 import org.rootservices.otter.server.path.WebAppPath;
 import org.rootservices.otter.translator.JsonTranslator;
+import org.rootservices.otter.translator.MimeTypeTranslator;
 
 import java.util.Base64;
 
@@ -89,7 +90,8 @@ public class OtterAppFactory {
         return new HttpServletRequestTranslator(
                 httpServletRequestCookieTranslator(),
                 new HttpServletRequestHeaderTranslator(),
-                new QueryStringToMap()
+                new QueryStringToMap(),
+                new MimeTypeTranslator()
         );
     }
 

@@ -31,6 +31,7 @@ public class HelloResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(helloURI)
+                .addHeader("Content-Type", "text/html")
                 .execute();
 
         Response response = f.get();

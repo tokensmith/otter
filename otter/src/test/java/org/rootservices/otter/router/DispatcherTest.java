@@ -3,6 +3,8 @@ package org.rootservices.otter.router;
 import helper.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.rootservices.otter.controller.builder.MimeTypeBuilder;
+import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.MatchedRoute;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
@@ -57,7 +59,8 @@ public class DispatcherTest {
         UUID id = UUID.randomUUID();
         String url = "get" + id.toString();
 
-        Optional<MatchedRoute> actual = subject.find(Method.GET, url);
+        MimeType json = new MimeTypeBuilder().json().build();
+        Optional<MatchedRoute> actual = subject.find(Method.GET, url, json);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -74,7 +77,8 @@ public class DispatcherTest {
         UUID id = UUID.randomUUID();
         String url = "get" + id.toString() + "/bar";
 
-        Optional<MatchedRoute> actual = subject.find(Method.GET, url);
+        MimeType json = new MimeTypeBuilder().json().build();
+        Optional<MatchedRoute> actual = subject.find(Method.GET, url, json);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -91,7 +95,8 @@ public class DispatcherTest {
         UUID id = UUID.randomUUID();
         String url = "/get/v2/" + id.toString() + "/bar";
 
-        Optional<MatchedRoute> actual = subject.find(Method.GET, url);
+        MimeType json = new MimeTypeBuilder().json().build();
+        Optional<MatchedRoute> actual = subject.find(Method.GET, url, json);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(false));

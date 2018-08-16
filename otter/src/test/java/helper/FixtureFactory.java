@@ -42,7 +42,7 @@ public class FixtureFactory {
     public static Route makeRoute(String regex) {
         Pattern p = Pattern.compile(regex);
         FakeResource resource = new FakeResource();
-        return new Route(p, resource, new ArrayList<>(), new ArrayList<>());
+        return new Route(p, new ArrayList<>(), resource, new ArrayList<>(), new ArrayList<>());
     }
 
     public static List<Route> makeRoutes() {

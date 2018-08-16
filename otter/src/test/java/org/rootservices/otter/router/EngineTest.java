@@ -6,8 +6,10 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.Resource;
+import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.MatchedRoute;
 import org.rootservices.otter.router.entity.Method;
 
@@ -36,9 +38,11 @@ public class EngineTest {
         String url = "foo";
         Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
+        MimeType json = new MimeTypeBuilder().json().build();
         Request request = FixtureFactory.makeRequest();
         request.setMethod(Method.GET);
         request.setPathWithParams(url);
+        request.setContentType(json);
 
         Response response = FixtureFactory.makeResponse();
 
@@ -47,7 +51,7 @@ public class EngineTest {
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispatcher.find(Method.GET, url)).thenReturn(match);
+        when(mockDispatcher.find(Method.GET, url, json)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request, response);
 
@@ -61,9 +65,11 @@ public class EngineTest {
         String url = "foo";
         Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
+        MimeType json = new MimeTypeBuilder().json().build();
         Request request = FixtureFactory.makeRequest();
         request.setMethod(Method.POST);
         request.setPathWithParams(url);
+        request.setContentType(json);
 
         Response response = FixtureFactory.makeResponse();
 
@@ -72,7 +78,7 @@ public class EngineTest {
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispatcher.find(Method.POST, url)).thenReturn(match);
+        when(mockDispatcher.find(Method.POST, url, json)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request, response);
 
@@ -86,9 +92,11 @@ public class EngineTest {
         String url = "foo";
         Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
+        MimeType json = new MimeTypeBuilder().json().build();
         Request request = FixtureFactory.makeRequest();
         request.setMethod(Method.PUT);
         request.setPathWithParams(url);
+        request.setContentType(json);
 
         Response response = FixtureFactory.makeResponse();
 
@@ -97,7 +105,7 @@ public class EngineTest {
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispatcher.find(Method.PUT, url)).thenReturn(match);
+        when(mockDispatcher.find(Method.PUT, url, json)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request, response);
 
@@ -111,9 +119,11 @@ public class EngineTest {
         String url = "foo";
         Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
+        MimeType json = new MimeTypeBuilder().json().build();
         Request request = FixtureFactory.makeRequest();
         request.setMethod(Method.DELETE);
         request.setPathWithParams(url);
+        request.setContentType(json);
 
         Response response = FixtureFactory.makeResponse();
 
@@ -122,7 +132,7 @@ public class EngineTest {
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispatcher.find(Method.DELETE, url)).thenReturn(match);
+        when(mockDispatcher.find(Method.DELETE, url, json)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request, response);
 
@@ -136,9 +146,11 @@ public class EngineTest {
         String url = "foo";
         Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
+        MimeType json = new MimeTypeBuilder().json().build();
         Request request = FixtureFactory.makeRequest();
         request.setMethod(Method.CONNECT);
         request.setPathWithParams(url);
+        request.setContentType(json);
 
         Response response = FixtureFactory.makeResponse();
 
@@ -147,7 +159,7 @@ public class EngineTest {
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispatcher.find(Method.CONNECT, url)).thenReturn(match);
+        when(mockDispatcher.find(Method.CONNECT, url, json)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request, response);
 
@@ -161,9 +173,11 @@ public class EngineTest {
         String url = "foo";
         Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
+        MimeType json = new MimeTypeBuilder().json().build();
         Request request = FixtureFactory.makeRequest();
         request.setMethod(Method.OPTIONS);
         request.setPathWithParams(url);
+        request.setContentType(json);
 
         Response response = FixtureFactory.makeResponse();
 
@@ -172,7 +186,7 @@ public class EngineTest {
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispatcher.find(Method.OPTIONS, url)).thenReturn(match);
+        when(mockDispatcher.find(Method.OPTIONS, url, json)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request, response);
 
@@ -186,9 +200,11 @@ public class EngineTest {
         String url = "foo";
         Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
+        MimeType json = new MimeTypeBuilder().json().build();
         Request request = FixtureFactory.makeRequest();
         request.setMethod(Method.TRACE);
         request.setPathWithParams(url);
+        request.setContentType(json);
 
         Response response = FixtureFactory.makeResponse();
 
@@ -197,7 +213,7 @@ public class EngineTest {
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispatcher.find(Method.TRACE, url)).thenReturn(match);
+        when(mockDispatcher.find(Method.TRACE, url, json)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request, response);
 
@@ -211,9 +227,11 @@ public class EngineTest {
         String url = "foo";
         Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
+        MimeType json = new MimeTypeBuilder().json().build();
         Request request = FixtureFactory.makeRequest();
         request.setMethod(Method.HEAD);
         request.setPathWithParams(url);
+        request.setContentType(json);
 
         Response response = FixtureFactory.makeResponse();
 
@@ -222,7 +240,7 @@ public class EngineTest {
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispatcher.find(Method.HEAD, url)).thenReturn(match);
+        when(mockDispatcher.find(Method.HEAD, url, json)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request, response);
 
@@ -237,13 +255,15 @@ public class EngineTest {
         String url = "foo";
         Optional<MatchedRoute> match = Optional.empty();
 
+        MimeType json = new MimeTypeBuilder().json().build();
         Request request = FixtureFactory.makeRequest();
         request.setMethod(Method.GET);
         request.setPathWithParams(url);
+        request.setContentType(json);
 
         Response response = FixtureFactory.makeResponse();
 
-        when(mockDispatcher.find(Method.GET, url)).thenReturn(match);
+        when(mockDispatcher.find(Method.GET, url, json)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request, response);
 

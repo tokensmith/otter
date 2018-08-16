@@ -5,6 +5,9 @@ import hello.controller.*;
 import hello.security.SessionBefore;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.config.CookieConfig;
+import org.rootservices.otter.controller.builder.MimeTypeBuilder;
+import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
 import org.rootservices.otter.router.RouteBuilder;
@@ -50,6 +53,8 @@ public class AppConfig implements Configure {
                 .build();
 
         gateway.setNotFoundRoute(notFoundRoute);
+
+        MimeType json = new MimeTypeBuilder().json().build();
 
         gateway.get(HelloResource.URL, new HelloResource());
         gateway.get(HelloRestResource.URL, appFactory.helloRestResource());
