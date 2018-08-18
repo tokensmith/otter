@@ -2,6 +2,8 @@ package org.rootservices.otter.config;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -35,6 +37,8 @@ import java.util.Base64;
  */
 public class OtterAppFactory {
     private static ObjectMapper objectMapper;
+    private static ObjectReader objectReader;
+    private static ObjectWriter objectWriter;
 
     public CompiledClassPath compiledClassPath() {
         return new CompiledClassPath();
@@ -70,7 +74,7 @@ public class OtterAppFactory {
     }
 
     public JsonTranslator jsonTranslator() {
-        return new JsonTranslator(objectMapper());
+        return new JsonTranslator(objectReader(), objectWriter());
     }
 
     public ObjectMapper objectMapper() {
@@ -84,6 +88,20 @@ public class OtterAppFactory {
                     .registerModule(new JavaTimeModule());
         }
         return objectMapper;
+    }
+
+    public ObjectReader objectReader() {
+        if (objectReader == null) {
+            objectReader = objectMapper().reader();
+        }
+        return objectReader;
+    }
+
+    public ObjectWriter objectWriter() {
+        if (objectWriter == null) {
+            objectWriter = objectMapper().writer();
+        }
+        return objectWriter;
     }
 
     public HttpServletRequestTranslator httpServletRequestTranslator() {

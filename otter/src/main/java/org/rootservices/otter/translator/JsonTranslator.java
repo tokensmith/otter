@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.rootservices.otter.translatable.Translatable;
@@ -16,7 +18,8 @@ import java.util.regex.Pattern;
 
 
 public class JsonTranslator<T extends Translatable> {
-    private ObjectMapper objectMapper;
+    private ObjectReader objectReader;
+    private ObjectWriter objectWriter;
 
     private static final String DUPLICATE_NAME = "key";
     private static final Pattern DUPLICATE_KEY_PATTERN = Pattern.compile("Duplicate field \'(?<" + DUPLICATE_NAME + ">\\w+)\'");
@@ -26,8 +29,9 @@ public class JsonTranslator<T extends Translatable> {
     private static final String INVALID_PAYLOAD_MSG = "The payload couldn't be parsed";
     private static final String TO_JSON_MSG = "Could not create JSON";
 
-    public JsonTranslator(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public JsonTranslator(ObjectReader objectReader, ObjectWriter objectWriter) {
+        this.objectReader = objectReader;
+        this.objectWriter = objectWriter;
     }
 
     /**
@@ -43,8 +47,9 @@ public class JsonTranslator<T extends Translatable> {
     public T from(String json, Class<? extends Translatable> clazz) throws InvalidPayloadException, DuplicateKeyException, UnknownKeyException, InvalidValueException {
         T entity = null;
 
+        ObjectReader localReader = objectReader.forType(clazz);
         try {
-            entity = (T) objectMapper.readValue(json, clazz);
+            entity = (T) localReader.readValue(json);
         } catch (JsonParseException e) {
             handleJsonParseException(e);
         } catch (UnrecognizedPropertyException e) {
@@ -64,8 +69,9 @@ public class JsonTranslator<T extends Translatable> {
 
     public ByteArrayOutputStream to(Object object) throws ToJsonException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
+
         try {
-            objectMapper.writeValue(out, object);
+            objectWriter.writeValue(out, object);
         } catch (JsonProcessingException e) {
             throw new ToJsonException(TO_JSON_MSG, e);
         } catch (IOException e) {
