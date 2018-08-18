@@ -29,31 +29,19 @@ public class Dispatcher {
     private List<Route> head = new ArrayList<>();
 
 
-    public Optional<MatchedRoute> find(Method method, String url, MimeType contentType) {
+    public Optional<MatchedRoute> find(Method method, String url) {
         // this allows urls to resources to not have the otter prefix, /app
         String scrubbedUrl = url.replaceAll(OTTER_PREFIX, EMPTY);
 
+        Optional<MatchedRoute> m = Optional.empty();
         for(Route route: routes(method)) {
             Matcher matcher = route.getPattern().matcher(scrubbedUrl);
             if (matcher.matches()) {
-                Optional<MimeType> contentTypeMatch = route
-                        .getContentTypes()
-                        .stream()
-                        .filter(item -> item.equals(contentType))
-                        .findFirst();
-
-                Optional<MatchedRoute> m = Optional.empty();
-                if (route.getContentTypes().size() > 0 && contentTypeMatch.isPresent()) {
-                    m = Optional.of(new MatchedRoute(matcher, route));
-                } else if (route.getContentTypes().size() == 0) {
-                    m = Optional.of(new MatchedRoute(matcher, route));
-                } else {
-                    LOGGER.debug(CONTENT_TYPE_MISMATCH, scrubbedUrl, contentType, route.getContentTypes());
-                }
-                return m;
+                m = Optional.of(new MatchedRoute(matcher, route));
+                break;
             }
         }
-        return Optional.empty();
+        return m;
     }
 
     protected List<Route> routes(Method method) {

@@ -51,7 +51,7 @@ public class EngineTest {
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispatcher.find(Method.GET, url, json)).thenReturn(match);
+        when(mockDispatcher.find(Method.GET, url)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request, response);
 
@@ -78,7 +78,7 @@ public class EngineTest {
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispatcher.find(Method.POST, url, json)).thenReturn(match);
+        when(mockDispatcher.find(Method.POST, url)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request, response);
 
@@ -105,7 +105,7 @@ public class EngineTest {
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispatcher.find(Method.PUT, url, json)).thenReturn(match);
+        when(mockDispatcher.find(Method.PUT, url)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request, response);
 
@@ -132,7 +132,7 @@ public class EngineTest {
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispatcher.find(Method.DELETE, url, json)).thenReturn(match);
+        when(mockDispatcher.find(Method.DELETE, url)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request, response);
 
@@ -159,7 +159,7 @@ public class EngineTest {
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispatcher.find(Method.CONNECT, url, json)).thenReturn(match);
+        when(mockDispatcher.find(Method.CONNECT, url)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request, response);
 
@@ -186,7 +186,7 @@ public class EngineTest {
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispatcher.find(Method.OPTIONS, url, json)).thenReturn(match);
+        when(mockDispatcher.find(Method.OPTIONS, url)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request, response);
 
@@ -213,7 +213,7 @@ public class EngineTest {
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispatcher.find(Method.TRACE, url, json)).thenReturn(match);
+        when(mockDispatcher.find(Method.TRACE, url)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request, response);
 
@@ -240,7 +240,7 @@ public class EngineTest {
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
-        when(mockDispatcher.find(Method.HEAD, url, json)).thenReturn(match);
+        when(mockDispatcher.find(Method.HEAD, url)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request, response);
 
@@ -263,7 +263,7 @@ public class EngineTest {
 
         Response response = FixtureFactory.makeResponse();
 
-        when(mockDispatcher.find(Method.GET, url, json)).thenReturn(match);
+        when(mockDispatcher.find(Method.GET, url)).thenReturn(match);
 
         Optional<Response> actual = subject.route(request, response);
 

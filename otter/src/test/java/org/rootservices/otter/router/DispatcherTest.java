@@ -59,8 +59,7 @@ public class DispatcherTest {
         UUID id = UUID.randomUUID();
         String url = "get" + id.toString();
 
-        MimeType json = new MimeTypeBuilder().json().build();
-        Optional<MatchedRoute> actual = subject.find(Method.GET, url, json);
+        Optional<MatchedRoute> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -77,8 +76,8 @@ public class DispatcherTest {
         UUID id = UUID.randomUUID();
         String url = "get" + id.toString() + "/bar";
 
-        MimeType json = new MimeTypeBuilder().json().build();
-        Optional<MatchedRoute> actual = subject.find(Method.GET, url, json);
+
+        Optional<MatchedRoute> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -95,8 +94,7 @@ public class DispatcherTest {
         UUID id = UUID.randomUUID();
         String url = "/get/v2/" + id.toString() + "/bar";
 
-        MimeType json = new MimeTypeBuilder().json().build();
-        Optional<MatchedRoute> actual = subject.find(Method.GET, url, json);
+        Optional<MatchedRoute> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(false));

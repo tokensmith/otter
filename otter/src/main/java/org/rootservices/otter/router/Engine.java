@@ -22,7 +22,7 @@ public class Engine {
 
     public Optional<Response> route(Request request, Response response) throws HaltException {
         Optional<MatchedRoute> matchedRoute = dispatcher.find(
-                request.getMethod(), request.getPathWithParams(), request.getContentType()
+                request.getMethod(), request.getPathWithParams()
         );
 
         Optional<Response> resourceResponse = Optional.empty();

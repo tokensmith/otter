@@ -44,4 +44,19 @@ public class HelloResourceTest {
 
     }
 
+    @Test
+    public void getWhenNoContentTypeShouldReturn200() throws Exception {
+
+        String helloURI = BASE_URI.toString() + "hello";
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .prepareGet(helloURI)
+                .execute();
+
+        Response response = f.get();
+
+        String errorMsg = "Attempted GET " + helloURI;
+        assertThat(errorMsg, response.getStatusCode(), is(StatusCode.OK.getCode()));
+    }
+
 }
