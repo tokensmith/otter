@@ -1,6 +1,7 @@
 package org.rootservices.otter.controller.entity;
 
 
+import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.router.entity.Method;
 
@@ -14,6 +15,7 @@ public class Request {
     private Optional<Matcher> matcher;
     private Method method;
     private String pathWithParams;
+    private MimeType contentType;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
     private Map<String, List<String>> queryParams;
@@ -26,10 +28,11 @@ public class Request {
 
     public Request() {}
 
-    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<String> body, Optional<String> csrfChallenge, String ipAddress) {
+    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, MimeType contentType, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<String> body, Optional<String> csrfChallenge, String ipAddress) {
         this.matcher = matcher;
         this.method = method;
         this.pathWithParams = pathWithParams;
+        this.contentType = contentType;
         this.headers = headers;
         this.cookies = cookies;
         this.queryParams = queryParams;
@@ -61,6 +64,14 @@ public class Request {
 
     public void setPathWithParams(String pathWithParams) {
         this.pathWithParams = pathWithParams;
+    }
+
+    public MimeType getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(MimeType contentType) {
+        this.contentType = contentType;
     }
 
     public Map<String, String> getHeaders() {

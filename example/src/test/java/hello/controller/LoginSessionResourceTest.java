@@ -20,6 +20,7 @@ import org.rootservices.jwt.jwe.entity.JWE;
 import org.rootservices.jwt.jwe.serialization.JweDeserializer;
 import org.rootservices.jwt.serialization.JwtSerde;
 import org.rootservices.otter.config.OtterAppFactory;
+import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.security.csrf.CsrfClaims;
 import suite.IntegrationTestSuite;
@@ -61,6 +62,7 @@ public class LoginSessionResourceTest {
         Cookie sessionCookie = FixtureFactory.sessionCookie();
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(SUBJECT_URI)
+                .addHeader("Content-Type", "text/html")
                 .addCookie(sessionCookie)
                 .execute();
 
@@ -100,6 +102,7 @@ public class LoginSessionResourceTest {
         // this is the GET request to get the csrf cookie & form value
         ListenableFuture<Response> f = httpClient
                 .prepareGet(SUBJECT_URI)
+                .addHeader("Content-Type", "text/html")
                 .addCookie(sessionCookie)
                 .execute();
 
@@ -123,6 +126,7 @@ public class LoginSessionResourceTest {
         f = httpClient
                 .preparePost(SUBJECT_URI)
                 .setFormParams(formData)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8;")
                 .setCookies(getResponse.getCookies())
                 .execute();
 
@@ -169,6 +173,7 @@ public class LoginSessionResourceTest {
         // this is the POST request
         ListenableFuture<Response> f = httpClient
                 .preparePost(SUBJECT_URI)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8;")
                 .setFormParams(formData)
                 .execute();
 
@@ -186,6 +191,7 @@ public class LoginSessionResourceTest {
         // this is the GET request to get the csrf cookie & form value
         ListenableFuture<Response> f = httpClient
                 .prepareGet(SUBJECT_URI)
+                .addHeader("Content-Type", "text/html")
                 .addCookie(sessionCookie)
                 .execute();
 
@@ -212,6 +218,7 @@ public class LoginSessionResourceTest {
         // this is the POST request
         f = httpClient
                 .preparePost(SUBJECT_URI)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8;")
                 .setFormParams(formData)
                 .addCookie(csrfCookie)
                 .execute();

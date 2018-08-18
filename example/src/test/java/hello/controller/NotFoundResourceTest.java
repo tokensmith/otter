@@ -30,6 +30,7 @@ public class NotFoundResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(notFoundURI)
+                .addHeader("Content-Type", "text/html")
                 .execute();
 
         Response response = f.get();

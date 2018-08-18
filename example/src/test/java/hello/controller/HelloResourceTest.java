@@ -31,6 +31,7 @@ public class HelloResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(helloURI)
+                .addHeader("Content-Type", "text/html")
                 .execute();
 
         Response response = f.get();
@@ -41,6 +42,21 @@ public class HelloResourceTest {
         // make sure jsp was executed.
         assertThat(response.getResponseBody().contains("<div id=\"hello\">Hello World</>"), is(true));
 
+    }
+
+    @Test
+    public void getWhenNoContentTypeShouldReturn200() throws Exception {
+
+        String helloURI = BASE_URI.toString() + "hello";
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .prepareGet(helloURI)
+                .execute();
+
+        Response response = f.get();
+
+        String errorMsg = "Attempted GET " + helloURI;
+        assertThat(errorMsg, response.getStatusCode(), is(StatusCode.OK.getCode()));
     }
 
 }

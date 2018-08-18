@@ -3,6 +3,8 @@ package org.rootservices.otter.router;
 import helper.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.rootservices.otter.controller.builder.MimeTypeBuilder;
+import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.MatchedRoute;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
@@ -73,6 +75,7 @@ public class DispatcherTest {
     public void findWhenGetAndBarShouldReturnMatch() {
         UUID id = UUID.randomUUID();
         String url = "get" + id.toString() + "/bar";
+
 
         Optional<MatchedRoute> actual = subject.find(Method.GET, url);
 

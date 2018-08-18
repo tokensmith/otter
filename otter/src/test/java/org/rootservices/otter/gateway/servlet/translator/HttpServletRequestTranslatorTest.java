@@ -5,9 +5,12 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.QueryStringToMap;
+import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.Request;
+import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.router.entity.Method;
+import org.rootservices.otter.translator.MimeTypeTranslator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,6 +30,8 @@ public class HttpServletRequestTranslatorTest {
     private HttpServletRequestHeaderTranslator mockHttpServletRequestHeaderTranslator;
     @Mock
     private QueryStringToMap mockQueryStringToMap;
+    @Mock
+    private MimeTypeTranslator mockMimeTypeTranslator;
 
     private HttpServletRequestTranslator subject;
 
@@ -36,7 +41,8 @@ public class HttpServletRequestTranslatorTest {
         subject = new HttpServletRequestTranslator(
                 mockHttpServletCookieTranslator,
                 mockHttpServletRequestHeaderTranslator,
-                mockQueryStringToMap
+                mockQueryStringToMap,
+                mockMimeTypeTranslator
         );
     }
 
@@ -58,6 +64,11 @@ public class HttpServletRequestTranslatorTest {
         when(mockQueryStringToMap.run(Optional.of("bar=bar-value")))
             .thenReturn(queryParams);
 
+        MimeType json = new MimeTypeBuilder().json().build();
+        when(mockMimeTypeTranslator.to(json.toString())).thenReturn(json);
+
+        when(mockContainerRequest.getContentType()).thenReturn(json.toString());
+
         String body = null;
         Request actual = subject.from(mockContainerRequest, body);
 
@@ -65,6 +76,8 @@ public class HttpServletRequestTranslatorTest {
         assertThat(actual.getMethod(), is(Method.GET));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
+        assertThat(actual.getContentType(), is(notNullValue()));
+        assertThat(actual.getContentType(), is(json));
         assertThat(actual.getBody().isPresent(), is(false));
         assertThat(actual.getQueryParams(), is(notNullValue()));
         assertThat(actual.getQueryParams(), is(queryParams));
@@ -98,7 +111,10 @@ public class HttpServletRequestTranslatorTest {
         when(mockQueryStringToMap.run(Optional.of("bar=bar-value")))
                 .thenReturn(queryParams);
 
-        when(mockContainerRequest.getContentType()).thenReturn(ContentType.JSON_UTF_8.getValue());
+        MimeType json = new MimeTypeBuilder().json().build();
+        when(mockMimeTypeTranslator.to(json.toString())).thenReturn(json);
+
+        when(mockContainerRequest.getContentType()).thenReturn(json.toString());
 
         String body = "{\"integer\": 5, \"integer\": \"4\", \"local_date\": \"2019-01-01\"}";
         Request actual = subject.from(mockContainerRequest, body);
@@ -107,6 +123,8 @@ public class HttpServletRequestTranslatorTest {
         assertThat(actual.getMethod(), is(Method.POST));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
+        assertThat(actual.getContentType(), is(notNullValue()));
+        assertThat(actual.getContentType(), is(json));
         assertThat(actual.getBody().isPresent(), is(true));
         assertThat(actual.getBody().get(), is(body));
         assertThat(actual.getQueryParams(), is(notNullValue()));
@@ -146,7 +164,10 @@ public class HttpServletRequestTranslatorTest {
         when(mockQueryStringToMap.run(Optional.of("form-field=form-value")))
             .thenReturn(formData);
 
-        when(mockContainerRequest.getContentType()).thenReturn(ContentType.FORM_URL_ENCODED.getValue());
+        MimeType form = new MimeTypeBuilder().form().build();
+        when(mockMimeTypeTranslator.to(form.toString())).thenReturn(form);
+
+        when(mockContainerRequest.getContentType()).thenReturn(form.toString());
 
         String body = "form-field=form-value";
         Request actual = subject.from(mockContainerRequest, body);
@@ -155,6 +176,8 @@ public class HttpServletRequestTranslatorTest {
         assertThat(actual.getMethod(), is(Method.POST));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
+        assertThat(actual.getContentType(), is(notNullValue()));
+        assertThat(actual.getContentType(), is(form));
         assertThat(actual.getBody().isPresent(), is(false));
         assertThat(actual.getQueryParams(), is(notNullValue()));
         assertThat(actual.getQueryParams(), is(queryParams));

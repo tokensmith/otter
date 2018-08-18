@@ -42,6 +42,7 @@ public class LoginResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(loginURI)
+                .addHeader("Content-Type", "text/html")
                 .execute();
 
         Response response = f.get();
@@ -86,6 +87,7 @@ public class LoginResourceTest {
         // this is the GET request to get the csrf cookie & form value
         ListenableFuture<Response> f = httpClient
                 .prepareGet(loginURI)
+                .addHeader("Content-Type", "text/html")
                 .execute();
 
         Response getResponse = f.get();
@@ -107,6 +109,7 @@ public class LoginResourceTest {
         // this is the POST request
         f = httpClient
                 .preparePost(loginURI)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8;")
                 .setFormParams(formData)
                 .setCookies(getResponse.getCookies())
                 .execute();
@@ -131,6 +134,7 @@ public class LoginResourceTest {
         // this is the POST request
         ListenableFuture<Response> f = httpClient
                 .preparePost(loginURI)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8;")
                 .setFormParams(formData)
                 .execute();
 

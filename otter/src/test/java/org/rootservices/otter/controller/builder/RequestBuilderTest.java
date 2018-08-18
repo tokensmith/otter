@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
+import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.Method;
 
 import java.util.*;
@@ -48,6 +49,17 @@ public class RequestBuilderTest {
     }
 
     @Test
+    public void buildWhenContentTypeShouldBeOk() {
+
+        MimeType contentType = new MimeType();
+        Request actual = subject.contentType(contentType).build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getContentType(), is(notNullValue()));
+        assertThat(actual.getContentType(), is(contentType));
+    }
+
+    @Test
     public void buildWhenHeadersShouldBeOk() {
         Map<String, String> headers = FixtureFactory.makeHeaders();
 
@@ -56,8 +68,6 @@ public class RequestBuilderTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders(), is(headers));
-
-
     }
 
     @Test

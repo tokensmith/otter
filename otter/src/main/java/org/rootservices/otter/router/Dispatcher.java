@@ -1,9 +1,9 @@
 package org.rootservices.otter.router;
 
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.rootservices.otter.gateway.servlet.ServletGateway;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.MatchedRoute;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
@@ -14,7 +14,8 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 
 public class Dispatcher {
-    protected static Logger logger = LogManager.getLogger(Dispatcher.class);
+    public static final String CONTENT_TYPE_MISMATCH = "content-type does not match. url: {}, request content-type: {}, route content-type: {}";
+    protected static Logger LOGGER = LogManager.getLogger(Dispatcher.class);
     private static String OTTER_PREFIX = "/app";
     private static String EMPTY = "";
     private List<Route> get = new ArrayList<>();
@@ -32,14 +33,15 @@ public class Dispatcher {
         // this allows urls to resources to not have the otter prefix, /app
         String scrubbedUrl = url.replaceAll(OTTER_PREFIX, EMPTY);
 
+        Optional<MatchedRoute> m = Optional.empty();
         for(Route route: routes(method)) {
             Matcher matcher = route.getPattern().matcher(scrubbedUrl);
             if (matcher.matches()) {
-                Optional<MatchedRoute> m = Optional.of(new MatchedRoute(matcher, route));
-                return m;
+                m = Optional.of(new MatchedRoute(matcher, route));
+                break;
             }
         }
-        return Optional.empty();
+        return m;
     }
 
     protected List<Route> routes(Method method) {

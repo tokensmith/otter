@@ -34,6 +34,7 @@ public class HelloRestResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(helloURI)
+                .addHeader("Content-Type", "application/json; charset=utf-8;")
                 .execute();
 
         Response response = f.get();
@@ -59,6 +60,7 @@ public class HelloRestResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(helloURI)
+                .addHeader("Content-Type", "application/json; charset=utf-8;")
                 .setBody(om.writeValueAsString(hello))
                 .execute();
 

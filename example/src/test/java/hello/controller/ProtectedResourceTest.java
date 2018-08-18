@@ -37,6 +37,7 @@ public class ProtectedResourceTest {
         Cookie sessionCookie = FixtureFactory.sessionCookie();
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(SUBJECT_URI)
+                .addHeader("Content-Type", "text/html")
                 .addCookie(sessionCookie)
                 .execute();
 
@@ -64,6 +65,7 @@ public class ProtectedResourceTest {
 
         ListenableFuture<Response> f = httpClient
                 .prepareGet(SUBJECT_URI + "?401")
+                .addHeader("Content-Type", "text/html")
                 .execute();
 
         Response response = f.get();
