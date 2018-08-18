@@ -10,6 +10,14 @@ public class MimeTypeBuilder {
     private String subType;
     private Map<String, String> parameters;
 
+    public MimeTypeBuilder html() {
+        this.topLevelType = TopLevelType.TEXT.toString();
+        this.subType = SubType.HTML.toString();
+        this.parameters = new LinkedHashMap<>();
+        parameters.put(ParamKey.CHARSET.toString(), ParamValue.UTF_8.toString());
+        return this;
+    }
+
     public MimeTypeBuilder json() {
         this.topLevelType = TopLevelType.APPLICATION.toString();
         this.subType = SubType.JSON.toString();

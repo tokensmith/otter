@@ -1,7 +1,7 @@
 package org.rootservices.otter.controller.entity.mime;
 
 public enum SubType {
-    JSON ("json"), XML ("xml"), JWT ("jwt"), FORM ("x-www-form-urlencoded");
+    HTML ("html"), JSON ("json"), XML ("xml"), JWT ("jwt"), FORM ("x-www-form-urlencoded");
 
     private String value;
 
