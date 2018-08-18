@@ -3,7 +3,6 @@ package org.rootservices.otter.router;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.MatchedRoute;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;

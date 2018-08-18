@@ -69,8 +69,8 @@ public class HttpServletRequestTranslatorTest {
 
         when(mockContainerRequest.getContentType()).thenReturn(json.toString());
 
-        String body = null;
-        Request actual = subject.from(mockContainerRequest, body);
+        byte[] containerBody = null;
+        Request actual = subject.from(mockContainerRequest, containerBody);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMethod(), is(Method.GET));
@@ -117,7 +117,7 @@ public class HttpServletRequestTranslatorTest {
         when(mockContainerRequest.getContentType()).thenReturn(json.toString());
 
         String body = "{\"integer\": 5, \"integer\": \"4\", \"local_date\": \"2019-01-01\"}";
-        Request actual = subject.from(mockContainerRequest, body);
+        Request actual = subject.from(mockContainerRequest, body.getBytes());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMethod(), is(Method.POST));
@@ -126,7 +126,7 @@ public class HttpServletRequestTranslatorTest {
         assertThat(actual.getContentType(), is(notNullValue()));
         assertThat(actual.getContentType(), is(json));
         assertThat(actual.getBody().isPresent(), is(true));
-        assertThat(actual.getBody().get(), is(body));
+        assertThat(actual.getBody().get(), is(body.getBytes()));
         assertThat(actual.getQueryParams(), is(notNullValue()));
         assertThat(actual.getQueryParams(), is(queryParams));
         assertThat(actual.getCookies(), is(notNullValue()));
@@ -170,7 +170,7 @@ public class HttpServletRequestTranslatorTest {
         when(mockContainerRequest.getContentType()).thenReturn(form.toString());
 
         String body = "form-field=form-value";
-        Request actual = subject.from(mockContainerRequest, body);
+        Request actual = subject.from(mockContainerRequest, body.getBytes());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMethod(), is(Method.POST));

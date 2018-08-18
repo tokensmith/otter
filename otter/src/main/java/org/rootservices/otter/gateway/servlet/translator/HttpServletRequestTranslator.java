@@ -38,7 +38,7 @@ public class HttpServletRequestTranslator {
         this.mimeTypeTranslator = mimeTypeTranslator;
     }
 
-    public Request from(HttpServletRequest containerRequest, String containerBody) throws IOException {
+    public Request from(HttpServletRequest containerRequest, byte[] containerBody) throws IOException {
 
         Method method = Method.valueOf(containerRequest.getMethod());
 
@@ -62,9 +62,10 @@ public class HttpServletRequestTranslator {
         MimeType contentType = mimeTypeTranslator.to(containerRequest.getContentType());
 
         Map<String, List<String>> formData = new HashMap<>();
-        Optional<String> body = Optional.empty();
+        Optional<byte[]> body = Optional.empty();
         if (isForm(method, contentType)) {
-            formData = queryStringToMap.run(Optional.of(containerBody));
+            String form = new String(containerBody);
+            formData = queryStringToMap.run(Optional.of(form));
         } else if (method == Method.POST && !isForm(method, contentType)) {
             body = Optional.of(containerBody);
         }

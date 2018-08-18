@@ -29,7 +29,7 @@ public class WebAppPath {
      * @param classURI location of a project's classes
      * @param customWebAppLocation the webapp location to append to the project's path, /src/main/webapp
      * @return an absolute file path to a project's webapp directory
-     * @throws URISyntaxException
+     * @throws URISyntaxException if the webApp URI cannot be constructed.
      */
     public URI fromClassURI(URI classURI, String customWebAppLocation) throws URISyntaxException {
         String projectPath;
@@ -40,7 +40,7 @@ public class WebAppPath {
             projectPath = makeProjectPath(classURI.getPath(), GRADLE_PATH);
         }
 
-        String webAppPath = FILE + projectPath.toString() + customWebAppLocation;
+        String webAppPath = FILE + projectPath + customWebAppLocation;
         URI webAppURI = new URI(webAppPath);
 
         return webAppURI;
@@ -49,7 +49,7 @@ public class WebAppPath {
     /**
      * Given a classURI Then return it's project path.
      *
-     * @param classURI
+     * @param classURI location of a project's classes
      * @param splitter /build or /target
      * @return an absolute file path to a project
      */
