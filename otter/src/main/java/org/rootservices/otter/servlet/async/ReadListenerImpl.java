@@ -9,7 +9,7 @@ import org.rootservices.otter.gateway.servlet.ServletGateway;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -20,7 +20,7 @@ public class ReadListenerImpl implements ReadListener {
     private ServletGateway servletGateway;
     private ServletInputStream input = null;
     private AsyncContext ac = null;
-    private Queue queue = new LinkedBlockingQueue();
+    private Queue<byte[]> queue = new LinkedBlockingQueue();
 
     public ReadListenerImpl(ServletGateway sg, ServletInputStream in, AsyncContext c) {
         servletGateway = sg;
@@ -30,15 +30,18 @@ public class ReadListenerImpl implements ReadListener {
 
     @Override
     public void onDataAvailable() throws IOException {
-        StringBuilder sb = new StringBuilder();
+
         int len = -1;
-        byte b[] = new byte[1024];
-        while (input.isReady() && (len = input.read(b)) != -1 && !input.isFinished()) {
-            String data = new String(b, 0, len);
-            sb.append(data);
+        byte fixedBuffer[] = new byte[1024];
+        ByteArrayOutputStream variableBuffer = new ByteArrayOutputStream();
+
+        while (input.isReady() && (len = input.read(fixedBuffer)) != -1 && !input.isFinished()) {
+            int start = variableBuffer.size();
+            variableBuffer.write(fixedBuffer, start, len);
         }
-        queue.add(sb.toString());
+        queue.add(variableBuffer.toByteArray());
     }
+
 
     @Override
     public void onAllDataRead() throws IOException {
@@ -62,10 +65,10 @@ public class ReadListenerImpl implements ReadListener {
         }
     }
 
-    public String queueToString(Queue queue) {
+    public String queueToString(Queue<byte[]> queue) {
         StringBuilder sb = new StringBuilder();
         while (queue.peek() != null) {
-            String data = (String) queue.poll();
+            String data = new String(queue.poll());
             sb.append(data);
         }
         return sb.toString();
