@@ -49,6 +49,7 @@ public class ServletContainerFactory {
      * @param documentRoot root path for the servlet container to run. example, "/"
      * @param clazz a class in your project.
      * @param port the port the container should use. 0 will randomly assign a port.
+     * @param requestLog path to the request log
      * @return a configured instance of ServletContainer
      * @throws URISyntaxException if an issue occurred constructing a URI
      * @throws IOException if issues come up regarding webapp or containerResources
@@ -73,6 +74,7 @@ public class ServletContainerFactory {
      * @param webApp absolute file path to the webapp directory in your project.
      * @param compliedClassPath absolute file path to, target/classes/ in your project.
      * @param port the port the container should use. 0 will randomly assign a port.
+     * @param requestLog path to the request log
      * @return a configured instance of ServletContainer
      * @throws IOException if issues come up regarding webapp or containerResources
      */

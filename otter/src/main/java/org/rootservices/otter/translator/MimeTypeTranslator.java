@@ -22,7 +22,8 @@ public class MimeTypeTranslator {
 
     public MimeType to(String from) {
         MimeType to = new MimeType();
-        to.setParameters(new LinkedHashMap());
+        Map<String, String> parameters = new LinkedHashMap<String, String>();
+        to.setParameters(parameters);
 
         if (from == null) {
             return to;
@@ -40,9 +41,9 @@ public class MimeTypeTranslator {
         return to;
     }
 
-    protected Map toParameters(String from) {
+    protected Map<String, String> toParameters(String from) {
         Matcher parameterMatcher = parameterRegex.matcher(from);
-        Map<String, String> parameters = new LinkedHashMap();
+        Map<String, String> parameters = new LinkedHashMap<String, String>();
 
         while (parameterMatcher.find()) {
             parameters.put(parameterMatcher.group(1), parameterMatcher.group(2));

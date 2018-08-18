@@ -44,12 +44,12 @@ public class JsonTranslator<T extends Translatable> {
      * @throws UnknownKeyException a key was not expected
      * @throws InvalidValueException key value was incorrect for it's type
      */
-    public T from(String json, Class<? extends Translatable> clazz) throws InvalidPayloadException, DuplicateKeyException, UnknownKeyException, InvalidValueException {
+    public T from(byte[] json, Class<? extends Translatable> clazz) throws InvalidPayloadException, DuplicateKeyException, UnknownKeyException, InvalidValueException {
         T entity = null;
 
         ObjectReader localReader = objectReader.forType(clazz);
         try {
-            entity = (T) localReader.readValue(json);
+            entity = localReader.readValue(json);
         } catch (JsonParseException e) {
             handleJsonParseException(e);
         } catch (UnrecognizedPropertyException e) {

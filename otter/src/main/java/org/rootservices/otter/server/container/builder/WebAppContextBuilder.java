@@ -91,7 +91,7 @@ public class WebAppContextBuilder {
     /**
      * Configure delivery of static assets if you know the absolute path to the assets.
      *
-     * @param resourceBase
+     * @param resourceBase absolute file path to the webapp directory in your project.
      * @return an instance of, WebAppContextBuilder
      */
     public WebAppContextBuilder staticAssetServlet(String resourceBase) {

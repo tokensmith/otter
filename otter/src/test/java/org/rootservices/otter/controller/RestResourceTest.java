@@ -38,9 +38,9 @@ public class RestResourceTest {
         subject = new FakeRestResource(mockJsonTranslator);
     }
 
-    public Optional<String> makeBody() {
+    public Optional<byte[]> makeBody() {
         String body = "{\"integer\": 5, \"integer\": \"4\", \"local_date\": \"2019-01-01\"}";
-        return Optional.of(body);
+        return Optional.of(body.getBytes());
     }
 
     @Test

@@ -20,7 +20,7 @@ public class ReadListenerImpl implements ReadListener {
     private ServletGateway servletGateway;
     private ServletInputStream input = null;
     private AsyncContext ac = null;
-    private Queue<byte[]> queue = new LinkedBlockingQueue();
+    private Queue<byte[]> queue = new LinkedBlockingQueue<byte[]>();
 
     public ReadListenerImpl(ServletGateway sg, ServletInputStream in, AsyncContext c) {
         servletGateway = sg;
@@ -47,7 +47,7 @@ public class ReadListenerImpl implements ReadListener {
     public void onAllDataRead() throws IOException {
         HttpServletRequest request = (HttpServletRequest) ac.getRequest();
         HttpServletResponse response = (HttpServletResponse) ac.getResponse();
-        String body = queueToString(queue);
+        byte[] body = queueToByteArray(queue);
         GatewayResponse gatewayResponse = servletGateway.processRequest(request, response, body);
 
         if (gatewayResponse.getPayload().isPresent()) {
@@ -74,6 +74,18 @@ public class ReadListenerImpl implements ReadListener {
         return sb.toString();
     }
 
+    public byte[] queueToByteArray(Queue<byte[]> queue) {
+        ByteArrayOutputStream to = new ByteArrayOutputStream();
+        while (queue.peek() != null) {
+            try {
+                to.write(queue.poll());
+            } catch (IOException e) {
+                // TODO: #16
+            }
+        }
+        return to.toByteArray();
+    }
+
     @Override
     public void onError(Throwable t) {
         logger.error(t.getMessage(), t);
@@ -81,7 +93,7 @@ public class ReadListenerImpl implements ReadListener {
     }
 
     public Queue byteArrayToQueue(byte[] source, int chunksize) {
-        Queue out = new LinkedBlockingQueue();
+        Queue<byte[]> out = new LinkedBlockingQueue<byte[]>();
 
         int start = 0;
         while (start < source.length) {

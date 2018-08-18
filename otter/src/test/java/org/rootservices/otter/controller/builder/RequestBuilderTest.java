@@ -103,7 +103,8 @@ public class RequestBuilderTest {
 
     @Test
     public void buildWhenPayloadShouldBeOk() {
-        Optional<String> json = Optional.of("{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}");
+        byte[] body = "{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}".getBytes();
+        Optional<byte[]> json = Optional.of(body);
 
         Request actual = subject.body(json).build();
 

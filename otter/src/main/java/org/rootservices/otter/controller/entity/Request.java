@@ -20,7 +20,7 @@ public class Request {
     private Map<String, Cookie> cookies;
     private Map<String, List<String>> queryParams;
     private Map<String, List<String>> formData;
-    private Optional<String> body;
+    private Optional<byte[]> body;
     private Optional<String> csrfChallenge;
     private String ipAddress;
     private Optional<Session> session = Optional.empty();
@@ -28,7 +28,7 @@ public class Request {
 
     public Request() {}
 
-    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, MimeType contentType, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<String> body, Optional<String> csrfChallenge, String ipAddress) {
+    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, MimeType contentType, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<byte[]> body, Optional<String> csrfChallenge, String ipAddress) {
         this.matcher = matcher;
         this.method = method;
         this.pathWithParams = pathWithParams;
@@ -106,11 +106,11 @@ public class Request {
         this.formData = formData;
     }
 
-    public Optional<String> getBody() {
+    public Optional<byte[]> getBody() {
         return body;
     }
 
-    public void setBody(Optional<String> body) {
+    public void setBody(Optional<byte[]> body) {
         this.body = body;
     }
 

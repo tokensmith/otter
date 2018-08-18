@@ -127,7 +127,7 @@ public class RestResource<T extends Translatable> extends Resource {
         return payload;
     }
 
-    protected T makeEntity(String json) throws DeserializationException {
+    protected T makeEntity(byte[] json) throws DeserializationException {
         T entity;
 
         try{

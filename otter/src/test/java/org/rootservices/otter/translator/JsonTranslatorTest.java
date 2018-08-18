@@ -32,7 +32,7 @@ public class JsonTranslatorTest {
     public void fromShouldBeOk() throws Exception {
         String json="{\"integer\": 5, \"string\": \"foo\", \"local_date\": \"2019-01-01\"}";
 
-        DummyPayload actual = (DummyPayload) subject.from(json, DummyPayload.class);
+        DummyPayload actual = (DummyPayload) subject.from(json.getBytes(), DummyPayload.class);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getInteger(), is(5));
@@ -46,7 +46,7 @@ public class JsonTranslatorTest {
 
         DuplicateKeyException actual = null;
         try {
-            subject.from(json, DummyPayload.class);
+            subject.from(json.getBytes(), DummyPayload.class);
         } catch(DuplicateKeyException e) {
             actual = e;
         }
@@ -61,7 +61,7 @@ public class JsonTranslatorTest {
 
         UnknownKeyException actual = null;
         try {
-            subject.from(json, DummyPayload.class);
+            subject.from(json.getBytes(), DummyPayload.class);
         } catch(UnknownKeyException e) {
             actual = e;
         }
@@ -76,7 +76,7 @@ public class JsonTranslatorTest {
 
         InvalidValueException actual = null;
         try {
-            subject.from(json, DummyPayload.class);
+            subject.from(json.getBytes(), DummyPayload.class);
         } catch(InvalidValueException e) {
             actual = e;
         }
@@ -91,7 +91,7 @@ public class JsonTranslatorTest {
 
         InvalidPayloadException actual = null;
         try {
-            subject.from(json, DummyPayload.class);
+            subject.from(json.getBytes(), DummyPayload.class);
         } catch(InvalidPayloadException e) {
             actual = e;
         }

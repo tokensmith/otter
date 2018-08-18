@@ -37,7 +37,7 @@ public class ServletGateway extends Gateway {
         this.httpServletResponseMerger = httpServletResponseMerger;
     }
 
-    public GatewayResponse processRequest(HttpServletRequest containerRequest, HttpServletResponse containerResponse, String body) {
+    public GatewayResponse processRequest(HttpServletRequest containerRequest, HttpServletResponse containerResponse, byte[] body) {
         GatewayResponse gatewayResponse = new GatewayResponse();
         try {
             Request request = httpServletRequestTranslator.from(containerRequest, body);

@@ -21,7 +21,7 @@ public class RequestBuilder {
     private Map<String, Cookie> cookies;
     private Map<String, List<String>> queryParams;
     private Map<String, List<String>> formData;
-    private Optional<String> body;
+    private Optional<byte[]> body;
     private Optional<String> csrfChallenge;
     private String ipAddress;
 
@@ -65,7 +65,7 @@ public class RequestBuilder {
         return this;
     }
 
-    public RequestBuilder body(Optional<String> body) {
+    public RequestBuilder body(Optional<byte[]> body) {
         this.body = body;
         return this;
     }

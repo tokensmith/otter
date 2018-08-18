@@ -74,16 +74,16 @@ public class ServletGatewayTest {
     public void processRequestResourceFoundShouldBeOk() throws Exception {
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
-        String body = null;
+        byte[] containerBody = null;
 
         Request request = new Request();
 
-        when(mockHttpServletRequestTranslator.from(mockContainerRequest, body))
+        when(mockHttpServletRequestTranslator.from(mockContainerRequest, containerBody))
                 .thenReturn(request);
         Optional<Response> resourceResponse = Optional.of(FixtureFactory.makeResponse());
         when(mockEngine.route(eq(request), any(Response.class))).thenReturn(resourceResponse);
 
-        subject.processRequest(mockContainerRequest, mockContainerResponse, body);
+        subject.processRequest(mockContainerRequest, mockContainerResponse, containerBody);
 
         // should never call the not found resource.
         verify(mockEngine, never()).executeResourceMethod(any(Route.class), any(Request.class), any(Response.class));
@@ -99,11 +99,11 @@ public class ServletGatewayTest {
 
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
-        String body = null;
+        byte[] containerBody = null;
 
         Request request = new Request();
 
-        when(mockHttpServletRequestTranslator.from(mockContainerRequest, body))
+        when(mockHttpServletRequestTranslator.from(mockContainerRequest, containerBody))
                 .thenReturn(request);
 
         // original engine call does NOT return a response.
@@ -116,7 +116,7 @@ public class ServletGatewayTest {
                 any(Response.class)
         )).thenReturn(resourceResponse);
 
-        subject.processRequest(mockContainerRequest, mockContainerResponse, body);
+        subject.processRequest(mockContainerRequest, mockContainerResponse, containerBody);
 
         // should call the not found resource.
         verify(mockEngine).executeResourceMethod(

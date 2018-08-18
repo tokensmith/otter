@@ -1,8 +1,8 @@
 package org.rootservices.otter.security.session.between;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.exception.InvalidJWT;
@@ -50,7 +50,7 @@ public class DecryptSession<T extends Session> implements Between {
     public static final String COULD_NOT_CALL_THE_SESSION_COPY_CONSTRUCTOR = "Could not call the session's copy constructor";
     protected static Logger LOGGER = LogManager.getLogger(DecryptSession.class);
 
-    private Class clazz = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+    private Class clazz;
     private String sessionCookieName;
     private JwtAppFactory jwtAppFactory;
     private SymmetricKey preferredKey;
@@ -90,10 +90,14 @@ public class DecryptSession<T extends Session> implements Between {
             throw halt;
         }
 
+        // Copies the request session and assigns it to, response.
+        // This is required because the after filter, EncryptSession, does an .equals() to
+        // determine if the session should be re encrypted.
+
         request.setSession(session);
         T responseSession;
         try {
-            responseSession = copy((T)session.get());
+            responseSession = copy((T) session.get());
         } catch (SessionCtorException e) {
             LOGGER.error(e.getMessage(), e);
             HaltException halt = new HaltException(FAILED_TO_COPY_REQUEST_SESSION, e);
@@ -104,16 +108,17 @@ public class DecryptSession<T extends Session> implements Between {
     }
 
     /**
-     * Copies the input parameter and then returns the copy.
+     * Copies T and then returns the copy.
      *
      * @param session the session to copy
      * @return an instance of T that is a copy of session
+     * @throws SessionCtorException if a constructor cant be found for T
      */
     protected T copy(T session) throws SessionCtorException {
         T copy = null;
         Constructor ctor;
         try {
-            ctor = clazz.getConstructor(clazz);
+            ctor = getClazz().getConstructor(getClazz());
         } catch (NoSuchMethodException e) {
             throw new SessionCtorException(COULD_NOT_ACCESS_SESSION_CTORS,e);
         }
@@ -177,7 +182,7 @@ public class DecryptSession<T extends Session> implements Between {
     protected T toSession(byte[] json) {
         T session = null;
         try {
-            session = (T) objectMapper.readValue(json, clazz);
+            session = (T) objectMapper.readValue(json, getClazz());
         } catch (IOException e) {
             String msg = String.format(COULD_NOT_DESERIALIZE, new String(json, StandardCharsets.UTF_8));
             LOGGER.error(msg);
@@ -194,5 +199,17 @@ public class DecryptSession<T extends Session> implements Between {
             key = rotationKeys.get(keyId);
         }
         return key;
+    }
+
+    private Class getClazz() {
+        if (this.clazz == null) {
+            String className = (((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0].getTypeName());
+            try {
+                this.clazz = Class.forName(className);
+            } catch (ClassNotFoundException e) {
+                LOGGER.error("Could not determine class for, {}", className);
+            }
+        }
+        return this.clazz;
     }
 }
