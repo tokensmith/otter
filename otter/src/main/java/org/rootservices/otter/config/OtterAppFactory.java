@@ -26,6 +26,7 @@ import org.rootservices.otter.security.session.between.EncryptSession;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 import org.rootservices.otter.server.path.CompiledClassPath;
 import org.rootservices.otter.server.path.WebAppPath;
+import org.rootservices.otter.translatable.Translatable;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.MimeTypeTranslator;
 
@@ -71,10 +72,6 @@ public class OtterAppFactory {
 
     public Engine engine() {
         return new Engine(new Dispatcher());
-    }
-
-    public JsonTranslator jsonTranslator() {
-        return new JsonTranslator(objectReader(), objectWriter());
     }
 
     public ObjectMapper objectMapper() {
