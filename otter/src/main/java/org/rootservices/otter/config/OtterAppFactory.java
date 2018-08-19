@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.otter.QueryStringToMap;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
@@ -26,6 +27,7 @@ import org.rootservices.otter.security.session.between.EncryptSession;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 import org.rootservices.otter.server.path.CompiledClassPath;
 import org.rootservices.otter.server.path.WebAppPath;
+import org.rootservices.otter.translatable.Translatable;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.MimeTypeTranslator;
 
@@ -73,10 +75,6 @@ public class OtterAppFactory {
         return new Engine(new Dispatcher());
     }
 
-    public JsonTranslator jsonTranslator() {
-        return new JsonTranslator(objectReader(), objectWriter());
-    }
-
     public ObjectMapper objectMapper() {
         if (objectMapper == null) {
             objectMapper = new ObjectMapper()
@@ -85,7 +83,8 @@ public class OtterAppFactory {
                     )
                     .configure(JsonParser.Feature.STRICT_DUPLICATE_DETECTION, true)
                     .registerModule(new Jdk8Module())
-                    .registerModule(new JavaTimeModule());
+                    .registerModule(new JavaTimeModule())
+                    .registerModule(new AfterburnerModule());
         }
         return objectMapper;
     }

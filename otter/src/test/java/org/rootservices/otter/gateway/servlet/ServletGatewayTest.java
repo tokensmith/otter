@@ -23,6 +23,7 @@ import org.rootservices.otter.security.session.between.EncryptSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -128,6 +129,50 @@ public class ServletGatewayTest {
         verify(mockHttpServletResponseMerger).merge(mockContainerResponse, null, resourceResponse);
         verify(mockHttpServletRequestMerger).merge(mockContainerRequest, resourceResponse);
 
+    }
+
+    @Test
+    public void processRequestWhenExceptionShouldReturnServerError() throws Exception {
+        Route notFoundRoute = FixtureFactory.makeRoute("");
+        subject.setNotFoundRoute(notFoundRoute);
+
+        HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
+        byte[] containerBody = null;
+
+        doThrow(new RuntimeException()).when(mockHttpServletRequestTranslator).from(mockContainerRequest, containerBody);
+
+        GatewayResponse actual = subject.processRequest(mockContainerRequest, mockContainerResponse, containerBody);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getPayload(), is(notNullValue()));
+        assertThat(actual.getPayload().isPresent(), is(false));
+        assertThat(actual.getTemplate(), is(notNullValue()));
+        assertThat(actual.getTemplate().isPresent(), is(false));
+
+        verify(mockContainerResponse).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    }
+
+    @Test
+    public void processRequestWhenIOExceptionShouldReturnServerError() throws Exception {
+        Route notFoundRoute = FixtureFactory.makeRoute("");
+        subject.setNotFoundRoute(notFoundRoute);
+
+        HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
+        byte[] containerBody = null;
+
+        doThrow(new IOException()).when(mockHttpServletRequestTranslator).from(mockContainerRequest, containerBody);
+
+        GatewayResponse actual = subject.processRequest(mockContainerRequest, mockContainerResponse, containerBody);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getPayload(), is(notNullValue()));
+        assertThat(actual.getPayload().isPresent(), is(false));
+        assertThat(actual.getTemplate(), is(notNullValue()));
+        assertThat(actual.getTemplate().isPresent(), is(false));
+
+        verify(mockContainerResponse).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 
     @Test

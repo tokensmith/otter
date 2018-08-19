@@ -3,10 +3,12 @@ package hello.config;
 
 
 import hello.controller.HelloRestResource;
+import hello.model.Hello;
 import hello.security.SessionBefore;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwk.Use;
 import org.rootservices.otter.config.OtterAppFactory;
+import org.rootservices.otter.translatable.Translatable;
 import org.rootservices.otter.translator.JsonTranslator;
 
 import java.util.Map;
@@ -17,12 +19,11 @@ public class AppFactory {
         return new OtterAppFactory();
     }
 
-    public JsonTranslator jsonTranslator() {
-        return otterAppFactory().jsonTranslator();
-    }
-
     public HelloRestResource helloRestResource() {
-        return new HelloRestResource(jsonTranslator());
+        JsonTranslator<Hello> t = new JsonTranslator<Hello>(
+                Hello.class, otterAppFactory().objectReader(), otterAppFactory().objectWriter()
+        );
+        return new HelloRestResource(t);
     }
 
     /**

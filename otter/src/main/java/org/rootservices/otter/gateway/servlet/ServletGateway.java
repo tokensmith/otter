@@ -76,7 +76,7 @@ public class ServletGateway extends Gateway {
             }
             gatewayResponse.setTemplate(response.getTemplate());
 
-        } catch (IOException | ServletException e) {
+        } catch (IOException e) {
             logger.error(e.getMessage(), e);
             containerResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } catch (Exception e) {

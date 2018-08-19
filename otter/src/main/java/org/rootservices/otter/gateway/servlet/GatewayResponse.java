@@ -4,8 +4,8 @@ package org.rootservices.otter.gateway.servlet;
 import java.util.Optional;
 
 public class GatewayResponse {
-    private Optional<byte[]> payload;
-    private Optional<String> template;
+    private Optional<byte[]> payload = Optional.empty();
+    private Optional<String> template = Optional.empty();
 
     public GatewayResponse() {}
 

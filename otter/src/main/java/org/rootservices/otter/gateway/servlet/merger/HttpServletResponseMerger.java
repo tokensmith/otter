@@ -18,7 +18,7 @@ public class HttpServletResponseMerger {
         this.httpServletRequestCookieTranslator = httpServletRequestCookieTranslator;
     }
 
-    public HttpServletResponse merge(HttpServletResponse containerResponse, Cookie[] containerCookies, Response response) throws IOException {
+    public HttpServletResponse merge(HttpServletResponse containerResponse, Cookie[] containerCookies, Response response) {
 
         // headers
         for(Map.Entry<String, String> header: response.getHeaders().entrySet()) {
