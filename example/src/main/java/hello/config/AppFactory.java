@@ -21,7 +21,7 @@ public class AppFactory {
 
     public HelloRestResource helloRestResource() {
         JsonTranslator<Hello> t = new JsonTranslator<Hello>(
-                Hello.class, otterAppFactory().objectReader(), otterAppFactory().objectWriter()
+                otterAppFactory().objectReader(), otterAppFactory().objectWriter()
         );
         return new HelloRestResource(t);
     }

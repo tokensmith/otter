@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.otter.QueryStringToMap;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
@@ -83,8 +82,7 @@ public class OtterAppFactory {
                     )
                     .configure(JsonParser.Feature.STRICT_DUPLICATE_DETECTION, true)
                     .registerModule(new Jdk8Module())
-                    .registerModule(new JavaTimeModule())
-                    .registerModule(new AfterburnerModule());
+                    .registerModule(new JavaTimeModule());
         }
         return objectMapper;
     }
