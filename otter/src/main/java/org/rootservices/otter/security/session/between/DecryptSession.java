@@ -37,7 +37,7 @@ import java.util.Optional;
 /**
  * Used to encrypt a session cookie.
  */
-public class DecryptSession<T extends Session> implements Between {
+public class DecryptSession<T extends Session> implements Between<T> {
     public static final String NOT_A_JWT = "Session cookie was not a JWE: %s";
     public static final String COULD_NOT_GET_HEADER_JWE = "Session cookie did have a header member: %s";
     public static final String COULD_NOT_DESERIALIZE_JWE = "Session cookie could not be de-serialized to JSON: %s";
@@ -66,7 +66,7 @@ public class DecryptSession<T extends Session> implements Between {
     }
 
     @Override
-    public void process(Method method, Request request, Response response) throws HaltException {
+    public void process(Method method, Request<T> request, Response<T> response) throws HaltException {
         Optional<Session> session;
         Cookie sessionCookie = request.getCookies().get(sessionCookieName);
 

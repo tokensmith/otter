@@ -9,6 +9,7 @@ import org.rootservices.otter.router.entity.MatchedRoute;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.router.exception.HaltException;
+import org.rootservices.otter.security.session.Session;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,15 +21,15 @@ public class Engine {
         this.dispatcher = dispatcher;
     }
 
-    public Optional<Response> route(Request request, Response response) throws HaltException {
+    public Optional<Response<Session>> route(Request<Session> request, Response<Session> response) throws HaltException {
         Optional<MatchedRoute> matchedRoute = dispatcher.find(
                 request.getMethod(), request.getPathWithParams()
         );
 
-        Optional<Response> resourceResponse = Optional.empty();
+        Optional<Response<Session>> resourceResponse = Optional.empty();
         if (matchedRoute.isPresent()) {
             request.setMatcher(Optional.of(matchedRoute.get().getMatcher()));
-            Response r;
+            Response<Session> r;
 
             try {
                 r = executeResourceMethod(matchedRoute.get().getRoute(), request, response);
@@ -42,9 +43,9 @@ public class Engine {
         return resourceResponse;
     }
 
-    public Response executeResourceMethod(Route route, Request request, Response response) throws HaltException {
-        Resource resource = route.getResource();
-        Response resourceResponse = null;
+    public Response<Session> executeResourceMethod(Route route, Request<Session> request, Response<Session> response) throws HaltException {
+        Resource<Session> resource = route.getResource();
+        Response<Session> resourceResponse = null;
         Method method = request.getMethod();
 
         try {
@@ -82,8 +83,8 @@ public class Engine {
         return resourceResponse;
     }
 
-    protected void executeBetween(List<Between> betweens, Method method, Request request, Response response) throws HaltException {
-        for(Between between: betweens) {
+    protected void executeBetween(List<Between<Session>> betweens, Method method, Request<Session> request, Response<Session> response) throws HaltException {
+        for(Between<Session> between: betweens) {
             try {
                 between.process(method, request, response);
             } catch(HaltException e) {

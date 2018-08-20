@@ -3,6 +3,7 @@ package org.rootservices.otter.gateway.servlet.merger;
 
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestCookieTranslator;
+import org.rootservices.otter.security.session.Session;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +19,7 @@ public class HttpServletResponseMerger {
         this.httpServletRequestCookieTranslator = httpServletRequestCookieTranslator;
     }
 
-    public HttpServletResponse merge(HttpServletResponse containerResponse, Cookie[] containerCookies, Response response) {
+    public HttpServletResponse merge(HttpServletResponse containerResponse, Cookie[] containerCookies, Response<Session> response) {
 
         // headers
         for(Map.Entry<String, String> header: response.getHeaders().entrySet()) {
@@ -35,7 +36,7 @@ public class HttpServletResponseMerger {
         return containerResponse;
     }
 
-    protected Map<String, Cookie> deleteAndUpdateCookies(HttpServletResponse containerResponse, Cookie[] containerCookies, Response response) {
+    protected Map<String, Cookie> deleteAndUpdateCookies(HttpServletResponse containerResponse, Cookie[] containerCookies, Response<Session> response) {
         Map<String, Cookie> containerCookiesMap = new HashMap<>();
 
         if (containerCookies == null) {

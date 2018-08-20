@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 
-public class Request {
+public class Request<T extends Session> {
     private Optional<Matcher> matcher;
     private Method method;
     private String pathWithParams;

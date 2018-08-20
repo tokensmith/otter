@@ -1,6 +1,7 @@
 package helper;
 
 
+import helper.entity.DummySession;
 import helper.entity.FakeResource;
 import io.netty.handler.codec.http.cookie.DefaultCookie;
 import org.rootservices.jwt.config.JwtAppFactory;
@@ -14,16 +15,20 @@ import org.rootservices.jwt.jws.serialization.SecureJwtSerializer;
 import org.rootservices.jwt.serialization.JwtSerde;
 import org.rootservices.jwt.serialization.exception.JsonToJwtException;
 import org.rootservices.jwt.serialization.exception.JwtToJsonException;
+import org.rootservices.otter.controller.Resource;
+import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.builder.ResponseBuilder;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.controller.header.HeaderValue;
 import org.rootservices.otter.router.entity.MatchedRoute;
 import org.rootservices.otter.router.entity.Regex;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.security.csrf.CsrfClaims;
+import org.rootservices.otter.security.session.Session;
 
 import java.time.OffsetDateTime;
 import java.util.*;
@@ -41,8 +46,8 @@ public class FixtureFactory {
 
     public static Route makeRoute(String regex) {
         Pattern p = Pattern.compile(regex);
-        FakeResource resource = new FakeResource();
-        return new Route(p, new ArrayList<>(), resource, new ArrayList<>(), new ArrayList<>());
+        RestResource resource = new FakeResource();
+        return new Route(p, new ArrayList<MimeType>(), resource, new ArrayList<>(), new ArrayList<>());
     }
 
     public static List<Route> makeRoutes() {
@@ -61,8 +66,16 @@ public class FixtureFactory {
         return params;
     }
 
-    public static Request makeRequest() {
-        Request request = new Request();
+    public static Request<DummySession> makeRequest() {
+        Request<DummySession> request = new Request<DummySession>();
+        request.setFormData(new HashMap<>());
+        request.setCookies(makeCookies());
+        request.setCsrfChallenge(Optional.empty());
+        return request;
+    }
+
+    public static Request<Session> makeRequestSession() {
+        Request<Session> request = new Request<Session>();
         request.setFormData(new HashMap<>());
         request.setCookies(makeCookies());
         request.setCsrfChallenge(Optional.empty());
@@ -75,8 +88,8 @@ public class FixtureFactory {
         return headers;
     }
 
-    public static Response makeResponse() {
-        return new ResponseBuilder()
+    public static Response<DummySession> makeResponse() {
+        Response<DummySession> response = new ResponseBuilder<DummySession>()
                 .headers(new HashMap<>())
                 .cookies(new HashMap<>())
                 .payload(Optional.empty())
@@ -84,6 +97,21 @@ public class FixtureFactory {
                 .presenter(Optional.empty())
                 .ok()
                 .build();
+
+        return response;
+    }
+
+    public static Response<Session> makeResponseSession() {
+        Response<Session> response = new ResponseBuilder<Session>()
+                .headers(new HashMap<>())
+                .cookies(new HashMap<>())
+                .payload(Optional.empty())
+                .template(Optional.empty())
+                .presenter(Optional.empty())
+                .ok()
+                .build();
+
+        return response;
     }
 
     public static Map<String, Cookie> makeCookies() {

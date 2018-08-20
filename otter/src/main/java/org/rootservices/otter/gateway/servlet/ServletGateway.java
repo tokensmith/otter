@@ -13,6 +13,7 @@ import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTrans
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.exception.HaltException;
+import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.security.session.between.EncryptSession;
 
 
@@ -30,8 +31,8 @@ public class ServletGateway extends Gateway {
     private HttpServletRequestMerger httpServletRequestMerger;
     private HttpServletResponseMerger httpServletResponseMerger;
 
-    public ServletGateway(HttpServletRequestTranslator httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger httpServletResponseMerger, Engine engine, Between prepareCSRF, Between checkCSRF, EncryptSession encryptSession) {
-        super(engine, prepareCSRF, checkCSRF, encryptSession);
+    public ServletGateway(HttpServletRequestTranslator httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger httpServletResponseMerger, Engine engine, Between<Session> prepareCSRF, Between<Session> checkCSRF) {
+        super(engine, prepareCSRF, checkCSRF);
         this.httpServletRequestTranslator = httpServletRequestTranslator;
         this.httpServletRequestMerger = httpServletRequestMerger;
         this.httpServletResponseMerger = httpServletResponseMerger;
@@ -40,9 +41,9 @@ public class ServletGateway extends Gateway {
     public GatewayResponse processRequest(HttpServletRequest containerRequest, HttpServletResponse containerResponse, byte[] body) {
         GatewayResponse gatewayResponse = new GatewayResponse();
         try {
-            Request request = httpServletRequestTranslator.from(containerRequest, body);
+            Request<Session> request = httpServletRequestTranslator.from(containerRequest, body);
 
-            Response response = new ResponseBuilder()
+            Response<Session> response = new ResponseBuilder<Session>()
                     .headers(new HashMap<>())
                     .cookies(request.getCookies())
                     .payload(Optional.empty())
@@ -51,7 +52,7 @@ public class ServletGateway extends Gateway {
                     .build();
 
             Boolean shouldHalt = false;
-            Optional<Response> resourceResponse;
+            Optional<Response<Session>> resourceResponse;
             try {
                 resourceResponse = engine.route(request, response);
             } catch (HaltException e) {

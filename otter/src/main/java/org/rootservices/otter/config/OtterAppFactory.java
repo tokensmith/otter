@@ -65,8 +65,7 @@ public class OtterAppFactory {
                 httpServletResponseMerger(),
                 engine(),
                 prepareCSRF(doubleSubmitCSRF),
-                checkCSRF(doubleSubmitCSRF),
-                encryptSession()
+                checkCSRF(doubleSubmitCSRF)
         );
     }
 
@@ -140,13 +139,5 @@ public class OtterAppFactory {
 
     public Base64.Decoder urlDecoder() {
         return Base64.getUrlDecoder();
-    }
-
-    public EncryptSession encryptSession() {
-        return new EncryptSession(
-                jwtAppFactory(),
-                urlDecoder(),
-                objectMapper()
-        );
     }
 }

@@ -2,6 +2,7 @@ package hello.config;
 
 
 import hello.controller.*;
+import hello.security.SessionAfter;
 import hello.security.SessionBefore;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.config.CookieConfig;
@@ -37,11 +38,11 @@ public class AppConfig implements Configure {
         CookieConfig sessionCookieConfig = new CookieConfig("session", false, -1);
         SymmetricKey encKey = appFactory.encKey();
 
-        gateway.setSessionCookieConfig(sessionCookieConfig);
-        gateway.setEncKey(encKey);
-
         SessionBefore sessionBeforeBetween = appFactory.sessionBefore("session", encKey, new HashMap<>());
         gateway.setDecryptSession(sessionBeforeBetween);
+
+        SessionAfter sessionAfter = appFactory.sessionAfter(sessionCookieConfig, encKey);
+        gateway.setEncryptSession(sessionAfter);
     }
 
     @Override

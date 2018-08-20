@@ -12,6 +12,7 @@ import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.MatchedRoute;
 import org.rootservices.otter.router.entity.Method;
+import org.rootservices.otter.security.session.Session;
 
 import java.util.Optional;
 
@@ -80,7 +81,7 @@ public class EngineTest {
         match.get().getRoute().setResource(mockResource);
         when(mockDispatcher.find(Method.POST, url)).thenReturn(match);
 
-        Optional<Response> actual = subject.route(request, response);
+        Optional<Response<Session>> actual = subject.route(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -228,21 +229,21 @@ public class EngineTest {
         Optional<MatchedRoute> match = FixtureFactory.makeMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
-        Request request = FixtureFactory.makeRequest();
+        Request<Session> request = FixtureFactory.makeRequestSession();
         request.setMethod(Method.HEAD);
         request.setPathWithParams(url);
         request.setContentType(json);
 
-        Response response = FixtureFactory.makeResponse();
+        Response<Session> response = FixtureFactory.makeResponseSession();
 
-        Resource mockResource = mock(Resource.class);
+        Resource<Session> mockResource = mock(Resource.class);
         when(mockResource.head(request, response)).thenReturn(response);
 
         // set the resource merge the mock one.
         match.get().getRoute().setResource(mockResource);
         when(mockDispatcher.find(Method.HEAD, url)).thenReturn(match);
 
-        Optional<Response> actual = subject.route(request, response);
+        Optional<Response<Session>> actual = subject.route(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));

@@ -1,12 +1,14 @@
 package org.rootservices.otter.gateway.servlet.merger;
 
 import helper.FixtureFactory;
+import helper.entity.DummySession;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestCookieTranslator;
+import org.rootservices.otter.security.session.Session;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
@@ -76,7 +78,7 @@ public class HttpServletResponseMergerTest {
         when(mockContainerCookieToUpdate.getName()).thenReturn(cookieName);
         containerCookies[0] = mockContainerCookieToUpdate;
 
-        Response response = FixtureFactory.makeResponse();
+        Response<Session> response = FixtureFactory.makeResponseSession();
         response.getCookies().put(cookieName, FixtureFactory.makeCookie(cookieName));
 
         Function mockTo = mock(Function.class);
@@ -99,7 +101,7 @@ public class HttpServletResponseMergerTest {
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
         Cookie[] containerCookies = new Cookie[0];
 
-        Response response = FixtureFactory.makeResponse();
+        Response<Session> response = FixtureFactory.makeResponseSession();
         response.getCookies().put(cookieName, FixtureFactory.makeCookie(cookieName));
 
         Cookie mockContainerCookieToCreate = mock(Cookie.class);

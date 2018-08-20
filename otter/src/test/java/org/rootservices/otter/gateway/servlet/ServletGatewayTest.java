@@ -17,6 +17,7 @@ import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.RouteBuilder;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Route;
+import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.security.session.between.EncryptSession;
 
 
@@ -47,11 +48,9 @@ public class ServletGatewayTest {
     @Mock
     private Dispatcher mockDispatcher;
     @Mock
-    private Between mockPrepareCSRF;
+    private Between<Session> mockPrepareCSRF;
     @Mock
-    private Between mockCheckCSRF;
-    @Mock
-    private EncryptSession mockEncryptSession;
+    private Between<Session> mockCheckCSRF;
 
     private ServletGateway subject;
 
@@ -66,8 +65,7 @@ public class ServletGatewayTest {
                 mockHttpServletResponseMerger,
                 mockEngine,
                 mockPrepareCSRF,
-                mockCheckCSRF,
-                mockEncryptSession
+                mockCheckCSRF
         );
     }
 

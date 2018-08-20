@@ -5,6 +5,7 @@ import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.Method;
+import org.rootservices.otter.security.session.Session;
 
 import java.io.BufferedReader;
 import java.util.List;
@@ -80,7 +81,7 @@ public class RequestBuilder {
         return this;
     }
 
-    public Request build() {
-        return new Request(this.matcher, this.method, this.pathWithParams, this.contentType, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge, this.ipAddress);
+    public Request<Session> build() {
+        return new Request<Session>(this.matcher, this.method, this.pathWithParams, this.contentType, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge, this.ipAddress);
     }
 }

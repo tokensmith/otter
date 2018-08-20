@@ -1,5 +1,6 @@
 package org.rootservices.otter.security.session.between;
 
+
 import helper.FixtureFactory;
 import helper.entity.DummySession;
 
@@ -29,7 +30,7 @@ public class EncryptSessionTest {
     @Before
     public void setUp() {
         CookieConfig cookieConfig = new CookieConfig("session", true, -1);
-        subject = new EncryptSession(
+        subject = new EncryptSession<DummySession>(
                 cookieConfig,
                 new JwtAppFactory(),
                 otterAppFactory.urlDecoder(),
@@ -44,14 +45,14 @@ public class EncryptSessionTest {
         requestSession.setAccessToken("123456789");
         requestSession.setRefreshToken("101112131415");
 
-        Request request = FixtureFactory.makeRequest();
+        Request<DummySession> request = FixtureFactory.makeRequest();
         request.setSession(Optional.of(requestSession));
 
         DummySession responseSession = new DummySession(requestSession);
         // change the response session so it will re-encrypt.
         responseSession.setAccessToken("1617181920");
 
-        Response response = FixtureFactory.makeResponse();
+        Response<DummySession> response = FixtureFactory.makeResponse();
         response.setSession(Optional.of(responseSession));
 
         subject.process(Method.GET, request, response);

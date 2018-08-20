@@ -35,7 +35,7 @@ import java.util.Optional;
  * Intended to be used after a resource has processed the request. This will encrypt the
  * session which will become a cookie.
  */
-public class EncryptSession implements Between {
+public class EncryptSession<T extends Session> implements Between<T> {
     public static final String NOT_ENCRPTING = "Not re-encrypting session cookie";
     public static final String COULD_NOT_ENCRYPT_SESSION = "Could not encrypt session cookie";
     protected static Logger LOGGER = LogManager.getLogger(EncryptSession.class);
@@ -61,7 +61,7 @@ public class EncryptSession implements Between {
     }
 
     @Override
-    public void process(Method method, Request request, Response response) throws HaltException {
+    public void process(Method method, Request<T> request, Response<T> response) throws HaltException {
         if (shouldEncrypt(request, response)) {
             ByteArrayOutputStream session;
 
@@ -84,7 +84,7 @@ public class EncryptSession implements Between {
         }
     }
 
-    protected Boolean shouldEncrypt(Request request, Response response) {
+    protected Boolean shouldEncrypt(Request<T> request, Response<T> response) {
         if (request.getSession().isPresent() && response.getSession().isPresent()) {
             if ( response.getSession().get().equals(request.getSession().get()) ) {
                 return false;

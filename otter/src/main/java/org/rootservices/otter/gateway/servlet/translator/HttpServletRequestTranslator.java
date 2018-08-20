@@ -10,6 +10,7 @@ import org.rootservices.otter.controller.entity.mime.SubType;
 import org.rootservices.otter.controller.entity.mime.TopLevelType;
 import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.router.entity.Method;
+import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.translator.MimeTypeTranslator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +39,7 @@ public class HttpServletRequestTranslator {
         this.mimeTypeTranslator = mimeTypeTranslator;
     }
 
-    public Request from(HttpServletRequest containerRequest, byte[] containerBody) throws IOException {
+    public Request<Session> from(HttpServletRequest containerRequest, byte[] containerBody) throws IOException {
 
         Method method = Method.valueOf(containerRequest.getMethod());
 

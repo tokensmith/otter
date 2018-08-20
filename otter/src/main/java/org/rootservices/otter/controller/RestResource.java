@@ -8,6 +8,7 @@ import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.exception.DeserializationException;
+import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.translatable.Translatable;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.exception.*;
@@ -18,7 +19,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
-public class RestResource<T extends Translatable> extends Resource {
+public class RestResource<T extends Translatable, S extends Session> extends Resource<S> {
     protected static Logger logger = LogManager.getLogger(RestResource.class);
 
     protected JsonTranslator<T> translator;
@@ -52,13 +53,13 @@ public class RestResource<T extends Translatable> extends Resource {
     }
 
     @Override
-    public Response get(Request request, Response response) {
+    public Response<S> get(Request<S> request, Response<S> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
     @Override
-    public Response post(Request request, Response response) {
+    public Response<S> post(Request<S> request, Response<S> response) {
         T entity;
 
         try {
@@ -75,7 +76,7 @@ public class RestResource<T extends Translatable> extends Resource {
     }
 
     @Override
-    public Response put(Request request, Response response) {
+    public Response<S> put(Request<S> request, Response<S> response) {
         T entity;
 
         try {
@@ -92,13 +93,13 @@ public class RestResource<T extends Translatable> extends Resource {
     }
 
     @Override
-    public Response delete(Request request, Response response) {
+    public Response<S> delete(Request<S> request, Response<S> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
     @Override
-    public Response patch(Request request, Response response) {
+    public Response<S> patch(Request<S> request, Response<S> response) {
         T entity;
 
         try {
@@ -148,17 +149,17 @@ public class RestResource<T extends Translatable> extends Resource {
 
     }
 
-    protected Response post(Request request, Response response, T entity) {
+    protected Response<S> post(Request<S> request, Response<S> response, T entity) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
-    protected Response put(Request request, Response response, T entity) {
+    protected Response<S> put(Request<S> request, Response<S> response, T entity) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
-    protected Response patch(Request request, Response response, T entity) {
+    protected Response<S> patch(Request<S> request, Response<S> response, T entity) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }

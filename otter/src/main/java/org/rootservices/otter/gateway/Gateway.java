@@ -10,6 +10,7 @@ import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.security.csrf.between.CheckCSRF;
 import org.rootservices.otter.security.csrf.between.PrepareCSRF;
+import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.security.session.between.DecryptSession;
 import org.rootservices.otter.security.session.between.EncryptSession;
 
@@ -19,17 +20,16 @@ import java.util.Map;
 
 public class Gateway {
     protected Engine engine;
-    protected Between prepareCSRF;
-    protected Between checkCSRF;
+    protected Between<Session> prepareCSRF;
+    protected Between<Session> checkCSRF;
     protected EncryptSession encryptSession;
     protected DecryptSession decryptSession;
     protected Route notFoundRoute;
 
-    public Gateway(Engine engine, Between prepareCSRF, Between checkCSRF, EncryptSession encryptSession) {
+    public Gateway(Engine engine, Between<Session> prepareCSRF, Between<Session> checkCSRF) {
         this.engine = engine;
         this.prepareCSRF = prepareCSRF;
         this.checkCSRF = checkCSRF;
-        this.encryptSession = encryptSession;
     }
 
     public void get(String path, Resource resource) {
@@ -44,7 +44,7 @@ public class Gateway {
     }
 
     public void getCsrfProtect(String path, Resource resource) {
-        List<Between> before = new ArrayList<>();
+        List<Between<Session>> before = new ArrayList<>();
         before.add(prepareCSRF);
 
         Route route = new RouteBuilder()
@@ -59,10 +59,10 @@ public class Gateway {
     }
 
     public void getCsrfAndSessionProtect(String path, Resource resource) {
-        List<Between> before = new ArrayList<>();
+        List<Between<Session>> before = new ArrayList<>();
         before.add(prepareCSRF);
 
-        List<Between> after = new ArrayList<>();
+        List<Between<Session>> after = new ArrayList<>();
         after.add(encryptSession);
 
         Route route = new RouteBuilder()
@@ -77,10 +77,10 @@ public class Gateway {
     }
 
     public void getSessionProtect(String path, Resource resource) {
-        List<Between> before = new ArrayList<>();
+        List<Between<Session>> before = new ArrayList<>();
         before.add(decryptSession);
 
-        List<Between> after = new ArrayList<>();
+        List<Between<Session>> after = new ArrayList<>();
         after.add(encryptSession);
 
         Route route = new RouteBuilder()
@@ -106,7 +106,7 @@ public class Gateway {
     }
 
     public void postCsrfProtect(String path, Resource resource) {
-        List<Between> before = new ArrayList<>();
+        List<Between<Session>> before = new ArrayList<>();
         before.add(checkCSRF);
 
         Route route = new RouteBuilder()
@@ -121,11 +121,11 @@ public class Gateway {
     }
 
     public void postCsrfAndSessionProtect(String path, Resource resource) {
-        List<Between> before = new ArrayList<>();
+        List<Between<Session>> before = new ArrayList<>();
         before.add(checkCSRF);
         before.add(decryptSession);
 
-        List<Between> after = new ArrayList<>();
+        List<Between<Session>> after = new ArrayList<>();
         after.add(encryptSession);
 
         Route route = new RouteBuilder()
@@ -140,10 +140,10 @@ public class Gateway {
     }
 
     public void postCsrfAndSetSession(String path, Resource resource) {
-        List<Between> before = new ArrayList<>();
+        List<Between<Session>> before = new ArrayList<>();
         before.add(checkCSRF);
 
-        List<Between> after = new ArrayList<>();
+        List<Between<Session>> after = new ArrayList<>();
         after.add(encryptSession);
 
         Route route = new RouteBuilder()
@@ -158,10 +158,10 @@ public class Gateway {
     }
 
     public void postSessionProtect(String path, Resource resource) {
-        List<Between> before = new ArrayList<>();
+        List<Between<Session>> before = new ArrayList<>();
         before.add(decryptSession);
 
-        List<Between> after = new ArrayList<>();
+        List<Between<Session>> after = new ArrayList<>();
         after.add(encryptSession);
 
         Route route = new RouteBuilder()
@@ -312,19 +312,19 @@ public class Gateway {
         ((PrepareCSRF) this.prepareCSRF).getDoubleSubmitCSRF().setRotationSignKeys(rotationSignKeys);
     }
 
-    public void setSessionCookieConfig(CookieConfig sessionCookieConfig) {
-        this.encryptSession.setCookieConfig(sessionCookieConfig);
-    }
-
-    public void setEncKey(SymmetricKey encKey) {
-        this.encryptSession.setPreferredKey(encKey);
-    }
-
     public DecryptSession getDecryptSession() {
         return decryptSession;
     }
 
     public void setDecryptSession(DecryptSession decryptSession) {
         this.decryptSession = decryptSession;
+    }
+
+    public EncryptSession getEncryptSession() {
+        return encryptSession;
+    }
+
+    public void setEncryptSession(EncryptSession encryptSession) {
+        this.encryptSession = encryptSession;
     }
 }
