@@ -29,7 +29,7 @@ public class OtterAsyncListener implements AsyncListener {
         AsyncContextEvent ace = (AsyncContextEvent) event;
         HttpServletRequest hsr = (HttpServletRequest) ace.getAsyncContext().getRequest();
 
-        String msg = "Error: " + hsr.getMethod() + " " + ace.getPath() + " " + t.getMessage();
+        String msg = "ErrorPayload: " + hsr.getMethod() + " " + ace.getPath() + " " + t.getMessage();
         logger.error(msg, t);
     }
 

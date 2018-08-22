@@ -12,14 +12,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class HttpServletResponseMerger {
+public class HttpServletResponseMerger<T extends Session> {
     private HttpServletRequestCookieTranslator httpServletRequestCookieTranslator;
 
     public HttpServletResponseMerger(HttpServletRequestCookieTranslator httpServletRequestCookieTranslator) {
         this.httpServletRequestCookieTranslator = httpServletRequestCookieTranslator;
     }
 
-    public HttpServletResponse merge(HttpServletResponse containerResponse, Cookie[] containerCookies, Response<Session> response) {
+    public HttpServletResponse merge(HttpServletResponse containerResponse, Cookie[] containerCookies, Response<T> response) {
 
         // headers
         for(Map.Entry<String, String> header: response.getHeaders().entrySet()) {
@@ -36,7 +36,7 @@ public class HttpServletResponseMerger {
         return containerResponse;
     }
 
-    protected Map<String, Cookie> deleteAndUpdateCookies(HttpServletResponse containerResponse, Cookie[] containerCookies, Response<Session> response) {
+    protected Map<String, Cookie> deleteAndUpdateCookies(HttpServletResponse containerResponse, Cookie[] containerCookies, Response<T> response) {
         Map<String, Cookie> containerCookiesMap = new HashMap<>();
 
         if (containerCookies == null) {

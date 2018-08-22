@@ -34,12 +34,12 @@ public class HttpServletRequestTranslatorTest {
     @Mock
     private MimeTypeTranslator mockMimeTypeTranslator;
 
-    private HttpServletRequestTranslator subject;
+    private HttpServletRequestTranslator<Session> subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new HttpServletRequestTranslator(
+        subject = new HttpServletRequestTranslator<Session>(
                 mockHttpServletCookieTranslator,
                 mockHttpServletRequestHeaderTranslator,
                 mockQueryStringToMap,

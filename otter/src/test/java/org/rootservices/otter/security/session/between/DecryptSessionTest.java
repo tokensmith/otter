@@ -47,10 +47,10 @@ public class DecryptSessionTest {
         Cookie sessionCookie = FixtureFactory.makeCookie("session");
         sessionCookie.setValue(encryptedSession);
 
-        Request request = FixtureFactory.makeRequest();
+        Request<DummySession> request = FixtureFactory.makeRequest();
         request.getCookies().put("session", sessionCookie);
 
-        Response response = FixtureFactory.makeResponse();
+        Response<DummySession> response = FixtureFactory.makeResponse();
 
         subject.process(Method.GET, request, response);
 
@@ -63,8 +63,8 @@ public class DecryptSessionTest {
     @Test
     public void processWhenNoSessionShouldHalt() throws Exception {
 
-        Request request = FixtureFactory.makeRequest();
-        Response response = FixtureFactory.makeResponse();
+        Request<DummySession> request = FixtureFactory.makeRequest();
+        Response<DummySession> response = FixtureFactory.makeResponse();
 
         HaltException actual = null;
         try {
@@ -87,10 +87,10 @@ public class DecryptSessionTest {
         Cookie sessionCookie = FixtureFactory.makeCookie("session");
         sessionCookie.setValue(encryptedSession);
 
-        Request request = FixtureFactory.makeRequest();
+        Request<DummySession> request = FixtureFactory.makeRequest();
         request.getCookies().put("session", sessionCookie);
 
-        Response response = FixtureFactory.makeResponse();
+        Response<DummySession> response = FixtureFactory.makeResponse();
 
         HaltException actual = null;
         try {
@@ -129,10 +129,10 @@ public class DecryptSessionTest {
         Cookie sessionCookie = FixtureFactory.makeCookie("session");
         sessionCookie.setValue(encryptedSession);
 
-        Request request = FixtureFactory.makeRequest();
+        Request<DummySession> request = FixtureFactory.makeRequest();
         request.getCookies().put("session", sessionCookie);
 
-        Response response = FixtureFactory.makeResponse();
+        Response<DummySession> response = FixtureFactory.makeResponse();
 
         HaltException actual = null;
         try {

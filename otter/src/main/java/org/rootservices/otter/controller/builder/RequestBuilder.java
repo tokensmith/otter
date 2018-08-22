@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 
-public class RequestBuilder {
+public class RequestBuilder<T extends Session>  {
     private Optional<Matcher> matcher;
     private Method method;
     private String pathWithParams;
@@ -26,62 +26,62 @@ public class RequestBuilder {
     private Optional<String> csrfChallenge;
     private String ipAddress;
 
-    public RequestBuilder matcher(Optional<Matcher> matcher) {
+    public RequestBuilder<T> matcher(Optional<Matcher> matcher) {
         this.matcher = matcher;
         return this;
     }
 
-    public RequestBuilder method(Method method) {
+    public RequestBuilder<T> method(Method method) {
         this.method = method;
         return this;
     }
 
-    public RequestBuilder pathWithParams(String pathWithParams) {
+    public RequestBuilder<T> pathWithParams(String pathWithParams) {
         this.pathWithParams = pathWithParams;
         return this;
     }
 
-    public RequestBuilder contentType(MimeType contentType) {
+    public RequestBuilder<T> contentType(MimeType contentType) {
         this.contentType = contentType;
         return this;
     }
 
-    public RequestBuilder headers(Map<String, String> headers) {
+    public RequestBuilder<T> headers(Map<String, String> headers) {
         this.headers = headers;
         return this;
     }
 
-    public RequestBuilder cookies(Map<String, Cookie> cookies) {
+    public RequestBuilder<T> cookies(Map<String, Cookie> cookies) {
         this.cookies = cookies;
         return this;
     }
 
-    public RequestBuilder queryParams(Map<String, List<String>> queryParams) {
+    public RequestBuilder<T> queryParams(Map<String, List<String>> queryParams) {
         this.queryParams = queryParams;
         return this;
     }
 
-    public RequestBuilder formData(Map<String, List<String>> formData) {
+    public RequestBuilder<T> formData(Map<String, List<String>> formData) {
         this.formData = formData;
         return this;
     }
 
-    public RequestBuilder body(Optional<byte[]> body) {
+    public RequestBuilder<T> body(Optional<byte[]> body) {
         this.body = body;
         return this;
     }
 
-    public RequestBuilder csrfChallenge(Optional<String> csrfChallenge) {
+    public RequestBuilder<T> csrfChallenge(Optional<String> csrfChallenge) {
         this.csrfChallenge = csrfChallenge;
         return this;
     }
 
-    public RequestBuilder ipAddress(String ipAddress) {
+    public RequestBuilder<T> ipAddress(String ipAddress) {
         this.ipAddress = ipAddress;
         return this;
     }
 
-    public Request<Session> build() {
-        return new Request<Session>(this.matcher, this.method, this.pathWithParams, this.contentType, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge, this.ipAddress);
+    public Request<T> build() {
+        return new Request<T>(this.matcher, this.method, this.pathWithParams, this.contentType, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge, this.ipAddress);
     }
 }

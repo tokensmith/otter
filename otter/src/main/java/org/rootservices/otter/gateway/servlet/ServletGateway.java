@@ -14,24 +14,23 @@ import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.security.session.Session;
-import org.rootservices.otter.security.session.between.EncryptSession;
 
 
-import javax.servlet.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
 
-public class ServletGateway extends Gateway {
+public class ServletGateway<T extends Session>  extends Gateway<T>  {
     protected static Logger logger = LogManager.getLogger(ServletGateway.class);
 
-    private HttpServletRequestTranslator httpServletRequestTranslator;
+    private HttpServletRequestTranslator<T> httpServletRequestTranslator;
     private HttpServletRequestMerger httpServletRequestMerger;
-    private HttpServletResponseMerger httpServletResponseMerger;
+    private HttpServletResponseMerger<T> httpServletResponseMerger;
 
-    public ServletGateway(HttpServletRequestTranslator httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger httpServletResponseMerger, Engine engine, Between<Session> prepareCSRF, Between<Session> checkCSRF) {
+    public ServletGateway(HttpServletRequestTranslator<T> httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger<T> httpServletResponseMerger, Engine<T> engine, Between<T> prepareCSRF, Between<T> checkCSRF) {
         super(engine, prepareCSRF, checkCSRF);
         this.httpServletRequestTranslator = httpServletRequestTranslator;
         this.httpServletRequestMerger = httpServletRequestMerger;
@@ -41,9 +40,9 @@ public class ServletGateway extends Gateway {
     public GatewayResponse processRequest(HttpServletRequest containerRequest, HttpServletResponse containerResponse, byte[] body) {
         GatewayResponse gatewayResponse = new GatewayResponse();
         try {
-            Request<Session> request = httpServletRequestTranslator.from(containerRequest, body);
+            Request<T> request = httpServletRequestTranslator.from(containerRequest, body);
 
-            Response<Session> response = new ResponseBuilder<Session>()
+            Response<T> response = new ResponseBuilder<T>()
                     .headers(new HashMap<>())
                     .cookies(request.getCookies())
                     .payload(Optional.empty())
@@ -52,7 +51,7 @@ public class ServletGateway extends Gateway {
                     .build();
 
             Boolean shouldHalt = false;
-            Optional<Response<Session>> resourceResponse;
+            Optional<Response<T>> resourceResponse;
             try {
                 resourceResponse = engine.route(request, response);
             } catch (HaltException e) {

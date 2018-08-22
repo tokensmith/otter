@@ -1,13 +1,13 @@
 package org.rootservices.otter.controller.entity;
 
 
-public class Error {
+public class ErrorPayload {
     private String error;
     private String description;
 
-    public Error() {}
+    public ErrorPayload() {}
 
-    public Error(String error, String description) {
+    public ErrorPayload(String error, String description) {
         this.error = error;
         this.description = description;
     }

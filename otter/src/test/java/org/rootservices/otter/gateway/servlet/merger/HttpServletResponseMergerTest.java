@@ -22,14 +22,14 @@ import static org.mockito.Mockito.*;
 
 
 public class HttpServletResponseMergerTest {
-    private HttpServletResponseMerger subject;
+    private HttpServletResponseMerger<DummySession> subject;
     @Mock
     private HttpServletRequestCookieTranslator mockHttpServletRequestCookieTranslator;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new HttpServletResponseMerger(mockHttpServletRequestCookieTranslator);
+        subject = new HttpServletResponseMerger<DummySession>(mockHttpServletRequestCookieTranslator);
     }
 
     @Test
@@ -37,7 +37,7 @@ public class HttpServletResponseMergerTest {
 
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
         Cookie[] containerCookies = new Cookie[0];
-        Response response = FixtureFactory.makeResponse();
+        Response<DummySession> response = FixtureFactory.makeResponse();
 
         response.getHeaders().put("some-header", "some-value");
 
@@ -56,7 +56,7 @@ public class HttpServletResponseMergerTest {
         when(mockContainerCookie.getName()).thenReturn("container-cookie");
         containerCookies[0] = mockContainerCookie;
 
-        Response response = FixtureFactory.makeResponse();
+        Response<DummySession> response = FixtureFactory.makeResponse();
 
         subject.merge(mockContainerResponse, containerCookies, response);
 
@@ -78,7 +78,7 @@ public class HttpServletResponseMergerTest {
         when(mockContainerCookieToUpdate.getName()).thenReturn(cookieName);
         containerCookies[0] = mockContainerCookieToUpdate;
 
-        Response<Session> response = FixtureFactory.makeResponseSession();
+        Response<DummySession> response = FixtureFactory.makeResponse();
         response.getCookies().put(cookieName, FixtureFactory.makeCookie(cookieName));
 
         Function mockTo = mock(Function.class);
@@ -101,7 +101,7 @@ public class HttpServletResponseMergerTest {
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
         Cookie[] containerCookies = new Cookie[0];
 
-        Response<Session> response = FixtureFactory.makeResponseSession();
+        Response<DummySession> response = FixtureFactory.makeResponse();
         response.getCookies().put(cookieName, FixtureFactory.makeCookie(cookieName));
 
         Cookie mockContainerCookieToCreate = mock(Cookie.class);
@@ -122,7 +122,7 @@ public class HttpServletResponseMergerTest {
     public void mergeWhenPayloadShouldNotWritePayload() throws Exception {
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
         Cookie[] containerCookies = new Cookie[0];
-        Response response = FixtureFactory.makeResponse();
+        Response<DummySession> response = FixtureFactory.makeResponse();
 
         Optional<ByteArrayOutputStream> payload = Optional.of(new ByteArrayOutputStream());
         response.setPayload(payload);

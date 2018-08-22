@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-public class HttpServletRequestTranslator {
+public class HttpServletRequestTranslator<T extends Session>  {
     private static String PARAM_DELIMITER = "?";
     private static String EMPTY = "";
 
@@ -39,7 +39,7 @@ public class HttpServletRequestTranslator {
         this.mimeTypeTranslator = mimeTypeTranslator;
     }
 
-    public Request<Session> from(HttpServletRequest containerRequest, byte[] containerBody) throws IOException {
+    public Request<T> from(HttpServletRequest containerRequest, byte[] containerBody) throws IOException {
 
         Method method = Method.valueOf(containerRequest.getMethod());
 
@@ -73,7 +73,7 @@ public class HttpServletRequestTranslator {
 
         String ipAddress = containerRequest.getRemoteAddr();
 
-        return new RequestBuilder()
+        return new RequestBuilder<T>()
                 .matcher(Optional.empty())
                 .method(method)
                 .pathWithParams(pathWithParams)

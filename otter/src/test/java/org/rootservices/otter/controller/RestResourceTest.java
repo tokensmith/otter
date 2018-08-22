@@ -7,24 +7,24 @@ import helper.entity.DummySession;
 import helper.entity.FakeRestResource;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.rootservices.otter.controller.entity.ErrorPayload;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.exception.*;
 
-import java.io.*;
+
+import java.io.ByteArrayOutputStream;
 import java.util.Optional;
 
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
@@ -100,7 +100,7 @@ public class RestResourceTest {
         doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
+        when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.post(request, response);
 
@@ -124,7 +124,7 @@ public class RestResourceTest {
         doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
+        when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.post(request, response);
 
@@ -148,7 +148,7 @@ public class RestResourceTest {
         doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
+        when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.post(request, response);
 
@@ -172,7 +172,7 @@ public class RestResourceTest {
         doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
+        when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.post(request, response);
 
@@ -196,7 +196,7 @@ public class RestResourceTest {
         doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ToJsonException e2 = new ToJsonException("test", null);
-        doThrow(e2).when(mockJsonTranslator).to(any(Error.class));
+        doThrow(e2).when(mockJsonTranslator).to(any(ErrorPayload.class));
 
         Response<DummySession> actual = subject.post(request, response);
 
@@ -241,7 +241,7 @@ public class RestResourceTest {
         doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
+        when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.put(request, response);
 
@@ -265,7 +265,7 @@ public class RestResourceTest {
         doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
+        when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.put(request, response);
 
@@ -289,7 +289,7 @@ public class RestResourceTest {
         doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
+        when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.put(request, response);
 
@@ -313,7 +313,7 @@ public class RestResourceTest {
         doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
+        when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.put(request, response);
 
@@ -337,7 +337,7 @@ public class RestResourceTest {
         doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ToJsonException e2 = new ToJsonException("test", null);
-        doThrow(e2).when(mockJsonTranslator).to(any(Error.class));
+        doThrow(e2).when(mockJsonTranslator).to(any(ErrorPayload.class));
 
         Response<DummySession> actual = subject.put(request, response);
 
@@ -446,7 +446,7 @@ public class RestResourceTest {
         doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
+        when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.patch(request, response);
 
@@ -470,7 +470,7 @@ public class RestResourceTest {
         doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
+        when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.patch(request, response);
 
@@ -494,7 +494,7 @@ public class RestResourceTest {
         doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
+        when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.patch(request, response);
 
@@ -518,7 +518,7 @@ public class RestResourceTest {
         doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        when(mockJsonTranslator.to(any(Error.class))).thenReturn(out);
+        when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response actual = subject.patch(request, response);
 
@@ -542,7 +542,7 @@ public class RestResourceTest {
         doThrow(e).when(mockJsonTranslator).from(request.getBody().get(), DummyPayload.class);
 
         ToJsonException e2 = new ToJsonException("test", null);
-        doThrow(e2).when(mockJsonTranslator).to(any(Error.class));
+        doThrow(e2).when(mockJsonTranslator).to(any(ErrorPayload.class));
 
         Response actual = subject.patch(request, response);
 

@@ -38,24 +38,24 @@ import java.util.regex.Pattern;
 public class FixtureFactory {
     private static JwtAppFactory jwtAppFactory = new JwtAppFactory();
 
-    public static Optional<MatchedRoute> makeMatch(String url) {
-        Route route = makeRoute(url);
+    public static Optional<MatchedRoute<DummySession>> makeMatch(String url) {
+        Route<DummySession> route = makeRoute(url);
         Matcher matcher = route.getPattern().matcher(url);
-        return  Optional.of(new MatchedRoute(matcher, route));
+        return  Optional.of(new MatchedRoute<DummySession>(matcher, route));
     }
 
-    public static Route makeRoute(String regex) {
+    public static Route<DummySession> makeRoute(String regex) {
         Pattern p = Pattern.compile(regex);
-        RestResource resource = new FakeResource();
-        return new Route(p, new ArrayList<MimeType>(), resource, new ArrayList<>(), new ArrayList<>());
+        FakeResource resource = new FakeResource();
+        return new Route<DummySession>(p, new ArrayList<MimeType>(), resource, new ArrayList<>(), new ArrayList<>());
     }
 
-    public static List<Route> makeRoutes() {
+    public static List<Route<DummySession>> makeRoutes() {
         return makeRoutes("/api/v1/foo/");
     }
 
-    public static List<Route> makeRoutes(String baseContext) {
-        List<Route> routes = new ArrayList<>();
+    public static List<Route<DummySession>> makeRoutes(String baseContext) {
+        List<Route<DummySession>> routes = new ArrayList<>();
         routes.add(makeRoute(baseContext + Regex.UUID.getRegex()));
         routes.add(makeRoute(baseContext + Regex.UUID.getRegex() + "/bar"));
         return routes;
@@ -90,19 +90,6 @@ public class FixtureFactory {
 
     public static Response<DummySession> makeResponse() {
         Response<DummySession> response = new ResponseBuilder<DummySession>()
-                .headers(new HashMap<>())
-                .cookies(new HashMap<>())
-                .payload(Optional.empty())
-                .template(Optional.empty())
-                .presenter(Optional.empty())
-                .ok()
-                .build();
-
-        return response;
-    }
-
-    public static Response<Session> makeResponseSession() {
-        Response<Session> response = new ResponseBuilder<Session>()
                 .headers(new HashMap<>())
                 .cookies(new HashMap<>())
                 .payload(Optional.empty())

@@ -4,6 +4,7 @@ package hello.config;
 import hello.controller.*;
 import hello.security.SessionAfter;
 import hello.security.SessionBefore;
+import hello.security.TokenSession;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
@@ -13,11 +14,12 @@ import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
 import org.rootservices.otter.router.RouteBuilder;
 import org.rootservices.otter.router.entity.Route;
+import org.rootservices.otter.security.session.Session;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class AppConfig implements Configure {
+public class AppConfig implements Configure<TokenSession> {
     private AppFactory appFactory;
 
     public AppConfig(AppFactory appFactory) {
@@ -25,7 +27,7 @@ public class AppConfig implements Configure {
     }
 
     @Override
-    public void configure(Gateway gateway) {
+    public void configure(Gateway<TokenSession> gateway) {
         // csrf
         CookieConfig csrfCookieConfig = new CookieConfig("csrf", false, -1);
         gateway.setCsrfCookieConfig(csrfCookieConfig);
@@ -46,8 +48,8 @@ public class AppConfig implements Configure {
     }
 
     @Override
-    public void routes(Gateway gateway) {
-        Route notFoundRoute = new RouteBuilder()
+    public void routes(Gateway<TokenSession> gateway) {
+        Route<TokenSession> notFoundRoute = new RouteBuilder<TokenSession>()
                 .resource(new NotFoundResource())
                 .before(new ArrayList<>())
                 .after(new ArrayList<>())
@@ -63,13 +65,13 @@ public class AppConfig implements Configure {
 
         // csrf
         LoginResource login = new LoginResource();
-        gateway.getCsrfProtect(login.URL, login);
-        gateway.postCsrfProtect(login.URL, login);
+        gateway.getCsrfProtect(LoginResource.URL, login);
+        gateway.postCsrfProtect(LoginResource.URL, login);
 
         // csrf & session
         LoginSessionResource loginWithSession = new LoginSessionResource();
-        gateway.getCsrfAndSessionProtect(loginWithSession.URL, loginWithSession);
-        gateway.postCsrfAndSessionProtect(loginWithSession.URL, loginWithSession);
+        gateway.getCsrfAndSessionProtect(LoginSessionResource.URL, loginWithSession);
+        gateway.postCsrfAndSessionProtect(LoginSessionResource.URL, loginWithSession);
 
         // set session
         LoginSetSessionResource loginSetSessionResource = new LoginSetSessionResource();

@@ -1,6 +1,7 @@
 package org.rootservices.otter.controller.builder;
 
 import helper.FixtureFactory;
+import helper.entity.DummySession;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.Cookie;
@@ -16,16 +17,16 @@ import static org.junit.Assert.*;
 
 
 public class RequestBuilderTest {
-    private RequestBuilder subject;
+    private RequestBuilder<DummySession> subject;
 
     @Before
     public void setUp() {
-        subject = new RequestBuilder();
+        subject = new RequestBuilder<DummySession>();
     }
 
     @Test
     public void buildWhenMatcherShouldBeOk() {
-        Request actual = subject.matcher(Optional.empty()).build();
+        Request<DummySession> actual = subject.matcher(Optional.empty()).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMatcher().isPresent(), is(false));
@@ -34,7 +35,7 @@ public class RequestBuilderTest {
     @Test
     public void buildWhenPathWithParamsShouldBeOk() {
         String url = "/pathWithParams";
-        Request actual = subject.pathWithParams(url).build();
+        Request<DummySession> actual = subject.pathWithParams(url).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPathWithParams(), is(url));
@@ -42,7 +43,7 @@ public class RequestBuilderTest {
 
     @Test
     public void buildWhenMethodShouldBeOk() {
-        Request actual = subject.method(Method.GET).build();
+        Request<DummySession> actual = subject.method(Method.GET).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMethod(), is(Method.GET));
@@ -52,7 +53,7 @@ public class RequestBuilderTest {
     public void buildWhenContentTypeShouldBeOk() {
 
         MimeType contentType = new MimeType();
-        Request actual = subject.contentType(contentType).build();
+        Request<DummySession> actual = subject.contentType(contentType).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getContentType(), is(notNullValue()));
@@ -63,7 +64,7 @@ public class RequestBuilderTest {
     public void buildWhenHeadersShouldBeOk() {
         Map<String, String> headers = FixtureFactory.makeHeaders();
 
-        Request actual = subject.headers(headers).build();
+        Request<DummySession> actual = subject.headers(headers).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getHeaders(), is(notNullValue()));
@@ -74,7 +75,7 @@ public class RequestBuilderTest {
     public void buildWhenCookiesShouldBeOk() {
         Map<String, Cookie> cookies = FixtureFactory.makeCookies();
 
-        Request actual = subject.cookies(cookies).build();
+        Request<DummySession> actual = subject.cookies(cookies).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getCookies(), is(cookies));
@@ -84,7 +85,7 @@ public class RequestBuilderTest {
     public void buildWhenQueryParamsShouldBeOk() {
         Map<String, List<String>> queryParams = FixtureFactory.makeEmptyQueryParams();
 
-        Request actual = subject.queryParams(queryParams).build();
+        Request<DummySession> actual = subject.queryParams(queryParams).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getQueryParams(), is(queryParams));
@@ -95,7 +96,7 @@ public class RequestBuilderTest {
         Map<String, List<String>> formData = new HashMap<>();
         formData.put("foo", Arrays.asList("bar"));
 
-        Request actual = subject.formData(formData).build();
+        Request<DummySession> actual = subject.formData(formData).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getFormData(), is(formData));
@@ -106,7 +107,7 @@ public class RequestBuilderTest {
         byte[] body = "{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}".getBytes();
         Optional<byte[]> json = Optional.of(body);
 
-        Request actual = subject.body(json).build();
+        Request<DummySession> actual = subject.body(json).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getBody(), is(json));
@@ -116,7 +117,7 @@ public class RequestBuilderTest {
     public void buildWhenIpAddressShouldBeOk() {
 
         String ipAddress = "127.0.0.1";
-        Request actual = subject.ipAddress(ipAddress).build();
+        Request<DummySession> actual = subject.ipAddress(ipAddress).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getIpAddress(), is(ipAddress));

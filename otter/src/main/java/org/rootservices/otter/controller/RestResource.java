@@ -3,7 +3,7 @@ package org.rootservices.otter.controller;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.rootservices.otter.controller.entity.Error;
+import org.rootservices.otter.controller.entity.ErrorPayload;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -118,9 +118,9 @@ public class RestResource<T extends Translatable, S extends Session> extends Res
     protected Optional<ByteArrayOutputStream> makeError(DeserializationException e) {
 
         Optional<ByteArrayOutputStream> payload = Optional.empty();
-        Error error = new Error(e.getMessage(), e.getDescription());
+        ErrorPayload errorPayload = new ErrorPayload(e.getMessage(), e.getDescription());
         try {
-            ByteArrayOutputStream out = translator.to(error);
+            ByteArrayOutputStream out = translator.to(errorPayload);
             payload = Optional.of(out);
         } catch (ToJsonException e1) {
             logger.error(e1.getMessage(), e1);

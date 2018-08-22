@@ -1,6 +1,7 @@
 package org.rootservices.otter.gateway.servlet.merger;
 
 import helper.FixtureFactory;
+import helper.entity.DummySession;
 import helper.entity.FakePresenter;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.util.Optional;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 
@@ -26,7 +26,7 @@ public class HttpServletRequestMergerTest {
     @Test
     public void mergePresenterAndTemplateArePresent() throws Exception {
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
-        Response response = FixtureFactory.makeResponse();
+        Response<DummySession> response = FixtureFactory.makeResponse();
 
         response.setPresenter(Optional.of(new FakePresenter()));
         response.setTemplate(Optional.of("path/to/template.jsp"));
@@ -41,7 +41,7 @@ public class HttpServletRequestMergerTest {
     @Test
     public void mergePresenterAndTemplateAreNotPresent() throws Exception {
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
-        Response response = FixtureFactory.makeResponse();
+        Response<DummySession> response = FixtureFactory.makeResponse();
 
         response.setPresenter(Optional.empty());
         response.setTemplate(Optional.empty());
