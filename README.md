@@ -60,13 +60,19 @@ Implementing a resource is rather straight forward.
 The examples should be sufficient to get started.
 
 ### Session
-An application needs to implement the `Session` interface. This is used represent user sessions and is 
-should be a value object. This will be used by the `EncryptSession` and `DecryptSession` `Betweens`.
+An application needs to implement the `Session` interface. This is used represent user sessions and it 
+should be a value object. `Session` implementations are passed into Otter via generics in:
+- [Resource](#resource)
+- [Configure](#configure)
+- [Entry Servlet](#entry-servlet)
+- Between
+
+The same `Session` implementation must be used in a application.
 
 It must have a copy constructor and a equals method. If either of those are not there Otter internals will Halt your requests.
  
 See [TokenSession](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/security/TokenSession.java) 
-as an example. This will be passed into Otter via generics which is described in the rest of the documentation.
+as an example.
 
 ### Configuration
 Otter needs to be configured for CSRF, Session, and Routes. To configure Otter implement the [Configure](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/Configure.java)
