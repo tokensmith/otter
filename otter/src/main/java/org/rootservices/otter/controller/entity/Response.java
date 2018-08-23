@@ -7,7 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import java.util.Optional;
 
-public class Response {
+public class Response<T extends Session> {
     private StatusCode statusCode;
     private Map<String, String> headers;
     private Map<String,Cookie> cookies;

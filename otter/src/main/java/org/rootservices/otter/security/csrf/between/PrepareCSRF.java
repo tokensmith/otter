@@ -13,6 +13,7 @@ import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.security.csrf.CsrfClaims;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import org.rootservices.otter.security.csrf.exception.CsrfException;
+import org.rootservices.otter.security.session.Session;
 
 import java.util.Optional;
 
@@ -21,7 +22,7 @@ import java.util.Optional;
  * Executed before a request reaches a resource to set the CSRF cookie and
  * assign it to the request.
  */
-public class PrepareCSRF implements Between {
+public class PrepareCSRF<T extends Session> implements Between<T> {
     protected static Logger logger = LogManager.getLogger(PrepareCSRF.class);
     private CookieConfig cookieConfig;
     private DoubleSubmitCSRF doubleSubmitCSRF;
@@ -36,7 +37,7 @@ public class PrepareCSRF implements Between {
     }
 
     @Override
-    public void process(Method method, Request request, Response response) throws HaltException {
+    public void process(Method method, Request<T> request, Response<T> response) throws HaltException {
         if (response.getCookies().get(cookieConfig.getName()) == null) {
             String challengeToken = doubleSubmitCSRF.makeChallengeToken();
             try {

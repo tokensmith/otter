@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
+import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.servlet.async.OtterAsyncListener;
 import org.rootservices.otter.servlet.async.ReadListenerImpl;
 
@@ -19,21 +20,21 @@ import java.io.IOException;
 
 
 
-public abstract class OtterEntryServlet extends HttpServlet {
+public abstract class OtterEntryServlet<T extends Session> extends HttpServlet {
     protected static Logger logger = LogManager.getLogger(OtterEntryServlet.class);
-    protected OtterAppFactory otterAppFactory;
-    protected ServletGateway servletGateway;
+    protected OtterAppFactory<T> otterAppFactory;
+    protected ServletGateway<T> servletGateway;
 
     @Override
     public void init() {
-        otterAppFactory = new OtterAppFactory();
+        otterAppFactory = new OtterAppFactory<T>();
         servletGateway = otterAppFactory.servletGateway();
-        Configure configure = makeConfigure();
+        Configure<T> configure = makeConfigure();
         configure.configure(servletGateway);
         configure.routes(servletGateway);
     }
 
-    public abstract Configure makeConfigure();
+    public abstract Configure<T> makeConfigure();
 
     public void doAsync(HttpServletRequest request, HttpServletResponse response) throws IOException {
         AsyncContext context = request.startAsync(request, response);

@@ -3,6 +3,7 @@ package org.rootservices.otter.security.session.between;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.jwt.builder.compact.EncryptedCompactBuilder;
@@ -35,33 +36,24 @@ import java.util.Optional;
  * Intended to be used after a resource has processed the request. This will encrypt the
  * session which will become a cookie.
  */
-public class EncryptSession implements Between {
-    public static final String NOT_ENCRPTING = "Not re-encrypting session cookie";
+public class EncryptSession<T extends Session> implements Between<T> {
+    public static final String NOT_ENCRYPTING = "Not re-encrypting session cookie";
     public static final String COULD_NOT_ENCRYPT_SESSION = "Could not encrypt session cookie";
     protected static Logger LOGGER = LogManager.getLogger(EncryptSession.class);
 
     private CookieConfig cookieConfig;
-    private JwtAppFactory jwtAppFactory;
-    private Base64.Decoder decoder;
     private SymmetricKey preferredKey;
-    private ObjectMapper objectMapper;
+    private ObjectWriter objectWriter;
 
-    public EncryptSession(JwtAppFactory jwtAppFactory, Base64.Decoder decoder, ObjectMapper objectMapper) {
-        this.jwtAppFactory = jwtAppFactory;
-        this.decoder = decoder;
-        this.objectMapper = objectMapper;
-    }
 
-    public EncryptSession(CookieConfig cookieConfig, JwtAppFactory jwtAppFactory, Base64.Decoder decoder, SymmetricKey preferredKey, ObjectMapper objectMapper) {
+    public EncryptSession(CookieConfig cookieConfig, SymmetricKey preferredKey, ObjectWriter objectWriter) {
         this.cookieConfig = cookieConfig;
-        this.jwtAppFactory = jwtAppFactory;
-        this.decoder = decoder;
         this.preferredKey = preferredKey;
-        this.objectMapper = objectMapper;
+        this.objectWriter = objectWriter;
     }
 
     @Override
-    public void process(Method method, Request request, Response response) throws HaltException {
+    public void process(Method method, Request<T> request, Response<T> response) throws HaltException {
         if (shouldEncrypt(request, response)) {
             ByteArrayOutputStream session;
 
@@ -80,11 +72,11 @@ public class EncryptSession implements Between {
 
             response.getCookies().put(cookieConfig.getName(), cookie);
         } else {
-            LOGGER.debug(NOT_ENCRPTING);
+            LOGGER.debug(NOT_ENCRYPTING);
         }
     }
 
-    protected Boolean shouldEncrypt(Request request, Response response) {
+    protected Boolean shouldEncrypt(Request<T> request, Response<T> response) {
         if (request.getSession().isPresent() && response.getSession().isPresent()) {
             if ( response.getSession().get().equals(request.getSession().get()) ) {
                 return false;
@@ -100,7 +92,7 @@ public class EncryptSession implements Between {
         byte[] payload;
 
         try {
-            payload = objectMapper.writeValueAsBytes(session);
+            payload = objectWriter.writeValueAsBytes(session);
         } catch (JsonProcessingException e) {
             throw new EncryptSessionException(e.getMessage(), e);
         }

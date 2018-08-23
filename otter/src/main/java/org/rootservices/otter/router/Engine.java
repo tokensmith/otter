@@ -9,26 +9,27 @@ import org.rootservices.otter.router.entity.MatchedRoute;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.router.exception.HaltException;
+import org.rootservices.otter.security.session.Session;
 
 import java.util.List;
 import java.util.Optional;
 
-public class Engine {
-    private Dispatcher dispatcher;
+public class Engine<T extends Session> {
+    private Dispatcher<T> dispatcher;
 
-    public Engine(Dispatcher dispatcher) {
+    public Engine(Dispatcher<T> dispatcher) {
         this.dispatcher = dispatcher;
     }
 
-    public Optional<Response> route(Request request, Response response) throws HaltException {
-        Optional<MatchedRoute> matchedRoute = dispatcher.find(
+    public Optional<Response<T>> route(Request<T> request, Response<T> response) throws HaltException {
+        Optional<MatchedRoute<T>> matchedRoute = dispatcher.find(
                 request.getMethod(), request.getPathWithParams()
         );
 
-        Optional<Response> resourceResponse = Optional.empty();
+        Optional<Response<T>> resourceResponse = Optional.empty();
         if (matchedRoute.isPresent()) {
             request.setMatcher(Optional.of(matchedRoute.get().getMatcher()));
-            Response r;
+            Response<T> r;
 
             try {
                 r = executeResourceMethod(matchedRoute.get().getRoute(), request, response);
@@ -42,9 +43,9 @@ public class Engine {
         return resourceResponse;
     }
 
-    public Response executeResourceMethod(Route route, Request request, Response response) throws HaltException {
-        Resource resource = route.getResource();
-        Response resourceResponse = null;
+    public Response<T> executeResourceMethod(Route<T> route, Request<T> request, Response<T> response) throws HaltException {
+        Resource<T> resource = route.getResource();
+        Response<T> resourceResponse = null;
         Method method = request.getMethod();
 
         try {
@@ -82,8 +83,8 @@ public class Engine {
         return resourceResponse;
     }
 
-    protected void executeBetween(List<Between> betweens, Method method, Request request, Response response) throws HaltException {
-        for(Between between: betweens) {
+    protected void executeBetween(List<Between<T>> betweens, Method method, Request<T> request, Response<T> response) throws HaltException {
+        for(Between<T> between: betweens) {
             try {
                 between.process(method, request, response);
             } catch(HaltException e) {
@@ -91,7 +92,7 @@ public class Engine {
             }
         }
     }
-    public Dispatcher getDispatcher() {
+    public Dispatcher<T> getDispatcher() {
         return dispatcher;
     }
 }

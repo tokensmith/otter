@@ -7,23 +7,23 @@ import hello.model.Hello;
 import hello.security.SessionBefore;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwk.Use;
+import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.config.OtterAppFactory;
-import org.rootservices.otter.translatable.Translatable;
+import org.rootservices.otter.security.session.Session;
+import org.rootservices.otter.security.session.between.EncryptSession;
 import org.rootservices.otter.translator.JsonTranslator;
 
 import java.util.Map;
 import java.util.Optional;
 
-public class AppFactory {
-    public OtterAppFactory otterAppFactory() {
-        return new OtterAppFactory();
+public class AppFactory<T extends Session> {
+    public OtterAppFactory<T> otterAppFactory() {
+        return new OtterAppFactory<T>();
     }
 
     public HelloRestResource helloRestResource() {
-        JsonTranslator<Hello> t = new JsonTranslator<Hello>(
-                otterAppFactory().objectReader(), otterAppFactory().objectWriter()
-        );
-        return new HelloRestResource(t);
+        JsonTranslator<Hello> jsonTranslator = otterAppFactory().jsonTranslator(Hello.class);
+        return new HelloRestResource(jsonTranslator);
     }
 
     /**
@@ -55,6 +55,10 @@ public class AppFactory {
     }
 
     public SessionBefore sessionBefore(String cookieName, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys) {
-        return new SessionBefore(cookieName, otterAppFactory().jwtAppFactory(), preferredKey, rotationKeys, otterAppFactory().objectMapper());
+        return new SessionBefore(cookieName, otterAppFactory().jwtAppFactory(), preferredKey, rotationKeys, otterAppFactory().objectReader());
+    }
+
+    public EncryptSession<T> encryptSession(CookieConfig sessionCookieConfig, SymmetricKey encKey) {
+        return new EncryptSession<T>(sessionCookieConfig, encKey, otterAppFactory().objectWriter());
     }
 }

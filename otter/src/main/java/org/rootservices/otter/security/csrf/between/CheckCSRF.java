@@ -13,11 +13,12 @@ import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.exception.CsrfException;
 import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
+import org.rootservices.otter.security.session.Session;
 
 import java.util.List;
 import java.util.Optional;
 
-public class CheckCSRF implements Between {
+public class CheckCSRF<T extends Session>implements Between<T> {
     private String cookieName;
     private String formFieldName;
     private DoubleSubmitCSRF doubleSubmitCSRF;
@@ -34,7 +35,7 @@ public class CheckCSRF implements Between {
     }
 
     @Override
-    public void process(Method method, Request request, Response response) throws HaltException {
+    public void process(Method method, Request<T> request, Response<T> response) throws HaltException {
         Boolean ok;
         Cookie csrfCookie = request.getCookies().get(cookieName);
         List<String> formValue = request.getFormData().get(formFieldName);

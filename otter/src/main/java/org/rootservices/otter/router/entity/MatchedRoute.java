@@ -1,13 +1,15 @@
 package org.rootservices.otter.router.entity;
 
+import org.rootservices.otter.security.session.Session;
+
 import java.util.regex.Matcher;
 
 
-public class MatchedRoute {
+public class MatchedRoute<T extends Session> {
     private Matcher matcher;
-    private Route route;
+    private Route<T> route;
 
-    public MatchedRoute(Matcher matcher, Route route) {
+    public MatchedRoute(Matcher matcher, Route<T> route) {
         this.matcher = matcher;
         this.route = route;
     }
@@ -20,11 +22,11 @@ public class MatchedRoute {
         this.matcher = matcher;
     }
 
-    public Route getRoute() {
+    public Route<T> getRoute() {
         return route;
     }
 
-    public void setRoute(Route route) {
+    public void setRoute(Route<T> route) {
         this.route = route;
     }
 }

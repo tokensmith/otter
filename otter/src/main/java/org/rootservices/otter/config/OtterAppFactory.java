@@ -22,6 +22,7 @@ import org.rootservices.otter.security.RandomString;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import org.rootservices.otter.security.csrf.between.CheckCSRF;
 import org.rootservices.otter.security.csrf.between.PrepareCSRF;
+import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.security.session.between.EncryptSession;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 import org.rootservices.otter.server.path.CompiledClassPath;
@@ -36,7 +37,7 @@ import java.util.Base64;
 /**
  * Application Factory to construct objects in project.
  */
-public class OtterAppFactory {
+public class OtterAppFactory<T extends Session> {
     private static ObjectMapper objectMapper;
     private static ObjectReader objectReader;
     private static ObjectWriter objectWriter;
@@ -56,22 +57,27 @@ public class OtterAppFactory {
         );
     }
 
-    public ServletGateway servletGateway() {
+    public <S extends Translatable> JsonTranslator<S> jsonTranslator(Class<S> clazz) {
+        return new JsonTranslator<S>(
+                objectReader(), objectWriter(), clazz
+        );
+    }
+
+    public ServletGateway<T> servletGateway() {
         DoubleSubmitCSRF doubleSubmitCSRF = doubleSubmitCSRF();
 
-        return new ServletGateway(
+        return new ServletGateway<T>(
                 httpServletRequestTranslator(),
                 httpServletRequestMerger(),
                 httpServletResponseMerger(),
                 engine(),
                 prepareCSRF(doubleSubmitCSRF),
-                checkCSRF(doubleSubmitCSRF),
-                encryptSession()
+                checkCSRF(doubleSubmitCSRF)
         );
     }
 
-    public Engine engine() {
-        return new Engine(new Dispatcher());
+    public Engine<T> engine() {
+        return new Engine<T>(new Dispatcher<T>());
     }
 
     public ObjectMapper objectMapper() {
@@ -101,8 +107,8 @@ public class OtterAppFactory {
         return objectWriter;
     }
 
-    public HttpServletRequestTranslator httpServletRequestTranslator() {
-        return new HttpServletRequestTranslator(
+    public HttpServletRequestTranslator<T> httpServletRequestTranslator() {
+        return new HttpServletRequestTranslator<T>(
                 httpServletRequestCookieTranslator(),
                 new HttpServletRequestHeaderTranslator(),
                 new QueryStringToMap(),
@@ -114,8 +120,8 @@ public class OtterAppFactory {
         return new HttpServletRequestMerger();
     }
 
-    public HttpServletResponseMerger httpServletResponseMerger() {
-        return new HttpServletResponseMerger(httpServletRequestCookieTranslator());
+    public HttpServletResponseMerger<T> httpServletResponseMerger() {
+        return new HttpServletResponseMerger<T>(httpServletRequestCookieTranslator());
     }
 
     public HttpServletRequestCookieTranslator httpServletRequestCookieTranslator() {
@@ -130,23 +136,15 @@ public class OtterAppFactory {
         return new DoubleSubmitCSRF(jwtAppFactory(), new RandomString());
     }
 
-    public Between checkCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
-        return new CheckCSRF(doubleSubmitCSRF);
+    public Between<T> checkCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
+        return new CheckCSRF<T>(doubleSubmitCSRF);
     }
 
-    public Between prepareCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
-        return new PrepareCSRF(doubleSubmitCSRF);
+    public Between<T> prepareCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
+        return new PrepareCSRF<T>(doubleSubmitCSRF);
     }
 
     public Base64.Decoder urlDecoder() {
         return Base64.getUrlDecoder();
-    }
-
-    public EncryptSession encryptSession() {
-        return new EncryptSession(
-                jwtAppFactory(),
-                urlDecoder(),
-                objectMapper()
-        );
     }
 }

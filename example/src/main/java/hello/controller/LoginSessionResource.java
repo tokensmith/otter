@@ -14,12 +14,12 @@ import java.util.UUID;
 /**
  * Example of a resource that depends on a CSRF and Session before and a Encrypted Session after.
  */
-public class LoginSessionResource extends Resource {
+public class LoginSessionResource extends Resource<TokenSession> {
     public static String URL = "/login-with-session";
     private static String JSP_PATH = "/WEB-INF/jsp/login-with-session.jsp";
 
     @Override
-    public Response get(Request request, Response response) {
+    public Response<TokenSession> get(Request<TokenSession> request, Response<TokenSession> response) {
         LoginPresenter presenter = new LoginPresenter("", request.getCsrfChallenge().get());
         response.setPresenter(Optional.of(presenter));
         response.setStatusCode(StatusCode.OK);
@@ -28,7 +28,7 @@ public class LoginSessionResource extends Resource {
     }
 
     @Override
-    public Response post(Request request, Response response) {
+    public Response<TokenSession> post(Request<TokenSession> request, Response<TokenSession> response) {
         LoginPresenter presenter = new LoginPresenter("", request.getCsrfChallenge().get());
         response.setPresenter(Optional.of(presenter));
         response.setStatusCode(StatusCode.OK);

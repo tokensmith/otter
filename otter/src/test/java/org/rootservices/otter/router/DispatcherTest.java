@@ -1,10 +1,9 @@
 package org.rootservices.otter.router;
 
 import helper.FixtureFactory;
+import helper.entity.DummySession;
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.otter.controller.builder.MimeTypeBuilder;
-import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.MatchedRoute;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
@@ -20,37 +19,37 @@ import static org.junit.Assert.*;
 
 
 public class DispatcherTest {
-    private Dispatcher subject;
+    private Dispatcher<DummySession> subject;
 
     @Before
     public void setUp() {
 
-        subject = new Dispatcher();
-        List<Route> getRoutes = FixtureFactory.makeRoutes("get");
+        subject = new Dispatcher<DummySession>();
+        List<Route<DummySession>> getRoutes = FixtureFactory.makeRoutes("get");
         subject.getGet().addAll(getRoutes);
 
-        List<Route> postRoutes = FixtureFactory.makeRoutes("post");
+        List<Route<DummySession>> postRoutes = FixtureFactory.makeRoutes("post");
         subject.getPost().addAll(postRoutes);
 
-        List<Route> patchRoutes = FixtureFactory.makeRoutes("patch");
+        List<Route<DummySession>> patchRoutes = FixtureFactory.makeRoutes("patch");
         subject.getPatch().addAll(patchRoutes);
 
-        List<Route> putRoutes = FixtureFactory.makeRoutes("put");
+        List<Route<DummySession>> putRoutes = FixtureFactory.makeRoutes("put");
         subject.getPut().addAll(putRoutes);
 
-        List<Route> deleteRoutes = FixtureFactory.makeRoutes("delete");
+        List<Route<DummySession>> deleteRoutes = FixtureFactory.makeRoutes("delete");
         subject.getDelete().addAll(deleteRoutes);
 
-        List<Route> connectRoutes = FixtureFactory.makeRoutes("connect");
+        List<Route<DummySession>> connectRoutes = FixtureFactory.makeRoutes("connect");
         subject.getConnect().addAll(connectRoutes);
 
-        List<Route> optionRoutes = FixtureFactory.makeRoutes("option");
+        List<Route<DummySession>> optionRoutes = FixtureFactory.makeRoutes("option");
         subject.getOptions().addAll(optionRoutes);
 
-        List<Route> traceRoutes = FixtureFactory.makeRoutes("trace");
+        List<Route<DummySession>> traceRoutes = FixtureFactory.makeRoutes("trace");
         subject.getTrace().addAll(traceRoutes);
 
-        List<Route> headRoutes = FixtureFactory.makeRoutes("head");
+        List<Route<DummySession>> headRoutes = FixtureFactory.makeRoutes("head");
         subject.getHead().addAll(headRoutes);
     }
 
@@ -59,7 +58,7 @@ public class DispatcherTest {
         UUID id = UUID.randomUUID();
         String url = "get" + id.toString();
 
-        Optional<MatchedRoute> actual = subject.find(Method.GET, url);
+        Optional<MatchedRoute<DummySession>> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -77,7 +76,7 @@ public class DispatcherTest {
         String url = "get" + id.toString() + "/bar";
 
 
-        Optional<MatchedRoute> actual = subject.find(Method.GET, url);
+        Optional<MatchedRoute<DummySession>> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -94,7 +93,7 @@ public class DispatcherTest {
         UUID id = UUID.randomUUID();
         String url = "/get/v2/" + id.toString() + "/bar";
 
-        Optional<MatchedRoute> actual = subject.find(Method.GET, url);
+        Optional<MatchedRoute<DummySession>> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(false));
