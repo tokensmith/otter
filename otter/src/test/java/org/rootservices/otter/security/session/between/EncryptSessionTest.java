@@ -33,7 +33,7 @@ public class EncryptSessionTest {
         subject = new EncryptSession<DummySession>(
                 cookieConfig,
                 FixtureFactory.encKey("1234"),
-                otterAppFactory.objectMapper()
+                otterAppFactory.objectWriter()
         );
     }
 
@@ -77,7 +77,7 @@ public class EncryptSessionTest {
         EncryptSession<DummySession> subject = new EncryptSession<DummySession>(
                 cookieConfig,
                 veryBadKey,
-                otterAppFactory.objectMapper()
+                otterAppFactory.objectWriter()
         );
 
         DummySession requestSession = new DummySession();
@@ -197,7 +197,7 @@ public class EncryptSessionTest {
         EncryptSession<DummySession> subject = new EncryptSession<DummySession>(
                 cookieConfig,
                 FixtureFactory.encKey("1234"),
-                otterAppFactory.objectMapper()
+                otterAppFactory.objectWriter()
         );
 
         SymmetricKey encKey = FixtureFactory.encKey("1000");
@@ -213,7 +213,7 @@ public class EncryptSessionTest {
         EncryptSession<DummySession> subject = new EncryptSession<DummySession>(
                 cookieConfig,
                 FixtureFactory.encKey("1234"),
-                otterAppFactory.objectMapper()
+                otterAppFactory.objectWriter()
         );
 
         CookieConfig sessionCookieConfig = new CookieConfig("session_store", true, -1);

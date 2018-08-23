@@ -1,6 +1,7 @@
 package org.rootservices.otter.security.session.between;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rootservices.jwt.config.JwtAppFactory;
@@ -35,7 +36,7 @@ import java.util.Optional;
 
 
 /**
- * Used to encrypt a session cookie.
+ * A Between that will encrypt a session.
  */
 public abstract class DecryptSession<T extends Session> implements Between<T> {
     public static final String NOT_A_JWT = "Session cookie was not a JWE: %s";
@@ -52,15 +53,16 @@ public abstract class DecryptSession<T extends Session> implements Between<T> {
     private JwtAppFactory jwtAppFactory;
     private SymmetricKey preferredKey;
     private Map<String, SymmetricKey> rotationKeys;
-    private ObjectMapper objectMapper;
+    private ObjectReader objectReader;
 
-    public DecryptSession(Class<T> clazz, String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectMapper objectMapper) {
+
+    public DecryptSession(Class<T> clazz, String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectReader objectReader) {
         this.clazz = clazz;
         this.sessionCookieName = sessionCookieName;
         this.jwtAppFactory = jwtAppFactory;
         this.preferredKey = preferredKey;
         this.rotationKeys = rotationKeys;
-        this.objectMapper = objectMapper;
+        this.objectReader = objectReader;
     }
 
     @Override
@@ -89,8 +91,8 @@ public abstract class DecryptSession<T extends Session> implements Between<T> {
         }
 
         // Copies the request session and assigns it to, response.
-        // This is required because the after filter, EncryptSession, does an .equals() to
-        // determine if the session should be re encrypted.
+        // This is required because the after between, EncryptSession, does an .equals() to
+        // determine if the session has changed. If it changed then it will be re encrypted.
         request.setSession(session);
         T responseSession;
 
@@ -103,7 +105,6 @@ public abstract class DecryptSession<T extends Session> implements Between<T> {
      *
      * @param from the session to copy
      * @return an instance of T that is a copy of session
-     * @throws SessionCtorException if a constructor cant be found for T
      */
     abstract protected T copy(T from);
 
@@ -157,8 +158,9 @@ public abstract class DecryptSession<T extends Session> implements Between<T> {
 
     protected T toSession(byte[] json) {
         T session = null;
+        ObjectReader localReader = objectReader.forType(clazz);
         try {
-            session = (T) objectMapper.readValue(json, clazz);
+            session = localReader.readValue(json);
         } catch (IOException e) {
             String msg = String.format(COULD_NOT_DESERIALIZE, new String(json, StandardCharsets.UTF_8));
             LOGGER.error(msg);

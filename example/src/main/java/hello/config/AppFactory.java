@@ -22,10 +22,8 @@ public class AppFactory<T extends Session> {
     }
 
     public HelloRestResource helloRestResource() {
-        JsonTranslator<Hello> t = new JsonTranslator<Hello>(
-                otterAppFactory().objectReader(), otterAppFactory().objectWriter()
-        );
-        return new HelloRestResource(t);
+        JsonTranslator<Hello> jsonTranslator = otterAppFactory().jsonTranslator(Hello.class);
+        return new HelloRestResource(jsonTranslator);
     }
 
     /**
@@ -57,10 +55,10 @@ public class AppFactory<T extends Session> {
     }
 
     public SessionBefore sessionBefore(String cookieName, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys) {
-        return new SessionBefore(cookieName, otterAppFactory().jwtAppFactory(), preferredKey, rotationKeys, otterAppFactory().objectMapper());
+        return new SessionBefore(cookieName, otterAppFactory().jwtAppFactory(), preferredKey, rotationKeys, otterAppFactory().objectReader());
     }
 
     public EncryptSession<T> encryptSession(CookieConfig sessionCookieConfig, SymmetricKey encKey) {
-        return new EncryptSession<T>(sessionCookieConfig, encKey, otterAppFactory().objectMapper());
+        return new EncryptSession<T>(sessionCookieConfig, encKey, otterAppFactory().objectWriter());
     }
 }

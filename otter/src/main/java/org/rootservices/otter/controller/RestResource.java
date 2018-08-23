@@ -23,7 +23,6 @@ public class RestResource<T extends Translatable, S extends Session> extends Res
     protected static Logger logger = LogManager.getLogger(RestResource.class);
 
     protected JsonTranslator<T> translator;
-    protected Class<T> type;
 
     private static final String DUPLICATE_KEY_MSG = "Duplicate Key";
     private static final String INVALID_VALUE_MSG = "Invalid Value";
@@ -36,20 +35,10 @@ public class RestResource<T extends Translatable, S extends Session> extends Res
 
 
     public RestResource() {
-        if(this.type == null) {
-            Type generic = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-            this.type = (Class<T>) generic;
-
-        }
     }
 
     public RestResource(JsonTranslator<T> translator) {
-        this();
         this.translator = translator;
-    }
-
-    public Class<T> getType() {
-        return type;
     }
 
     @Override
@@ -132,7 +121,7 @@ public class RestResource<T extends Translatable, S extends Session> extends Res
         T entity;
 
         try{
-            entity = translator.from(json, type);
+            entity = translator.from(json);
         } catch (DuplicateKeyException e) {
             String desc = String.format(DUPLICATE_KEY_DESC, e.getKey());
             throw new DeserializationException(DUPLICATE_KEY_MSG, e, desc);

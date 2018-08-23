@@ -13,6 +13,6 @@ public class AppEntryServlet extends OtterEntryServlet<TokenSession> {
 
     @Override
     public Configure<TokenSession> makeConfigure() {
-        return new AppConfig(new AppFactory());
+        return new AppConfig(new AppFactory<TokenSession>());
     }
 }

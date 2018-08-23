@@ -25,14 +25,16 @@ public class JsonTranslatorTest {
     @Before
     public void setUp() {
         OtterAppFactory factory = new OtterAppFactory();
-        subject = new JsonTranslator<DummyPayload>(factory.objectReader(), factory.objectWriter());
+        subject = new JsonTranslator<DummyPayload>(
+                factory.objectReader(), factory.objectWriter(), DummyPayload.class
+        );
     }
 
     @Test
     public void fromShouldBeOk() throws Exception {
         String json="{\"integer\": 5, \"string\": \"foo\", \"local_date\": \"2019-01-01\"}";
 
-        DummyPayload actual = (DummyPayload) subject.from(json.getBytes(), DummyPayload.class);
+        DummyPayload actual = (DummyPayload) subject.from(json.getBytes());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getInteger(), is(5));
@@ -46,7 +48,7 @@ public class JsonTranslatorTest {
 
         DuplicateKeyException actual = null;
         try {
-            subject.from(json.getBytes(), DummyPayload.class);
+            subject.from(json.getBytes());
         } catch(DuplicateKeyException e) {
             actual = e;
         }
@@ -61,7 +63,7 @@ public class JsonTranslatorTest {
 
         UnknownKeyException actual = null;
         try {
-            subject.from(json.getBytes(), DummyPayload.class);
+            subject.from(json.getBytes());
         } catch(UnknownKeyException e) {
             actual = e;
         }
@@ -76,7 +78,7 @@ public class JsonTranslatorTest {
 
         InvalidValueException actual = null;
         try {
-            subject.from(json.getBytes(), DummyPayload.class);
+            subject.from(json.getBytes());
         } catch(InvalidValueException e) {
             actual = e;
         }
@@ -91,7 +93,7 @@ public class JsonTranslatorTest {
 
         InvalidPayloadException actual = null;
         try {
-            subject.from(json.getBytes(), DummyPayload.class);
+            subject.from(json.getBytes());
         } catch(InvalidPayloadException e) {
             actual = e;
         }

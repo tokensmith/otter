@@ -57,6 +57,12 @@ public class OtterAppFactory<T extends Session> {
         );
     }
 
+    public <S extends Translatable> JsonTranslator<S> jsonTranslator(Class<S> clazz) {
+        return new JsonTranslator<S>(
+                objectReader(), objectWriter(), clazz
+        );
+    }
+
     public ServletGateway<T> servletGateway() {
         DoubleSubmitCSRF doubleSubmitCSRF = doubleSubmitCSRF();
 

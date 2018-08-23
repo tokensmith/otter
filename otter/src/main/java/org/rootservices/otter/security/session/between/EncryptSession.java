@@ -3,6 +3,7 @@ package org.rootservices.otter.security.session.between;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.jwt.builder.compact.EncryptedCompactBuilder;
@@ -36,22 +37,19 @@ import java.util.Optional;
  * session which will become a cookie.
  */
 public class EncryptSession<T extends Session> implements Between<T> {
-    public static final String NOT_ENCRPTING = "Not re-encrypting session cookie";
+    public static final String NOT_ENCRYPTING = "Not re-encrypting session cookie";
     public static final String COULD_NOT_ENCRYPT_SESSION = "Could not encrypt session cookie";
     protected static Logger LOGGER = LogManager.getLogger(EncryptSession.class);
 
     private CookieConfig cookieConfig;
     private SymmetricKey preferredKey;
-    private ObjectMapper objectMapper;
+    private ObjectWriter objectWriter;
 
-    public EncryptSession(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
 
-    public EncryptSession(CookieConfig cookieConfig, SymmetricKey preferredKey, ObjectMapper objectMapper) {
+    public EncryptSession(CookieConfig cookieConfig, SymmetricKey preferredKey, ObjectWriter objectWriter) {
         this.cookieConfig = cookieConfig;
         this.preferredKey = preferredKey;
-        this.objectMapper = objectMapper;
+        this.objectWriter = objectWriter;
     }
 
     @Override
@@ -74,7 +72,7 @@ public class EncryptSession<T extends Session> implements Between<T> {
 
             response.getCookies().put(cookieConfig.getName(), cookie);
         } else {
-            LOGGER.debug(NOT_ENCRPTING);
+            LOGGER.debug(NOT_ENCRYPTING);
         }
     }
 
@@ -94,7 +92,7 @@ public class EncryptSession<T extends Session> implements Between<T> {
         byte[] payload;
 
         try {
-            payload = objectMapper.writeValueAsBytes(session);
+            payload = objectWriter.writeValueAsBytes(session);
         } catch (JsonProcessingException e) {
             throw new EncryptSessionException(e.getMessage(), e);
         }

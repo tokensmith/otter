@@ -29,7 +29,7 @@ public class DecryptSessionTest {
                 otterAppFactory.jwtAppFactory(),
                 FixtureFactory.encKey("1234"),
                 FixtureFactory.encRotationKey("5678"),
-                otterAppFactory.objectMapper()
+                otterAppFactory.objectReader()
         );
     }
 
@@ -115,7 +115,7 @@ public class DecryptSessionTest {
                 otterAppFactory.jwtAppFactory(),
                 veryBadKey,
                 FixtureFactory.encRotationKey("5678"),
-                otterAppFactory.objectMapper()
+                otterAppFactory.objectReader()
         );
 
         String encryptedSession = new StringBuilder()
