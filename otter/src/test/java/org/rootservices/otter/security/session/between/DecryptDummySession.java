@@ -9,6 +9,11 @@ import java.util.Map;
 
 public class DecryptDummySession extends DecryptSession<DummySession> {
     public DecryptDummySession(String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectMapper objectMapper) {
-        super(sessionCookieName, jwtAppFactory, preferredKey, rotationKeys, objectMapper);
+        super(DummySession.class, sessionCookieName, jwtAppFactory, preferredKey, rotationKeys, objectMapper);
+    }
+
+    @Override
+    protected DummySession copy(DummySession from) {
+        return new DummySession(from);
     }
 }

@@ -10,6 +10,11 @@ import java.util.Map;
 public class SessionBefore extends DecryptSession<TokenSession> {
 
     public SessionBefore(String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectMapper objectMapper) {
-        super(sessionCookieName, jwtAppFactory, preferredKey, rotationKeys, objectMapper);
+        super(TokenSession.class, sessionCookieName, jwtAppFactory, preferredKey, rotationKeys, objectMapper);
+    }
+
+    @Override
+    protected TokenSession copy(TokenSession from) {
+        return new TokenSession(from);
     }
 }

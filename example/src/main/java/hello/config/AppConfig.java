@@ -2,27 +2,25 @@ package hello.config;
 
 
 import hello.controller.*;
-import hello.security.SessionAfter;
 import hello.security.SessionBefore;
 import hello.security.TokenSession;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.mime.MimeType;
-import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
 import org.rootservices.otter.router.RouteBuilder;
 import org.rootservices.otter.router.entity.Route;
-import org.rootservices.otter.security.session.Session;
+import org.rootservices.otter.security.session.between.EncryptSession;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AppConfig implements Configure<TokenSession> {
-    private AppFactory appFactory;
+    private AppFactory<TokenSession> appFactory;
 
-    public AppConfig(AppFactory appFactory) {
+    public AppConfig(AppFactory<TokenSession> appFactory) {
         this.appFactory = appFactory;
     }
 
@@ -43,8 +41,9 @@ public class AppConfig implements Configure<TokenSession> {
         SessionBefore sessionBeforeBetween = appFactory.sessionBefore("session", encKey, new HashMap<>());
         gateway.setDecryptSession(sessionBeforeBetween);
 
-        SessionAfter sessionAfter = appFactory.sessionAfter(sessionCookieConfig, encKey);
-        gateway.setEncryptSession(sessionAfter);
+        // TODO: should this be named differently? it is inconsistent with sessionBefore.
+        EncryptSession<TokenSession> encryptSession = appFactory.encryptSession(sessionCookieConfig, encKey);
+        gateway.setEncryptSession(encryptSession);
     }
 
     @Override

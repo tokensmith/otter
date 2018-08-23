@@ -41,21 +41,15 @@ public class EncryptSession<T extends Session> implements Between<T> {
     protected static Logger LOGGER = LogManager.getLogger(EncryptSession.class);
 
     private CookieConfig cookieConfig;
-    private JwtAppFactory jwtAppFactory;
-    private Base64.Decoder decoder;
     private SymmetricKey preferredKey;
     private ObjectMapper objectMapper;
 
-    public EncryptSession(JwtAppFactory jwtAppFactory, Base64.Decoder decoder, ObjectMapper objectMapper) {
-        this.jwtAppFactory = jwtAppFactory;
-        this.decoder = decoder;
+    public EncryptSession(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
-    public EncryptSession(CookieConfig cookieConfig, JwtAppFactory jwtAppFactory, Base64.Decoder decoder, SymmetricKey preferredKey, ObjectMapper objectMapper) {
+    public EncryptSession(CookieConfig cookieConfig, SymmetricKey preferredKey, ObjectMapper objectMapper) {
         this.cookieConfig = cookieConfig;
-        this.jwtAppFactory = jwtAppFactory;
-        this.decoder = decoder;
         this.preferredKey = preferredKey;
         this.objectMapper = objectMapper;
     }

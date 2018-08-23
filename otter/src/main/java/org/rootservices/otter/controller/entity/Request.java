@@ -23,7 +23,7 @@ public class Request<T extends Session> {
     private Optional<byte[]> body;
     private Optional<String> csrfChallenge;
     private String ipAddress;
-    private Optional<Session> session = Optional.empty();
+    private Optional<T> session = Optional.empty();
     private Optional<Object> user;
 
     public Request() {}
@@ -138,11 +138,11 @@ public class Request<T extends Session> {
         this.user = user;
     }
 
-    public Optional<Session> getSession() {
+    public Optional<T> getSession() {
         return session;
     }
 
-    public void setSession(Optional<Session> session) {
+    public void setSession(Optional<T> session) {
         this.session = session;
     }
 }

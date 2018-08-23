@@ -32,8 +32,6 @@ public class EncryptSessionTest {
         CookieConfig cookieConfig = new CookieConfig("session", true, -1);
         subject = new EncryptSession<DummySession>(
                 cookieConfig,
-                new JwtAppFactory(),
-                otterAppFactory.urlDecoder(),
                 FixtureFactory.encKey("1234"),
                 otterAppFactory.objectMapper()
         );
@@ -78,8 +76,6 @@ public class EncryptSessionTest {
         CookieConfig cookieConfig = new CookieConfig("session", true, -1);
         EncryptSession<DummySession> subject = new EncryptSession<DummySession>(
                 cookieConfig,
-                new JwtAppFactory(),
-                otterAppFactory.urlDecoder(),
                 veryBadKey,
                 otterAppFactory.objectMapper()
         );
@@ -200,8 +196,6 @@ public class EncryptSessionTest {
         CookieConfig cookieConfig = new CookieConfig("session", true, -1);
         EncryptSession<DummySession> subject = new EncryptSession<DummySession>(
                 cookieConfig,
-                new JwtAppFactory(),
-                otterAppFactory.urlDecoder(),
                 FixtureFactory.encKey("1234"),
                 otterAppFactory.objectMapper()
         );
@@ -218,8 +212,6 @@ public class EncryptSessionTest {
         CookieConfig cookieConfig = new CookieConfig("session", true, -1);
         EncryptSession<DummySession> subject = new EncryptSession<DummySession>(
                 cookieConfig,
-                new JwtAppFactory(),
-                otterAppFactory.urlDecoder(),
                 FixtureFactory.encKey("1234"),
                 otterAppFactory.objectMapper()
         );
