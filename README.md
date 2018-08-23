@@ -29,6 +29,7 @@ That application will be referenced throughout the documentation.
 
 ## Introduction
 - [Resource](#resource)
+- [Session](#session)
 - [Configuration](#configuration)
 - [Embedded servlet container](#embedded-container)
 - [CSRF protection](#csrf)
@@ -58,11 +59,23 @@ Implementing a resource is rather straight forward.
 
 The examples should be sufficient to get started.
 
+### Session
+An application needs to implement the `Session` interface. This is used represent user sessions and is 
+should be a value object. This will be used by the `EncryptSession` and `DecryptSession` `Betweens`.
+
+It must have a copy constructor and a equals method. If either of those are not there Otter internals will Halt your requests.
+ 
+See [TokenSession](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/security/TokenSession.java) 
+as an example. This will be passed into Otter via generics which is described in the rest of the documentation.
+
 ### Configuration
 Otter needs to be configured for CSRF, Session, and Routes. To configure Otter implement the [Configure](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/Configure.java)
 interface. 
 
-##### `configure(Gateway gateway)`
+An example can be found in [here](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/config/AppConfig.java).
+Which passes `TokenSession` as the `Session`.
+
+##### `configure(Gateway<T> gateway)`
 The implementation of `configure(Gateway gateway)` should configure CSRF and Sessions. Both need
 a cookie configuration and symmetric key configuration.
 
@@ -70,6 +83,7 @@ a cookie configuration and symmetric key configuration.
     // CSRF cookie configuration
     CookieConfig csrfCookieConfig = new CookieConfig("csrf", false, -1);
     gateway.setCsrfCookieConfig(csrfCookieConfig);
+    gateway.setCsrfFormFieldName("csrfToken");
 
     // Session cookie configuration.
     CookieConfig sessionCookieConfig = new CookieConfig("session", false, -1);
@@ -92,7 +106,7 @@ a cookie configuration and symmetric key configuration.
     gateway.setEncKey(key);
 ```
 
-##### `routes(Gateway gateway)`
+##### `routes(Gateway<T> gateway)`
 Generally, routes instruct Otter which Resource should handle a given request. Below is an example of a `GET` request 
 that will be handled by the `HelloResorce`. 
  
@@ -105,7 +119,7 @@ When Otter cannot find a route to satisfy a request it will use it's `notFoundRo
 This should be configured in the `routes(Gateway gateway)` implementation.
 
 ```java
-    Route notFoundRoute = new RouteBuilder()
+    Route<TokenSession> notFoundRoute = new RouteBuilder<TokenSession>()
         .resource(new NotFoundResource())
         .before(new ArrayList<>())
         .after(new ArrayList<>())
@@ -143,6 +157,9 @@ and the implementation must be annotated with following  `@WebSerlvet` annotatio
 Extending the [entry servlet](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/servlet/OtterEntryServlet.java) 
 is required.
 
+An example can be found in [here](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/config/AppEntryServlet.java)
+Which passes `TokenSession` as the `Session`. 
+
 ##### Override `makeConfigure()`
 This method must return an instance of the [configruation](#configuration) interface.  
 
@@ -176,20 +193,13 @@ Otter is stateless. It maintains user sessions with a cookie whose value is encr
 
 To use them the following is needed:
 - Configure the cookie and key
-- Implement a session class
+- Implement a session class. See [session](#session) documentaion.
 - Implement your DecryptSession between.
 - Inject you DecryptSession into the servletGateway.
 - Add routes to the servletGateway
 
 #### Configure
 See the [Configuration](#configuration) section.
-
-#### Implement session class
-You will need to implement a session class which must have a copy constructor and a equals method.
-If either of those are not there Otter internals will Halt your requests.
-
-An example [session](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/security/TokenSession.java)
-can be found in the test suite.
 
 #### Implement DecryptSession
 An example [implementation](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/security/SessionBefore.java) 
