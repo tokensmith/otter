@@ -2,9 +2,13 @@
 Otter is a micro web framework that sits on top of the servlet api 4.0 
 
 - [Contribute!](/docs/Contribute.md)
-- [Dependency Coordinates](#dependency-coordinates)
 - [Example Application](#example-application)
+- [Dependency Coordinates](#dependency-coordinates)
 - [Introduction](/docs/Introduction.md)
+
+## Example Application
+If you want to get started quickly head over to the [hello world](/example) 
+example application.
 
 ## Dependency coordinates
 #### Maven
@@ -22,7 +26,3 @@ Otter is a micro web framework that sits on top of the servlet api 4.0
 ```groovy
 compile group: 'org.rootservices', name: 'otter', version: '1.3'
 ```
-
-## Example Application
-If you want to get started quickly head over to the [hello world](/example) 
-example application.
