@@ -1,5 +1,7 @@
 package org.rootservices.otter.gateway.servlet.translator;
 
+import helper.entity.DummySession;
+import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -34,12 +36,12 @@ public class HttpServletRequestTranslatorTest {
     @Mock
     private MimeTypeTranslator mockMimeTypeTranslator;
 
-    private HttpServletRequestTranslator<Session> subject;
+    private HttpServletRequestTranslator<DummySession, DummyUser> subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new HttpServletRequestTranslator<Session>(
+        subject = new HttpServletRequestTranslator<DummySession, DummyUser>(
                 mockHttpServletCookieTranslator,
                 mockHttpServletRequestHeaderTranslator,
                 mockQueryStringToMap,
@@ -171,7 +173,7 @@ public class HttpServletRequestTranslatorTest {
         when(mockContainerRequest.getContentType()).thenReturn(form.toString());
 
         String body = "form-field=form-value";
-        Request<Session> actual = subject.from(mockContainerRequest, body.getBytes());
+        Request<DummySession, DummyUser> actual = subject.from(mockContainerRequest, body.getBytes());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMethod(), is(Method.POST));

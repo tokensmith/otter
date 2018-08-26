@@ -16,9 +16,9 @@ import org.rootservices.otter.translator.JsonTranslator;
 import java.util.Map;
 import java.util.Optional;
 
-public class AppFactory<T extends Session> {
-    public OtterAppFactory<T> otterAppFactory() {
-        return new OtterAppFactory<T>();
+public class AppFactory<S extends Session, U> {
+    public OtterAppFactory<S, U> otterAppFactory() {
+        return new OtterAppFactory<S, U>();
     }
 
     public HelloRestResource helloRestResource() {
@@ -58,7 +58,7 @@ public class AppFactory<T extends Session> {
         return new SessionBefore(cookieName, otterAppFactory().jwtAppFactory(), preferredKey, rotationKeys, otterAppFactory().objectReader());
     }
 
-    public EncryptSession<T> encryptSession(CookieConfig sessionCookieConfig, SymmetricKey encKey) {
-        return new EncryptSession<T>(sessionCookieConfig, encKey, otterAppFactory().objectWriter());
+    public EncryptSession<S, U> encryptSession(CookieConfig sessionCookieConfig, SymmetricKey encKey) {
+        return new EncryptSession<S, U>(sessionCookieConfig, encKey, otterAppFactory().objectWriter());
     }
 }

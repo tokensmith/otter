@@ -14,22 +14,22 @@ import org.rootservices.otter.security.session.Session;
 import java.util.List;
 import java.util.Optional;
 
-public class Engine<T extends Session> {
-    private Dispatcher<T> dispatcher;
+public class Engine<S extends Session, U> {
+    private Dispatcher<S, U> dispatcher;
 
-    public Engine(Dispatcher<T> dispatcher) {
+    public Engine(Dispatcher<S, U> dispatcher) {
         this.dispatcher = dispatcher;
     }
 
-    public Optional<Response<T>> route(Request<T> request, Response<T> response) throws HaltException {
-        Optional<MatchedRoute<T>> matchedRoute = dispatcher.find(
+    public Optional<Response<S>> route(Request<S, U> request, Response<S> response) throws HaltException {
+        Optional<MatchedRoute<S, U>> matchedRoute = dispatcher.find(
                 request.getMethod(), request.getPathWithParams()
         );
 
-        Optional<Response<T>> resourceResponse = Optional.empty();
+        Optional<Response<S>> resourceResponse = Optional.empty();
         if (matchedRoute.isPresent()) {
             request.setMatcher(Optional.of(matchedRoute.get().getMatcher()));
-            Response<T> r;
+            Response<S> r;
 
             try {
                 r = executeResourceMethod(matchedRoute.get().getRoute(), request, response);
@@ -43,9 +43,9 @@ public class Engine<T extends Session> {
         return resourceResponse;
     }
 
-    public Response<T> executeResourceMethod(Route<T> route, Request<T> request, Response<T> response) throws HaltException {
-        Resource<T> resource = route.getResource();
-        Response<T> resourceResponse = null;
+    public Response<S> executeResourceMethod(Route<S, U> route, Request<S, U> request, Response<S> response) throws HaltException {
+        Resource<S, U> resource = route.getResource();
+        Response<S> resourceResponse = null;
         Method method = request.getMethod();
 
         try {
@@ -83,8 +83,8 @@ public class Engine<T extends Session> {
         return resourceResponse;
     }
 
-    protected void executeBetween(List<Between<T>> betweens, Method method, Request<T> request, Response<T> response) throws HaltException {
-        for(Between<T> between: betweens) {
+    protected void executeBetween(List<Between<S, U>> betweens, Method method, Request<S, U> request, Response<S> response) throws HaltException {
+        for(Between<S, U> between: betweens) {
             try {
                 between.process(method, request, response);
             } catch(HaltException e) {
@@ -92,7 +92,7 @@ public class Engine<T extends Session> {
             }
         }
     }
-    public Dispatcher<T> getDispatcher() {
+    public Dispatcher<S, U> getDispatcher() {
         return dispatcher;
     }
 }

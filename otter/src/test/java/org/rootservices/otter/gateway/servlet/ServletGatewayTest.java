@@ -2,10 +2,10 @@ package org.rootservices.otter.gateway.servlet;
 
 import helper.FixtureFactory;
 import helper.entity.DummySession;
+import helper.entity.DummyUser;
 import helper.entity.FakeResource;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.Resource;
@@ -37,28 +37,28 @@ import static org.mockito.Mockito.*;
 
 public class ServletGatewayTest {
     @Mock
-    private HttpServletRequestTranslator<DummySession> mockHttpServletRequestTranslator;
+    private HttpServletRequestTranslator<DummySession, DummyUser> mockHttpServletRequestTranslator;
     @Mock
     private HttpServletRequestMerger mockHttpServletRequestMerger;
     @Mock
     private HttpServletResponseMerger<DummySession> mockHttpServletResponseMerger;
     @Mock
-    private Engine<DummySession> mockEngine;
+    private Engine<DummySession, DummyUser> mockEngine;
     @Mock
-    private Dispatcher<DummySession> mockDispatcher;
+    private Dispatcher<DummySession, DummyUser> mockDispatcher;
     @Mock
-    private Between<DummySession> mockPrepareCSRF;
+    private Between<DummySession, DummyUser> mockPrepareCSRF;
     @Mock
-    private Between<DummySession> mockCheckCSRF;
+    private Between<DummySession, DummyUser> mockCheckCSRF;
 
-    private ServletGateway<DummySession> subject;
+    private ServletGateway<DummySession, DummyUser> subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
         when(mockEngine.getDispatcher()).thenReturn(mockDispatcher);
-        subject = new ServletGateway<DummySession>(
+        subject = new ServletGateway<DummySession, DummyUser>(
                 mockHttpServletRequestTranslator,
                 mockHttpServletRequestMerger,
                 mockHttpServletResponseMerger,
@@ -74,7 +74,7 @@ public class ServletGatewayTest {
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
         byte[] containerBody = null;
 
-        Request<DummySession> request = new Request<DummySession>();
+        Request<DummySession, DummyUser> request = new Request<DummySession, DummyUser>();
 
         when(mockHttpServletRequestTranslator.from(mockContainerRequest, containerBody))
                 .thenReturn(request);
@@ -94,14 +94,14 @@ public class ServletGatewayTest {
 
     @Test
     public void processRequestResourceNotFoundShouldExecuteNotFound() throws Exception {
-        Route<DummySession> notFoundRoute = FixtureFactory.makeRoute("");
+        Route<DummySession, DummyUser> notFoundRoute = FixtureFactory.makeRoute("");
         subject.setNotFoundRoute(notFoundRoute);
 
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
         byte[] containerBody = null;
 
-        Request<DummySession> request = new Request<DummySession>();
+        Request<DummySession, DummyUser> request = new Request<DummySession, DummyUser>();
 
         when(mockHttpServletRequestTranslator.from(mockContainerRequest, containerBody))
                 .thenReturn(request);
@@ -132,7 +132,7 @@ public class ServletGatewayTest {
 
     @Test
     public void processRequestWhenExceptionShouldReturnServerError() throws Exception {
-        Route<DummySession> notFoundRoute = FixtureFactory.makeRoute("");
+        Route<DummySession, DummyUser> notFoundRoute = FixtureFactory.makeRoute("");
         subject.setNotFoundRoute(notFoundRoute);
 
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
@@ -154,7 +154,7 @@ public class ServletGatewayTest {
 
     @Test
     public void processRequestWhenIOExceptionShouldReturnServerError() throws Exception {
-        Route<DummySession> notFoundRoute = FixtureFactory.makeRoute("");
+        Route<DummySession, DummyUser> notFoundRoute = FixtureFactory.makeRoute("");
         subject.setNotFoundRoute(notFoundRoute);
 
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
@@ -177,7 +177,7 @@ public class ServletGatewayTest {
     @Test
     public void getShouldAddRouteWithEmptyBeforeAfter() {
 
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getGet()).thenReturn(routes);
 
         FakeResource resource = new FakeResource();
@@ -196,7 +196,7 @@ public class ServletGatewayTest {
 
     @Test
     public void getCsrfProtectShouldAddRouteWithCsrfBeforeEmptyAfter() {
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getGet()).thenReturn(routes);
 
         FakeResource resource = new FakeResource();
@@ -217,7 +217,7 @@ public class ServletGatewayTest {
 
     @Test
     public void postShouldAddRouteWithEmptyBeforeAfter() {
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getPost()).thenReturn(routes);
 
         FakeResource resource = new FakeResource();
@@ -236,7 +236,7 @@ public class ServletGatewayTest {
 
     @Test
     public void postCsrfProtectShouldAddRouteWithCsrfBeforeEmptyAfter() {
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getPost()).thenReturn(routes);
 
         FakeResource resource = new FakeResource();
@@ -256,10 +256,10 @@ public class ServletGatewayTest {
 
     @Test
     public void putShouldAddRouteWithEmptyBeforeAfter() {
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getPut()).thenReturn(routes);
 
-        Resource<DummySession> resource = new FakeResource();
+        Resource<DummySession, DummyUser> resource = new FakeResource();
         subject.put("/path", resource);
 
         assertThat(routes, is(notNullValue()));
@@ -275,10 +275,10 @@ public class ServletGatewayTest {
 
     @Test
     public void patchShouldAddRouteWithEmptyBeforeAfter() {
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getPatch()).thenReturn(routes);
 
-        Resource<DummySession> resource = new FakeResource();
+        Resource<DummySession, DummyUser> resource = new FakeResource();
         subject.patch("/path", resource);
 
         assertThat(routes, is(notNullValue()));
@@ -294,10 +294,10 @@ public class ServletGatewayTest {
 
     @Test
     public void deleteShouldAddRouteWithEmptyBeforeAfter() {
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getDelete()).thenReturn(routes);
 
-        Resource<DummySession> resource = new FakeResource();
+        Resource<DummySession, DummyUser> resource = new FakeResource();
         subject.delete("/path", resource);
 
         assertThat(routes, is(notNullValue()));
@@ -313,7 +313,7 @@ public class ServletGatewayTest {
 
     @Test
     public void connectShouldAddRouteWithEmptyBeforeAfter() {
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getConnect()).thenReturn(routes);
 
         FakeResource resource = new FakeResource();
@@ -332,7 +332,7 @@ public class ServletGatewayTest {
 
     @Test
     public void optionsShouldAddRouteWithEmptyBeforeAfter() {
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getOptions()).thenReturn(routes);
 
         FakeResource resource = new FakeResource();
@@ -351,7 +351,7 @@ public class ServletGatewayTest {
 
     @Test
     public void traceShouldAddRouteWithEmptyBeforeAfter() {
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getTrace()).thenReturn(routes);
 
         FakeResource resource = new FakeResource();
@@ -370,7 +370,7 @@ public class ServletGatewayTest {
 
     @Test
     public void headShouldAddRouteWithEmptyBeforeAfter() {
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getHead()).thenReturn(routes);
 
         FakeResource resource = new FakeResource();
@@ -389,10 +389,10 @@ public class ServletGatewayTest {
 
     @Test
     public void getRouteShouldAddRoute() throws Exception {
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getGet()).thenReturn(routes);
 
-        Route<DummySession> route = new RouteBuilder<DummySession>().build();
+        Route<DummySession, DummyUser> route = new RouteBuilder<DummySession, DummyUser>().build();
         subject.getRoute(route);
 
         assertThat(routes, is(notNullValue()));
@@ -403,10 +403,10 @@ public class ServletGatewayTest {
 
     @Test
     public void postRouteShouldAddRoute() throws Exception {
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getPost()).thenReturn(routes);
 
-        Route<DummySession> route = new RouteBuilder<DummySession>().build();
+        Route<DummySession, DummyUser> route = new RouteBuilder<DummySession, DummyUser>().build();
         subject.postRoute(route);
 
         assertThat(routes, is(notNullValue()));
@@ -416,10 +416,10 @@ public class ServletGatewayTest {
 
     @Test
     public void putRouteShouldAddRoute() throws Exception {
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getPut()).thenReturn(routes);
 
-        Route<DummySession> route = new RouteBuilder<DummySession>().build();
+        Route<DummySession, DummyUser> route = new RouteBuilder<DummySession, DummyUser>().build();
         subject.putRoute(route);
 
         assertThat(routes, is(notNullValue()));
@@ -430,10 +430,10 @@ public class ServletGatewayTest {
 
     @Test
     public void patchRouteShouldAddRoute() throws Exception {
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getPatch()).thenReturn(routes);
 
-        Route<DummySession> route = new RouteBuilder<DummySession>().build();
+        Route<DummySession, DummyUser> route = new RouteBuilder<DummySession, DummyUser>().build();
         subject.patchRoute(route);
 
         assertThat(routes, is(notNullValue()));
@@ -444,10 +444,10 @@ public class ServletGatewayTest {
 
     @Test
     public void deleteRouteShouldAddRoute() throws Exception {
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getDelete()).thenReturn(routes);
 
-        Route<DummySession> route = new RouteBuilder<DummySession>().build();
+        Route<DummySession, DummyUser> route = new RouteBuilder<DummySession, DummyUser>().build();
         subject.deleteRoute(route);
 
         assertThat(routes, is(notNullValue()));
@@ -457,10 +457,10 @@ public class ServletGatewayTest {
 
     @Test
     public void connectRouteShouldAddRoute() throws Exception {
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getConnect()).thenReturn(routes);
 
-        Route<DummySession> route = new RouteBuilder<DummySession>().build();
+        Route<DummySession, DummyUser> route = new RouteBuilder<DummySession, DummyUser>().build();
         subject.connectRoute(route);
 
         assertThat(routes, is(notNullValue()));
@@ -470,10 +470,10 @@ public class ServletGatewayTest {
 
     @Test
     public void optionsRouteShouldAddRoute() throws Exception {
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getOptions()).thenReturn(routes);
 
-        Route<DummySession> route = new RouteBuilder<DummySession>().build();
+        Route<DummySession, DummyUser> route = new RouteBuilder<DummySession, DummyUser>().build();
         subject.optionsRoute(route);
 
         assertThat(routes, is(notNullValue()));
@@ -483,10 +483,10 @@ public class ServletGatewayTest {
 
     @Test
     public void traceRouteShouldAddRoute() throws Exception {
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getTrace()).thenReturn(routes);
 
-        Route<DummySession> route = new RouteBuilder<DummySession>().build();
+        Route<DummySession, DummyUser> route = new RouteBuilder<DummySession, DummyUser>().build();
         subject.traceRoute(route);
 
         assertThat(routes, is(notNullValue()));
@@ -496,10 +496,10 @@ public class ServletGatewayTest {
 
     @Test
     public void headRouteShouldAddRoute() throws Exception {
-        List<Route<DummySession>> routes = new ArrayList<>();
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getHead()).thenReturn(routes);
 
-        Route<DummySession> route = new RouteBuilder<DummySession>().build();
+        Route<DummySession, DummyUser> route = new RouteBuilder<DummySession, DummyUser>().build();
         subject.headRoute(route);
 
         assertThat(routes, is(notNullValue()));

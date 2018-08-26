@@ -25,11 +25,13 @@ compile group: 'org.rootservices', name: 'otter', version: '1.3'
 ## Example Application
 A [hello world](https://github.com/RootServices/otter/tree/development/example) 
 example application is available which demonstrates CSRF, Sessions, Rest, and `tex/html` responses.
-That application will be referenced throughout the documentation. 
+That application will be referenced throughout the documentation.
+ 
 
 ## Introduction
 - [Resource](#resource)
 - [Session](#session)
+- [User](#user)
 - [Configuration](#configuration)
 - [Embedded servlet container](#embedded-container)
 - [CSRF protection](#csrf)
@@ -60,12 +62,12 @@ Implementing a resource is rather straight forward.
 The examples should be sufficient to get started.
 
 ### Session
-An application needs to implement the `Session` interface. This is used represent user sessions and it 
+An application must implement the `Session` interface. This is used represent user sessions and it 
 should be a value object. `Session` implementations are passed into Otter via generics in:
 - [Resource](#resource)
-- [Configure](#configure)
+- [Configuration](#configuration)
 - [Entry Servlet](#entry-servlet)
-- Between
+- [Between](#between)
 
 The same `Session` implementation must be used in a application.
 
@@ -74,6 +76,19 @@ It must have a copy constructor and a equals method. If either of those are not 
 See [TokenSession](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/security/TokenSession.java) 
 as an example.
 
+### User
+A User object must be implemented. It's intent is to represent an authenticated user of the application.
+It is passed into Otter via generics in:
+- [Resource](#resource)
+- [Configuration](#configuration)
+- [Entry Servlet](#entry-servlet)
+- [Between](#between)
+
+### Between
+A `Between` is a rule that may be executed before a request reaches a resource or after a resoure executes a request.
+A [Between](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/router/entity/Between.java) 
+is a interface that may be implemented. Otter uses between implementations for CSRF protection and session management.
+
 ### Configuration
 Otter needs to be configured for CSRF, Session, and Routes. To configure Otter implement the [Configure](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/Configure.java)
 interface. 
@@ -81,7 +96,7 @@ interface.
 An example can be found in [here](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/config/AppConfig.java).
 Which passes `TokenSession` as the `Session`.
 
-##### `configure(Gateway<T> gateway)`
+##### `configure(Gateway<S, U> gateway)`
 The implementation of `configure(Gateway gateway)` should configure CSRF and Sessions. Both need
 a cookie configuration and symmetric key configuration.
 
@@ -112,7 +127,7 @@ a cookie configuration and symmetric key configuration.
     gateway.setEncKey(key);
 ```
 
-##### `routes(Gateway<T> gateway)`
+##### `routes(Gateway<S, U> gateway)`
 Generally, routes instruct Otter which Resource should handle a given request. Below is an example of a `GET` request 
 that will be handled by the `HelloResorce`. 
  
@@ -203,9 +218,6 @@ To use them the following is needed:
 - Implement your DecryptSession between.
 - Inject you DecryptSession into the servletGateway.
 - Add routes to the servletGateway
-
-#### Configure
-See the [Configuration](#configuration) section.
 
 #### Implement DecryptSession
 An example [implementation](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/security/SessionBefore.java) 

@@ -36,8 +36,11 @@ import java.util.Base64;
 
 /**
  * Application Factory to construct objects in project.
+ *
+ * @param <S> Session implementation for application
+ * @param <U> User object, intended to be a authenticated user.
  */
-public class OtterAppFactory<T extends Session> {
+public class OtterAppFactory<S extends Session, U> {
     private static ObjectMapper objectMapper;
     private static ObjectReader objectReader;
     private static ObjectWriter objectWriter;
@@ -57,16 +60,23 @@ public class OtterAppFactory<T extends Session> {
         );
     }
 
-    public <S extends Translatable> JsonTranslator<S> jsonTranslator(Class<S> clazz) {
-        return new JsonTranslator<S>(
+    /**
+     * Make a JsonTranslator<T> used in RestResource
+     *
+     * @param clazz Class to be serialized
+     * @param <T> Type to be serialized
+     * @return instance of a JsonTranslator intended for <T>
+     */
+    public <T extends Translatable> JsonTranslator<T> jsonTranslator(Class<T> clazz) {
+        return new JsonTranslator<T>(
                 objectReader(), objectWriter(), clazz
         );
     }
 
-    public ServletGateway<T> servletGateway() {
+    public ServletGateway<S, U> servletGateway() {
         DoubleSubmitCSRF doubleSubmitCSRF = doubleSubmitCSRF();
 
-        return new ServletGateway<T>(
+        return new ServletGateway<S, U>(
                 httpServletRequestTranslator(),
                 httpServletRequestMerger(),
                 httpServletResponseMerger(),
@@ -76,8 +86,8 @@ public class OtterAppFactory<T extends Session> {
         );
     }
 
-    public Engine<T> engine() {
-        return new Engine<T>(new Dispatcher<T>());
+    public Engine<S, U> engine() {
+        return new Engine<S, U>(new Dispatcher<S, U>());
     }
 
     public ObjectMapper objectMapper() {
@@ -107,8 +117,8 @@ public class OtterAppFactory<T extends Session> {
         return objectWriter;
     }
 
-    public HttpServletRequestTranslator<T> httpServletRequestTranslator() {
-        return new HttpServletRequestTranslator<T>(
+    public HttpServletRequestTranslator<S, U> httpServletRequestTranslator() {
+        return new HttpServletRequestTranslator<S, U>(
                 httpServletRequestCookieTranslator(),
                 new HttpServletRequestHeaderTranslator(),
                 new QueryStringToMap(),
@@ -120,8 +130,8 @@ public class OtterAppFactory<T extends Session> {
         return new HttpServletRequestMerger();
     }
 
-    public HttpServletResponseMerger<T> httpServletResponseMerger() {
-        return new HttpServletResponseMerger<T>(httpServletRequestCookieTranslator());
+    public HttpServletResponseMerger<S> httpServletResponseMerger() {
+        return new HttpServletResponseMerger<S>(httpServletRequestCookieTranslator());
     }
 
     public HttpServletRequestCookieTranslator httpServletRequestCookieTranslator() {
@@ -136,12 +146,12 @@ public class OtterAppFactory<T extends Session> {
         return new DoubleSubmitCSRF(jwtAppFactory(), new RandomString());
     }
 
-    public Between<T> checkCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
-        return new CheckCSRF<T>(doubleSubmitCSRF);
+    public Between<S, U> checkCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
+        return new CheckCSRF<S, U>(doubleSubmitCSRF);
     }
 
-    public Between<T> prepareCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
-        return new PrepareCSRF<T>(doubleSubmitCSRF);
+    public Between<S, U> prepareCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
+        return new PrepareCSRF<S, U>(doubleSubmitCSRF);
     }
 
     public Base64.Decoder urlDecoder() {

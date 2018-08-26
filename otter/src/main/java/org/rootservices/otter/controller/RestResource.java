@@ -15,11 +15,9 @@ import org.rootservices.otter.translator.exception.*;
 
 
 import java.io.ByteArrayOutputStream;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Optional;
 
-public class RestResource<T extends Translatable, S extends Session> extends Resource<S> {
+public class RestResource<T extends Translatable, S extends Session, U> extends Resource<S, U> {
     protected static Logger logger = LogManager.getLogger(RestResource.class);
 
     protected JsonTranslator<T> translator;
@@ -42,13 +40,13 @@ public class RestResource<T extends Translatable, S extends Session> extends Res
     }
 
     @Override
-    public Response<S> get(Request<S> request, Response<S> response) {
+    public Response<S> get(Request<S, U> request, Response<S> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
     @Override
-    public Response<S> post(Request<S> request, Response<S> response) {
+    public Response<S> post(Request<S, U> request, Response<S> response) {
         T entity;
 
         try {
@@ -65,7 +63,7 @@ public class RestResource<T extends Translatable, S extends Session> extends Res
     }
 
     @Override
-    public Response<S> put(Request<S> request, Response<S> response) {
+    public Response<S> put(Request<S, U> request, Response<S> response) {
         T entity;
 
         try {
@@ -82,13 +80,13 @@ public class RestResource<T extends Translatable, S extends Session> extends Res
     }
 
     @Override
-    public Response<S> delete(Request<S> request, Response<S> response) {
+    public Response<S> delete(Request<S, U> request, Response<S> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
     @Override
-    public Response<S> patch(Request<S> request, Response<S> response) {
+    public Response<S> patch(Request<S, U> request, Response<S> response) {
         T entity;
 
         try {
@@ -138,17 +136,17 @@ public class RestResource<T extends Translatable, S extends Session> extends Res
 
     }
 
-    protected Response<S> post(Request<S> request, Response<S> response, T entity) {
+    protected Response<S> post(Request<S, U> request, Response<S> response, T entity) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
-    protected Response<S> put(Request<S> request, Response<S> response, T entity) {
+    protected Response<S> put(Request<S, U> request, Response<S> response, T entity) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
-    protected Response<S> patch(Request<S> request, Response<S> response, T entity) {
+    protected Response<S> patch(Request<S, U> request, Response<S> response, T entity) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }

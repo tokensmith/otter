@@ -2,6 +2,7 @@ package org.rootservices.otter.security.csrf.between;
 
 import helper.FixtureFactory;
 import helper.entity.DummySession;
+import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -28,13 +29,13 @@ public class PrepareCSRFTest {
     private static String COOKIE_NAME = "CSRF";
     @Mock
     private DoubleSubmitCSRF mockDoubleSubmitCSRF;
-    private PrepareCSRF<DummySession> subject;
+    private PrepareCSRF<DummySession, DummyUser> subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         CookieConfig cookieConfig = new CookieConfig(COOKIE_NAME, false, -1);
-        subject = new PrepareCSRF<DummySession>(cookieConfig, mockDoubleSubmitCSRF);
+        subject = new PrepareCSRF<DummySession, DummyUser>(cookieConfig, mockDoubleSubmitCSRF);
     }
 
     @Test
@@ -44,7 +45,7 @@ public class PrepareCSRFTest {
         Cookie cookie = FixtureFactory.makeCookie(COOKIE_NAME);
         when(mockDoubleSubmitCSRF.makeCsrfCookie(COOKIE_NAME, challengeToken, false, -1)).thenReturn(cookie);
 
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         subject.process(Method.GET, request, response);
@@ -63,7 +64,7 @@ public class PrepareCSRFTest {
         String challengeToken = "challenge-token";
         Cookie cookie = FixtureFactory.makeCookie(COOKIE_NAME);
 
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
         response.getCookies().put(COOKIE_NAME, cookie);
 
@@ -95,7 +96,7 @@ public class PrepareCSRFTest {
         CsrfException csrfException = new CsrfException("", null);
         when(mockDoubleSubmitCSRF.makeCsrfCookie(COOKIE_NAME, challengeToken, false, -1)).thenThrow(csrfException);
 
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         subject.process(Method.GET, request, response);

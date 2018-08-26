@@ -2,6 +2,7 @@ package org.rootservices.otter.security.session.between;
 
 import helper.FixtureFactory;
 import helper.entity.DummySession;
+import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
@@ -20,7 +21,7 @@ import static org.junit.Assert.*;
 
 public class DecryptSessionTest {
     private static OtterAppFactory otterAppFactory = new OtterAppFactory();
-    private DecryptSession<DummySession> subject;
+    private DecryptSession<DummySession, DummyUser> subject;
 
     @Before
     public void setUp() {
@@ -47,7 +48,7 @@ public class DecryptSessionTest {
         Cookie sessionCookie = FixtureFactory.makeCookie("session");
         sessionCookie.setValue(encryptedSession);
 
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         request.getCookies().put("session", sessionCookie);
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -63,7 +64,7 @@ public class DecryptSessionTest {
     @Test
     public void processWhenNoSessionShouldHalt() throws Exception {
 
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         HaltException actual = null;
@@ -87,7 +88,7 @@ public class DecryptSessionTest {
         Cookie sessionCookie = FixtureFactory.makeCookie("session");
         sessionCookie.setValue(encryptedSession);
 
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         request.getCookies().put("session", sessionCookie);
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -110,7 +111,7 @@ public class DecryptSessionTest {
         SymmetricKey veryBadKey = FixtureFactory.encKey("1234");
         veryBadKey.setKey("MMNj8rE5m7NIDhwKYDmHSnlU1wfKuVvW6G--1234567");
 
-        DecryptSession<DummySession> subject = new DecryptDummySession(
+        DecryptSession<DummySession, DummyUser> subject = new DecryptDummySession(
                 "session",
                 otterAppFactory.jwtAppFactory(),
                 veryBadKey,
@@ -129,7 +130,7 @@ public class DecryptSessionTest {
         Cookie sessionCookie = FixtureFactory.makeCookie("session");
         sessionCookie.setValue(encryptedSession);
 
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         request.getCookies().put("session", sessionCookie);
 
         Response<DummySession> response = FixtureFactory.makeResponse();

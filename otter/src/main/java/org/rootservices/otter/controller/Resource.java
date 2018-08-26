@@ -6,49 +6,49 @@ import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.security.session.Session;
 
 
-public class Resource<T extends Session> {
+public class Resource<S extends Session, U> {
 
-    public Response<T> get(Request<T> request, Response<T> response) {
+    public Response<S> get(Request<S, U> request, Response<S> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
-    public Response<T> post(Request<T> request, Response<T> response) {
+    public Response<S> post(Request<S, U> request, Response<S> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
-    public Response<T> put(Request<T> request, Response<T> response) {
+    public Response<S> put(Request<S, U> request, Response<S> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
-    public Response<T> delete(Request<T> request, Response<T> response) {
+    public Response<S> delete(Request<S, U> request, Response<S> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
-    public Response<T> connect(Request<T> request, Response<T> response) {
+    public Response<S> connect(Request<S, U> request, Response<S> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
-    public Response<T> options(Request<T> request, Response<T> response) {
+    public Response<S> options(Request<S, U> request, Response<S> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
-    public Response<T> trace(Request<T> request, Response<T> response) {
+    public Response<S> trace(Request<S, U> request, Response<S> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
-    public Response<T> patch(Request<T> request, Response<T> response) {
+    public Response<S> patch(Request<S, U> request, Response<S> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
-    public Response<T> head(Request<T> request, Response<T> response) {
+    public Response<S> head(Request<S, U> request, Response<S> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }

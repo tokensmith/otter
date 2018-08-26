@@ -11,7 +11,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 
-public class Request<T extends Session> {
+/**
+ * Http Request
+ *
+ * @param <S> Session implementation for application
+ * @param <U> User object, intended to be a authenticated user.
+ */
+public class Request<S extends Session, U> {
     private Optional<Matcher> matcher;
     private Method method;
     private String pathWithParams;
@@ -23,8 +29,8 @@ public class Request<T extends Session> {
     private Optional<byte[]> body;
     private Optional<String> csrfChallenge;
     private String ipAddress;
-    private Optional<T> session = Optional.empty();
-    private Optional<Object> user;
+    private Optional<S> session = Optional.empty();
+    private Optional<U> user;
 
     public Request() {}
 
@@ -130,19 +136,19 @@ public class Request<T extends Session> {
         this.ipAddress = ipAddress;
     }
 
-    public Optional<Object> getUser() {
+    public Optional<U> getUser() {
         return user;
     }
 
-    public void setUser(Optional<Object> user) {
+    public void setUser(Optional<U> user) {
         this.user = user;
     }
 
-    public Optional<T> getSession() {
+    public Optional<S> getSession() {
         return session;
     }
 
-    public void setSession(Optional<T> session) {
+    public void setSession(Optional<S> session) {
         this.session = session;
     }
 }

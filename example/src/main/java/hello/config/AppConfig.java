@@ -4,6 +4,7 @@ package hello.config;
 import hello.controller.*;
 import hello.security.SessionBefore;
 import hello.security.TokenSession;
+import hello.security.User;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
@@ -17,15 +18,15 @@ import org.rootservices.otter.security.session.between.EncryptSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class AppConfig implements Configure<TokenSession> {
-    private AppFactory<TokenSession> appFactory;
+public class AppConfig implements Configure<TokenSession, User> {
+    private AppFactory<TokenSession, User> appFactory;
 
-    public AppConfig(AppFactory<TokenSession> appFactory) {
+    public AppConfig(AppFactory<TokenSession, User> appFactory) {
         this.appFactory = appFactory;
     }
 
     @Override
-    public void configure(Gateway<TokenSession> gateway) {
+    public void configure(Gateway<TokenSession, User> gateway) {
         // csrf
         CookieConfig csrfCookieConfig = new CookieConfig("csrf", false, -1);
         gateway.setCsrfCookieConfig(csrfCookieConfig);
@@ -42,13 +43,13 @@ public class AppConfig implements Configure<TokenSession> {
         gateway.setDecryptSession(sessionBeforeBetween);
 
         // TODO: should this be named differently? it is inconsistent with sessionBefore.
-        EncryptSession<TokenSession> encryptSession = appFactory.encryptSession(sessionCookieConfig, encKey);
+        EncryptSession<TokenSession, User> encryptSession = appFactory.encryptSession(sessionCookieConfig, encKey);
         gateway.setEncryptSession(encryptSession);
     }
 
     @Override
-    public void routes(Gateway<TokenSession> gateway) {
-        Route<TokenSession> notFoundRoute = new RouteBuilder<TokenSession>()
+    public void routes(Gateway<TokenSession, User> gateway) {
+        Route<TokenSession, User> notFoundRoute = new RouteBuilder<TokenSession, User>()
                 .resource(new NotFoundResource())
                 .before(new ArrayList<>())
                 .after(new ArrayList<>())

@@ -5,11 +5,11 @@ import org.rootservices.otter.security.session.Session;
 import java.util.regex.Matcher;
 
 
-public class MatchedRoute<T extends Session> {
+public class MatchedRoute<S extends Session, U> {
     private Matcher matcher;
-    private Route<T> route;
+    private Route<S, U> route;
 
-    public MatchedRoute(Matcher matcher, Route<T> route) {
+    public MatchedRoute(Matcher matcher, Route<S, U> route) {
         this.matcher = matcher;
         this.route = route;
     }
@@ -22,11 +22,11 @@ public class MatchedRoute<T extends Session> {
         this.matcher = matcher;
     }
 
-    public Route<T> getRoute() {
+    public Route<S, U> getRoute() {
         return route;
     }
 
-    public void setRoute(Route<T> route) {
+    public void setRoute(Route<S, U> route) {
         this.route = route;
     }
 }

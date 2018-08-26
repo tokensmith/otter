@@ -11,39 +11,39 @@ import org.rootservices.otter.security.session.Session;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class RouteBuilder<T extends Session> {
+public class RouteBuilder<S extends Session, U> {
     private Pattern pattern;
     private List<MimeType> contentTypes;
-    private Resource<T> resource;
-    private List<Between<T>> before;
-    private List<Between<T>> after;
+    private Resource<S, U> resource;
+    private List<Between<S, U>> before;
+    private List<Between<S, U>> after;
 
-    public RouteBuilder<T> path(String path) {
+    public RouteBuilder<S, U> path(String path) {
         this.pattern = Pattern.compile(path);
         return this;
     }
 
-    public RouteBuilder<T> contentTypes(List<MimeType> contentTypes) {
+    public RouteBuilder<S, U> contentTypes(List<MimeType> contentTypes) {
         this.contentTypes = contentTypes;
         return this;
     }
 
-    public RouteBuilder<T> resource(Resource<T> resource) {
+    public RouteBuilder<S, U> resource(Resource<S, U> resource) {
         this.resource = resource;
         return this;
     }
 
-    public RouteBuilder<T> before(List<Between<T>> before) {
+    public RouteBuilder<S, U> before(List<Between<S, U>> before) {
         this.before = before;
         return this;
     }
 
-    public RouteBuilder<T> after(List<Between<T>> after) {
+    public RouteBuilder<S, U> after(List<Between<S, U>> after) {
         this.after = after;
         return this;
     }
 
-    public Route<T> build() {
-        return new Route<T>(pattern, contentTypes, resource, before, after);
+    public Route<S, U> build() {
+        return new Route<S, U>(pattern, contentTypes, resource, before, after);
     }
 }
