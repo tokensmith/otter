@@ -61,11 +61,11 @@ public class OtterAppFactory<S extends Session, U> {
     }
 
     /**
-     * Make a JsonTranslator<T> used in RestResource
+     * Make a JsonTranslator used in RestResource
      *
      * @param clazz Class to be serialized
      * @param <T> Type to be serialized
-     * @return instance of a JsonTranslator intended for <T>
+     * @return instance of a JsonTranslator intended for T
      */
     public <T extends Translatable> JsonTranslator<T> jsonTranslator(Class<T> clazz) {
         return new JsonTranslator<T>(
