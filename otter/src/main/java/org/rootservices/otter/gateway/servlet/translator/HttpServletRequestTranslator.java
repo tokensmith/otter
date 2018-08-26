@@ -21,7 +21,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-public class HttpServletRequestTranslator<T extends Session>  {
+/**
+ * Translator for a HttpServletRequest to a Otter Request
+ *
+ * @param <S> Session implementation for application
+ * @param <U> User object, intended to be a authenticated user.
+ */
+public class HttpServletRequestTranslator<S extends Session, U>  {
     private static String PARAM_DELIMITER = "?";
     private static String EMPTY = "";
 
@@ -39,7 +45,7 @@ public class HttpServletRequestTranslator<T extends Session>  {
         this.mimeTypeTranslator = mimeTypeTranslator;
     }
 
-    public Request<T> from(HttpServletRequest containerRequest, byte[] containerBody) throws IOException {
+    public Request<S, U> from(HttpServletRequest containerRequest, byte[] containerBody) throws IOException {
 
         Method method = Method.valueOf(containerRequest.getMethod());
 
@@ -73,7 +79,7 @@ public class HttpServletRequestTranslator<T extends Session>  {
 
         String ipAddress = containerRequest.getRemoteAddr();
 
-        return new RequestBuilder<T>()
+        return new RequestBuilder<S, U>()
                 .matcher(Optional.empty())
                 .method(method)
                 .pathWithParams(pathWithParams)

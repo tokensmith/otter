@@ -1,13 +1,10 @@
 package org.rootservices.otter.security.csrf.between;
 
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.exception.CsrfException;
@@ -18,7 +15,7 @@ import org.rootservices.otter.security.session.Session;
 import java.util.List;
 import java.util.Optional;
 
-public class CheckCSRF<T extends Session>implements Between<T> {
+public class CheckCSRF<S extends Session, U> implements Between<S, U> {
     private String cookieName;
     private String formFieldName;
     private DoubleSubmitCSRF doubleSubmitCSRF;
@@ -35,7 +32,7 @@ public class CheckCSRF<T extends Session>implements Between<T> {
     }
 
     @Override
-    public void process(Method method, Request<T> request, Response<T> response) throws HaltException {
+    public void process(Method method, Request<S, U> request, Response<S> response) throws HaltException {
         Boolean ok;
         Cookie csrfCookie = request.getCookies().get(cookieName);
         List<String> formValue = request.getFormData().get(formFieldName);

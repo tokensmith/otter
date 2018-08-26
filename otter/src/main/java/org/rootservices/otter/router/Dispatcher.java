@@ -13,38 +13,38 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 
-public class Dispatcher<T extends Session> {
+public class Dispatcher<S extends Session, U> {
     public static final String CONTENT_TYPE_MISMATCH = "content-type does not match. url: {}, request content-type: {}, route content-type: {}";
     protected static Logger LOGGER = LogManager.getLogger(Dispatcher.class);
     private static String OTTER_PREFIX = "/app";
     private static String EMPTY = "";
-    private List<Route<T>> get = new ArrayList<>();
-    private List<Route<T>> post = new ArrayList<>();
-    private List<Route<T>> put = new ArrayList<>();
-    private List<Route<T>> patch = new ArrayList<>();
-    private List<Route<T>> delete = new ArrayList<>();
-    private List<Route<T>> connect = new ArrayList<>();
-    private List<Route<T>> options = new ArrayList<>();
-    private List<Route<T>> trace = new ArrayList<>();
-    private List<Route<T>> head = new ArrayList<>();
+    private List<Route<S, U>> get = new ArrayList<>();
+    private List<Route<S, U>> post = new ArrayList<>();
+    private List<Route<S, U>> put = new ArrayList<>();
+    private List<Route<S, U>> patch = new ArrayList<>();
+    private List<Route<S, U>> delete = new ArrayList<>();
+    private List<Route<S, U>> connect = new ArrayList<>();
+    private List<Route<S, U>> options = new ArrayList<>();
+    private List<Route<S, U>> trace = new ArrayList<>();
+    private List<Route<S, U>> head = new ArrayList<>();
 
 
-    public Optional<MatchedRoute<T>> find(Method method, String url) {
+    public Optional<MatchedRoute<S, U>> find(Method method, String url) {
         // this allows urls to resources to not have the otter prefix, /app
         String scrubbedUrl = url.replaceAll(OTTER_PREFIX, EMPTY);
 
-        Optional<MatchedRoute<T>> m = Optional.empty();
-        for(Route<T> route: routes(method)) {
+        Optional<MatchedRoute<S, U>> m = Optional.empty();
+        for(Route<S, U> route: routes(method)) {
             Matcher matcher = route.getPattern().matcher(scrubbedUrl);
             if (matcher.matches()) {
-                m = Optional.of(new MatchedRoute<T>(matcher, route));
+                m = Optional.of(new MatchedRoute<S, U>(matcher, route));
                 break;
             }
         }
         return m;
     }
 
-    protected List<Route<T>> routes(Method method) {
+    protected List<Route<S, U>> routes(Method method) {
         if (method == Method.GET) {
             return get;
         } else if (method == Method.POST) {
@@ -69,39 +69,39 @@ public class Dispatcher<T extends Session> {
         return new ArrayList<>();
     }
 
-    public List<Route<T>> getGet() {
+    public List<Route<S, U>> getGet() {
         return get;
     }
 
-    public List<Route<T>> getPost() {
+    public List<Route<S, U>> getPost() {
         return post;
     }
 
-    public List<Route<T>> getPut() {
+    public List<Route<S, U>> getPut() {
         return put;
     }
 
-    public List<Route<T>> getPatch() {
+    public List<Route<S, U>> getPatch() {
         return patch;
     }
 
-    public List<Route<T>> getDelete() {
+    public List<Route<S, U>> getDelete() {
         return delete;
     }
 
-    public List<Route<T>> getConnect() {
+    public List<Route<S, U>> getConnect() {
         return connect;
     }
 
-    public List<Route<T>> getOptions() {
+    public List<Route<S, U>> getOptions() {
         return options;
     }
 
-    public List<Route<T>> getTrace() {
+    public List<Route<S, U>> getTrace() {
         return trace;
     }
 
-    public List<Route<T>> getHead() {
+    public List<Route<S, U>> getHead() {
         return head;
     }
 }

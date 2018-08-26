@@ -14,7 +14,7 @@ public class Response<T extends Session> {
     private Optional<ByteArrayOutputStream> payload;
     private Optional<String> template;
     private Optional<Object> presenter;
-    private Optional<Session> session = Optional.empty();
+    private Optional<T> session = Optional.empty();
 
     public Response() {
     }
@@ -76,11 +76,11 @@ public class Response<T extends Session> {
         this.presenter = presenter;
     }
 
-    public Optional<Session> getSession() {
+    public Optional<T> getSession() {
         return session;
     }
 
-    public void setSession(Optional<Session> session) {
+    public void setSession(Optional<T> session) {
         this.session = session;
     }
 }

@@ -2,6 +2,7 @@ package org.rootservices.otter.security.csrf.between;
 
 import helper.FixtureFactory;
 import helper.entity.DummySession;
+import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -29,17 +30,17 @@ public class CheckCSRFTest {
     private static String FORM_FIELD_NAME = "CSRF";
     @Mock
     private DoubleSubmitCSRF mockDoubleSubmitCSRF;
-    private CheckCSRF<DummySession> subject;
+    private CheckCSRF<DummySession, DummyUser> subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new CheckCSRF<DummySession>(COOKIE_NAME, FORM_FIELD_NAME, mockDoubleSubmitCSRF);
+        subject = new CheckCSRF<DummySession, DummyUser>(COOKIE_NAME, FORM_FIELD_NAME, mockDoubleSubmitCSRF);
     }
 
     @Test
     public void processShouldBeOK() throws Exception {
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         String challengeToken = "challenge-token";
@@ -57,7 +58,7 @@ public class CheckCSRFTest {
 
     @Test
     public void processWhenDontMatchShouldReturnFalse() throws Exception {
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         Cookie cookie = FixtureFactory.makeCookie(COOKIE_NAME);
@@ -83,7 +84,7 @@ public class CheckCSRFTest {
 
     @Test
     public void processWhenFormValueIsNullReturnFalse() throws Exception {
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         Cookie cookie = FixtureFactory.makeCookie(COOKIE_NAME);
@@ -107,7 +108,7 @@ public class CheckCSRFTest {
 
     @Test
     public void processWhenCookieIsMissingShouldReturnFalse() throws Exception {
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         HaltException actual = null;

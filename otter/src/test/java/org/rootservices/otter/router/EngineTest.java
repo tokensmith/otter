@@ -2,6 +2,7 @@ package org.rootservices.otter.router;
 
 import helper.FixtureFactory;
 import helper.entity.DummySession;
+import helper.entity.DummyUser;
 import helper.entity.FakeResource;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,22 +28,22 @@ import static org.mockito.Mockito.when;
 
 public class EngineTest {
     @Mock
-    private Dispatcher<DummySession> mockDispatcher;
-    private Engine<DummySession> subject;
+    private Dispatcher<DummySession, DummyUser> mockDispatcher;
+    private Engine<DummySession, DummyUser> subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new Engine<DummySession>(mockDispatcher);
+        subject = new Engine<DummySession, DummyUser>(mockDispatcher);
     }
 
     @Test
     public void routeWhenMethodIsGetShouldMatch() throws Exception {
         String url = "foo";
-        Optional<MatchedRoute<DummySession>> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedRoute<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         request.setMethod(Method.GET);
         request.setPathWithParams(url);
         request.setContentType(json);
@@ -66,10 +67,10 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsPostShouldMatch() throws Exception {
         String url = "foo";
-        Optional<MatchedRoute<DummySession>> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedRoute<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         request.setMethod(Method.POST);
         request.setPathWithParams(url);
         request.setContentType(json);
@@ -93,10 +94,10 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsPutShouldMatch() throws Exception {
         String url = "foo";
-        Optional<MatchedRoute<DummySession>> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedRoute<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         request.setMethod(Method.PUT);
         request.setPathWithParams(url);
         request.setContentType(json);
@@ -120,10 +121,10 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsDeleteShouldMatch() throws Exception {
         String url = "foo";
-        Optional<MatchedRoute<DummySession>> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedRoute<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         request.setMethod(Method.DELETE);
         request.setPathWithParams(url);
         request.setContentType(json);
@@ -147,10 +148,10 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsConnectShouldMatch() throws Exception {
         String url = "foo";
-        Optional<MatchedRoute<DummySession>> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedRoute<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         request.setMethod(Method.CONNECT);
         request.setPathWithParams(url);
         request.setContentType(json);
@@ -174,10 +175,10 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsOptionsShouldMatch() throws Exception {
         String url = "foo";
-        Optional<MatchedRoute<DummySession>> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedRoute<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         request.setMethod(Method.OPTIONS);
         request.setPathWithParams(url);
         request.setContentType(json);
@@ -201,10 +202,10 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsTraceShouldMatch() throws Exception {
         String url = "foo";
-        Optional<MatchedRoute<DummySession>> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedRoute<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         request.setMethod(Method.TRACE);
         request.setPathWithParams(url);
         request.setContentType(json);
@@ -228,10 +229,10 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsHeadShouldMatch() throws Exception {
         String url = "foo";
-        Optional<MatchedRoute<DummySession>> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedRoute<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         request.setMethod(Method.HEAD);
         request.setPathWithParams(url);
         request.setContentType(json);
@@ -256,10 +257,10 @@ public class EngineTest {
     @Test
     public void routeWhenGetAndNoMatchedRouteShouldBeEmptyResponse() throws Exception {
         String url = "foo";
-        Optional<MatchedRoute<DummySession>> match = Optional.empty();
+        Optional<MatchedRoute<DummySession, DummyUser>> match = Optional.empty();
 
         MimeType json = new MimeTypeBuilder().json().build();
-        Request<DummySession> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         request.setMethod(Method.GET);
         request.setPathWithParams(url);
         request.setContentType(json);

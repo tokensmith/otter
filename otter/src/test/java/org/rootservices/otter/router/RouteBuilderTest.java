@@ -1,6 +1,7 @@
 package org.rootservices.otter.router;
 
 import helper.entity.DummySession;
+import helper.entity.DummyUser;
 import helper.entity.FakeResource;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,18 +18,18 @@ import static org.junit.Assert.*;
 
 
 public class RouteBuilderTest {
-    private RouteBuilder<DummySession> subject;
+    private RouteBuilder<DummySession, DummyUser> subject;
 
     @Before
     public void setUp() {
-        subject = new RouteBuilder<DummySession>();
+        subject = new RouteBuilder<DummySession, DummyUser>();
     }
 
     @Test
     public void pathShouldBeOK() {
         String regex = "/foo/(.*)";
 
-        Route<DummySession> actual = subject.path(regex).build();
+        Route<DummySession, DummyUser> actual = subject.path(regex).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPattern(), is(notNullValue()));
@@ -39,7 +40,7 @@ public class RouteBuilderTest {
     public void resourceShouldBeOK() {
         FakeResource resource = new FakeResource();
 
-        Route<DummySession> actual = subject.resource(resource).build();
+        Route<DummySession, DummyUser> actual = subject.resource(resource).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getResource(), is(notNullValue()));

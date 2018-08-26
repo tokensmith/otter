@@ -18,22 +18,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Gateway<T extends Session> {
-    protected Engine<T> engine;
-    protected Between<T> prepareCSRF;
-    protected Between<T> checkCSRF;
-    protected EncryptSession<T> encryptSession;
-    protected DecryptSession<T> decryptSession;
-    protected Route<T> notFoundRoute;
+/**
+ * Base implementation for integrating a gateway. A gateway translates the
+ * http delivery framework to otter and dispatches requests to resources. The
+ * http delivery framework objects must not go past this implementation into Otter's
+ * internals.
+ *
+ * Example extension is, ServletGateway.
+ *
+ * @param <S> Session implementation for application
+ * @param <U> User object, intended to be a authenticated user.
+ */
+public class Gateway<S extends Session, U> {
+    protected Engine<S, U> engine;
+    protected Between<S, U> prepareCSRF;
+    protected Between<S, U> checkCSRF;
+    protected EncryptSession<S, U> encryptSession;
+    protected DecryptSession<S, U> decryptSession;
+    protected Route<S, U> notFoundRoute;
 
-    public Gateway(Engine<T> engine, Between<T> prepareCSRF, Between<T> checkCSRF) {
+    public Gateway(Engine<S, U> engine, Between<S, U> prepareCSRF, Between<S, U> checkCSRF) {
         this.engine = engine;
         this.prepareCSRF = prepareCSRF;
         this.checkCSRF = checkCSRF;
     }
 
-    public void get(String path, Resource<T> resource) {
-        Route<T> route = new RouteBuilder<T>()
+    public void get(String path, Resource<S, U> resource) {
+        Route<S, U> route = new RouteBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -43,11 +54,11 @@ public class Gateway<T extends Session> {
         engine.getDispatcher().getGet().add(route);
     }
 
-    public void getCsrfProtect(String path, Resource<T> resource) {
-        List<Between<T>> before = new ArrayList<>();
+    public void getCsrfProtect(String path, Resource<S, U> resource) {
+        List<Between<S, U>> before = new ArrayList<>();
         before.add(prepareCSRF);
 
-        Route<T> route = new RouteBuilder<T>()
+        Route<S, U> route = new RouteBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -58,14 +69,14 @@ public class Gateway<T extends Session> {
         engine.getDispatcher().getGet().add(route);
     }
 
-    public void getCsrfAndSessionProtect(String path, Resource<T> resource) {
-        List<Between<T>> before = new ArrayList<>();
+    public void getCsrfAndSessionProtect(String path, Resource<S, U> resource) {
+        List<Between<S, U>> before = new ArrayList<>();
         before.add(prepareCSRF);
 
-        List<Between<T>> after = new ArrayList<>();
+        List<Between<S, U>> after = new ArrayList<>();
         after.add(encryptSession);
 
-        Route<T> route = new RouteBuilder<T>()
+        Route<S, U> route = new RouteBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -76,14 +87,14 @@ public class Gateway<T extends Session> {
         engine.getDispatcher().getGet().add(route);
     }
 
-    public void getSessionProtect(String path, Resource<T> resource) {
-        List<Between<T>> before = new ArrayList<>();
+    public void getSessionProtect(String path, Resource<S, U> resource) {
+        List<Between<S, U>> before = new ArrayList<>();
         before.add(decryptSession);
 
-        List<Between<T>> after = new ArrayList<>();
+        List<Between<S, U>> after = new ArrayList<>();
         after.add(encryptSession);
 
-        Route<T> route = new RouteBuilder<T>()
+        Route<S, U> route = new RouteBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -94,8 +105,8 @@ public class Gateway<T extends Session> {
         engine.getDispatcher().getGet().add(route);
     }
 
-    public void post(String path, Resource<T> resource) {
-        Route<T> route = new RouteBuilder<T>()
+    public void post(String path, Resource<S, U> resource) {
+        Route<S, U> route = new RouteBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -105,11 +116,11 @@ public class Gateway<T extends Session> {
         engine.getDispatcher().getPost().add(route);
     }
 
-    public void postCsrfProtect(String path, Resource<T> resource) {
-        List<Between<T>> before = new ArrayList<>();
+    public void postCsrfProtect(String path, Resource<S, U> resource) {
+        List<Between<S, U>> before = new ArrayList<>();
         before.add(checkCSRF);
 
-        Route<T> route = new RouteBuilder<T>()
+        Route<S, U> route = new RouteBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -120,15 +131,15 @@ public class Gateway<T extends Session> {
         engine.getDispatcher().getPost().add(route);
     }
 
-    public void postCsrfAndSessionProtect(String path, Resource<T> resource) {
-        List<Between<T>> before = new ArrayList<>();
+    public void postCsrfAndSessionProtect(String path, Resource<S, U> resource) {
+        List<Between<S, U>> before = new ArrayList<>();
         before.add(checkCSRF);
         before.add(decryptSession);
 
-        List<Between<T>> after = new ArrayList<>();
+        List<Between<S, U>> after = new ArrayList<>();
         after.add(encryptSession);
 
-        Route<T> route = new RouteBuilder<T>()
+        Route<S, U> route = new RouteBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -139,14 +150,14 @@ public class Gateway<T extends Session> {
         engine.getDispatcher().getPost().add(route);
     }
 
-    public void postCsrfAndSetSession(String path, Resource<T> resource) {
-        List<Between<T>> before = new ArrayList<>();
+    public void postCsrfAndSetSession(String path, Resource<S, U> resource) {
+        List<Between<S, U>> before = new ArrayList<>();
         before.add(checkCSRF);
 
-        List<Between<T>> after = new ArrayList<>();
+        List<Between<S, U>> after = new ArrayList<>();
         after.add(encryptSession);
 
-        Route<T> route = new RouteBuilder<T>()
+        Route<S, U> route = new RouteBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -157,14 +168,14 @@ public class Gateway<T extends Session> {
         engine.getDispatcher().getPost().add(route);
     }
 
-    public void postSessionProtect(String path, Resource<T> resource) {
-        List<Between<T>> before = new ArrayList<>();
+    public void postSessionProtect(String path, Resource<S, U> resource) {
+        List<Between<S, U>> before = new ArrayList<>();
         before.add(decryptSession);
 
-        List<Between<T>> after = new ArrayList<>();
+        List<Between<S, U>> after = new ArrayList<>();
         after.add(encryptSession);
 
-        Route<T> route = new RouteBuilder<T>()
+        Route<S, U> route = new RouteBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -175,8 +186,8 @@ public class Gateway<T extends Session> {
         engine.getDispatcher().getPost().add(route);
     }
 
-    public void put(String path, Resource<T> resource) {
-        Route<T> route = new RouteBuilder<T>()
+    public void put(String path, Resource<S, U> resource) {
+        Route<S, U> route = new RouteBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -186,8 +197,8 @@ public class Gateway<T extends Session> {
         engine.getDispatcher().getPut().add(route);
     }
 
-    public void patch(String path, Resource<T> resource) {
-        Route<T> route = new RouteBuilder<T>()
+    public void patch(String path, Resource<S, U> resource) {
+        Route<S, U> route = new RouteBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -197,8 +208,8 @@ public class Gateway<T extends Session> {
         engine.getDispatcher().getPatch().add(route);
     }
 
-    public void delete(String path, Resource<T> resource) {
-        Route<T> route = new RouteBuilder<T>()
+    public void delete(String path, Resource<S, U> resource) {
+        Route<S, U> route = new RouteBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -208,8 +219,8 @@ public class Gateway<T extends Session> {
         engine.getDispatcher().getDelete().add(route);
     }
 
-    public void connect(String path, Resource<T> resource) {
-        Route<T> route = new RouteBuilder<T>()
+    public void connect(String path, Resource<S, U> resource) {
+        Route<S, U> route = new RouteBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -219,8 +230,8 @@ public class Gateway<T extends Session> {
         engine.getDispatcher().getConnect().add(route);
     }
 
-    public void options(String path, Resource<T> resource) {
-        Route<T> route = new RouteBuilder<T>()
+    public void options(String path, Resource<S, U> resource) {
+        Route<S, U> route = new RouteBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -230,8 +241,8 @@ public class Gateway<T extends Session> {
         engine.getDispatcher().getOptions().add(route);
     }
 
-    public void trace(String path, Resource<T> resource) {
-        Route<T> route = new RouteBuilder<T>()
+    public void trace(String path, Resource<S, U> resource) {
+        Route<S, U> route = new RouteBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -241,8 +252,8 @@ public class Gateway<T extends Session> {
         engine.getDispatcher().getTrace().add(route);
     }
 
-    public void head(String path, Resource<T> resource) {
-        Route<T> route = new RouteBuilder<T>()
+    public void head(String path, Resource<S, U> resource) {
+        Route<S, U> route = new RouteBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -252,44 +263,44 @@ public class Gateway<T extends Session> {
         engine.getDispatcher().getHead().add(route);
     }
 
-    public void getRoute(Route<T> route) {
+    public void getRoute(Route<S, U> route) {
         engine.getDispatcher().getGet().add(route);
     }
 
-    public void postRoute(Route<T> route) {
+    public void postRoute(Route<S, U> route) {
         engine.getDispatcher().getPost().add(route);
     }
 
-    public void putRoute(Route<T> route) {
+    public void putRoute(Route<S, U> route) {
         engine.getDispatcher().getPut().add(route);
     }
 
-    public void patchRoute(Route<T> route) {
+    public void patchRoute(Route<S, U> route) {
         engine.getDispatcher().getPatch().add(route);
     }
 
-    public void deleteRoute(Route<T> route) {
+    public void deleteRoute(Route<S, U> route) {
         engine.getDispatcher().getDelete().add(route);
     }
 
-    public void connectRoute(Route<T> route) {
+    public void connectRoute(Route<S, U> route) {
         engine.getDispatcher().getConnect().add(route);
     }
 
-    public void optionsRoute(Route<T> route) {
+    public void optionsRoute(Route<S, U> route) {
         engine.getDispatcher().getOptions().add(route);
     }
 
-    public void traceRoute(Route<T> route) {
+    public void traceRoute(Route<S, U> route) {
         engine.getDispatcher().getTrace().add(route);
     }
 
-    public void headRoute(Route<T> route) {
+    public void headRoute(Route<S, U> route) {
         engine.getDispatcher().getHead().add(route);
     }
 
     // configuration methods below.
-    public void setNotFoundRoute(Route<T> notFoundRoute) {
+    public void setNotFoundRoute(Route<S, U> notFoundRoute) {
         this.notFoundRoute = notFoundRoute;
     }
 
@@ -316,7 +327,7 @@ public class Gateway<T extends Session> {
         return decryptSession;
     }
 
-    public void setDecryptSession(DecryptSession<T> decryptSession) {
+    public void setDecryptSession(DecryptSession<S, U> decryptSession) {
         this.decryptSession = decryptSession;
     }
 
@@ -324,7 +335,7 @@ public class Gateway<T extends Session> {
         return encryptSession;
     }
 
-    public void setEncryptSession(EncryptSession<T> encryptSession) {
+    public void setEncryptSession(EncryptSession<S, U> encryptSession) {
         this.encryptSession = encryptSession;
     }
 }

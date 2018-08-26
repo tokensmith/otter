@@ -21,8 +21,11 @@ import java.util.Optional;
 /**
  * Executed before a request reaches a resource to set the CSRF cookie and
  * assign it to the request.
+ *
+ * @param <S> Session implementation for application
+ * @param <U> User object, intended to be a authenticated user.
  */
-public class PrepareCSRF<T extends Session> implements Between<T> {
+public class PrepareCSRF<S extends Session, U> implements Between<S, U> {
     protected static Logger logger = LogManager.getLogger(PrepareCSRF.class);
     private CookieConfig cookieConfig;
     private DoubleSubmitCSRF doubleSubmitCSRF;
@@ -37,7 +40,7 @@ public class PrepareCSRF<T extends Session> implements Between<T> {
     }
 
     @Override
-    public void process(Method method, Request<T> request, Response<T> response) throws HaltException {
+    public void process(Method method, Request<S, U> request, Response<S> response) throws HaltException {
         if (response.getCookies().get(cookieConfig.getName()) == null) {
             String challengeToken = doubleSubmitCSRF.makeChallengeToken();
             try {

@@ -1,6 +1,6 @@
 package org.rootservices.otter.security.session.between;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.fasterxml.jackson.databind.ObjectReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,12 +24,8 @@ import org.rootservices.otter.security.session.between.exception.SessionDecryptE
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.exception.HaltException;
-import org.rootservices.otter.security.session.between.exception.SessionCtorException;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
@@ -37,8 +33,11 @@ import java.util.Optional;
 
 /**
  * A Between that will encrypt a session.
+ *
+ * @param <S> Session implementation for application
+ * @param <U> User object, intended to be a authenticated user.
  */
-public abstract class DecryptSession<T extends Session> implements Between<T> {
+public abstract class DecryptSession<S extends Session, U> implements Between<S, U> {
     public static final String NOT_A_JWT = "Session cookie was not a JWE: %s";
     public static final String COULD_NOT_GET_HEADER_JWE = "Session cookie did have a header member: %s";
     public static final String COULD_NOT_DESERIALIZE_JWE = "Session cookie could not be de-serialized to JSON: %s";
@@ -48,7 +47,7 @@ public abstract class DecryptSession<T extends Session> implements Between<T> {
     public static final String COOKIE_NOT_PRESENT = "session cookie not present.";
     protected static Logger LOGGER = LogManager.getLogger(DecryptSession.class);
 
-    private Class<T> clazz;
+    private Class<S> clazz;
     private String sessionCookieName;
     private JwtAppFactory jwtAppFactory;
     private SymmetricKey preferredKey;
@@ -56,7 +55,7 @@ public abstract class DecryptSession<T extends Session> implements Between<T> {
     private ObjectReader objectReader;
 
 
-    public DecryptSession(Class<T> clazz, String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectReader objectReader) {
+    public DecryptSession(Class<S> clazz, String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectReader objectReader) {
         this.clazz = clazz;
         this.sessionCookieName = sessionCookieName;
         this.jwtAppFactory = jwtAppFactory;
@@ -66,8 +65,8 @@ public abstract class DecryptSession<T extends Session> implements Between<T> {
     }
 
     @Override
-    public void process(Method method, Request<T> request, Response<T> response) throws HaltException {
-        Optional<T> session;
+    public void process(Method method, Request<S, U> request, Response<S> response) throws HaltException {
+        Optional<S> session;
         Cookie sessionCookie = request.getCookies().get(sessionCookieName);
 
         if (sessionCookie == null) {
@@ -94,19 +93,19 @@ public abstract class DecryptSession<T extends Session> implements Between<T> {
         // This is required because the after between, EncryptSession, does an .equals() to
         // determine if the session has changed. If it changed then it will be re encrypted.
         request.setSession(session);
-        T responseSession;
+        S responseSession;
 
         responseSession = copy(session.get());
         response.setSession(Optional.of(responseSession));
     }
 
     /**
-     * Copies T and then returns the copy.
+     * Copies S and then returns the copy.
      *
      * @param from the session to copy
      * @return an instance of T that is a copy of session
      */
-    abstract protected T copy(T from);
+    abstract protected S copy(S from);
 
     /**
      * This method will be called before a Halt Exception is thrown.
@@ -122,7 +121,7 @@ public abstract class DecryptSession<T extends Session> implements Between<T> {
         response.getCookies().remove(sessionCookieName);
     }
 
-    protected T decrypt(String encryptedSession) throws InvalidSessionException, SessionDecryptException {
+    protected S decrypt(String encryptedSession) throws InvalidSessionException, SessionDecryptException {
 
         // extract the header to figure out what key to use as cek.
         HeaderDeserializer headerDeserializer = jwtAppFactory.headerDeserializer();
@@ -156,8 +155,8 @@ public abstract class DecryptSession<T extends Session> implements Between<T> {
         return toSession(sessionPayload.getPayload());
     }
 
-    protected T toSession(byte[] json) {
-        T session = null;
+    protected S toSession(byte[] json) {
+        S session = null;
         ObjectReader localReader = objectReader.forType(clazz);
         try {
             session = localReader.readValue(json);

@@ -2,6 +2,7 @@ package helper;
 
 
 import helper.entity.DummySession;
+import helper.entity.DummyUser;
 import helper.entity.FakeResource;
 import io.netty.handler.codec.http.cookie.DefaultCookie;
 import org.rootservices.jwt.config.JwtAppFactory;
@@ -38,24 +39,24 @@ import java.util.regex.Pattern;
 public class FixtureFactory {
     private static JwtAppFactory jwtAppFactory = new JwtAppFactory();
 
-    public static Optional<MatchedRoute<DummySession>> makeMatch(String url) {
-        Route<DummySession> route = makeRoute(url);
+    public static Optional<MatchedRoute<DummySession, DummyUser>> makeMatch(String url) {
+        Route<DummySession, DummyUser> route = makeRoute(url);
         Matcher matcher = route.getPattern().matcher(url);
-        return  Optional.of(new MatchedRoute<DummySession>(matcher, route));
+        return  Optional.of(new MatchedRoute<DummySession, DummyUser>(matcher, route));
     }
 
-    public static Route<DummySession> makeRoute(String regex) {
+    public static Route<DummySession, DummyUser> makeRoute(String regex) {
         Pattern p = Pattern.compile(regex);
         FakeResource resource = new FakeResource();
-        return new Route<DummySession>(p, new ArrayList<MimeType>(), resource, new ArrayList<>(), new ArrayList<>());
+        return new Route<DummySession, DummyUser>(p, new ArrayList<MimeType>(), resource, new ArrayList<>(), new ArrayList<>());
     }
 
-    public static List<Route<DummySession>> makeRoutes() {
+    public static List<Route<DummySession, DummyUser>> makeRoutes() {
         return makeRoutes("/api/v1/foo/");
     }
 
-    public static List<Route<DummySession>> makeRoutes(String baseContext) {
-        List<Route<DummySession>> routes = new ArrayList<>();
+    public static List<Route<DummySession, DummyUser>> makeRoutes(String baseContext) {
+        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
         routes.add(makeRoute(baseContext + Regex.UUID.getRegex()));
         routes.add(makeRoute(baseContext + Regex.UUID.getRegex() + "/bar"));
         return routes;
@@ -66,16 +67,8 @@ public class FixtureFactory {
         return params;
     }
 
-    public static Request<DummySession> makeRequest() {
-        Request<DummySession> request = new Request<DummySession>();
-        request.setFormData(new HashMap<>());
-        request.setCookies(makeCookies());
-        request.setCsrfChallenge(Optional.empty());
-        return request;
-    }
-
-    public static Request<Session> makeRequestSession() {
-        Request<Session> request = new Request<Session>();
+    public static Request<DummySession, DummyUser> makeRequest() {
+        Request<DummySession, DummyUser> request = new Request<DummySession, DummyUser>();
         request.setFormData(new HashMap<>());
         request.setCookies(makeCookies());
         request.setCsrfChallenge(Optional.empty());

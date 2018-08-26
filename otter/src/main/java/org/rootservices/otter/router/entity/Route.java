@@ -11,14 +11,14 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 
-public class Route<T extends Session> {
+public class Route<S extends Session, U> {
     private Pattern pattern;
     private List<MimeType> contentTypes;
-    private Resource<T> resource;
-    private List<Between<T>> before;
-    private List<Between<T>> after;
+    private Resource<S, U> resource;
+    private List<Between<S, U>> before;
+    private List<Between<S, U>> after;
 
-    public Route(Pattern pattern, List<MimeType> contentTypes, Resource<T> resource, List<Between<T>> before, List<Between<T>> after) {
+    public Route(Pattern pattern, List<MimeType> contentTypes, Resource<S, U> resource, List<Between<S, U>> before, List<Between<S, U>> after) {
         this.pattern = pattern;
         this.contentTypes = contentTypes;
         this.resource = resource;
@@ -42,27 +42,27 @@ public class Route<T extends Session> {
         this.contentTypes = contentTypes;
     }
 
-    public Resource<T> getResource() {
+    public Resource<S, U> getResource() {
         return resource;
     }
 
-    public void setResource(Resource<T> resource) {
+    public void setResource(Resource<S, U> resource) {
         this.resource = resource;
     }
 
-    public List<Between<T>> getBefore() {
+    public List<Between<S, U>> getBefore() {
         return before;
     }
 
-    public void setBefore(List<Between<T>> before) {
+    public void setBefore(List<Between<S, U>> before) {
         this.before = before;
     }
 
-    public List<Between<T>> getAfter() {
+    public List<Between<S, U>> getAfter() {
         return after;
     }
 
-    public void setAfter(List<Between<T>> after) {
+    public void setAfter(List<Between<S, U>> after) {
         this.after = after;
     }
 
