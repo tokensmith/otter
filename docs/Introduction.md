@@ -1,6 +1,5 @@
 # Introduction
-If you ever get lost in the documentation then a note to, `otter@rootservices.org`
-and changes will be made to make it easier to understand.
+
 
 ## Contents
 - [Resource](#resource)
