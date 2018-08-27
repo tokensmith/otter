@@ -11,7 +11,9 @@ import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
-import org.rootservices.otter.router.RouteBuilder;
+import org.rootservices.otter.router.builder.CoordinateBuilder;
+import org.rootservices.otter.router.builder.RouteBuilder;
+import org.rootservices.otter.router.entity.Coordinate;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.security.session.between.EncryptSession;
 

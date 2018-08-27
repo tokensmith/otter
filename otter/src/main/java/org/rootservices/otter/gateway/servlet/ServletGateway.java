@@ -6,13 +6,18 @@ import org.apache.log4j.Logger;
 import org.rootservices.otter.controller.builder.ResponseBuilder;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.gateway.Gateway;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.entity.Between;
+import org.rootservices.otter.router.entity.Coordinate;
+import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.router.exception.HaltException;
+import org.rootservices.otter.router.exception.MediaTypeException;
+import org.rootservices.otter.router.exception.NotFoundException;
 import org.rootservices.otter.security.session.Session;
 
 
@@ -57,27 +62,25 @@ public class ServletGateway<S extends Session, U> extends Gateway<S, U>  {
                     .template(Optional.empty())
                     .build();
 
-            Boolean shouldHalt = false;
-            Optional<Response<S>> resourceResponse;
+            Response<S> resourceResponse;
             try {
                 resourceResponse = engine.route(request, response);
             } catch (HaltException e) {
-                // should not route to the notFoundRoute.
-                shouldHalt = true;
-                resourceResponse = Optional.of(response);
                 logger.debug(e.getMessage(), e);
+                resourceResponse = response;
+            } catch (NotFoundException e) {
+                Route<S, U> notFoundRoute = errorRoutes.get(StatusCode.NOT_FOUND);
+                resourceResponse = engine.executeResourceMethod(notFoundRoute, request, response);
+            } catch (MediaTypeException e) {
+                Route<S, U> notFoundRoute = errorRoutes.get(StatusCode.UNSUPPORTED_MEDIA_TYPE);
+                resourceResponse = engine.executeResourceMethod(notFoundRoute, request, response);
             }
 
-            // route to not found if it wasn't halted.
-            if (!shouldHalt && !resourceResponse.isPresent()) {
-                resourceResponse = Optional.of(engine.executeResourceMethod(notFoundRoute, request, response));
-            }
+            httpServletResponseMerger.merge(containerResponse, containerRequest.getCookies(), resourceResponse);
+            httpServletRequestMerger.merge(containerRequest, resourceResponse);
 
-            httpServletResponseMerger.merge(containerResponse, containerRequest.getCookies(), resourceResponse.get());
-            httpServletRequestMerger.merge(containerRequest, resourceResponse.get());
-
-            if (resourceResponse.get().getPayload().isPresent()) {
-                gatewayResponse.setPayload(Optional.of(resourceResponse.get().getPayload().get().toByteArray()));
+            if (resourceResponse.getPayload().isPresent()) {
+                gatewayResponse.setPayload(Optional.of(resourceResponse.getPayload().get().toByteArray()));
             } else {
                 gatewayResponse.setPayload(Optional.empty());
             }

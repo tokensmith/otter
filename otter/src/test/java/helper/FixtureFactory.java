@@ -4,7 +4,6 @@ package helper;
 import helper.entity.DummySession;
 import helper.entity.DummyUser;
 import helper.entity.FakeResource;
-import io.netty.handler.codec.http.cookie.DefaultCookie;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwk.Use;
@@ -16,8 +15,6 @@ import org.rootservices.jwt.jws.serialization.SecureJwtSerializer;
 import org.rootservices.jwt.serialization.JwtSerde;
 import org.rootservices.jwt.serialization.exception.JsonToJwtException;
 import org.rootservices.jwt.serialization.exception.JwtToJsonException;
-import org.rootservices.otter.controller.Resource;
-import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.builder.ResponseBuilder;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
@@ -25,11 +22,13 @@ import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.controller.header.HeaderValue;
-import org.rootservices.otter.router.entity.MatchedRoute;
+import org.rootservices.otter.router.builder.CoordinateBuilder;
+import org.rootservices.otter.router.builder.RouteBuilder;
+import org.rootservices.otter.router.entity.MatchedCoordinate;
 import org.rootservices.otter.router.entity.Regex;
+import org.rootservices.otter.router.entity.Coordinate;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.security.csrf.CsrfClaims;
-import org.rootservices.otter.security.session.Session;
 
 import java.time.OffsetDateTime;
 import java.util.*;
@@ -39,26 +38,40 @@ import java.util.regex.Pattern;
 public class FixtureFactory {
     private static JwtAppFactory jwtAppFactory = new JwtAppFactory();
 
-    public static Optional<MatchedRoute<DummySession, DummyUser>> makeMatch(String url) {
-        Route<DummySession, DummyUser> route = makeRoute(url);
+    public static Optional<MatchedCoordinate<DummySession, DummyUser>> makeMatch(String url) {
+        Coordinate<DummySession, DummyUser> route = makeCoordinate(url);
         Matcher matcher = route.getPattern().matcher(url);
-        return  Optional.of(new MatchedRoute<DummySession, DummyUser>(matcher, route));
+        return  Optional.of(new MatchedCoordinate<DummySession, DummyUser>(matcher, route));
     }
 
-    public static Route<DummySession, DummyUser> makeRoute(String regex) {
-        Pattern p = Pattern.compile(regex);
+    public static Route<DummySession, DummyUser> makeRoute() {
         FakeResource resource = new FakeResource();
-        return new Route<DummySession, DummyUser>(p, new ArrayList<MimeType>(), resource, new ArrayList<>(), new ArrayList<>());
+        return new RouteBuilder<DummySession, DummyUser>()
+                .resource(resource)
+                .before(new ArrayList<>())
+                .after(new ArrayList<>())
+                .build();
     }
 
-    public static List<Route<DummySession, DummyUser>> makeRoutes() {
-        return makeRoutes("/api/v1/foo/");
+    public static Coordinate<DummySession, DummyUser> makeCoordinate(String regex) {
+        FakeResource resource = new FakeResource();
+        return new CoordinateBuilder<DummySession, DummyUser>()
+            .path(regex)
+            .contentTypes(new ArrayList<MimeType>())
+            .resource(resource)
+            .before(new ArrayList<>())
+            .after(new ArrayList<>())
+            .build();
     }
 
-    public static List<Route<DummySession, DummyUser>> makeRoutes(String baseContext) {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
-        routes.add(makeRoute(baseContext + Regex.UUID.getRegex()));
-        routes.add(makeRoute(baseContext + Regex.UUID.getRegex() + "/bar"));
+    public static List<Coordinate<DummySession, DummyUser>> makeCoordinates() {
+        return makeCoordinates("/api/v1/foo/");
+    }
+
+    public static List<Coordinate<DummySession, DummyUser>> makeCoordinates(String baseContext) {
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
+        routes.add(makeCoordinate(baseContext + Regex.UUID.getRegex()));
+        routes.add(makeCoordinate(baseContext + Regex.UUID.getRegex() + "/bar"));
         return routes;
     }
 

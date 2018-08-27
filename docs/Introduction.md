@@ -105,11 +105,11 @@ Generally, routes instruct Otter which Resource should handle a given request. B
 that will be handled by the `HelloResorce`. 
  
 ```java
-    // route a get request.
+    // coordinate a get request.
     gateway.get(HelloResource.URL, new HelloResource());
 ```
 
-When Otter cannot find a route to satisfy a request it will use it's `notFoundRoute`.
+When Otter cannot find a coordinate to satisfy a request it will use it's `notFoundRoute`.
 This should be configured in the `routes(Gateway gateway)` implementation.
 
 ```java
@@ -121,6 +121,16 @@ This should be configured in the `routes(Gateway gateway)` implementation.
 
     gateway.setNotFoundRoute(notFoundRoute);
 ```
+
+### Error Handling
+Error handling can be configured globally or it can be specified per coordinate.
+
+404, 415 - logically makes sense for a coordinate b/c it never ran a between.
+500 - may not since it may have been caused by a between.
+
+#### Global
+
+#### Route level
 
 ### Embedded Container
 
@@ -163,7 +173,7 @@ Otter supports CSRF protection by implementing the double submit strategy.
 
 Here is an example of how to protect a login page:
 
-Use the csrf routing interface to route requests to your resource.
+Use the csrf routing interface to coordinate requests to your resource.
 
 ```java
     servletGateway.getCsrfProtect(LoginResource.URL, new LoginResource());

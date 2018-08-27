@@ -5,9 +5,9 @@ import helper.entity.DummySession;
 import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.otter.router.entity.MatchedRoute;
+import org.rootservices.otter.router.entity.MatchedCoordinate;
 import org.rootservices.otter.router.entity.Method;
-import org.rootservices.otter.router.entity.Route;
+import org.rootservices.otter.router.entity.Coordinate;
 
 
 import java.util.List;
@@ -26,32 +26,32 @@ public class DispatcherTest {
     public void setUp() {
 
         subject = new Dispatcher<DummySession, DummyUser>();
-        List<Route<DummySession, DummyUser>> getRoutes = FixtureFactory.makeRoutes("get");
-        subject.getGet().addAll(getRoutes);
+        List<Coordinate<DummySession, DummyUser>> getCoordinates = FixtureFactory.makeCoordinates("get");
+        subject.getGet().addAll(getCoordinates);
 
-        List<Route<DummySession, DummyUser>> postRoutes = FixtureFactory.makeRoutes("post");
-        subject.getPost().addAll(postRoutes);
+        List<Coordinate<DummySession, DummyUser>> postCoordinates = FixtureFactory.makeCoordinates("post");
+        subject.getPost().addAll(postCoordinates);
 
-        List<Route<DummySession, DummyUser>> patchRoutes = FixtureFactory.makeRoutes("patch");
-        subject.getPatch().addAll(patchRoutes);
+        List<Coordinate<DummySession, DummyUser>> patchCoordinates = FixtureFactory.makeCoordinates("patch");
+        subject.getPatch().addAll(patchCoordinates);
 
-        List<Route<DummySession, DummyUser>> putRoutes = FixtureFactory.makeRoutes("put");
-        subject.getPut().addAll(putRoutes);
+        List<Coordinate<DummySession, DummyUser>> putCoordinates = FixtureFactory.makeCoordinates("put");
+        subject.getPut().addAll(putCoordinates);
 
-        List<Route<DummySession, DummyUser>> deleteRoutes = FixtureFactory.makeRoutes("delete");
-        subject.getDelete().addAll(deleteRoutes);
+        List<Coordinate<DummySession, DummyUser>> deleteCoordinates = FixtureFactory.makeCoordinates("delete");
+        subject.getDelete().addAll(deleteCoordinates);
 
-        List<Route<DummySession, DummyUser>> connectRoutes = FixtureFactory.makeRoutes("connect");
-        subject.getConnect().addAll(connectRoutes);
+        List<Coordinate<DummySession, DummyUser>> connectCoordinates = FixtureFactory.makeCoordinates("connect");
+        subject.getConnect().addAll(connectCoordinates);
 
-        List<Route<DummySession, DummyUser>> optionRoutes = FixtureFactory.makeRoutes("option");
-        subject.getOptions().addAll(optionRoutes);
+        List<Coordinate<DummySession, DummyUser>> optionCoordinates = FixtureFactory.makeCoordinates("option");
+        subject.getOptions().addAll(optionCoordinates);
 
-        List<Route<DummySession, DummyUser>> traceRoutes = FixtureFactory.makeRoutes("trace");
-        subject.getTrace().addAll(traceRoutes);
+        List<Coordinate<DummySession, DummyUser>> traceCoordinates = FixtureFactory.makeCoordinates("trace");
+        subject.getTrace().addAll(traceCoordinates);
 
-        List<Route<DummySession, DummyUser>> headRoutes = FixtureFactory.makeRoutes("head");
-        subject.getHead().addAll(headRoutes);
+        List<Coordinate<DummySession, DummyUser>> headCoordinates = FixtureFactory.makeCoordinates("head");
+        subject.getHead().addAll(headCoordinates);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class DispatcherTest {
         UUID id = UUID.randomUUID();
         String url = "get" + id.toString();
 
-        Optional<MatchedRoute<DummySession, DummyUser>> actual = subject.find(Method.GET, url);
+        Optional<MatchedCoordinate<DummySession, DummyUser>> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -68,7 +68,7 @@ public class DispatcherTest {
         assertThat(actual.get().getMatcher().groupCount(), is(1));
         assertThat(actual.get().getMatcher().group(0), is(url));
         assertThat(actual.get().getMatcher().group(1), is(id.toString()));
-        assertThat(actual.get().getRoute(), is(notNullValue()));
+        assertThat(actual.get().getCoordinate(), is(notNullValue()));
     }
 
     @Test
@@ -77,7 +77,7 @@ public class DispatcherTest {
         String url = "get" + id.toString() + "/bar";
 
 
-        Optional<MatchedRoute<DummySession, DummyUser>> actual = subject.find(Method.GET, url);
+        Optional<MatchedCoordinate<DummySession, DummyUser>> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -86,7 +86,7 @@ public class DispatcherTest {
         assertThat(actual.get().getMatcher().groupCount(), is(1));
         assertThat(actual.get().getMatcher().group(0), is(url));
         assertThat(actual.get().getMatcher().group(1), is(id.toString()));
-        assertThat(actual.get().getRoute(), is(notNullValue()));
+        assertThat(actual.get().getCoordinate(), is(notNullValue()));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class DispatcherTest {
         UUID id = UUID.randomUUID();
         String url = "/get/v2/" + id.toString() + "/bar";
 
-        Optional<MatchedRoute<DummySession, DummyUser>> actual = subject.find(Method.GET, url);
+        Optional<MatchedCoordinate<DummySession, DummyUser>> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(false));

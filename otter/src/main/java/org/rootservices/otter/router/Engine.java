@@ -4,11 +4,11 @@ package org.rootservices.otter.router;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
-import org.rootservices.otter.router.entity.Between;
-import org.rootservices.otter.router.entity.MatchedRoute;
-import org.rootservices.otter.router.entity.Method;
-import org.rootservices.otter.router.entity.Route;
+import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.router.entity.*;
 import org.rootservices.otter.router.exception.HaltException;
+import org.rootservices.otter.router.exception.MediaTypeException;
+import org.rootservices.otter.router.exception.NotFoundException;
 import org.rootservices.otter.security.session.Session;
 
 import java.util.List;
@@ -21,26 +21,32 @@ public class Engine<S extends Session, U> {
         this.dispatcher = dispatcher;
     }
 
-    public Optional<Response<S>> route(Request<S, U> request, Response<S> response) throws HaltException {
-        Optional<MatchedRoute<S, U>> matchedRoute = dispatcher.find(
+    public Response<S> route(Request<S, U> request, Response<S> response) throws HaltException, MediaTypeException, NotFoundException {
+        Response<S> resourceResponse;
+        Optional<MatchedCoordinate<S, U>> matchedCoordinate = dispatcher.find(
                 request.getMethod(), request.getPathWithParams()
         );
 
-        Optional<Response<S>> resourceResponse = Optional.empty();
-        if (matchedRoute.isPresent()) {
-            request.setMatcher(Optional.of(matchedRoute.get().getMatcher()));
-            Response<S> r;
-
+        if (matches(matchedCoordinate, request.getContentType())) {
+            request.setMatcher(Optional.of(matchedCoordinate.get().getMatcher()));
             try {
-                r = executeResourceMethod(matchedRoute.get().getRoute(), request, response);
+                resourceResponse = executeResourceMethod(matchedCoordinate.get().getCoordinate().getRoute(), request, response);
             } catch (HaltException e) {
                 throw e;
             }
-
-            resourceResponse = Optional.of(r);
+        } else if (matchedCoordinate.isPresent()) {
+            throw new MediaTypeException("");
+        } else {
+            throw new NotFoundException("");
         }
 
         return resourceResponse;
+    }
+
+    protected Boolean matches(Optional<MatchedCoordinate<S, U>> matchedCoordinate, MimeType contentType) {
+        return matchedCoordinate.isPresent()
+                && ((matchedCoordinate.get().getCoordinate().getContentTypes().size() == 0)
+                || (matchedCoordinate.get().getCoordinate().getContentTypes().size() > 0 && matchedCoordinate.get().getCoordinate().getContentTypes().contains(contentType)));
     }
 
     public Response<S> executeResourceMethod(Route<S, U> route, Request<S, U> request, Response<S> response) throws HaltException {
@@ -75,7 +81,7 @@ public class Engine<S extends Session, U> {
         }
 
         try {
-            executeBetween(route.getAfter(), method, request, response);
+            executeBetween(route.getAfter(), method, request, resourceResponse);
         } catch (HaltException e) {
             throw e;
         }

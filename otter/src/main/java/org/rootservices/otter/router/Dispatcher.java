@@ -3,9 +3,9 @@ package org.rootservices.otter.router;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.rootservices.otter.router.entity.MatchedRoute;
+import org.rootservices.otter.router.entity.MatchedCoordinate;
 import org.rootservices.otter.router.entity.Method;
-import org.rootservices.otter.router.entity.Route;
+import org.rootservices.otter.router.entity.Coordinate;
 import org.rootservices.otter.security.session.Session;
 
 import java.util.ArrayList;
@@ -18,33 +18,33 @@ public class Dispatcher<S extends Session, U> {
     protected static Logger LOGGER = LogManager.getLogger(Dispatcher.class);
     private static String OTTER_PREFIX = "/app";
     private static String EMPTY = "";
-    private List<Route<S, U>> get = new ArrayList<>();
-    private List<Route<S, U>> post = new ArrayList<>();
-    private List<Route<S, U>> put = new ArrayList<>();
-    private List<Route<S, U>> patch = new ArrayList<>();
-    private List<Route<S, U>> delete = new ArrayList<>();
-    private List<Route<S, U>> connect = new ArrayList<>();
-    private List<Route<S, U>> options = new ArrayList<>();
-    private List<Route<S, U>> trace = new ArrayList<>();
-    private List<Route<S, U>> head = new ArrayList<>();
+    private List<Coordinate<S, U>> get = new ArrayList<>();
+    private List<Coordinate<S, U>> post = new ArrayList<>();
+    private List<Coordinate<S, U>> put = new ArrayList<>();
+    private List<Coordinate<S, U>> patch = new ArrayList<>();
+    private List<Coordinate<S, U>> delete = new ArrayList<>();
+    private List<Coordinate<S, U>> connect = new ArrayList<>();
+    private List<Coordinate<S, U>> options = new ArrayList<>();
+    private List<Coordinate<S, U>> trace = new ArrayList<>();
+    private List<Coordinate<S, U>> head = new ArrayList<>();
 
 
-    public Optional<MatchedRoute<S, U>> find(Method method, String url) {
+    public Optional<MatchedCoordinate<S, U>> find(Method method, String url) {
         // this allows urls to resources to not have the otter prefix, /app
         String scrubbedUrl = url.replaceAll(OTTER_PREFIX, EMPTY);
 
-        Optional<MatchedRoute<S, U>> m = Optional.empty();
-        for(Route<S, U> route: routes(method)) {
+        Optional<MatchedCoordinate<S, U>> m = Optional.empty();
+        for(Coordinate<S, U> route: coordinates(method)) {
             Matcher matcher = route.getPattern().matcher(scrubbedUrl);
             if (matcher.matches()) {
-                m = Optional.of(new MatchedRoute<S, U>(matcher, route));
+                m = Optional.of(new MatchedCoordinate<S, U>(matcher, route));
                 break;
             }
         }
         return m;
     }
 
-    protected List<Route<S, U>> routes(Method method) {
+    protected List<Coordinate<S, U>> coordinates(Method method) {
         if (method == Method.GET) {
             return get;
         } else if (method == Method.POST) {
@@ -69,39 +69,39 @@ public class Dispatcher<S extends Session, U> {
         return new ArrayList<>();
     }
 
-    public List<Route<S, U>> getGet() {
+    public List<Coordinate<S, U>> getGet() {
         return get;
     }
 
-    public List<Route<S, U>> getPost() {
+    public List<Coordinate<S, U>> getPost() {
         return post;
     }
 
-    public List<Route<S, U>> getPut() {
+    public List<Coordinate<S, U>> getPut() {
         return put;
     }
 
-    public List<Route<S, U>> getPatch() {
+    public List<Coordinate<S, U>> getPatch() {
         return patch;
     }
 
-    public List<Route<S, U>> getDelete() {
+    public List<Coordinate<S, U>> getDelete() {
         return delete;
     }
 
-    public List<Route<S, U>> getConnect() {
+    public List<Coordinate<S, U>> getConnect() {
         return connect;
     }
 
-    public List<Route<S, U>> getOptions() {
+    public List<Coordinate<S, U>> getOptions() {
         return options;
     }
 
-    public List<Route<S, U>> getTrace() {
+    public List<Coordinate<S, U>> getTrace() {
         return trace;
     }
 
-    public List<Route<S, U>> getHead() {
+    public List<Coordinate<S, U>> getHead() {
         return head;
     }
 }

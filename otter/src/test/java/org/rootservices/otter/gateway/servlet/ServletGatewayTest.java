@@ -16,9 +16,11 @@ import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
 import org.rootservices.otter.router.Dispatcher;
 import org.rootservices.otter.router.Engine;
-import org.rootservices.otter.router.RouteBuilder;
+import org.rootservices.otter.router.builder.CoordinateBuilder;
 import org.rootservices.otter.router.entity.Between;
+import org.rootservices.otter.router.entity.Coordinate;
 import org.rootservices.otter.router.entity.Route;
+import org.rootservices.otter.router.exception.NotFoundException;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -79,7 +81,7 @@ public class ServletGatewayTest {
         when(mockHttpServletRequestTranslator.from(mockContainerRequest, containerBody))
                 .thenReturn(request);
 
-        Optional<Response<DummySession>> resourceResponse = Optional.of(FixtureFactory.makeResponse());
+        Response<DummySession> resourceResponse = FixtureFactory.makeResponse();
 
         when(mockEngine.route(eq(request), any())).thenReturn(resourceResponse);
 
@@ -88,13 +90,13 @@ public class ServletGatewayTest {
         // should never call the not found resource.
         verify(mockEngine, never()).executeResourceMethod(any(), any(), any());
 
-        verify(mockHttpServletResponseMerger).merge(mockContainerResponse, null, resourceResponse.get());
-        verify(mockHttpServletRequestMerger).merge(mockContainerRequest, resourceResponse.get());
+        verify(mockHttpServletResponseMerger).merge(mockContainerResponse, null, resourceResponse);
+        verify(mockHttpServletRequestMerger).merge(mockContainerRequest, resourceResponse);
     }
 
     @Test
     public void processRequestResourceNotFoundShouldExecuteNotFound() throws Exception {
-        Route<DummySession, DummyUser> notFoundRoute = FixtureFactory.makeRoute("");
+        Route<DummySession, DummyUser> notFoundRoute = FixtureFactory.makeRoute();
         subject.setNotFoundRoute(notFoundRoute);
 
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
@@ -107,7 +109,8 @@ public class ServletGatewayTest {
                 .thenReturn(request);
 
         // original engine call does NOT return a response.
-        when(mockEngine.route(eq(request), any())).thenReturn(Optional.empty());
+        NotFoundException nfe = new NotFoundException("");
+        doThrow(nfe).when(mockEngine).route(eq(request), any());
 
         Response<DummySession> resourceResponse = FixtureFactory.makeResponse();
         when(mockEngine.executeResourceMethod(
@@ -132,7 +135,7 @@ public class ServletGatewayTest {
 
     @Test
     public void processRequestWhenExceptionShouldReturnServerError() throws Exception {
-        Route<DummySession, DummyUser> notFoundRoute = FixtureFactory.makeRoute("");
+        Route<DummySession, DummyUser> notFoundRoute = FixtureFactory.makeRoute();
         subject.setNotFoundRoute(notFoundRoute);
 
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
@@ -154,7 +157,7 @@ public class ServletGatewayTest {
 
     @Test
     public void processRequestWhenIOExceptionShouldReturnServerError() throws Exception {
-        Route<DummySession, DummyUser> notFoundRoute = FixtureFactory.makeRoute("");
+        Route<DummySession, DummyUser> notFoundRoute = FixtureFactory.makeRoute();
         subject.setNotFoundRoute(notFoundRoute);
 
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
@@ -177,7 +180,7 @@ public class ServletGatewayTest {
     @Test
     public void getShouldAddRouteWithEmptyBeforeAfter() {
 
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getGet()).thenReturn(routes);
 
         FakeResource resource = new FakeResource();
@@ -185,18 +188,23 @@ public class ServletGatewayTest {
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));
-        assertThat(routes.get(0).getResource(), is(resource));
+        assertThat(routes.get(0).getRoute(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(resource));
         assertThat(routes.get(0).getPattern(), is(notNullValue()));
         assertThat(routes.get(0).getPattern().pattern(), is("/path"));
-        assertThat(routes.get(0).getBefore(), is(notNullValue()));
-        assertThat(routes.get(0).getBefore().size(), is(0));
-        assertThat(routes.get(0).getAfter(), is(notNullValue()));
-        assertThat(routes.get(0).getAfter().size(), is(0));
+        assertThat(routes.get(0).getRoute().getBefore(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getBefore().size(), is(0));
+        assertThat(routes.get(0).getRoute().getAfter(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getAfter().size(), is(0));
+
+        assertThat(routes.get(0).getErrorRoutes(), is(notNullValue()));
+        assertThat(routes.get(0).getErrorRoutes().size(), is(0));
     }
 
     @Test
     public void getCsrfProtectShouldAddRouteWithCsrfBeforeEmptyAfter() {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getGet()).thenReturn(routes);
 
         FakeResource resource = new FakeResource();
@@ -204,20 +212,25 @@ public class ServletGatewayTest {
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));
-        assertThat(routes.get(0).getResource(), is(resource));
+        assertThat(routes.get(0).getRoute(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(resource));
         assertThat(routes.get(0).getPattern(), is(notNullValue()));
         assertThat(routes.get(0).getPattern().pattern(), is("/path"));
-        assertThat(routes.get(0).getBefore(), is(notNullValue()));
-        assertThat(routes.get(0).getBefore().size(), is(1));
-        assertThat(routes.get(0).getBefore().get(0), is(mockPrepareCSRF));
-        assertThat(routes.get(0).getAfter(), is(notNullValue()));
-        assertThat(routes.get(0).getAfter().size(), is(0));
+        assertThat(routes.get(0).getRoute().getBefore(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getBefore().size(), is(1));
+        assertThat(routes.get(0).getRoute().getBefore().get(0), is(mockPrepareCSRF));
+        assertThat(routes.get(0).getRoute().getAfter(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getAfter().size(), is(0));
+
+        assertThat(routes.get(0).getErrorRoutes(), is(notNullValue()));
+        assertThat(routes.get(0).getErrorRoutes().size(), is(0));
 
     }
 
     @Test
     public void postShouldAddRouteWithEmptyBeforeAfter() {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getPost()).thenReturn(routes);
 
         FakeResource resource = new FakeResource();
@@ -225,18 +238,23 @@ public class ServletGatewayTest {
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));
-        assertThat(routes.get(0).getResource(), is(resource));
+        assertThat(routes.get(0).getRoute(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(resource));
         assertThat(routes.get(0).getPattern(), is(notNullValue()));
         assertThat(routes.get(0).getPattern().pattern(), is("/path"));
-        assertThat(routes.get(0).getBefore(), is(notNullValue()));
-        assertThat(routes.get(0).getBefore().size(), is(0));
-        assertThat(routes.get(0).getAfter(), is(notNullValue()));
-        assertThat(routes.get(0).getAfter().size(), is(0));
+        assertThat(routes.get(0).getRoute().getBefore(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getBefore().size(), is(0));
+        assertThat(routes.get(0).getRoute().getAfter(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getAfter().size(), is(0));
+
+        assertThat(routes.get(0).getErrorRoutes(), is(notNullValue()));
+        assertThat(routes.get(0).getErrorRoutes().size(), is(0));
     }
 
     @Test
     public void postCsrfProtectShouldAddRouteWithCsrfBeforeEmptyAfter() {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getPost()).thenReturn(routes);
 
         FakeResource resource = new FakeResource();
@@ -244,19 +262,24 @@ public class ServletGatewayTest {
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));
-        assertThat(routes.get(0).getResource(), is(resource));
+        assertThat(routes.get(0).getRoute(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(resource));
         assertThat(routes.get(0).getPattern(), is(notNullValue()));
         assertThat(routes.get(0).getPattern().pattern(), is("/path"));
-        assertThat(routes.get(0).getBefore(), is(notNullValue()));
-        assertThat(routes.get(0).getBefore().size(), is(1));
-        assertThat(routes.get(0).getBefore().get(0), is(mockCheckCSRF));
-        assertThat(routes.get(0).getAfter(), is(notNullValue()));
-        assertThat(routes.get(0).getAfter().size(), is(0));
+        assertThat(routes.get(0).getRoute().getBefore(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getBefore().size(), is(1));
+        assertThat(routes.get(0).getRoute().getBefore().get(0), is(mockCheckCSRF));
+        assertThat(routes.get(0).getRoute().getAfter(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getAfter().size(), is(0));
+
+        assertThat(routes.get(0).getErrorRoutes(), is(notNullValue()));
+        assertThat(routes.get(0).getErrorRoutes().size(), is(0));
     }
 
     @Test
     public void putShouldAddRouteWithEmptyBeforeAfter() {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getPut()).thenReturn(routes);
 
         Resource<DummySession, DummyUser> resource = new FakeResource();
@@ -264,18 +287,20 @@ public class ServletGatewayTest {
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));
-        assertThat(routes.get(0).getResource(), is(resource));
+        assertThat(routes.get(0).getRoute(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(resource));
         assertThat(routes.get(0).getPattern(), is(notNullValue()));
         assertThat(routes.get(0).getPattern().pattern(), is("/path"));
-        assertThat(routes.get(0).getBefore(), is(notNullValue()));
-        assertThat(routes.get(0).getBefore().size(), is(0));
-        assertThat(routes.get(0).getAfter(), is(notNullValue()));
-        assertThat(routes.get(0).getAfter().size(), is(0));
+        assertThat(routes.get(0).getRoute().getBefore(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getBefore().size(), is(0));
+        assertThat(routes.get(0).getRoute().getAfter(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getAfter().size(), is(0));
     }
 
     @Test
     public void patchShouldAddRouteWithEmptyBeforeAfter() {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getPatch()).thenReturn(routes);
 
         Resource<DummySession, DummyUser> resource = new FakeResource();
@@ -283,18 +308,23 @@ public class ServletGatewayTest {
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));
-        assertThat(routes.get(0).getResource(), is(resource));
+        assertThat(routes.get(0).getRoute(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(resource));
         assertThat(routes.get(0).getPattern(), is(notNullValue()));
         assertThat(routes.get(0).getPattern().pattern(), is("/path"));
-        assertThat(routes.get(0).getBefore(), is(notNullValue()));
-        assertThat(routes.get(0).getBefore().size(), is(0));
-        assertThat(routes.get(0).getAfter(), is(notNullValue()));
-        assertThat(routes.get(0).getAfter().size(), is(0));
+        assertThat(routes.get(0).getRoute().getBefore(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getBefore().size(), is(0));
+        assertThat(routes.get(0).getRoute().getAfter(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getAfter().size(), is(0));
+
+        assertThat(routes.get(0).getErrorRoutes(), is(notNullValue()));
+        assertThat(routes.get(0).getErrorRoutes().size(), is(0));
     }
 
     @Test
     public void deleteShouldAddRouteWithEmptyBeforeAfter() {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getDelete()).thenReturn(routes);
 
         Resource<DummySession, DummyUser> resource = new FakeResource();
@@ -302,18 +332,23 @@ public class ServletGatewayTest {
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));
-        assertThat(routes.get(0).getResource(), is(resource));
+        assertThat(routes.get(0).getRoute(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(resource));
         assertThat(routes.get(0).getPattern(), is(notNullValue()));
         assertThat(routes.get(0).getPattern().pattern(), is("/path"));
-        assertThat(routes.get(0).getBefore(), is(notNullValue()));
-        assertThat(routes.get(0).getBefore().size(), is(0));
-        assertThat(routes.get(0).getAfter(), is(notNullValue()));
-        assertThat(routes.get(0).getAfter().size(), is(0));
+        assertThat(routes.get(0).getRoute().getBefore(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getBefore().size(), is(0));
+        assertThat(routes.get(0).getRoute().getAfter(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getAfter().size(), is(0));
+
+        assertThat(routes.get(0).getErrorRoutes(), is(notNullValue()));
+        assertThat(routes.get(0).getErrorRoutes().size(), is(0));
     }
 
     @Test
     public void connectShouldAddRouteWithEmptyBeforeAfter() {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getConnect()).thenReturn(routes);
 
         FakeResource resource = new FakeResource();
@@ -321,18 +356,23 @@ public class ServletGatewayTest {
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));
-        assertThat(routes.get(0).getResource(), is(resource));
+        assertThat(routes.get(0).getRoute(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(resource));
         assertThat(routes.get(0).getPattern(), is(notNullValue()));
         assertThat(routes.get(0).getPattern().pattern(), is("/path"));
-        assertThat(routes.get(0).getBefore(), is(notNullValue()));
-        assertThat(routes.get(0).getBefore().size(), is(0));
-        assertThat(routes.get(0).getAfter(), is(notNullValue()));
-        assertThat(routes.get(0).getAfter().size(), is(0));
+        assertThat(routes.get(0).getRoute().getBefore(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getBefore().size(), is(0));
+        assertThat(routes.get(0).getRoute().getAfter(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getAfter().size(), is(0));
+
+        assertThat(routes.get(0).getErrorRoutes(), is(notNullValue()));
+        assertThat(routes.get(0).getErrorRoutes().size(), is(0));
     }
 
     @Test
     public void optionsShouldAddRouteWithEmptyBeforeAfter() {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getOptions()).thenReturn(routes);
 
         FakeResource resource = new FakeResource();
@@ -340,18 +380,23 @@ public class ServletGatewayTest {
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));
-        assertThat(routes.get(0).getResource(), is(resource));
+        assertThat(routes.get(0).getRoute(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(resource));
         assertThat(routes.get(0).getPattern(), is(notNullValue()));
         assertThat(routes.get(0).getPattern().pattern(), is("/path"));
-        assertThat(routes.get(0).getBefore(), is(notNullValue()));
-        assertThat(routes.get(0).getBefore().size(), is(0));
-        assertThat(routes.get(0).getAfter(), is(notNullValue()));
-        assertThat(routes.get(0).getAfter().size(), is(0));
+        assertThat(routes.get(0).getRoute().getBefore(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getBefore().size(), is(0));
+        assertThat(routes.get(0).getRoute().getAfter(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getAfter().size(), is(0));
+
+        assertThat(routes.get(0).getErrorRoutes(), is(notNullValue()));
+        assertThat(routes.get(0).getErrorRoutes().size(), is(0));
     }
 
     @Test
     public void traceShouldAddRouteWithEmptyBeforeAfter() {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getTrace()).thenReturn(routes);
 
         FakeResource resource = new FakeResource();
@@ -359,18 +404,23 @@ public class ServletGatewayTest {
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));
-        assertThat(routes.get(0).getResource(), is(resource));
+        assertThat(routes.get(0).getRoute(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(resource));
         assertThat(routes.get(0).getPattern(), is(notNullValue()));
         assertThat(routes.get(0).getPattern().pattern(), is("/path"));
-        assertThat(routes.get(0).getBefore(), is(notNullValue()));
-        assertThat(routes.get(0).getBefore().size(), is(0));
-        assertThat(routes.get(0).getAfter(), is(notNullValue()));
-        assertThat(routes.get(0).getAfter().size(), is(0));
+        assertThat(routes.get(0).getRoute().getBefore(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getBefore().size(), is(0));
+        assertThat(routes.get(0).getRoute().getAfter(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getAfter().size(), is(0));
+
+        assertThat(routes.get(0).getErrorRoutes(), is(notNullValue()));
+        assertThat(routes.get(0).getErrorRoutes().size(), is(0));
     }
 
     @Test
     public void headShouldAddRouteWithEmptyBeforeAfter() {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getHead()).thenReturn(routes);
 
         FakeResource resource = new FakeResource();
@@ -378,22 +428,27 @@ public class ServletGatewayTest {
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));
-        assertThat(routes.get(0).getResource(), is(resource));
+        assertThat(routes.get(0).getRoute(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getResource(), is(resource));
         assertThat(routes.get(0).getPattern(), is(notNullValue()));
         assertThat(routes.get(0).getPattern().pattern(), is("/path"));
-        assertThat(routes.get(0).getBefore(), is(notNullValue()));
-        assertThat(routes.get(0).getBefore().size(), is(0));
-        assertThat(routes.get(0).getAfter(), is(notNullValue()));
-        assertThat(routes.get(0).getAfter().size(), is(0));
+        assertThat(routes.get(0).getRoute().getBefore(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getBefore().size(), is(0));
+        assertThat(routes.get(0).getRoute().getAfter(), is(notNullValue()));
+        assertThat(routes.get(0).getRoute().getAfter().size(), is(0));
+
+        assertThat(routes.get(0).getErrorRoutes(), is(notNullValue()));
+        assertThat(routes.get(0).getErrorRoutes().size(), is(0));
     }
 
     @Test
     public void getRouteShouldAddRoute() throws Exception {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getGet()).thenReturn(routes);
 
-        Route<DummySession, DummyUser> route = new RouteBuilder<DummySession, DummyUser>().build();
-        subject.getRoute(route);
+        Coordinate<DummySession, DummyUser> route = new CoordinateBuilder<DummySession, DummyUser>().build();
+        subject.getCoordinate(route);
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));
@@ -403,11 +458,11 @@ public class ServletGatewayTest {
 
     @Test
     public void postRouteShouldAddRoute() throws Exception {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getPost()).thenReturn(routes);
 
-        Route<DummySession, DummyUser> route = new RouteBuilder<DummySession, DummyUser>().build();
-        subject.postRoute(route);
+        Coordinate<DummySession, DummyUser> route = new CoordinateBuilder<DummySession, DummyUser>().build();
+        subject.postCoordinate(route);
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));
@@ -416,11 +471,11 @@ public class ServletGatewayTest {
 
     @Test
     public void putRouteShouldAddRoute() throws Exception {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getPut()).thenReturn(routes);
 
-        Route<DummySession, DummyUser> route = new RouteBuilder<DummySession, DummyUser>().build();
-        subject.putRoute(route);
+        Coordinate<DummySession, DummyUser> route = new CoordinateBuilder<DummySession, DummyUser>().build();
+        subject.putCoordinate(route);
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));
@@ -430,11 +485,11 @@ public class ServletGatewayTest {
 
     @Test
     public void patchRouteShouldAddRoute() throws Exception {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getPatch()).thenReturn(routes);
 
-        Route<DummySession, DummyUser> route = new RouteBuilder<DummySession, DummyUser>().build();
-        subject.patchRoute(route);
+        Coordinate<DummySession, DummyUser> route = new CoordinateBuilder<DummySession, DummyUser>().build();
+        subject.patchCoordinate(route);
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));
@@ -444,11 +499,11 @@ public class ServletGatewayTest {
 
     @Test
     public void deleteRouteShouldAddRoute() throws Exception {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getDelete()).thenReturn(routes);
 
-        Route<DummySession, DummyUser> route = new RouteBuilder<DummySession, DummyUser>().build();
-        subject.deleteRoute(route);
+        Coordinate<DummySession, DummyUser> route = new CoordinateBuilder<DummySession, DummyUser>().build();
+        subject.deleteCoordinate(route);
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));
@@ -457,11 +512,11 @@ public class ServletGatewayTest {
 
     @Test
     public void connectRouteShouldAddRoute() throws Exception {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getConnect()).thenReturn(routes);
 
-        Route<DummySession, DummyUser> route = new RouteBuilder<DummySession, DummyUser>().build();
-        subject.connectRoute(route);
+        Coordinate<DummySession, DummyUser> route = new CoordinateBuilder<DummySession, DummyUser>().build();
+        subject.connectCoordinate(route);
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));
@@ -470,11 +525,11 @@ public class ServletGatewayTest {
 
     @Test
     public void optionsRouteShouldAddRoute() throws Exception {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getOptions()).thenReturn(routes);
 
-        Route<DummySession, DummyUser> route = new RouteBuilder<DummySession, DummyUser>().build();
-        subject.optionsRoute(route);
+        Coordinate<DummySession, DummyUser> route = new CoordinateBuilder<DummySession, DummyUser>().build();
+        subject.optionsCoordinate(route);
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));
@@ -483,11 +538,11 @@ public class ServletGatewayTest {
 
     @Test
     public void traceRouteShouldAddRoute() throws Exception {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getTrace()).thenReturn(routes);
 
-        Route<DummySession, DummyUser> route = new RouteBuilder<DummySession, DummyUser>().build();
-        subject.traceRoute(route);
+        Coordinate<DummySession, DummyUser> route = new CoordinateBuilder<DummySession, DummyUser>().build();
+        subject.traceCoordinate(route);
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));
@@ -496,11 +551,11 @@ public class ServletGatewayTest {
 
     @Test
     public void headRouteShouldAddRoute() throws Exception {
-        List<Route<DummySession, DummyUser>> routes = new ArrayList<>();
+        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
         when(mockDispatcher.getHead()).thenReturn(routes);
 
-        Route<DummySession, DummyUser> route = new RouteBuilder<DummySession, DummyUser>().build();
-        subject.headRoute(route);
+        Coordinate<DummySession, DummyUser> route = new CoordinateBuilder<DummySession, DummyUser>().build();
+        subject.headCoordinate(route);
 
         assertThat(routes, is(notNullValue()));
         assertThat(routes.size(), is(1));

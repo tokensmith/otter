@@ -43,11 +43,25 @@ public class CheckCSRF<S extends Session, U> implements Between<S, U> {
         }
 
         if(!ok) {
-            response.setStatusCode(StatusCode.FORBIDDEN);
-            throw new CsrfException(HALT_MSG);
+            CsrfException haltException = new CsrfException(HALT_MSG);
+            onHalt(haltException, response);
+            throw haltException;
         } else {
             request.setCsrfChallenge(Optional.of(formValue.get(0)));
         }
+    }
+
+    /**
+     * This method will be called before a Halt Exception is thrown.
+     * Override this method if you wish to change the behavior on the
+     * response right before a Halt Exception is going to be thrown.
+     * An Example would be, you may want to redirect the user to a login page.
+     *
+     * @param e a HaltException
+     * @param response a Response
+     */
+    protected void onHalt(HaltException e, Response response) {
+        response.setStatusCode(StatusCode.FORBIDDEN);
     }
 
     public String getCookieName() {

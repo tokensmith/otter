@@ -6,8 +6,8 @@ import helper.entity.FakeResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.mime.MimeType;
-import org.rootservices.otter.router.entity.Route;
-import org.rootservices.otter.security.session.Session;
+import org.rootservices.otter.router.builder.CoordinateBuilder;
+import org.rootservices.otter.router.entity.Coordinate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,19 +17,19 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 
-public class RouteBuilderTest {
-    private RouteBuilder<DummySession, DummyUser> subject;
+public class CoordinateBuilderTest {
+    private CoordinateBuilder<DummySession, DummyUser> subject;
 
     @Before
     public void setUp() {
-        subject = new RouteBuilder<DummySession, DummyUser>();
+        subject = new CoordinateBuilder<DummySession, DummyUser>();
     }
 
     @Test
     public void pathShouldBeOK() {
         String regex = "/foo/(.*)";
 
-        Route<DummySession, DummyUser> actual = subject.path(regex).build();
+        Coordinate<DummySession, DummyUser> actual = subject.path(regex).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPattern(), is(notNullValue()));
@@ -40,11 +40,15 @@ public class RouteBuilderTest {
     public void resourceShouldBeOK() {
         FakeResource resource = new FakeResource();
 
-        Route<DummySession, DummyUser> actual = subject.resource(resource).build();
+        Coordinate<DummySession, DummyUser> actual = subject.resource(resource).build();
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getResource(), is(notNullValue()));
-        assertThat(actual.getResource(), is(resource));
+        assertThat(actual.getRoute(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(resource));
+
+        assertThat(actual.getErrorRoutes(), is(notNullValue()));
+        assertThat(actual.getErrorRoutes().size(), is(0));
     }
 
     @Test
@@ -53,18 +57,22 @@ public class RouteBuilderTest {
         List<MimeType> contentTypes = new ArrayList<>();
         FakeResource resource = new FakeResource();
 
-        Route actual = subject.path(regex)
+        Coordinate actual = subject.path(regex)
                 .contentTypes(contentTypes)
                 .resource(resource)
                 .build();
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getResource(), is(notNullValue()));
-        assertThat(actual.getResource(), is(resource));
+        assertThat(actual.getRoute(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(resource));
         assertThat(actual.getPattern(), is(notNullValue()));
         assertThat(actual.getPattern().pattern(), is(regex));
         assertThat(actual.getContentTypes(), is(notNullValue()));
         assertThat(actual.getContentTypes().size(), is(0));
+
+        assertThat(actual.getErrorRoutes(), is(notNullValue()));
+        assertThat(actual.getErrorRoutes().size(), is(0));
     }
 
 }
