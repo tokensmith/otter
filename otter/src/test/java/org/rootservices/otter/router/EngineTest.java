@@ -336,6 +336,7 @@ public class EngineTest {
     public void routeWhenGetAndNoMatchedRouteShouldThrowMediaTypeException() throws Exception {
         String url = "foo";
         Coordinate<DummySession, DummyUser> coordinate = new CoordinateBuilder<DummySession, DummyUser>()
+                .path(url)
                 .contentTypes(Arrays.asList(new MimeTypeBuilder().jwt().build()))
                 .build();
 

@@ -21,6 +21,7 @@ import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Coordinate;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
+import org.rootservices.otter.router.exception.MediaTypeException;
 import org.rootservices.otter.router.exception.NotFoundException;
 
 
@@ -96,6 +97,17 @@ public class ServletGatewayTest {
     }
 
     @Test
+    public void setErrorRouteShouldAssign() {
+        Route<DummySession, DummyUser> notFoundRoute = FixtureFactory.makeRoute();
+
+        subject.setErrorRoute(StatusCode.NOT_FOUND, notFoundRoute);
+
+        Route<DummySession, DummyUser> actual = subject.getErrorRoute(StatusCode.NOT_FOUND);
+
+        assertThat(actual, is(notFoundRoute));
+    }
+
+    @Test
     public void processRequestResourceNotFoundShouldExecuteNotFound() throws Exception {
         Route<DummySession, DummyUser> notFoundRoute = FixtureFactory.makeRoute();
         subject.setErrorRoute(StatusCode.NOT_FOUND, notFoundRoute);
@@ -125,6 +137,45 @@ public class ServletGatewayTest {
         // should call the not found resource.
         verify(mockEngine).executeResourceMethod(
                 eq(notFoundRoute),
+                eq(request),
+                any()
+        );
+
+        verify(mockHttpServletResponseMerger).merge(mockContainerResponse, null, resourceResponse);
+        verify(mockHttpServletRequestMerger).merge(mockContainerRequest, resourceResponse);
+
+    }
+
+    @Test
+    public void processRequestUnSupportedMediaTypeShouldExecuteMediaTypeResource() throws Exception {
+        Route<DummySession, DummyUser> mediaTypeRoute = FixtureFactory.makeRoute();
+        subject.setErrorRoute(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaTypeRoute);
+
+        HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
+        byte[] containerBody = null;
+
+        Request<DummySession, DummyUser> request = new Request<DummySession, DummyUser>();
+
+        when(mockHttpServletRequestTranslator.from(mockContainerRequest, containerBody))
+                .thenReturn(request);
+
+        // original engine call does NOT return a response.
+        MediaTypeException nfe = new MediaTypeException("");
+        doThrow(nfe).when(mockEngine).route(eq(request), any());
+
+        Response<DummySession> resourceResponse = FixtureFactory.makeResponse();
+        when(mockEngine.executeResourceMethod(
+                eq(mediaTypeRoute),
+                eq(request),
+                any()
+        )).thenReturn(resourceResponse);
+
+        subject.processRequest(mockContainerRequest, mockContainerResponse, containerBody);
+
+        // should call the not found resource.
+        verify(mockEngine).executeResourceMethod(
+                eq(mediaTypeRoute),
                 eq(request),
                 any()
         );

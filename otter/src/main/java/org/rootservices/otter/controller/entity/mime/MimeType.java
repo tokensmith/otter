@@ -45,10 +45,12 @@ public class MimeType {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof MimeType)) return false;
-        MimeType mimeType = (MimeType) o;
-        return Objects.equals(getType(), mimeType.getType()) &&
-                Objects.equals(getSubType(), mimeType.getSubType()) &&
-                Objects.equals(getParameters(), mimeType.getParameters());
+        MimeType that = (MimeType) o;
+        return Objects.equals(getType(), that.getType()) &&
+                Objects.equals(getSubType(), that.getSubType()) &&
+                that.getParameters().size() == this.getParameters().size() &&
+                that.getParameters().entrySet().stream().anyMatch(
+                    e -> this.getParameters().get(e.getKey()).equals(e.getValue()));
     }
 
     @Override

@@ -13,7 +13,6 @@ import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.entity.Between;
-import org.rootservices.otter.router.entity.Coordinate;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.router.exception.MediaTypeException;
@@ -72,8 +71,8 @@ public class ServletGateway<S extends Session, U> extends Gateway<S, U>  {
                 Route<S, U> notFoundRoute = errorRoutes.get(StatusCode.NOT_FOUND);
                 resourceResponse = engine.executeResourceMethod(notFoundRoute, request, response);
             } catch (MediaTypeException e) {
-                Route<S, U> notFoundRoute = errorRoutes.get(StatusCode.UNSUPPORTED_MEDIA_TYPE);
-                resourceResponse = engine.executeResourceMethod(notFoundRoute, request, response);
+                Route<S, U> mediaTypeRoute = errorRoutes.get(StatusCode.UNSUPPORTED_MEDIA_TYPE);
+                resourceResponse = engine.executeResourceMethod(mediaTypeRoute, request, response);
             }
 
             httpServletResponseMerger.merge(containerResponse, containerRequest.getCookies(), resourceResponse);

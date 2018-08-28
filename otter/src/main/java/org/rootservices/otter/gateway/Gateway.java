@@ -51,7 +51,7 @@ public class Gateway<S extends Session, U> {
     public Coordinate<S, U> add(Method method, String path, Resource<S, U> resource, List<MimeType> contentTypes) {
         Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
                 .path(path)
-                .contentTypes(new ArrayList<>())
+                .contentTypes(contentTypes)
                 .resource(resource)
                 .before(new ArrayList<>())
                 .after(new ArrayList<>())
@@ -223,9 +223,12 @@ public class Gateway<S extends Session, U> {
         add(Method.HEAD, path, resource, new ArrayList<>());
     }
 
-    // configuration methods below.
     public void setErrorRoute(StatusCode statusCode, Route<S, U> errorRoute) {
         this.errorRoutes.put(statusCode, errorRoute);
+    }
+
+    public Route<S, U> getErrorRoute(StatusCode statusCode) {
+        return this.errorRoutes.get(statusCode);
     }
 
     public void setCsrfCookieConfig(CookieConfig csrfCookieConfig) {

@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class Engine<S extends Session, U> {
+    private static String MEDIA_TYPE_MSG = "Unsupported Media Type: %s";
+    private static String NOT_FOUND_MSG = "Not Found: %s %s";
     private Dispatcher<S, U> dispatcher;
 
     public Engine(Dispatcher<S, U> dispatcher) {
@@ -35,9 +37,9 @@ public class Engine<S extends Session, U> {
                 throw e;
             }
         } else if (matchedCoordinate.isPresent()) {
-            throw new MediaTypeException("");
+            throw new MediaTypeException(String.format(MEDIA_TYPE_MSG, request.getContentType()));
         } else {
-            throw new NotFoundException("");
+            throw new NotFoundException(String.format(NOT_FOUND_MSG, request.getMethod(), request.getPathWithParams()));
         }
 
         return resourceResponse;

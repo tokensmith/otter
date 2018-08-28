@@ -15,10 +15,12 @@ import org.rootservices.otter.gateway.Gateway;
 import org.rootservices.otter.router.builder.CoordinateBuilder;
 import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.Coordinate;
+import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.security.session.between.EncryptSession;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class AppConfig implements Configure<TokenSession, User> {
@@ -52,19 +54,17 @@ public class AppConfig implements Configure<TokenSession, User> {
 
     @Override
     public void routes(Gateway<TokenSession, User> gateway) {
-        Route<TokenSession, User> notFoundRoute = new RouteBuilder<TokenSession, User>()
-                .resource(new NotFoundResource())
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
+        errorRoutes(gateway);
 
-        gateway.setErrorRoute(StatusCode.NOT_FOUND, notFoundRoute);
 
-        MimeType json = new MimeTypeBuilder().json().build();
 
+        // does not require content-type
         gateway.get(HelloResource.URL, new HelloResource());
-        gateway.get(HelloRestResource.URL, appFactory.helloRestResource());
-        gateway.post(HelloRestResource.URL, appFactory.helloRestResource());
+
+        // requires content type.
+        MimeType json = new MimeTypeBuilder().json().build();
+        gateway.add(Method.GET, HelloRestResource.URL, appFactory.helloRestResource(), Arrays.asList(json));
+        gateway.add(Method.POST, HelloRestResource.URL, appFactory.helloRestResource(), Arrays.asList(json));
 
         // csrf
         LoginResource login = new LoginResource();
@@ -84,5 +84,23 @@ public class AppConfig implements Configure<TokenSession, User> {
         // session
         gateway.getSessionProtect(ProtectedResource.URL, new ProtectedResource());
         gateway.postSessionProtect(ProtectedResource.URL, new ProtectedResource());
+    }
+
+    public void errorRoutes(Gateway<TokenSession, User> gateway) {
+        Route<TokenSession, User> notFoundRoute = new RouteBuilder<TokenSession, User>()
+                .resource(new NotFoundResource())
+                .before(new ArrayList<>())
+                .after(new ArrayList<>())
+                .build();
+
+        gateway.setErrorRoute(StatusCode.NOT_FOUND, notFoundRoute);
+
+        Route<TokenSession, User> unSupportedMediaTypeRoute = new RouteBuilder<TokenSession, User>()
+                .resource(new UnSupportedMediaTypeRoute())
+                .before(new ArrayList<>())
+                .after(new ArrayList<>())
+                .build();
+
+        gateway.setErrorRoute(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaTypeRoute);
     }
 }
