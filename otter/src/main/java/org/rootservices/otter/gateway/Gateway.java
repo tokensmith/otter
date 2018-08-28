@@ -5,10 +5,12 @@ import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.builder.CoordinateBuilder;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Coordinate;
+import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.security.csrf.between.CheckCSRF;
 import org.rootservices.otter.security.csrf.between.PrepareCSRF;
@@ -46,7 +48,7 @@ public class Gateway<S extends Session, U> {
         this.checkCSRF = checkCSRF;
     }
 
-    public void get(String path, Resource<S, U> resource) {
+    public Coordinate<S, U> add(Method method, String path, Resource<S, U> resource, List<MimeType> contentTypes) {
         Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
@@ -54,7 +56,18 @@ public class Gateway<S extends Session, U> {
                 .before(new ArrayList<>())
                 .after(new ArrayList<>())
                 .build();
-        engine.getDispatcher().getGet().add(coordinate);
+
+        engine.getDispatcher().coordinates(method).add(coordinate);
+        return coordinate;
+    }
+
+    public Coordinate<S, U> add(Method method, Coordinate<S, U> coordinate) {
+        engine.getDispatcher().coordinates(method).add(coordinate);
+        return coordinate;
+    }
+
+    public void get(String path, Resource<S, U> resource) {
+        add(Method.GET, path, resource, new ArrayList<>());
     }
 
     public void getCsrfProtect(String path, Resource<S, U> resource) {
@@ -69,7 +82,7 @@ public class Gateway<S extends Session, U> {
                 .after(new ArrayList<>())
                 .build();
 
-        engine.getDispatcher().getGet().add(coordinate);
+        add(Method.GET, coordinate);
     }
 
     public void getCsrfAndSessionProtect(String path, Resource<S, U> resource) {
@@ -87,7 +100,7 @@ public class Gateway<S extends Session, U> {
                 .after(after)
                 .build();
 
-        engine.getDispatcher().getGet().add(coordinate);
+        add(Method.GET, coordinate);
     }
 
     public void getSessionProtect(String path, Resource<S, U> resource) {
@@ -105,18 +118,11 @@ public class Gateway<S extends Session, U> {
                 .after(after)
                 .build();
 
-        engine.getDispatcher().getGet().add(coordinate);
+        add(Method.GET, coordinate);
     }
 
     public void post(String path, Resource<S, U> resource) {
-        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
-                .path(path)
-                .contentTypes(new ArrayList<>())
-                .resource(resource)
-                .after(new ArrayList<>())
-                .before(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getPost().add(coordinate);
+        add(Method.POST, path, resource, new ArrayList<>());
     }
 
     public void postCsrfProtect(String path, Resource<S, U> resource) {
@@ -131,7 +137,7 @@ public class Gateway<S extends Session, U> {
                 .after(new ArrayList<>())
                 .build();
 
-        engine.getDispatcher().getPost().add(coordinate);
+        add(Method.POST, coordinate);
     }
 
     public void postCsrfAndSessionProtect(String path, Resource<S, U> resource) {
@@ -150,7 +156,7 @@ public class Gateway<S extends Session, U> {
                 .after(after)
                 .build();
 
-        engine.getDispatcher().getPost().add(coordinate);
+        add(Method.POST, coordinate);
     }
 
     public void postCsrfAndSetSession(String path, Resource<S, U> resource) {
@@ -168,7 +174,7 @@ public class Gateway<S extends Session, U> {
                 .after(after)
                 .build();
 
-        engine.getDispatcher().getPost().add(coordinate);
+        add(Method.POST, coordinate);
     }
 
     public void postSessionProtect(String path, Resource<S, U> resource) {
@@ -186,120 +192,71 @@ public class Gateway<S extends Session, U> {
                 .after(after)
                 .build();
 
-        engine.getDispatcher().getPost().add(coordinate);
+        add(Method.POST, coordinate);
     }
 
     public void put(String path, Resource<S, U> resource) {
-        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
-                .path(path)
-                .contentTypes(new ArrayList<>())
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getPut().add(coordinate);
+        add(Method.PUT, path, resource, new ArrayList<>());
     }
 
     public void patch(String path, Resource<S, U> resource) {
-        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
-                .path(path)
-                .contentTypes(new ArrayList<>())
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getPatch().add(coordinate);
+        add(Method.PATCH, path, resource, new ArrayList<>());
     }
 
     public void delete(String path, Resource<S, U> resource) {
-        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
-                .path(path)
-                .contentTypes(new ArrayList<>())
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getDelete().add(coordinate);
+        add(Method.DELETE, path, resource, new ArrayList<>());
     }
 
     public void connect(String path, Resource<S, U> resource) {
-        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
-                .path(path)
-                .contentTypes(new ArrayList<>())
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getConnect().add(coordinate);
+        add(Method.CONNECT, path, resource, new ArrayList<>());
     }
 
     public void options(String path, Resource<S, U> resource) {
-        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
-                .path(path)
-                .contentTypes(new ArrayList<>())
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getOptions().add(coordinate);
+        add(Method.OPTIONS, path, resource, new ArrayList<>());
     }
 
     public void trace(String path, Resource<S, U> resource) {
-        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
-                .path(path)
-                .contentTypes(new ArrayList<>())
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getTrace().add(coordinate);
+        add(Method.TRACE, path, resource, new ArrayList<>());
     }
 
     public void head(String path, Resource<S, U> resource) {
-        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
-                .path(path)
-                .contentTypes(new ArrayList<>())
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getHead().add(coordinate);
+        add(Method.HEAD, path, resource, new ArrayList<>());
     }
 
     public void getCoordinate(Coordinate<S, U> coordinate) {
-        engine.getDispatcher().getGet().add(coordinate);
+        add(Method.GET, coordinate);
     }
 
     public void postCoordinate(Coordinate<S, U> coordinate) {
-        engine.getDispatcher().getPost().add(coordinate);
+        add(Method.POST, coordinate);
     }
 
     public void putCoordinate(Coordinate<S, U> coordinate) {
-        engine.getDispatcher().getPut().add(coordinate);
+        add(Method.PUT, coordinate);
     }
 
     public void patchCoordinate(Coordinate<S, U> coordinate) {
-        engine.getDispatcher().getPatch().add(coordinate);
+        add(Method.PATCH, coordinate);
     }
 
     public void deleteCoordinate(Coordinate<S, U> coordinate) {
-        engine.getDispatcher().getDelete().add(coordinate);
+        add(Method.DELETE, coordinate);
     }
 
     public void connectCoordinate(Coordinate<S, U> coordinate) {
-        engine.getDispatcher().getConnect().add(coordinate);
+        add(Method.CONNECT, coordinate);
     }
 
     public void optionsCoordinate(Coordinate<S, U> coordinate) {
-        engine.getDispatcher().getOptions().add(coordinate);
+        add(Method.OPTIONS, coordinate);
     }
 
     public void traceCoordinate(Coordinate<S, U> coordinate) {
-        engine.getDispatcher().getTrace().add(coordinate);
+        add(Method.TRACE, coordinate);
     }
 
     public void headCoordinate(Coordinate<S, U> coordinate) {
-        engine.getDispatcher().getHead().add(coordinate);
+        add(Method.HEAD, coordinate);
     }
 
     // configuration methods below.

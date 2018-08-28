@@ -14,7 +14,6 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 
 public class Dispatcher<S extends Session, U> {
-    public static final String CONTENT_TYPE_MISMATCH = "content-type does not match. url: {}, request content-type: {}, route content-type: {}";
     protected static Logger LOGGER = LogManager.getLogger(Dispatcher.class);
     private static String OTTER_PREFIX = "/app";
     private static String EMPTY = "";
@@ -44,7 +43,7 @@ public class Dispatcher<S extends Session, U> {
         return m;
     }
 
-    protected List<Coordinate<S, U>> coordinates(Method method) {
+    public List<Coordinate<S, U>> coordinates(Method method) {
         if (method == Method.GET) {
             return get;
         } else if (method == Method.POST) {
