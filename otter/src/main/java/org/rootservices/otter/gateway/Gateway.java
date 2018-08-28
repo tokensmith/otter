@@ -223,49 +223,9 @@ public class Gateway<S extends Session, U> {
         add(Method.HEAD, path, resource, new ArrayList<>());
     }
 
-    public void getCoordinate(Coordinate<S, U> coordinate) {
-        add(Method.GET, coordinate);
-    }
-
-    public void postCoordinate(Coordinate<S, U> coordinate) {
-        add(Method.POST, coordinate);
-    }
-
-    public void putCoordinate(Coordinate<S, U> coordinate) {
-        add(Method.PUT, coordinate);
-    }
-
-    public void patchCoordinate(Coordinate<S, U> coordinate) {
-        add(Method.PATCH, coordinate);
-    }
-
-    public void deleteCoordinate(Coordinate<S, U> coordinate) {
-        add(Method.DELETE, coordinate);
-    }
-
-    public void connectCoordinate(Coordinate<S, U> coordinate) {
-        add(Method.CONNECT, coordinate);
-    }
-
-    public void optionsCoordinate(Coordinate<S, U> coordinate) {
-        add(Method.OPTIONS, coordinate);
-    }
-
-    public void traceCoordinate(Coordinate<S, U> coordinate) {
-        add(Method.TRACE, coordinate);
-    }
-
-    public void headCoordinate(Coordinate<S, U> coordinate) {
-        add(Method.HEAD, coordinate);
-    }
-
     // configuration methods below.
-    public void setErrorRoutes(Map<StatusCode, Route<S, U>> errorRoutes) {
-        this.errorRoutes = errorRoutes;
-    }
-
-    public void setNotFoundRoute(Route<S, U> notFoundRoute) {
-        this.errorRoutes.put(StatusCode.NOT_FOUND, notFoundRoute);
+    public void setErrorRoute(StatusCode statusCode, Route<S, U> errorRoute) {
+        this.errorRoutes.put(statusCode, errorRoute);
     }
 
     public void setCsrfCookieConfig(CookieConfig csrfCookieConfig) {

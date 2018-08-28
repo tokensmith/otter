@@ -11,12 +11,12 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
 import org.rootservices.otter.router.Dispatcher;
 import org.rootservices.otter.router.Engine;
-import org.rootservices.otter.router.builder.CoordinateBuilder;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Coordinate;
 import org.rootservices.otter.router.entity.Method;
@@ -98,7 +98,7 @@ public class ServletGatewayTest {
     @Test
     public void processRequestResourceNotFoundShouldExecuteNotFound() throws Exception {
         Route<DummySession, DummyUser> notFoundRoute = FixtureFactory.makeRoute();
-        subject.setNotFoundRoute(notFoundRoute);
+        subject.setErrorRoute(StatusCode.NOT_FOUND, notFoundRoute);
 
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
@@ -137,7 +137,7 @@ public class ServletGatewayTest {
     @Test
     public void processRequestWhenExceptionShouldReturnServerError() throws Exception {
         Route<DummySession, DummyUser> notFoundRoute = FixtureFactory.makeRoute();
-        subject.setNotFoundRoute(notFoundRoute);
+        subject.setErrorRoute(StatusCode.NOT_FOUND, notFoundRoute);
 
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
@@ -159,7 +159,7 @@ public class ServletGatewayTest {
     @Test
     public void processRequestWhenIOExceptionShouldReturnServerError() throws Exception {
         Route<DummySession, DummyUser> notFoundRoute = FixtureFactory.makeRoute();
-        subject.setNotFoundRoute(notFoundRoute);
+        subject.setErrorRoute(StatusCode.NOT_FOUND, notFoundRoute);
 
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
@@ -297,6 +297,9 @@ public class ServletGatewayTest {
         assertThat(coordinates.get(0).getRoute().getBefore().size(), is(0));
         assertThat(coordinates.get(0).getRoute().getAfter(), is(notNullValue()));
         assertThat(coordinates.get(0).getRoute().getAfter().size(), is(0));
+
+        assertThat(coordinates.get(0).getErrorRoutes(), is(notNullValue()));
+        assertThat(coordinates.get(0).getErrorRoutes().size(), is(0));
     }
 
     @Test
@@ -441,125 +444,5 @@ public class ServletGatewayTest {
 
         assertThat(coordinates.get(0).getErrorRoutes(), is(notNullValue()));
         assertThat(coordinates.get(0).getErrorRoutes().size(), is(0));
-    }
-
-    @Test
-    public void getRouteShouldAddRoute() throws Exception {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.GET)).thenReturn(coordinates);
-
-        Coordinate<DummySession, DummyUser> route = new CoordinateBuilder<DummySession, DummyUser>().build();
-        subject.getCoordinate(route);
-
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(route));
-
-    }
-
-    @Test
-    public void postRouteShouldAddRoute() throws Exception {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.POST)).thenReturn(coordinates);
-
-        Coordinate<DummySession, DummyUser> route = new CoordinateBuilder<DummySession, DummyUser>().build();
-        subject.postCoordinate(route);
-
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(route));
-    }
-
-    @Test
-    public void putRouteShouldAddRoute() throws Exception {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.PUT)).thenReturn(coordinates);
-
-        Coordinate<DummySession, DummyUser> route = new CoordinateBuilder<DummySession, DummyUser>().build();
-        subject.putCoordinate(route);
-
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(route));
-
-    }
-
-    @Test
-    public void patchRouteShouldAddRoute() throws Exception {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.PATCH)).thenReturn(coordinates);
-
-        Coordinate<DummySession, DummyUser> route = new CoordinateBuilder<DummySession, DummyUser>().build();
-        subject.patchCoordinate(route);
-
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(route));
-
-    }
-
-    @Test
-    public void deleteRouteShouldAddRoute() throws Exception {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.DELETE)).thenReturn(coordinates);
-
-        Coordinate<DummySession, DummyUser> route = new CoordinateBuilder<DummySession, DummyUser>().build();
-        subject.deleteCoordinate(route);
-
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(route));
-    }
-
-    @Test
-    public void connectRouteShouldAddRoute() throws Exception {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.CONNECT)).thenReturn(coordinates);
-
-        Coordinate<DummySession, DummyUser> route = new CoordinateBuilder<DummySession, DummyUser>().build();
-        subject.connectCoordinate(route);
-
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(route));
-    }
-
-    @Test
-    public void optionsRouteShouldAddRoute() throws Exception {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.OPTIONS)).thenReturn(coordinates);
-
-        Coordinate<DummySession, DummyUser> route = new CoordinateBuilder<DummySession, DummyUser>().build();
-        subject.optionsCoordinate(route);
-
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(route));
-    }
-
-    @Test
-    public void traceRouteShouldAddRoute() throws Exception {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.TRACE)).thenReturn(coordinates);
-
-        Coordinate<DummySession, DummyUser> coordinate = new CoordinateBuilder<DummySession, DummyUser>().build();
-        subject.traceCoordinate(coordinate);
-
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(coordinate));
-    }
-
-    @Test
-    public void headRouteShouldAddRoute() throws Exception {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.HEAD)).thenReturn(coordinates);
-
-        Coordinate<DummySession, DummyUser> coordinate = new CoordinateBuilder<DummySession, DummyUser>().build();
-        subject.headCoordinate(coordinate);
-
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(coordinate));
     }
 }

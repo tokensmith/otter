@@ -8,6 +8,7 @@ import hello.security.User;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
+import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
@@ -57,7 +58,7 @@ public class AppConfig implements Configure<TokenSession, User> {
                 .after(new ArrayList<>())
                 .build();
 
-        gateway.setNotFoundRoute(notFoundRoute);
+        gateway.setErrorRoute(StatusCode.NOT_FOUND, notFoundRoute);
 
         MimeType json = new MimeTypeBuilder().json().build();
 

@@ -119,7 +119,7 @@ This should be configured in the `routes(Gateway gateway)` implementation.
         .after(new ArrayList<>())
         .build();
 
-    gateway.setNotFoundRoute(notFoundRoute);
+    gateway.setErrorRoute(StatusCode.NOT_FOUND, notFoundRoute);
 ```
 
 ### Error Handling
