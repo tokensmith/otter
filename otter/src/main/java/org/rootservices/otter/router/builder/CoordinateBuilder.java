@@ -10,6 +10,7 @@ import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.security.session.Session;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ public class CoordinateBuilder<S extends Session, U> {
     private Resource<S, U> resource;
     private List<Between<S, U>> before;
     private List<Between<S, U>> after;
+    private Map<StatusCode, Route<S, U>> errorRoutes = new HashMap<>();
 
     public CoordinateBuilder<S, U> path(String path) {
         this.pattern = Pattern.compile(path);
@@ -47,6 +49,22 @@ public class CoordinateBuilder<S extends Session, U> {
         return this;
     }
 
+    public CoordinateBuilder<S, U> errorRoute(StatusCode statusCode, Route<S, U> route) {
+        this.errorRoutes.put(statusCode, route);
+        return this;
+    }
+
+    public CoordinateBuilder<S, U> errorResource(StatusCode statusCode, Resource<S, U> resource) {
+        Route<S, U> errorResource = new RouteBuilder<S, U>()
+                .resource(resource)
+                .before(new ArrayList<>())
+                .after(new ArrayList<>())
+                .build();
+
+        this.errorRoutes.put(statusCode, errorResource);
+        return this;
+    }
+
     public Coordinate<S, U> build() {
         Route<S, U> route = new RouteBuilder<S, U>()
                 .resource(resource)
@@ -54,7 +72,6 @@ public class CoordinateBuilder<S extends Session, U> {
                 .after(after)
                 .build();
 
-        Map<StatusCode, Route<S, U>> errorRoutes = new HashMap<>();
         return new Coordinate<S, U>(pattern, contentTypes, route, errorRoutes);
     }
 }

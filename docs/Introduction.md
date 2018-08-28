@@ -26,7 +26,8 @@ A **RestResource** is designed to handle `application/json`. Have a look at
 [HelloRestResource](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/controller/HelloRestResource.java)
 as an example.
  
-Implementing a resource is rather straight forward. 
+Implementing a resource is rather straight forward.
+- Implement a Session and User and assign those as the generics, S, T. 
 - Override the methods that handle http methods (get, post, put, delete).
 - The response status code must be assigned.
 - Specify a public ivar for the url path (in regex notation).
@@ -109,6 +110,8 @@ that will be handled by the `HelloResorce`.
     gateway.get(HelloResource.URL, new HelloResource());
 ```
 
+###### Not Found
+
 When Otter cannot find a route to satisfy a request it will use it's `notFoundRoute`.
 This should be configured in the `routes(Gateway gateway)` implementation.
 
@@ -122,15 +125,27 @@ This should be configured in the `routes(Gateway gateway)` implementation.
     gateway.setErrorRoute(StatusCode.NOT_FOUND, notFoundRoute);
 ```
 
-### Error Handling
-Error handling can be configured globally or it can be specified per route.
+###### UnSupported Media Type
+If desired you can use expected content types when configuring Otter. 
+```java
+    // requires content type.
+    MimeType json = new MimeTypeBuilder().json().build();
+    gateway.add(Method.GET, HelloRestResource.URL, appFactory.helloRestResource(), Arrays.asList(json));
 
-404, 415 - logically makes sense for a route b/c it never ran a between.
-500 - may not since it may have been caused by a between.
+```
 
-#### Global
+When a request matches the url and not the content type then the configured error route for `StatusCode.UNSUPPORTED_MEDIA_TYPE`
+will be executed.
 
-#### Route level
+```java
+    Route<TokenSession, User> unSupportedMediaTypeRoute = new RouteBuilder<TokenSession, User>()
+                .resource(new UnSupportedMediaTypeRoute())
+                .before(new ArrayList<>())
+                .after(new ArrayList<>())
+                .build();
+
+    gateway.setErrorRoute(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaTypeRoute);
+```
 
 ### Embedded Container
 

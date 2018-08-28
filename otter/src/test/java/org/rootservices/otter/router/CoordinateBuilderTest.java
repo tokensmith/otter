@@ -5,9 +5,12 @@ import helper.entity.DummyUser;
 import helper.entity.FakeResource;
 import org.junit.Before;
 import org.junit.Test;
+import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.builder.CoordinateBuilder;
+import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.Coordinate;
+import org.rootservices.otter.router.entity.Route;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +60,7 @@ public class CoordinateBuilderTest {
         List<MimeType> contentTypes = new ArrayList<>();
         FakeResource resource = new FakeResource();
 
-        Coordinate actual = subject.path(regex)
+        Coordinate<DummySession, DummyUser> actual = subject.path(regex)
                 .contentTypes(contentTypes)
                 .resource(resource)
                 .build();
@@ -73,6 +76,56 @@ public class CoordinateBuilderTest {
 
         assertThat(actual.getErrorRoutes(), is(notNullValue()));
         assertThat(actual.getErrorRoutes().size(), is(0));
+    }
+
+    @Test
+    public void errorResourceShouldBeOk() {
+        String regex = "/foo/(.*)";
+        List<MimeType> contentTypes = new ArrayList<>();
+        FakeResource resource = new FakeResource();
+
+        FakeResource errorResource = new FakeResource();
+
+        Coordinate<DummySession, DummyUser> actual = subject.path(regex)
+                .contentTypes(contentTypes)
+                .resource(resource)
+                .errorResource(StatusCode.NOT_FOUND, errorResource)
+                .build();
+
+        assertThat(actual.getErrorRoutes().size(), is(1));
+        assertThat(actual.getErrorRoutes().get(StatusCode.NOT_FOUND).getResource(), is(errorResource));
+
+        Route<DummySession, DummyUser> actualErrorRoute = actual.getErrorRoutes().get(StatusCode.NOT_FOUND);
+
+        assertThat(actualErrorRoute.getBefore(), is(notNullValue()));
+        assertThat(actualErrorRoute.getBefore().size(), is(0));
+
+        assertThat(actualErrorRoute.getAfter(), is(notNullValue()));
+        assertThat(actualErrorRoute.getAfter().size(), is(0));
+    }
+
+    @Test
+    public void errorRouteShouldBeOk() {
+        String regex = "/foo/(.*)";
+        List<MimeType> contentTypes = new ArrayList<>();
+        FakeResource resource = new FakeResource();
+
+        FakeResource errorResource = new FakeResource();
+
+        Route<DummySession, DummyUser> errorRoute = new RouteBuilder<DummySession, DummyUser>()
+                .resource(errorResource)
+                .after(new ArrayList<>())
+                .before(new ArrayList<>())
+                .build();
+
+        Coordinate<DummySession, DummyUser> actual = subject.path(regex)
+                .contentTypes(contentTypes)
+                .resource(resource)
+                .errorRoute(StatusCode.NOT_FOUND, errorRoute)
+                .build();
+
+        assertThat(actual.getErrorRoutes().size(), is(1));
+        assertThat(actual.getErrorRoutes().get(StatusCode.NOT_FOUND), is(errorRoute));
     }
 
 }
