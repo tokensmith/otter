@@ -4,9 +4,13 @@ package org.rootservices.otter.gateway;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.controller.Resource;
+import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.Engine;
-import org.rootservices.otter.router.RouteBuilder;
+import org.rootservices.otter.router.builder.CoordinateBuilder;
 import org.rootservices.otter.router.entity.Between;
+import org.rootservices.otter.router.entity.Coordinate;
+import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.security.csrf.between.CheckCSRF;
 import org.rootservices.otter.security.csrf.between.PrepareCSRF;
@@ -15,6 +19,7 @@ import org.rootservices.otter.security.session.between.DecryptSession;
 import org.rootservices.otter.security.session.between.EncryptSession;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +40,7 @@ public class Gateway<S extends Session, U> {
     protected Between<S, U> checkCSRF;
     protected EncryptSession<S, U> encryptSession;
     protected DecryptSession<S, U> decryptSession;
-    protected Route<S, U> notFoundRoute;
+    protected Map<StatusCode, Route<S, U>> errorRoutes = new HashMap<>();
 
     public Gateway(Engine<S, U> engine, Between<S, U> prepareCSRF, Between<S, U> checkCSRF) {
         this.engine = engine;
@@ -43,22 +48,33 @@ public class Gateway<S extends Session, U> {
         this.checkCSRF = checkCSRF;
     }
 
-    public void get(String path, Resource<S, U> resource) {
-        Route<S, U> route = new RouteBuilder<S, U>()
+    public Coordinate<S, U> add(Method method, String path, Resource<S, U> resource, List<MimeType> contentTypes) {
+        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
                 .path(path)
-                .contentTypes(new ArrayList<>())
+                .contentTypes(contentTypes)
                 .resource(resource)
                 .before(new ArrayList<>())
                 .after(new ArrayList<>())
                 .build();
-        engine.getDispatcher().getGet().add(route);
+
+        engine.getDispatcher().coordinates(method).add(coordinate);
+        return coordinate;
+    }
+
+    public Coordinate<S, U> add(Method method, Coordinate<S, U> coordinate) {
+        engine.getDispatcher().coordinates(method).add(coordinate);
+        return coordinate;
+    }
+
+    public void get(String path, Resource<S, U> resource) {
+        add(Method.GET, path, resource, new ArrayList<>());
     }
 
     public void getCsrfProtect(String path, Resource<S, U> resource) {
         List<Between<S, U>> before = new ArrayList<>();
         before.add(prepareCSRF);
 
-        Route<S, U> route = new RouteBuilder<S, U>()
+        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -66,7 +82,7 @@ public class Gateway<S extends Session, U> {
                 .after(new ArrayList<>())
                 .build();
 
-        engine.getDispatcher().getGet().add(route);
+        add(Method.GET, coordinate);
     }
 
     public void getCsrfAndSessionProtect(String path, Resource<S, U> resource) {
@@ -76,7 +92,7 @@ public class Gateway<S extends Session, U> {
         List<Between<S, U>> after = new ArrayList<>();
         after.add(encryptSession);
 
-        Route<S, U> route = new RouteBuilder<S, U>()
+        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -84,7 +100,7 @@ public class Gateway<S extends Session, U> {
                 .after(after)
                 .build();
 
-        engine.getDispatcher().getGet().add(route);
+        add(Method.GET, coordinate);
     }
 
     public void getSessionProtect(String path, Resource<S, U> resource) {
@@ -94,7 +110,7 @@ public class Gateway<S extends Session, U> {
         List<Between<S, U>> after = new ArrayList<>();
         after.add(encryptSession);
 
-        Route<S, U> route = new RouteBuilder<S, U>()
+        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -102,25 +118,18 @@ public class Gateway<S extends Session, U> {
                 .after(after)
                 .build();
 
-        engine.getDispatcher().getGet().add(route);
+        add(Method.GET, coordinate);
     }
 
     public void post(String path, Resource<S, U> resource) {
-        Route<S, U> route = new RouteBuilder<S, U>()
-                .path(path)
-                .contentTypes(new ArrayList<>())
-                .resource(resource)
-                .after(new ArrayList<>())
-                .before(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getPost().add(route);
+        add(Method.POST, path, resource, new ArrayList<>());
     }
 
     public void postCsrfProtect(String path, Resource<S, U> resource) {
         List<Between<S, U>> before = new ArrayList<>();
         before.add(checkCSRF);
 
-        Route<S, U> route = new RouteBuilder<S, U>()
+        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -128,7 +137,7 @@ public class Gateway<S extends Session, U> {
                 .after(new ArrayList<>())
                 .build();
 
-        engine.getDispatcher().getPost().add(route);
+        add(Method.POST, coordinate);
     }
 
     public void postCsrfAndSessionProtect(String path, Resource<S, U> resource) {
@@ -139,7 +148,7 @@ public class Gateway<S extends Session, U> {
         List<Between<S, U>> after = new ArrayList<>();
         after.add(encryptSession);
 
-        Route<S, U> route = new RouteBuilder<S, U>()
+        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -147,7 +156,7 @@ public class Gateway<S extends Session, U> {
                 .after(after)
                 .build();
 
-        engine.getDispatcher().getPost().add(route);
+        add(Method.POST, coordinate);
     }
 
     public void postCsrfAndSetSession(String path, Resource<S, U> resource) {
@@ -157,7 +166,7 @@ public class Gateway<S extends Session, U> {
         List<Between<S, U>> after = new ArrayList<>();
         after.add(encryptSession);
 
-        Route<S, U> route = new RouteBuilder<S, U>()
+        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -165,7 +174,7 @@ public class Gateway<S extends Session, U> {
                 .after(after)
                 .build();
 
-        engine.getDispatcher().getPost().add(route);
+        add(Method.POST, coordinate);
     }
 
     public void postSessionProtect(String path, Resource<S, U> resource) {
@@ -175,7 +184,7 @@ public class Gateway<S extends Session, U> {
         List<Between<S, U>> after = new ArrayList<>();
         after.add(encryptSession);
 
-        Route<S, U> route = new RouteBuilder<S, U>()
+        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -183,125 +192,43 @@ public class Gateway<S extends Session, U> {
                 .after(after)
                 .build();
 
-        engine.getDispatcher().getPost().add(route);
+        add(Method.POST, coordinate);
     }
 
     public void put(String path, Resource<S, U> resource) {
-        Route<S, U> route = new RouteBuilder<S, U>()
-                .path(path)
-                .contentTypes(new ArrayList<>())
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getPut().add(route);
+        add(Method.PUT, path, resource, new ArrayList<>());
     }
 
     public void patch(String path, Resource<S, U> resource) {
-        Route<S, U> route = new RouteBuilder<S, U>()
-                .path(path)
-                .contentTypes(new ArrayList<>())
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getPatch().add(route);
+        add(Method.PATCH, path, resource, new ArrayList<>());
     }
 
     public void delete(String path, Resource<S, U> resource) {
-        Route<S, U> route = new RouteBuilder<S, U>()
-                .path(path)
-                .contentTypes(new ArrayList<>())
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getDelete().add(route);
+        add(Method.DELETE, path, resource, new ArrayList<>());
     }
 
     public void connect(String path, Resource<S, U> resource) {
-        Route<S, U> route = new RouteBuilder<S, U>()
-                .path(path)
-                .contentTypes(new ArrayList<>())
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getConnect().add(route);
+        add(Method.CONNECT, path, resource, new ArrayList<>());
     }
 
     public void options(String path, Resource<S, U> resource) {
-        Route<S, U> route = new RouteBuilder<S, U>()
-                .path(path)
-                .contentTypes(new ArrayList<>())
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getOptions().add(route);
+        add(Method.OPTIONS, path, resource, new ArrayList<>());
     }
 
     public void trace(String path, Resource<S, U> resource) {
-        Route<S, U> route = new RouteBuilder<S, U>()
-                .path(path)
-                .contentTypes(new ArrayList<>())
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getTrace().add(route);
+        add(Method.TRACE, path, resource, new ArrayList<>());
     }
 
     public void head(String path, Resource<S, U> resource) {
-        Route<S, U> route = new RouteBuilder<S, U>()
-                .path(path)
-                .contentTypes(new ArrayList<>())
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getHead().add(route);
+        add(Method.HEAD, path, resource, new ArrayList<>());
     }
 
-    public void getRoute(Route<S, U> route) {
-        engine.getDispatcher().getGet().add(route);
+    public void setErrorRoute(StatusCode statusCode, Route<S, U> errorRoute) {
+        this.errorRoutes.put(statusCode, errorRoute);
     }
 
-    public void postRoute(Route<S, U> route) {
-        engine.getDispatcher().getPost().add(route);
-    }
-
-    public void putRoute(Route<S, U> route) {
-        engine.getDispatcher().getPut().add(route);
-    }
-
-    public void patchRoute(Route<S, U> route) {
-        engine.getDispatcher().getPatch().add(route);
-    }
-
-    public void deleteRoute(Route<S, U> route) {
-        engine.getDispatcher().getDelete().add(route);
-    }
-
-    public void connectRoute(Route<S, U> route) {
-        engine.getDispatcher().getConnect().add(route);
-    }
-
-    public void optionsRoute(Route<S, U> route) {
-        engine.getDispatcher().getOptions().add(route);
-    }
-
-    public void traceRoute(Route<S, U> route) {
-        engine.getDispatcher().getTrace().add(route);
-    }
-
-    public void headRoute(Route<S, U> route) {
-        engine.getDispatcher().getHead().add(route);
-    }
-
-    // configuration methods below.
-    public void setNotFoundRoute(Route<S, U> notFoundRoute) {
-        this.notFoundRoute = notFoundRoute;
+    public Route<S, U> getErrorRoute(StatusCode statusCode) {
+        return this.errorRoutes.get(statusCode);
     }
 
     public void setCsrfCookieConfig(CookieConfig csrfCookieConfig) {

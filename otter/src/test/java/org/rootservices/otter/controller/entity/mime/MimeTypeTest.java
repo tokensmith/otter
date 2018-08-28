@@ -23,4 +23,49 @@ public class MimeTypeTest {
 
         assertThat(actual, is("text/html; charset=utf-8; zzzz=zzzz; aaaa=aaaa;"));
     }
+
+    @Test
+    public void testEqualsShouldBeTrue() {
+        Map<String, String> parametersA = new LinkedHashMap<>();
+        parametersA.put("charset", "utf-8");
+
+        MimeType textHtmlA = new MimeType("text", "html", parametersA);
+
+        Map<String, String> parametersB = new LinkedHashMap<>();
+        parametersB.put("charset", "utf-8");
+        MimeType textHtmlB = new MimeType("text", "html", parametersB);
+
+        Boolean actual = textHtmlA.equals(textHtmlB);
+        assertThat(actual, is(true));
+    }
+
+    @Test
+    public void testEqualsShouldBeFalse() {
+        Map<String, String> parametersA = new LinkedHashMap<>();
+        parametersA.put("charset", "us-ascii");
+
+        MimeType textHtmlA = new MimeType("text", "html", parametersA);
+
+        Map<String, String> parametersB = new LinkedHashMap<>();
+        parametersB.put("charset", "utf-8");
+        MimeType textHtmlB = new MimeType("text", "html", parametersB);
+
+        Boolean actual = textHtmlA.equals(textHtmlB);
+        assertThat(actual, is(false));
+    }
+
+    @Test
+    public void testEqualsWhenDifferentCaseShouldBeFalse() {
+        Map<String, String> parametersA = new LinkedHashMap<>();
+        parametersA.put("charset", "UTF-8");
+
+        MimeType textHtmlA = new MimeType("text", "html", parametersA);
+
+        Map<String, String> parametersB = new LinkedHashMap<>();
+        parametersB.put("charset", "utf-8");
+        MimeType textHtmlB = new MimeType("text", "html", parametersB);
+
+        Boolean actual = textHtmlA.equals(textHtmlB);
+        assertThat(actual, is(false));
+    }
 }

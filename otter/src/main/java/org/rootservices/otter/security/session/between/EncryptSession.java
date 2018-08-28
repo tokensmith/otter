@@ -22,6 +22,7 @@ import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.security.session.between.exception.EncryptSessionException;
 import org.rootservices.otter.router.entity.Between;
@@ -64,6 +65,8 @@ public class EncryptSession<S extends Session, U> implements Between<S, U> {
                 session = encrypt(response.getSession().get());
             } catch (EncryptSessionException e) {
                 LOGGER.error(e.getMessage(), e);
+                HaltException haltException = new HaltException(COULD_NOT_ENCRYPT_SESSION, e);
+                onHalt(haltException, response);
                 throw new HaltException(COULD_NOT_ENCRYPT_SESSION, e);
             }
 
@@ -77,6 +80,19 @@ public class EncryptSession<S extends Session, U> implements Between<S, U> {
         } else {
             LOGGER.debug(NOT_ENCRYPTING);
         }
+    }
+
+    /**
+     * This method will be called before a Halt Exception is thrown.
+     * Override this method if you wish to change the behavior on the
+     * response right before a Halt Exception is going to be thrown.
+     * An Example would be, you may want to redirect the user to a login page.
+     *
+     * @param e a HaltException
+     * @param response a Response
+     */
+    protected void onHalt(HaltException e, Response response) {
+        response.setStatusCode(StatusCode.SERVER_ERROR);
     }
 
     protected Boolean shouldEncrypt(Request<S, U> request, Response<S> response) {

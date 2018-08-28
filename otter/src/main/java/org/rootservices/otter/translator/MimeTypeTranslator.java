@@ -46,7 +46,12 @@ public class MimeTypeTranslator {
         Map<String, String> parameters = new LinkedHashMap<String, String>();
 
         while (parameterMatcher.find()) {
-            parameters.put(parameterMatcher.group(1), parameterMatcher.group(2));
+            String key = parameterMatcher.group(1);
+            String value = parameterMatcher.group(2);
+            if(ParamKey.CHARSET.toString().equalsIgnoreCase(key)) {
+                value = value.toLowerCase();
+            }
+            parameters.put(key, value);
         }
 
         // default to US-ASCII charset.

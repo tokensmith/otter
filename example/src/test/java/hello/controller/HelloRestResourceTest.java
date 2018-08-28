@@ -72,4 +72,19 @@ public class HelloRestResourceTest {
         assertThat(hello.getMessage(), is(notNullValue()));
         assertThat(hello.getMessage(), is("Hello World"));
     }
+
+
+    @Test
+    public void getWhenWrongContentTypeShouldReturn415() throws Exception {
+        String helloURI = BASE_URI.toString() + "rest/hello";
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .prepareGet(helloURI)
+                .addHeader("Content-Type", "application/xml; charset=utf-8;")
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(StatusCode.UNSUPPORTED_MEDIA_TYPE.getCode()));
+    }
 }
