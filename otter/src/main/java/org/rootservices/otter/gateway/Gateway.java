@@ -66,11 +66,11 @@ public class Gateway<S extends Session, U> {
         return coordinate;
     }
 
-    public void get(String path, Resource<S, U> resource) {
-        add(Method.GET, path, resource, new ArrayList<>());
+    public Coordinate<S, U> get(String path, Resource<S, U> resource) {
+        return add(Method.GET, path, resource, new ArrayList<>());
     }
 
-    public void getCsrfProtect(String path, Resource<S, U> resource) {
+    public Coordinate<S, U> getCsrfProtect(String path, Resource<S, U> resource) {
         List<Between<S, U>> before = new ArrayList<>();
         before.add(prepareCSRF);
 
@@ -82,10 +82,10 @@ public class Gateway<S extends Session, U> {
                 .after(new ArrayList<>())
                 .build();
 
-        add(Method.GET, coordinate);
+        return add(Method.GET, coordinate);
     }
 
-    public void getCsrfAndSessionProtect(String path, Resource<S, U> resource) {
+    public Coordinate<S, U> getCsrfAndSessionProtect(String path, Resource<S, U> resource) {
         List<Between<S, U>> before = new ArrayList<>();
         before.add(prepareCSRF);
 
@@ -100,10 +100,10 @@ public class Gateway<S extends Session, U> {
                 .after(after)
                 .build();
 
-        add(Method.GET, coordinate);
+        return add(Method.GET, coordinate);
     }
 
-    public void getSessionProtect(String path, Resource<S, U> resource) {
+    public Coordinate<S, U> getSessionProtect(String path, Resource<S, U> resource) {
         List<Between<S, U>> before = new ArrayList<>();
         before.add(decryptSession);
 
@@ -118,14 +118,14 @@ public class Gateway<S extends Session, U> {
                 .after(after)
                 .build();
 
-        add(Method.GET, coordinate);
+        return add(Method.GET, coordinate);
     }
 
-    public void post(String path, Resource<S, U> resource) {
-        add(Method.POST, path, resource, new ArrayList<>());
+    public Coordinate<S, U> post(String path, Resource<S, U> resource) {
+        return add(Method.POST, path, resource, new ArrayList<>());
     }
 
-    public void postCsrfProtect(String path, Resource<S, U> resource) {
+    public Coordinate<S, U> postCsrfProtect(String path, Resource<S, U> resource) {
         List<Between<S, U>> before = new ArrayList<>();
         before.add(checkCSRF);
 
@@ -137,10 +137,10 @@ public class Gateway<S extends Session, U> {
                 .after(new ArrayList<>())
                 .build();
 
-        add(Method.POST, coordinate);
+        return add(Method.POST, coordinate);
     }
 
-    public void postCsrfAndSessionProtect(String path, Resource<S, U> resource) {
+    public Coordinate<S, U> postCsrfAndSessionProtect(String path, Resource<S, U> resource) {
         List<Between<S, U>> before = new ArrayList<>();
         before.add(checkCSRF);
         before.add(decryptSession);
@@ -156,10 +156,10 @@ public class Gateway<S extends Session, U> {
                 .after(after)
                 .build();
 
-        add(Method.POST, coordinate);
+        return add(Method.POST, coordinate);
     }
 
-    public void postCsrfAndSetSession(String path, Resource<S, U> resource) {
+    public Coordinate<S, U> postCsrfAndSetSession(String path, Resource<S, U> resource) {
         List<Between<S, U>> before = new ArrayList<>();
         before.add(checkCSRF);
 
@@ -174,10 +174,10 @@ public class Gateway<S extends Session, U> {
                 .after(after)
                 .build();
 
-        add(Method.POST, coordinate);
+        return add(Method.POST, coordinate);
     }
 
-    public void postSessionProtect(String path, Resource<S, U> resource) {
+    public Coordinate<S, U> postSessionProtect(String path, Resource<S, U> resource) {
         List<Between<S, U>> before = new ArrayList<>();
         before.add(decryptSession);
 
@@ -192,35 +192,35 @@ public class Gateway<S extends Session, U> {
                 .after(after)
                 .build();
 
-        add(Method.POST, coordinate);
+        return add(Method.POST, coordinate);
     }
 
-    public void put(String path, Resource<S, U> resource) {
-        add(Method.PUT, path, resource, new ArrayList<>());
+    public Coordinate<S, U> put(String path, Resource<S, U> resource) {
+        return add(Method.PUT, path, resource, new ArrayList<>());
     }
 
-    public void patch(String path, Resource<S, U> resource) {
-        add(Method.PATCH, path, resource, new ArrayList<>());
+    public Coordinate<S, U> patch(String path, Resource<S, U> resource) {
+        return add(Method.PATCH, path, resource, new ArrayList<>());
     }
 
-    public void delete(String path, Resource<S, U> resource) {
-        add(Method.DELETE, path, resource, new ArrayList<>());
+    public Coordinate<S, U> delete(String path, Resource<S, U> resource) {
+        return add(Method.DELETE, path, resource, new ArrayList<>());
     }
 
-    public void connect(String path, Resource<S, U> resource) {
-        add(Method.CONNECT, path, resource, new ArrayList<>());
+    public Coordinate<S, U> connect(String path, Resource<S, U> resource) {
+        return add(Method.CONNECT, path, resource, new ArrayList<>());
     }
 
-    public void options(String path, Resource<S, U> resource) {
-        add(Method.OPTIONS, path, resource, new ArrayList<>());
+    public Coordinate<S, U> options(String path, Resource<S, U> resource) {
+        return add(Method.OPTIONS, path, resource, new ArrayList<>());
     }
 
-    public void trace(String path, Resource<S, U> resource) {
-        add(Method.TRACE, path, resource, new ArrayList<>());
+    public Coordinate<S, U> trace(String path, Resource<S, U> resource) {
+        return add(Method.TRACE, path, resource, new ArrayList<>());
     }
 
-    public void head(String path, Resource<S, U> resource) {
-        add(Method.HEAD, path, resource, new ArrayList<>());
+    public Coordinate<S, U> head(String path, Resource<S, U> resource) {
+        return add(Method.HEAD, path, resource, new ArrayList<>());
     }
 
     public void setErrorRoute(StatusCode statusCode, Route<S, U> errorRoute) {

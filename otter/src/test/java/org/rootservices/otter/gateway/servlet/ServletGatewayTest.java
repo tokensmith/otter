@@ -236,22 +236,23 @@ public class ServletGatewayTest {
         when(mockDispatcher.coordinates(Method.GET)).thenReturn(coordinates);
 
         FakeResource resource = new FakeResource();
-        subject.get("/path", resource);
+        Coordinate<DummySession, DummyUser> actual = subject.get("/path", resource);
 
         assertThat(coordinates, is(notNullValue()));
         assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0).getRoute(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(resource));
-        assertThat(coordinates.get(0).getPattern(), is(notNullValue()));
-        assertThat(coordinates.get(0).getPattern().pattern(), is("/path"));
-        assertThat(coordinates.get(0).getRoute().getBefore(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getBefore().size(), is(0));
-        assertThat(coordinates.get(0).getRoute().getAfter(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getAfter().size(), is(0));
+        assertThat(coordinates.get(0), is(actual));
+        assertThat(actual.getRoute(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(resource));
+        assertThat(actual.getPattern(), is(notNullValue()));
+        assertThat(actual.getPattern().pattern(), is("/path"));
+        assertThat(actual.getRoute().getBefore(), is(notNullValue()));
+        assertThat(actual.getRoute().getBefore().size(), is(0));
+        assertThat(actual.getRoute().getAfter(), is(notNullValue()));
+        assertThat(actual.getRoute().getAfter().size(), is(0));
 
-        assertThat(coordinates.get(0).getErrorRoutes(), is(notNullValue()));
-        assertThat(coordinates.get(0).getErrorRoutes().size(), is(0));
+        assertThat(actual.getErrorRoutes(), is(notNullValue()));
+        assertThat(actual.getErrorRoutes().size(), is(0));
     }
 
     @Test
@@ -260,23 +261,24 @@ public class ServletGatewayTest {
         when(mockDispatcher.coordinates(Method.GET)).thenReturn(coordinates);
 
         FakeResource resource = new FakeResource();
-        subject.getCsrfProtect("/path", resource);
+        Coordinate<DummySession, DummyUser> actual = subject.getCsrfProtect("/path", resource);
 
         assertThat(coordinates, is(notNullValue()));
         assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0).getRoute(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(resource));
-        assertThat(coordinates.get(0).getPattern(), is(notNullValue()));
-        assertThat(coordinates.get(0).getPattern().pattern(), is("/path"));
-        assertThat(coordinates.get(0).getRoute().getBefore(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getBefore().size(), is(1));
-        assertThat(coordinates.get(0).getRoute().getBefore().get(0), is(mockPrepareCSRF));
-        assertThat(coordinates.get(0).getRoute().getAfter(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getAfter().size(), is(0));
+        assertThat(coordinates.get(0), is(actual));
+        assertThat(actual.getRoute(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(resource));
+        assertThat(actual.getPattern(), is(notNullValue()));
+        assertThat(actual.getPattern().pattern(), is("/path"));
+        assertThat(actual.getRoute().getBefore(), is(notNullValue()));
+        assertThat(actual.getRoute().getBefore().size(), is(1));
+        assertThat(actual.getRoute().getBefore().get(0), is(mockPrepareCSRF));
+        assertThat(actual.getRoute().getAfter(), is(notNullValue()));
+        assertThat(actual.getRoute().getAfter().size(), is(0));
 
-        assertThat(coordinates.get(0).getErrorRoutes(), is(notNullValue()));
-        assertThat(coordinates.get(0).getErrorRoutes().size(), is(0));
+        assertThat(actual.getErrorRoutes(), is(notNullValue()));
+        assertThat(actual.getErrorRoutes().size(), is(0));
 
     }
 
@@ -286,22 +288,23 @@ public class ServletGatewayTest {
         when(mockDispatcher.coordinates(Method.POST)).thenReturn(coordinates);
 
         FakeResource resource = new FakeResource();
-        subject.post("/path", resource);
+        Coordinate<DummySession, DummyUser> actual = subject.post("/path", resource);
 
         assertThat(coordinates, is(notNullValue()));
         assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0).getRoute(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(resource));
-        assertThat(coordinates.get(0).getPattern(), is(notNullValue()));
-        assertThat(coordinates.get(0).getPattern().pattern(), is("/path"));
-        assertThat(coordinates.get(0).getRoute().getBefore(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getBefore().size(), is(0));
-        assertThat(coordinates.get(0).getRoute().getAfter(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getAfter().size(), is(0));
+        assertThat(coordinates.get(0), is(actual));
+        assertThat(actual.getRoute(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(resource));
+        assertThat(actual.getPattern(), is(notNullValue()));
+        assertThat(actual.getPattern().pattern(), is("/path"));
+        assertThat(actual.getRoute().getBefore(), is(notNullValue()));
+        assertThat(actual.getRoute().getBefore().size(), is(0));
+        assertThat(actual.getRoute().getAfter(), is(notNullValue()));
+        assertThat(actual.getRoute().getAfter().size(), is(0));
 
-        assertThat(coordinates.get(0).getErrorRoutes(), is(notNullValue()));
-        assertThat(coordinates.get(0).getErrorRoutes().size(), is(0));
+        assertThat(actual.getErrorRoutes(), is(notNullValue()));
+        assertThat(actual.getErrorRoutes().size(), is(0));
     }
 
     @Test
@@ -310,23 +313,24 @@ public class ServletGatewayTest {
         when(mockDispatcher.coordinates(Method.POST)).thenReturn(coordinates);
 
         FakeResource resource = new FakeResource();
-        subject.postCsrfProtect("/path", resource);
+        Coordinate<DummySession, DummyUser> actual = subject.postCsrfProtect("/path", resource);
 
         assertThat(coordinates, is(notNullValue()));
         assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0).getRoute(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(resource));
-        assertThat(coordinates.get(0).getPattern(), is(notNullValue()));
-        assertThat(coordinates.get(0).getPattern().pattern(), is("/path"));
-        assertThat(coordinates.get(0).getRoute().getBefore(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getBefore().size(), is(1));
-        assertThat(coordinates.get(0).getRoute().getBefore().get(0), is(mockCheckCSRF));
-        assertThat(coordinates.get(0).getRoute().getAfter(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getAfter().size(), is(0));
+        assertThat(coordinates.get(0), is(actual));
+        assertThat(actual.getRoute(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(resource));
+        assertThat(actual.getPattern(), is(notNullValue()));
+        assertThat(actual.getPattern().pattern(), is("/path"));
+        assertThat(actual.getRoute().getBefore(), is(notNullValue()));
+        assertThat(actual.getRoute().getBefore().size(), is(1));
+        assertThat(actual.getRoute().getBefore().get(0), is(mockCheckCSRF));
+        assertThat(actual.getRoute().getAfter(), is(notNullValue()));
+        assertThat(actual.getRoute().getAfter().size(), is(0));
 
-        assertThat(coordinates.get(0).getErrorRoutes(), is(notNullValue()));
-        assertThat(coordinates.get(0).getErrorRoutes().size(), is(0));
+        assertThat(actual.getErrorRoutes(), is(notNullValue()));
+        assertThat(actual.getErrorRoutes().size(), is(0));
     }
 
     @Test
@@ -335,22 +339,23 @@ public class ServletGatewayTest {
         when(mockDispatcher.coordinates(Method.PUT)).thenReturn(coordinates);
 
         Resource<DummySession, DummyUser> resource = new FakeResource();
-        subject.put("/path", resource);
+        Coordinate<DummySession, DummyUser> actual = subject.put("/path", resource);
 
         assertThat(coordinates, is(notNullValue()));
         assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0).getRoute(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(resource));
-        assertThat(coordinates.get(0).getPattern(), is(notNullValue()));
-        assertThat(coordinates.get(0).getPattern().pattern(), is("/path"));
-        assertThat(coordinates.get(0).getRoute().getBefore(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getBefore().size(), is(0));
-        assertThat(coordinates.get(0).getRoute().getAfter(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getAfter().size(), is(0));
+        assertThat(coordinates.get(0), is(actual));
+        assertThat(actual.getRoute(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(resource));
+        assertThat(actual.getPattern(), is(notNullValue()));
+        assertThat(actual.getPattern().pattern(), is("/path"));
+        assertThat(actual.getRoute().getBefore(), is(notNullValue()));
+        assertThat(actual.getRoute().getBefore().size(), is(0));
+        assertThat(actual.getRoute().getAfter(), is(notNullValue()));
+        assertThat(actual.getRoute().getAfter().size(), is(0));
 
-        assertThat(coordinates.get(0).getErrorRoutes(), is(notNullValue()));
-        assertThat(coordinates.get(0).getErrorRoutes().size(), is(0));
+        assertThat(actual.getErrorRoutes(), is(notNullValue()));
+        assertThat(actual.getErrorRoutes().size(), is(0));
     }
 
     @Test
@@ -359,22 +364,23 @@ public class ServletGatewayTest {
         when(mockDispatcher.coordinates(Method.PATCH)).thenReturn(coordinates);
 
         Resource<DummySession, DummyUser> resource = new FakeResource();
-        subject.patch("/path", resource);
+        Coordinate<DummySession, DummyUser> actual = subject.patch("/path", resource);
 
         assertThat(coordinates, is(notNullValue()));
         assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0).getRoute(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(resource));
-        assertThat(coordinates.get(0).getPattern(), is(notNullValue()));
-        assertThat(coordinates.get(0).getPattern().pattern(), is("/path"));
-        assertThat(coordinates.get(0).getRoute().getBefore(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getBefore().size(), is(0));
-        assertThat(coordinates.get(0).getRoute().getAfter(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getAfter().size(), is(0));
+        assertThat(coordinates.get(0), is(actual));
+        assertThat(actual.getRoute(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(resource));
+        assertThat(actual.getPattern(), is(notNullValue()));
+        assertThat(actual.getPattern().pattern(), is("/path"));
+        assertThat(actual.getRoute().getBefore(), is(notNullValue()));
+        assertThat(actual.getRoute().getBefore().size(), is(0));
+        assertThat(actual.getRoute().getAfter(), is(notNullValue()));
+        assertThat(actual.getRoute().getAfter().size(), is(0));
 
-        assertThat(coordinates.get(0).getErrorRoutes(), is(notNullValue()));
-        assertThat(coordinates.get(0).getErrorRoutes().size(), is(0));
+        assertThat(actual.getErrorRoutes(), is(notNullValue()));
+        assertThat(actual.getErrorRoutes().size(), is(0));
     }
 
     @Test
@@ -383,22 +389,23 @@ public class ServletGatewayTest {
         when(mockDispatcher.coordinates(Method.DELETE)).thenReturn(coordinates);
 
         Resource<DummySession, DummyUser> resource = new FakeResource();
-        subject.delete("/path", resource);
+        Coordinate<DummySession, DummyUser> actual = subject.delete("/path", resource);
 
         assertThat(coordinates, is(notNullValue()));
         assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0).getRoute(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(resource));
-        assertThat(coordinates.get(0).getPattern(), is(notNullValue()));
-        assertThat(coordinates.get(0).getPattern().pattern(), is("/path"));
-        assertThat(coordinates.get(0).getRoute().getBefore(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getBefore().size(), is(0));
-        assertThat(coordinates.get(0).getRoute().getAfter(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getAfter().size(), is(0));
+        assertThat(coordinates.get(0), is(actual));
+        assertThat(actual.getRoute(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(resource));
+        assertThat(actual.getPattern(), is(notNullValue()));
+        assertThat(actual.getPattern().pattern(), is("/path"));
+        assertThat(actual.getRoute().getBefore(), is(notNullValue()));
+        assertThat(actual.getRoute().getBefore().size(), is(0));
+        assertThat(actual.getRoute().getAfter(), is(notNullValue()));
+        assertThat(actual.getRoute().getAfter().size(), is(0));
 
-        assertThat(coordinates.get(0).getErrorRoutes(), is(notNullValue()));
-        assertThat(coordinates.get(0).getErrorRoutes().size(), is(0));
+        assertThat(actual.getErrorRoutes(), is(notNullValue()));
+        assertThat(actual.getErrorRoutes().size(), is(0));
     }
 
     @Test
@@ -407,22 +414,23 @@ public class ServletGatewayTest {
         when(mockDispatcher.coordinates(Method.CONNECT)).thenReturn(coordinates);
 
         FakeResource resource = new FakeResource();
-        subject.connect("/path", resource);
+        Coordinate<DummySession, DummyUser> actual = subject.connect("/path", resource);
 
         assertThat(coordinates, is(notNullValue()));
         assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0).getRoute(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(resource));
-        assertThat(coordinates.get(0).getPattern(), is(notNullValue()));
-        assertThat(coordinates.get(0).getPattern().pattern(), is("/path"));
-        assertThat(coordinates.get(0).getRoute().getBefore(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getBefore().size(), is(0));
-        assertThat(coordinates.get(0).getRoute().getAfter(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getAfter().size(), is(0));
+        assertThat(coordinates.get(0), is(actual));
+        assertThat(actual.getRoute(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(resource));
+        assertThat(actual.getPattern(), is(notNullValue()));
+        assertThat(actual.getPattern().pattern(), is("/path"));
+        assertThat(actual.getRoute().getBefore(), is(notNullValue()));
+        assertThat(actual.getRoute().getBefore().size(), is(0));
+        assertThat(actual.getRoute().getAfter(), is(notNullValue()));
+        assertThat(actual.getRoute().getAfter().size(), is(0));
 
-        assertThat(coordinates.get(0).getErrorRoutes(), is(notNullValue()));
-        assertThat(coordinates.get(0).getErrorRoutes().size(), is(0));
+        assertThat(actual.getErrorRoutes(), is(notNullValue()));
+        assertThat(actual.getErrorRoutes().size(), is(0));
     }
 
     @Test
@@ -431,22 +439,23 @@ public class ServletGatewayTest {
         when(mockDispatcher.coordinates(Method.OPTIONS)).thenReturn(coordinates);
 
         FakeResource resource = new FakeResource();
-        subject.options("/path", resource);
+        Coordinate<DummySession, DummyUser> actual = subject.options("/path", resource);
 
         assertThat(coordinates, is(notNullValue()));
         assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0).getRoute(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(resource));
-        assertThat(coordinates.get(0).getPattern(), is(notNullValue()));
-        assertThat(coordinates.get(0).getPattern().pattern(), is("/path"));
-        assertThat(coordinates.get(0).getRoute().getBefore(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getBefore().size(), is(0));
-        assertThat(coordinates.get(0).getRoute().getAfter(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getAfter().size(), is(0));
+        assertThat(coordinates.get(0), is(actual));
+        assertThat(actual.getRoute(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(resource));
+        assertThat(actual.getPattern(), is(notNullValue()));
+        assertThat(actual.getPattern().pattern(), is("/path"));
+        assertThat(actual.getRoute().getBefore(), is(notNullValue()));
+        assertThat(actual.getRoute().getBefore().size(), is(0));
+        assertThat(actual.getRoute().getAfter(), is(notNullValue()));
+        assertThat(actual.getRoute().getAfter().size(), is(0));
 
-        assertThat(coordinates.get(0).getErrorRoutes(), is(notNullValue()));
-        assertThat(coordinates.get(0).getErrorRoutes().size(), is(0));
+        assertThat(actual.getErrorRoutes(), is(notNullValue()));
+        assertThat(actual.getErrorRoutes().size(), is(0));
     }
 
     @Test
@@ -455,22 +464,23 @@ public class ServletGatewayTest {
         when(mockDispatcher.coordinates(Method.TRACE)).thenReturn(coordinates);
 
         FakeResource resource = new FakeResource();
-        subject.trace("/path", resource);
+        Coordinate<DummySession, DummyUser> actual = subject.trace("/path", resource);
 
         assertThat(coordinates, is(notNullValue()));
         assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0).getRoute(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(resource));
-        assertThat(coordinates.get(0).getPattern(), is(notNullValue()));
-        assertThat(coordinates.get(0).getPattern().pattern(), is("/path"));
-        assertThat(coordinates.get(0).getRoute().getBefore(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getBefore().size(), is(0));
-        assertThat(coordinates.get(0).getRoute().getAfter(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getAfter().size(), is(0));
+        assertThat(coordinates.get(0), is(actual));
+        assertThat(actual.getRoute(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(resource));
+        assertThat(actual.getPattern(), is(notNullValue()));
+        assertThat(actual.getPattern().pattern(), is("/path"));
+        assertThat(actual.getRoute().getBefore(), is(notNullValue()));
+        assertThat(actual.getRoute().getBefore().size(), is(0));
+        assertThat(actual.getRoute().getAfter(), is(notNullValue()));
+        assertThat(actual.getRoute().getAfter().size(), is(0));
 
-        assertThat(coordinates.get(0).getErrorRoutes(), is(notNullValue()));
-        assertThat(coordinates.get(0).getErrorRoutes().size(), is(0));
+        assertThat(actual.getErrorRoutes(), is(notNullValue()));
+        assertThat(actual.getErrorRoutes().size(), is(0));
     }
 
     @Test
@@ -479,21 +489,22 @@ public class ServletGatewayTest {
         when(mockDispatcher.coordinates(Method.HEAD)).thenReturn(coordinates);
 
         FakeResource resource = new FakeResource();
-        subject.head("/path", resource);
+        Coordinate<DummySession, DummyUser> actual = subject.head("/path", resource);
 
         assertThat(coordinates, is(notNullValue()));
         assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0).getRoute(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getResource(), is(resource));
-        assertThat(coordinates.get(0).getPattern(), is(notNullValue()));
-        assertThat(coordinates.get(0).getPattern().pattern(), is("/path"));
-        assertThat(coordinates.get(0).getRoute().getBefore(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getBefore().size(), is(0));
-        assertThat(coordinates.get(0).getRoute().getAfter(), is(notNullValue()));
-        assertThat(coordinates.get(0).getRoute().getAfter().size(), is(0));
+        assertThat(coordinates.get(0), is(actual));
+        assertThat(actual.getRoute(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(resource));
+        assertThat(actual.getPattern(), is(notNullValue()));
+        assertThat(actual.getPattern().pattern(), is("/path"));
+        assertThat(actual.getRoute().getBefore(), is(notNullValue()));
+        assertThat(actual.getRoute().getBefore().size(), is(0));
+        assertThat(actual.getRoute().getAfter(), is(notNullValue()));
+        assertThat(actual.getRoute().getAfter().size(), is(0));
 
-        assertThat(coordinates.get(0).getErrorRoutes(), is(notNullValue()));
-        assertThat(coordinates.get(0).getErrorRoutes().size(), is(0));
+        assertThat(actual.getErrorRoutes(), is(notNullValue()));
+        assertThat(actual.getErrorRoutes().size(), is(0));
     }
 }
