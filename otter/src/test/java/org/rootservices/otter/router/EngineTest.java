@@ -11,22 +11,25 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.builder.CoordinateBuilder;
+import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.Coordinate;
 import org.rootservices.otter.router.entity.MatchedCoordinate;
 import org.rootservices.otter.router.entity.Method;
-import org.rootservices.otter.router.exception.MediaTypeException;
-import org.rootservices.otter.router.exception.NotFoundException;
+import org.rootservices.otter.router.entity.Route;
+import org.rootservices.otter.router.factory.ErrorRouteFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Matcher;
+
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,12 +37,14 @@ import static org.mockito.Mockito.when;
 public class EngineTest {
     @Mock
     private Dispatcher<DummySession, DummyUser> mockDispatcher;
+    @Mock
+    private ErrorRouteFactory<DummySession, DummyUser> mockErrorRouteFactory;
     private Engine<DummySession, DummyUser> subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new Engine<DummySession, DummyUser>(mockDispatcher);
+        subject = new Engine<DummySession, DummyUser>(mockDispatcher, mockErrorRouteFactory);
     }
 
     @Test
@@ -309,7 +314,7 @@ public class EngineTest {
 
 
     @Test
-    public void routeWhenGetAndNoMatchedRouteShouldThrowNotFoundException() throws Exception {
+    public void routeWhenGetAndNoMatchedRouteShouldRunErrorRoute() throws Exception {
         String url = "foo";
         Optional<MatchedCoordinate<DummySession, DummyUser>> match = Optional.empty();
 
@@ -323,43 +328,22 @@ public class EngineTest {
 
         when(mockDispatcher.find(Method.GET, url)).thenReturn(match);
 
-        NotFoundException actual = null;
-        try {
-            subject.route(request, response);
-        } catch (NotFoundException e) {
-            actual = e;
-        }
-        assertThat(actual, is(notNullValue()));
-    }
+        FakeResource mockErrorResource = mock(FakeResource.class);
+        when(mockErrorResource.get(request, response)).thenReturn(response);
 
-    @Test
-    public void routeWhenGetAndNoMatchedRouteShouldThrowMediaTypeException() throws Exception {
-        String url = "foo";
-        Coordinate<DummySession, DummyUser> coordinate = new CoordinateBuilder<DummySession, DummyUser>()
-                .path(url)
-                .contentTypes(Arrays.asList(new MimeTypeBuilder().jwt().build()))
+        Route<DummySession, DummyUser> errorRoute = new RouteBuilder<DummySession, DummyUser>()
+                .resource(mockErrorResource)
+                .before(new ArrayList<>())
+                .after(new ArrayList<>())
                 .build();
 
-        Optional<MatchedCoordinate<DummySession, DummyUser>> match = Optional.of(
-                new MatchedCoordinate<DummySession, DummyUser>(coordinate)
-        );
+        Map<StatusCode, Route<DummySession, DummyUser>> errorRoutes = FixtureFactory.makeErrorRoutes();
+        when(mockErrorRouteFactory.fromCoordinate(match, errorRoutes)).thenReturn(errorRoute);
 
-        MimeType json = new MimeTypeBuilder().json().build();
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
-        request.setMethod(Method.GET);
-        request.setPathWithParams(url);
-        request.setContentType(json);
+        subject.setErrorRoutes(errorRoutes);
+        Response actual = subject.route(request, response);
 
-        Response<DummySession> response = FixtureFactory.makeResponse();
-
-        when(mockDispatcher.find(Method.GET, url)).thenReturn(match);
-
-        MediaTypeException actual = null;
-        try {
-            subject.route(request, response);
-        } catch (MediaTypeException e) {
-            actual = e;
-        }
-        assertThat(actual, is(notNullValue()));
+        assertThat(actual, is(response));
     }
+    
 }

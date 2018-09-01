@@ -18,6 +18,7 @@ import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTrans
 import org.rootservices.otter.router.Dispatcher;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.entity.Between;
+import org.rootservices.otter.router.factory.ErrorRouteFactory;
 import org.rootservices.otter.security.RandomString;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import org.rootservices.otter.security.csrf.between.CheckCSRF;
@@ -87,7 +88,7 @@ public class OtterAppFactory<S extends Session, U> {
     }
 
     public Engine<S, U> engine() {
-        return new Engine<S, U>(new Dispatcher<S, U>());
+        return new Engine<S, U>(new Dispatcher<S, U>(), new ErrorRouteFactory<S, U>());
     }
 
     public ObjectMapper objectMapper() {
