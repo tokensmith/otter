@@ -147,6 +147,19 @@ will be executed.
     gateway.setErrorRoute(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaTypeRoute);
 ```
 
+###### Server Error
+When an unexpected error occurs then otter will execute a server error route. Configuring Otter to do so is shown below.
+
+```java
+    Route<TokenSession, User> serverErrorRoute = new RouteBuilder<TokenSession, User>()
+                    .resource(new ServerErrorResource())
+                    .before(new ArrayList<>())
+                    .after(new ArrayList<>())
+                    .build();
+    
+    gateway.setErrorRoute(StatusCode.SERVER_ERROR, serverErrorRoute);
+``` 
+
 ### Embedded Container
 
 Otter runs in a Jetty powered [embedded servlet container](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/server/HelloServer.java).

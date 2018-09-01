@@ -12,9 +12,7 @@ import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
-import org.rootservices.otter.router.builder.CoordinateBuilder;
 import org.rootservices.otter.router.builder.RouteBuilder;
-import org.rootservices.otter.router.entity.Coordinate;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.security.session.between.EncryptSession;
@@ -55,9 +53,7 @@ public class AppConfig implements Configure<TokenSession, User> {
     @Override
     public void routes(Gateway<TokenSession, User> gateway) {
         errorRoutes(gateway);
-
-
-
+        
         // does not require content-type
         gateway.get(HelloResource.URL, new HelloResource());
 
@@ -96,11 +92,19 @@ public class AppConfig implements Configure<TokenSession, User> {
         gateway.setErrorRoute(StatusCode.NOT_FOUND, notFoundRoute);
 
         Route<TokenSession, User> unSupportedMediaTypeRoute = new RouteBuilder<TokenSession, User>()
-                .resource(new UnSupportedMediaTypeRoute())
+                .resource(new UnSupportedMediaTypeResource())
                 .before(new ArrayList<>())
                 .after(new ArrayList<>())
                 .build();
 
         gateway.setErrorRoute(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaTypeRoute);
+
+        Route<TokenSession, User> serverErrorRoute = new RouteBuilder<TokenSession, User>()
+                .resource(new ServerErrorResource())
+                .before(new ArrayList<>())
+                .after(new ArrayList<>())
+                .build();
+
+        gateway.setErrorRoute(StatusCode.SERVER_ERROR, serverErrorRoute);
     }
 }

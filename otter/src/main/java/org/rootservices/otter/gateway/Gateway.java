@@ -40,7 +40,6 @@ public class Gateway<S extends Session, U> {
     protected Between<S, U> checkCSRF;
     protected EncryptSession<S, U> encryptSession;
     protected DecryptSession<S, U> decryptSession;
-    protected Map<StatusCode, Route<S, U>> errorRoutes = new HashMap<>();
 
     public Gateway(Engine<S, U> engine, Between<S, U> prepareCSRF, Between<S, U> checkCSRF) {
         this.engine = engine;
@@ -224,11 +223,11 @@ public class Gateway<S extends Session, U> {
     }
 
     public void setErrorRoute(StatusCode statusCode, Route<S, U> errorRoute) {
-        this.errorRoutes.put(statusCode, errorRoute);
+        this.engine.getErrorRoutes().put(statusCode, errorRoute);
     }
 
     public Route<S, U> getErrorRoute(StatusCode statusCode) {
-        return this.errorRoutes.get(statusCode);
+        return this.engine.getErrorRoutes().get(statusCode);
     }
 
     public void setCsrfCookieConfig(CookieConfig csrfCookieConfig) {
