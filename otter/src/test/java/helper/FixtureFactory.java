@@ -19,6 +19,7 @@ import org.rootservices.otter.controller.builder.ResponseBuilder;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.controller.header.HeaderValue;
@@ -64,15 +65,40 @@ public class FixtureFactory {
             .build();
     }
 
-    public static List<Coordinate<DummySession, DummyUser>> makeCoordinates() {
-        return makeCoordinates("/api/v1/foo/");
+    public static Coordinate<DummySession, DummyUser> makeCoordinateWithErrorRoutes(String regex) {
+        FakeResource resource = new FakeResource();
+        FakeResource unSupportedMediaType = new FakeResource();
+        FakeResource serverError = new FakeResource();
+
+        return new CoordinateBuilder<DummySession, DummyUser>()
+                .path(regex)
+                .contentTypes(new ArrayList<MimeType>())
+                .resource(resource)
+                .before(new ArrayList<>())
+                .after(new ArrayList<>())
+                .errorResource(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaType)
+                .errorResource(StatusCode.SERVER_ERROR, serverError)
+                .build();
+    }
+
+    public static Map<StatusCode, Route<DummySession, DummyUser>> makeErrorRoutes() {
+        Route<DummySession, DummyUser> notFound = FixtureFactory.makeRoute();
+        Route<DummySession, DummyUser> unSupportedMediaType = FixtureFactory.makeRoute();
+        Route<DummySession, DummyUser> serverError = FixtureFactory.makeRoute();
+
+        Map<StatusCode, Route<DummySession, DummyUser>> errorRoutes = new HashMap<>();
+        errorRoutes.put(StatusCode.NOT_FOUND, notFound);
+        errorRoutes.put(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaType);
+        errorRoutes.put(StatusCode.SERVER_ERROR, serverError);
+
+        return errorRoutes;
     }
 
     public static List<Coordinate<DummySession, DummyUser>> makeCoordinates(String baseContext) {
-        List<Coordinate<DummySession, DummyUser>> routes = new ArrayList<>();
-        routes.add(makeCoordinate(baseContext + Regex.UUID.getRegex()));
-        routes.add(makeCoordinate(baseContext + Regex.UUID.getRegex() + "/bar"));
-        return routes;
+        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
+        coordinates.add(makeCoordinate(baseContext + Regex.UUID.getRegex()));
+        coordinates.add(makeCoordinate(baseContext + Regex.UUID.getRegex() + "/bar"));
+        return coordinates;
     }
 
     public static Map<String, List<String>> makeEmptyQueryParams() {

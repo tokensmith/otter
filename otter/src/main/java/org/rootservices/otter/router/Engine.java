@@ -4,6 +4,7 @@ package org.rootservices.otter.router;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.*;
 import org.rootservices.otter.router.exception.HaltException;
@@ -11,13 +12,16 @@ import org.rootservices.otter.router.exception.MediaTypeException;
 import org.rootservices.otter.router.exception.NotFoundException;
 import org.rootservices.otter.security.session.Session;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class Engine<S extends Session, U> {
     private static String MEDIA_TYPE_MSG = "Unsupported Media Type: %s";
     private static String NOT_FOUND_MSG = "Not Found: %s %s";
     private Dispatcher<S, U> dispatcher;
+    protected Map<StatusCode, Route<S, U>> errorRoutes = new HashMap<>();
 
     public Engine(Dispatcher<S, U> dispatcher) {
         this.dispatcher = dispatcher;
@@ -37,6 +41,7 @@ public class Engine<S extends Session, U> {
                 throw e;
             }
         } else if (matchedCoordinate.isPresent()) {
+            // should this be a factory for error route?
             throw new MediaTypeException(String.format(MEDIA_TYPE_MSG, request.getContentType()));
         } else {
             throw new NotFoundException(String.format(NOT_FOUND_MSG, request.getMethod(), request.getPathWithParams()));
@@ -100,7 +105,12 @@ public class Engine<S extends Session, U> {
             }
         }
     }
+
     public Dispatcher<S, U> getDispatcher() {
         return dispatcher;
+    }
+
+    public void setErrorRoutes(Map<StatusCode, Route<S, U>> errorRoutes) {
+        this.errorRoutes = errorRoutes;
     }
 }
