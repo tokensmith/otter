@@ -17,12 +17,12 @@ example application.
     <dependency>
         <groupId>org.rootservices</groupId>
         <artifactId>otter</artifactId>
-        <version>1.3</version>
+        <version>1.4</version>
     </dependency>
 </dependencies>
 ```
 
 #### Gradle
 ```groovy
-compile group: 'org.rootservices', name: 'otter', version: '1.3'
+compile group: 'org.rootservices', name: 'otter', version: '1.4'
 ```
