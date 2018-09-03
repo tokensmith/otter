@@ -2,6 +2,7 @@ package org.rootservices.otter.controller.entity;
 
 
 import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.security.entity.ChallengeToken;
 import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.router.entity.Method;
 
