@@ -27,32 +27,32 @@ public class Engine<S, U> {
 
     public Response<S> route(Request<S, U> request, Response<S> response) throws HaltException {
         Response<S> resourceResponse;
-        Optional<MatchedCoordinate<S, U>> matchedCoordinate = dispatcher.find(
+        Optional<MatchedLocation<S, U>> matchedLocation = dispatcher.find(
                 request.getMethod(), request.getPathWithParams()
         );
 
         try {
-            if (matches(matchedCoordinate, request.getContentType())) {
-                request.setMatcher(Optional.of(matchedCoordinate.get().getMatcher()));
-                resourceResponse = executeResourceMethod(matchedCoordinate.get().getCoordinate().getRoute(), request, response);
+            if (matches(matchedLocation, request.getContentType())) {
+                request.setMatcher(Optional.of(matchedLocation.get().getMatcher()));
+                resourceResponse = executeResourceMethod(matchedLocation.get().getLocation().getRoute(), request, response);
             } else {
-                Route<S, U> errorRoute = errorRouteFactory.fromCoordinate(matchedCoordinate, errorRoutes);
+                Route<S, U> errorRoute = errorRouteFactory.fromLocation(matchedLocation, errorRoutes);
                 resourceResponse = executeResourceMethod(errorRoute, request, response);
             }
         } catch (HaltException e) {
             throw e;
         } catch (Exception e) {
-            Route<S, U> serverErrorRoute = errorRouteFactory.serverErrorRoute(matchedCoordinate, errorRoutes);
+            Route<S, U> serverErrorRoute = errorRouteFactory.serverErrorRoute(matchedLocation, errorRoutes);
             resourceResponse = executeResourceMethod(serverErrorRoute, request, response);
         }
 
         return resourceResponse;
     }
 
-    protected Boolean matches(Optional<MatchedCoordinate<S, U>> matchedCoordinate, MimeType contentType) {
-        return matchedCoordinate.isPresent()
-                && ((matchedCoordinate.get().getCoordinate().getContentTypes().size() == 0)
-                || (matchedCoordinate.get().getCoordinate().getContentTypes().size() > 0 && matchedCoordinate.get().getCoordinate().getContentTypes().contains(contentType)));
+    protected Boolean matches(Optional<MatchedLocation<S, U>> matchedLocation, MimeType contentType) {
+        return matchedLocation.isPresent()
+                && ((matchedLocation.get().getLocation().getContentTypes().size() == 0)
+                || (matchedLocation.get().getLocation().getContentTypes().size() > 0 && matchedLocation.get().getLocation().getContentTypes().contains(contentType)));
     }
 
     public Response<S> executeResourceMethod(Route<S, U> route, Request<S, U> request, Response<S> response) throws HaltException {

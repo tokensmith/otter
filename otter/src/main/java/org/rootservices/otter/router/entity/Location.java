@@ -10,17 +10,18 @@ import java.util.regex.Pattern;
 
 
 /**
+ * The target entity to match a http request to.
  *
  * @param <S> Session object, intended to contain user session data.
  * @param <U> User object, intended to be a authenticated user.
  */
-public class Coordinate<S, U> {
+public class Location<S, U> {
     private Pattern pattern;
     private List<MimeType> contentTypes;
     private Route<S, U> route;
     private Map<StatusCode, Route<S, U>> errorRoutes;
 
-    public Coordinate(Pattern pattern, List<MimeType> contentTypes, Route<S, U> route, Map<StatusCode, Route<S, U>> errorRoutes) {
+    public Location(Pattern pattern, List<MimeType> contentTypes, Route<S, U> route, Map<StatusCode, Route<S, U>> errorRoutes) {
         this.pattern = pattern;
         this.contentTypes = contentTypes;
         this.route = route;

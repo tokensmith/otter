@@ -13,10 +13,10 @@ import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
-import org.rootservices.otter.router.builder.CoordinateBuilder;
+import org.rootservices.otter.router.builder.LocationBuilder;
 import org.rootservices.otter.router.builder.RouteBuilder;
-import org.rootservices.otter.router.entity.Coordinate;
-import org.rootservices.otter.router.entity.MatchedCoordinate;
+import org.rootservices.otter.router.entity.Location;
+import org.rootservices.otter.router.entity.MatchedLocation;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.router.factory.ErrorRouteFactory;
@@ -50,7 +50,7 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsGetShouldMatch() throws Exception {
         String url = "foo";
-        Optional<MatchedCoordinate<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedLocation<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
         Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
@@ -63,14 +63,14 @@ public class EngineTest {
         FakeResource mockResource = mock(FakeResource.class);
         when(mockResource.get(request, response)).thenReturn(response);
 
-        Coordinate<DummySession, DummyUser> coordinate = new CoordinateBuilder<DummySession, DummyUser>()
+        Location<DummySession, DummyUser> location = new LocationBuilder<DummySession, DummyUser>()
                 .contentTypes(new ArrayList<MimeType>())
                 .resource(mockResource)
                 .before(new ArrayList<>())
                 .after(new ArrayList<>())
                 .build();
 
-        match.get().setCoordinate(coordinate);
+        match.get().setLocation(location);
 
         when(mockDispatcher.find(Method.GET, url)).thenReturn(match);
 
@@ -83,7 +83,7 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsPostShouldMatch() throws Exception {
         String url = "foo";
-        Optional<MatchedCoordinate<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedLocation<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
         Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
@@ -96,7 +96,7 @@ public class EngineTest {
         FakeResource mockResource = mock(FakeResource.class);
         when(mockResource.post(request, response)).thenReturn(response);
 
-        Coordinate<DummySession, DummyUser> coordinate = new CoordinateBuilder<DummySession, DummyUser>()
+        Location<DummySession, DummyUser> location = new LocationBuilder<DummySession, DummyUser>()
                 .contentTypes(new ArrayList<MimeType>())
                 .resource(mockResource)
                 .before(new ArrayList<>())
@@ -104,7 +104,7 @@ public class EngineTest {
                 .build();
 
         // set the resource merge the mock one.
-        match.get().setCoordinate(coordinate);
+        match.get().setLocation(location);
 
         when(mockDispatcher.find(Method.POST, url)).thenReturn(match);
 
@@ -117,7 +117,7 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsPutShouldMatch() throws Exception {
         String url = "foo";
-        Optional<MatchedCoordinate<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedLocation<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
         Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
@@ -130,7 +130,7 @@ public class EngineTest {
         FakeResource mockResource = mock(FakeResource.class);
         when(mockResource.put(request, response)).thenReturn(response);
 
-        Coordinate<DummySession, DummyUser> coordinate = new CoordinateBuilder<DummySession, DummyUser>()
+        Location<DummySession, DummyUser> location = new LocationBuilder<DummySession, DummyUser>()
                 .contentTypes(new ArrayList<MimeType>())
                 .resource(mockResource)
                 .before(new ArrayList<>())
@@ -138,7 +138,7 @@ public class EngineTest {
                 .build();
 
         // set the resource merge the mock one.
-        match.get().setCoordinate(coordinate);
+        match.get().setLocation(location);
         when(mockDispatcher.find(Method.PUT, url)).thenReturn(match);
 
         Response<DummySession> actual = subject.route(request, response);
@@ -150,7 +150,7 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsDeleteShouldMatch() throws Exception {
         String url = "foo";
-        Optional<MatchedCoordinate<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedLocation<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
         Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
@@ -163,7 +163,7 @@ public class EngineTest {
         FakeResource mockResource = mock(FakeResource.class);
         when(mockResource.delete(request, response)).thenReturn(response);
 
-        Coordinate<DummySession, DummyUser> coordinate = new CoordinateBuilder<DummySession, DummyUser>()
+        Location<DummySession, DummyUser> location = new LocationBuilder<DummySession, DummyUser>()
                 .contentTypes(new ArrayList<MimeType>())
                 .resource(mockResource)
                 .before(new ArrayList<>())
@@ -171,7 +171,7 @@ public class EngineTest {
                 .build();
 
         // set the resource merge the mock one.
-        match.get().setCoordinate(coordinate);
+        match.get().setLocation(location);
         when(mockDispatcher.find(Method.DELETE, url)).thenReturn(match);
 
         Response<DummySession> actual = subject.route(request, response);
@@ -183,7 +183,7 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsConnectShouldMatch() throws Exception {
         String url = "foo";
-        Optional<MatchedCoordinate<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedLocation<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
         Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
@@ -196,7 +196,7 @@ public class EngineTest {
         FakeResource mockResource = mock(FakeResource.class);
         when(mockResource.connect(request, response)).thenReturn(response);
 
-        Coordinate<DummySession, DummyUser> coordinate = new CoordinateBuilder<DummySession, DummyUser>()
+        Location<DummySession, DummyUser> location = new LocationBuilder<DummySession, DummyUser>()
                 .contentTypes(new ArrayList<MimeType>())
                 .resource(mockResource)
                 .before(new ArrayList<>())
@@ -204,7 +204,7 @@ public class EngineTest {
                 .build();
 
         // set the resource merge the mock one.
-        match.get().setCoordinate(coordinate);
+        match.get().setLocation(location);
         when(mockDispatcher.find(Method.CONNECT, url)).thenReturn(match);
 
         Response<DummySession> actual = subject.route(request, response);
@@ -216,7 +216,7 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsOptionsShouldMatch() throws Exception {
         String url = "foo";
-        Optional<MatchedCoordinate<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedLocation<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
         Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
@@ -229,7 +229,7 @@ public class EngineTest {
         FakeResource mockResource = mock(FakeResource.class);
         when(mockResource.options(request, response)).thenReturn(response);
 
-        Coordinate<DummySession, DummyUser> coordinate = new CoordinateBuilder<DummySession, DummyUser>()
+        Location<DummySession, DummyUser> location = new LocationBuilder<DummySession, DummyUser>()
                 .contentTypes(new ArrayList<MimeType>())
                 .resource(mockResource)
                 .before(new ArrayList<>())
@@ -237,7 +237,7 @@ public class EngineTest {
                 .build();
 
         // set the resource merge the mock one.
-        match.get().setCoordinate(coordinate);
+        match.get().setLocation(location);
         when(mockDispatcher.find(Method.OPTIONS, url)).thenReturn(match);
 
         Response<DummySession> actual = subject.route(request, response);
@@ -249,7 +249,7 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsTraceShouldMatch() throws Exception {
         String url = "foo";
-        Optional<MatchedCoordinate<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedLocation<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
         Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
@@ -262,7 +262,7 @@ public class EngineTest {
         FakeResource mockResource = mock(FakeResource.class);
         when(mockResource.trace(request, response)).thenReturn(response);
 
-        Coordinate<DummySession, DummyUser> coordinate = new CoordinateBuilder<DummySession, DummyUser>()
+        Location<DummySession, DummyUser> location = new LocationBuilder<DummySession, DummyUser>()
                 .contentTypes(new ArrayList<MimeType>())
                 .resource(mockResource)
                 .before(new ArrayList<>())
@@ -270,7 +270,7 @@ public class EngineTest {
                 .build();
 
         // set the resource merge the mock one.
-        match.get().setCoordinate(coordinate);
+        match.get().setLocation(location);
         when(mockDispatcher.find(Method.TRACE, url)).thenReturn(match);
 
         Response<DummySession> actual = subject.route(request, response);
@@ -282,7 +282,7 @@ public class EngineTest {
     @Test
     public void routeWhenMethodIsHeadShouldMatch() throws Exception {
         String url = "foo";
-        Optional<MatchedCoordinate<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedLocation<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
         Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
@@ -295,7 +295,7 @@ public class EngineTest {
         FakeResource mockResource = mock(FakeResource.class);
         when(mockResource.head(request, response)).thenReturn(response);
 
-        Coordinate<DummySession, DummyUser> coordinate = new CoordinateBuilder<DummySession, DummyUser>()
+        Location<DummySession, DummyUser> location = new LocationBuilder<DummySession, DummyUser>()
                 .contentTypes(new ArrayList<MimeType>())
                 .resource(mockResource)
                 .before(new ArrayList<>())
@@ -303,7 +303,7 @@ public class EngineTest {
                 .build();
 
         // set the resource merge the mock one.
-        match.get().setCoordinate(coordinate);
+        match.get().setLocation(location);
         when(mockDispatcher.find(Method.HEAD, url)).thenReturn(match);
 
         Response<DummySession> actual = subject.route(request, response);
@@ -316,7 +316,7 @@ public class EngineTest {
     @Test
     public void routeWhenGetAndNoMatchedRouteShouldRunErrorRoute() throws Exception {
         String url = "foo";
-        Optional<MatchedCoordinate<DummySession, DummyUser>> match = Optional.empty();
+        Optional<MatchedLocation<DummySession, DummyUser>> match = Optional.empty();
 
         MimeType json = new MimeTypeBuilder().json().build();
         Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
@@ -338,7 +338,7 @@ public class EngineTest {
                 .build();
 
         Map<StatusCode, Route<DummySession, DummyUser>> errorRoutes = FixtureFactory.makeErrorRoutes();
-        when(mockErrorRouteFactory.fromCoordinate(match, errorRoutes)).thenReturn(errorRoute);
+        when(mockErrorRouteFactory.fromLocation(match, errorRoutes)).thenReturn(errorRoute);
 
         subject.setErrorRoutes(errorRoutes);
         Response actual = subject.route(request, response);

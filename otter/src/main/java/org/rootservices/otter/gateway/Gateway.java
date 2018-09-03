@@ -7,9 +7,9 @@ import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.Engine;
-import org.rootservices.otter.router.builder.CoordinateBuilder;
+import org.rootservices.otter.router.builder.LocationBuilder;
 import org.rootservices.otter.router.entity.Between;
-import org.rootservices.otter.router.entity.Coordinate;
+import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.security.csrf.between.CheckCSRF;
@@ -45,8 +45,8 @@ public class Gateway<S, U> {
         this.checkCSRF = checkCSRF;
     }
 
-    public Coordinate<S, U> add(Method method, String path, Resource<S, U> resource, List<MimeType> contentTypes) {
-        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
+    public Location<S, U> add(Method method, String path, Resource<S, U> resource, List<MimeType> contentTypes) {
+        Location<S, U> location = new LocationBuilder<S, U>()
                 .path(path)
                 .contentTypes(contentTypes)
                 .resource(resource)
@@ -54,24 +54,24 @@ public class Gateway<S, U> {
                 .after(new ArrayList<>())
                 .build();
 
-        engine.getDispatcher().coordinates(method).add(coordinate);
-        return coordinate;
+        engine.getDispatcher().locations(method).add(location);
+        return location;
     }
 
-    public Coordinate<S, U> add(Method method, Coordinate<S, U> coordinate) {
-        engine.getDispatcher().coordinates(method).add(coordinate);
-        return coordinate;
+    public Location<S, U> add(Method method, Location<S, U> location) {
+        engine.getDispatcher().locations(method).add(location);
+        return location;
     }
 
-    public Coordinate<S, U> get(String path, Resource<S, U> resource) {
+    public Location<S, U> get(String path, Resource<S, U> resource) {
         return add(Method.GET, path, resource, new ArrayList<>());
     }
 
-    public Coordinate<S, U> getCsrfProtect(String path, Resource<S, U> resource) {
+    public Location<S, U> getCsrfProtect(String path, Resource<S, U> resource) {
         List<Between<S, U>> before = new ArrayList<>();
         before.add(prepareCSRF);
 
-        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
+        Location<S, U> location = new LocationBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -79,17 +79,17 @@ public class Gateway<S, U> {
                 .after(new ArrayList<>())
                 .build();
 
-        return add(Method.GET, coordinate);
+        return add(Method.GET, location);
     }
 
-    public Coordinate<S, U> getCsrfAndSessionProtect(String path, Resource<S, U> resource) {
+    public Location<S, U> getCsrfAndSessionProtect(String path, Resource<S, U> resource) {
         List<Between<S, U>> before = new ArrayList<>();
         before.add(prepareCSRF);
 
         List<Between<S, U>> after = new ArrayList<>();
         after.add(encryptSession);
 
-        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
+        Location<S, U> location = new LocationBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -97,17 +97,17 @@ public class Gateway<S, U> {
                 .after(after)
                 .build();
 
-        return add(Method.GET, coordinate);
+        return add(Method.GET, location);
     }
 
-    public Coordinate<S, U> getSessionProtect(String path, Resource<S, U> resource) {
+    public Location<S, U> getSessionProtect(String path, Resource<S, U> resource) {
         List<Between<S, U>> before = new ArrayList<>();
         before.add(decryptSession);
 
         List<Between<S, U>> after = new ArrayList<>();
         after.add(encryptSession);
 
-        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
+        Location<S, U> location = new LocationBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -115,18 +115,18 @@ public class Gateway<S, U> {
                 .after(after)
                 .build();
 
-        return add(Method.GET, coordinate);
+        return add(Method.GET, location);
     }
 
-    public Coordinate<S, U> post(String path, Resource<S, U> resource) {
+    public Location<S, U> post(String path, Resource<S, U> resource) {
         return add(Method.POST, path, resource, new ArrayList<>());
     }
 
-    public Coordinate<S, U> postCsrfProtect(String path, Resource<S, U> resource) {
+    public Location<S, U> postCsrfProtect(String path, Resource<S, U> resource) {
         List<Between<S, U>> before = new ArrayList<>();
         before.add(checkCSRF);
 
-        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
+        Location<S, U> location = new LocationBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -134,10 +134,10 @@ public class Gateway<S, U> {
                 .after(new ArrayList<>())
                 .build();
 
-        return add(Method.POST, coordinate);
+        return add(Method.POST, location);
     }
 
-    public Coordinate<S, U> postCsrfAndSessionProtect(String path, Resource<S, U> resource) {
+    public Location<S, U> postCsrfAndSessionProtect(String path, Resource<S, U> resource) {
         List<Between<S, U>> before = new ArrayList<>();
         before.add(checkCSRF);
         before.add(decryptSession);
@@ -145,7 +145,7 @@ public class Gateway<S, U> {
         List<Between<S, U>> after = new ArrayList<>();
         after.add(encryptSession);
 
-        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
+        Location<S, U> location = new LocationBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -153,17 +153,17 @@ public class Gateway<S, U> {
                 .after(after)
                 .build();
 
-        return add(Method.POST, coordinate);
+        return add(Method.POST, location);
     }
 
-    public Coordinate<S, U> postCsrfAndSetSession(String path, Resource<S, U> resource) {
+    public Location<S, U> postCsrfAndSetSession(String path, Resource<S, U> resource) {
         List<Between<S, U>> before = new ArrayList<>();
         before.add(checkCSRF);
 
         List<Between<S, U>> after = new ArrayList<>();
         after.add(encryptSession);
 
-        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
+        Location<S, U> location = new LocationBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -171,17 +171,17 @@ public class Gateway<S, U> {
                 .after(after)
                 .build();
 
-        return add(Method.POST, coordinate);
+        return add(Method.POST, location);
     }
 
-    public Coordinate<S, U> postSessionProtect(String path, Resource<S, U> resource) {
+    public Location<S, U> postSessionProtect(String path, Resource<S, U> resource) {
         List<Between<S, U>> before = new ArrayList<>();
         before.add(decryptSession);
 
         List<Between<S, U>> after = new ArrayList<>();
         after.add(encryptSession);
 
-        Coordinate<S, U> coordinate = new CoordinateBuilder<S, U>()
+        Location<S, U> location = new LocationBuilder<S, U>()
                 .path(path)
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
@@ -189,34 +189,34 @@ public class Gateway<S, U> {
                 .after(after)
                 .build();
 
-        return add(Method.POST, coordinate);
+        return add(Method.POST, location);
     }
 
-    public Coordinate<S, U> put(String path, Resource<S, U> resource) {
+    public Location<S, U> put(String path, Resource<S, U> resource) {
         return add(Method.PUT, path, resource, new ArrayList<>());
     }
 
-    public Coordinate<S, U> patch(String path, Resource<S, U> resource) {
+    public Location<S, U> patch(String path, Resource<S, U> resource) {
         return add(Method.PATCH, path, resource, new ArrayList<>());
     }
 
-    public Coordinate<S, U> delete(String path, Resource<S, U> resource) {
+    public Location<S, U> delete(String path, Resource<S, U> resource) {
         return add(Method.DELETE, path, resource, new ArrayList<>());
     }
 
-    public Coordinate<S, U> connect(String path, Resource<S, U> resource) {
+    public Location<S, U> connect(String path, Resource<S, U> resource) {
         return add(Method.CONNECT, path, resource, new ArrayList<>());
     }
 
-    public Coordinate<S, U> options(String path, Resource<S, U> resource) {
+    public Location<S, U> options(String path, Resource<S, U> resource) {
         return add(Method.OPTIONS, path, resource, new ArrayList<>());
     }
 
-    public Coordinate<S, U> trace(String path, Resource<S, U> resource) {
+    public Location<S, U> trace(String path, Resource<S, U> resource) {
         return add(Method.TRACE, path, resource, new ArrayList<>());
     }
 
-    public Coordinate<S, U> head(String path, Resource<S, U> resource) {
+    public Location<S, U> head(String path, Resource<S, U> resource) {
         return add(Method.HEAD, path, resource, new ArrayList<>());
     }
 

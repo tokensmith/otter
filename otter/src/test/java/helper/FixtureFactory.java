@@ -23,26 +23,25 @@ import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.controller.header.HeaderValue;
-import org.rootservices.otter.router.builder.CoordinateBuilder;
+import org.rootservices.otter.router.builder.LocationBuilder;
 import org.rootservices.otter.router.builder.RouteBuilder;
-import org.rootservices.otter.router.entity.MatchedCoordinate;
+import org.rootservices.otter.router.entity.MatchedLocation;
 import org.rootservices.otter.router.entity.Regex;
-import org.rootservices.otter.router.entity.Coordinate;
+import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.security.csrf.CsrfClaims;
 
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class FixtureFactory {
     private static JwtAppFactory jwtAppFactory = new JwtAppFactory();
 
-    public static Optional<MatchedCoordinate<DummySession, DummyUser>> makeMatch(String url) {
-        Coordinate<DummySession, DummyUser> route = makeCoordinate(url);
+    public static Optional<MatchedLocation<DummySession, DummyUser>> makeMatch(String url) {
+        Location<DummySession, DummyUser> route = makeLocation(url);
         Matcher matcher = route.getPattern().matcher(url);
-        return  Optional.of(new MatchedCoordinate<DummySession, DummyUser>(matcher, route));
+        return  Optional.of(new MatchedLocation<DummySession, DummyUser>(matcher, route));
     }
 
     public static Route<DummySession, DummyUser> makeRoute() {
@@ -54,9 +53,9 @@ public class FixtureFactory {
                 .build();
     }
 
-    public static Coordinate<DummySession, DummyUser> makeCoordinate(String regex) {
+    public static Location<DummySession, DummyUser> makeLocation(String regex) {
         FakeResource resource = new FakeResource();
-        return new CoordinateBuilder<DummySession, DummyUser>()
+        return new LocationBuilder<DummySession, DummyUser>()
             .path(regex)
             .contentTypes(new ArrayList<MimeType>())
             .resource(resource)
@@ -65,12 +64,12 @@ public class FixtureFactory {
             .build();
     }
 
-    public static Coordinate<DummySession, DummyUser> makeCoordinateWithErrorRoutes(String regex) {
+    public static Location<DummySession, DummyUser> makeLocationWithErrorRoutes(String regex) {
         FakeResource resource = new FakeResource();
         FakeResource unSupportedMediaType = new FakeResource();
         FakeResource serverError = new FakeResource();
 
-        return new CoordinateBuilder<DummySession, DummyUser>()
+        return new LocationBuilder<DummySession, DummyUser>()
                 .path(regex)
                 .contentTypes(new ArrayList<MimeType>())
                 .resource(resource)
@@ -94,11 +93,11 @@ public class FixtureFactory {
         return errorRoutes;
     }
 
-    public static List<Coordinate<DummySession, DummyUser>> makeCoordinates(String baseContext) {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        coordinates.add(makeCoordinate(baseContext + Regex.UUID.getRegex()));
-        coordinates.add(makeCoordinate(baseContext + Regex.UUID.getRegex() + "/bar"));
-        return coordinates;
+    public static List<Location<DummySession, DummyUser>> makeLocations(String baseContext) {
+        List<Location<DummySession, DummyUser>> locations = new ArrayList<>();
+        locations.add(makeLocation(baseContext + Regex.UUID.getRegex()));
+        locations.add(makeLocation(baseContext + Regex.UUID.getRegex() + "/bar"));
+        return locations;
     }
 
     public static Map<String, List<String>> makeEmptyQueryParams() {

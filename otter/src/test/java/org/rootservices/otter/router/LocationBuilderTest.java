@@ -7,9 +7,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
-import org.rootservices.otter.router.builder.CoordinateBuilder;
+import org.rootservices.otter.router.builder.LocationBuilder;
 import org.rootservices.otter.router.builder.RouteBuilder;
-import org.rootservices.otter.router.entity.Coordinate;
+import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Route;
 
 import java.util.ArrayList;
@@ -20,19 +20,19 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 
-public class CoordinateBuilderTest {
-    private CoordinateBuilder<DummySession, DummyUser> subject;
+public class LocationBuilderTest {
+    private LocationBuilder<DummySession, DummyUser> subject;
 
     @Before
     public void setUp() {
-        subject = new CoordinateBuilder<DummySession, DummyUser>();
+        subject = new LocationBuilder<DummySession, DummyUser>();
     }
 
     @Test
     public void pathShouldBeOK() {
         String regex = "/foo/(.*)";
 
-        Coordinate<DummySession, DummyUser> actual = subject.path(regex).build();
+        Location<DummySession, DummyUser> actual = subject.path(regex).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPattern(), is(notNullValue()));
@@ -43,7 +43,7 @@ public class CoordinateBuilderTest {
     public void resourceShouldBeOK() {
         FakeResource resource = new FakeResource();
 
-        Coordinate<DummySession, DummyUser> actual = subject.resource(resource).build();
+        Location<DummySession, DummyUser> actual = subject.resource(resource).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getRoute(), is(notNullValue()));
@@ -60,7 +60,7 @@ public class CoordinateBuilderTest {
         List<MimeType> contentTypes = new ArrayList<>();
         FakeResource resource = new FakeResource();
 
-        Coordinate<DummySession, DummyUser> actual = subject.path(regex)
+        Location<DummySession, DummyUser> actual = subject.path(regex)
                 .contentTypes(contentTypes)
                 .resource(resource)
                 .build();
@@ -86,7 +86,7 @@ public class CoordinateBuilderTest {
 
         FakeResource errorResource = new FakeResource();
 
-        Coordinate<DummySession, DummyUser> actual = subject.path(regex)
+        Location<DummySession, DummyUser> actual = subject.path(regex)
                 .contentTypes(contentTypes)
                 .resource(resource)
                 .errorResource(StatusCode.NOT_FOUND, errorResource)
@@ -118,7 +118,7 @@ public class CoordinateBuilderTest {
                 .before(new ArrayList<>())
                 .build();
 
-        Coordinate<DummySession, DummyUser> actual = subject.path(regex)
+        Location<DummySession, DummyUser> actual = subject.path(regex)
                 .contentTypes(contentTypes)
                 .resource(resource)
                 .errorRoute(StatusCode.NOT_FOUND, errorRoute)
