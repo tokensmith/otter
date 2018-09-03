@@ -232,9 +232,11 @@ To use them the following is needed:
 
 #### Implement DecryptSession
 An example [implementation](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/security/SessionBefore.java) 
-can be found in the test suite.
+can be found in the test suite. This is needed because Otter avoids reflection. Notice the ivar, `required` this
+instructs otter if a session cookie is required. This is configurable because there may be Resources that
+optionally would like the `session` populated.
 
-#### Inject your DecryptSession
+#### Inject your required DecryptSession
 Inject your implementation of the `DecryptSession` into the servletGateway.
 
 ```java

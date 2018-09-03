@@ -54,7 +54,7 @@ public class AppFactory<S, U> {
     }
 
     public SessionBefore sessionBefore(String cookieName, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys) {
-        return new SessionBefore(cookieName, otterAppFactory().jwtAppFactory(), preferredKey, rotationKeys, otterAppFactory().objectReader());
+        return new SessionBefore(cookieName, otterAppFactory().jwtAppFactory(), preferredKey, rotationKeys, otterAppFactory().objectReader(), Boolean.TRUE);
     }
 
     public EncryptSession<S, U> encryptSession(CookieConfig sessionCookieConfig, SymmetricKey encKey) {

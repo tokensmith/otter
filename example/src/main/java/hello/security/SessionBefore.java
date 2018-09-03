@@ -9,8 +9,8 @@ import java.util.Map;
 
 public class SessionBefore extends DecryptSession<TokenSession, User> {
 
-    public SessionBefore(String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectReader objectReader) {
-        super(TokenSession.class, sessionCookieName, jwtAppFactory, preferredKey, rotationKeys, objectReader);
+    public SessionBefore(String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectReader objectReader, Boolean required) {
+        super(TokenSession.class, sessionCookieName, jwtAppFactory, preferredKey, rotationKeys, objectReader, required);
     }
 
     @Override

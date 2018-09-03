@@ -9,8 +9,8 @@ import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import java.util.Map;
 
 public class DecryptDummySession extends DecryptSession<DummySession, DummyUser> {
-    public DecryptDummySession(String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectReader objectReader) {
-        super(DummySession.class, sessionCookieName, jwtAppFactory, preferredKey, rotationKeys, objectReader);
+    public DecryptDummySession(String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectReader objectReader, Boolean required) {
+        super(DummySession.class, sessionCookieName, jwtAppFactory, preferredKey, rotationKeys, objectReader, required);
     }
 
     @Override

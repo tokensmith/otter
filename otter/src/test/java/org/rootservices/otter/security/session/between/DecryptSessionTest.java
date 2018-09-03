@@ -21,21 +21,21 @@ import static org.junit.Assert.*;
 
 public class DecryptSessionTest {
     private static OtterAppFactory otterAppFactory = new OtterAppFactory();
-    private DecryptSession<DummySession, DummyUser> subject;
 
-    @Before
-    public void setUp() {
-        subject = new DecryptDummySession(
+    public DecryptSession<DummySession, DummyUser> subject(Boolean required) {
+        return new DecryptDummySession(
                 "session",
                 otterAppFactory.jwtAppFactory(),
                 FixtureFactory.encKey("1234"),
                 FixtureFactory.encRotationKey("5678"),
-                otterAppFactory.objectReader()
+                otterAppFactory.objectReader(),
+                required
         );
     }
 
     @Test
-    public void processShouldBeOk() throws Exception {
+    public void processWhenRequiredShouldBeOk() throws Exception {
+        DecryptSession<DummySession, DummyUser> subject = subject(Boolean.TRUE);
 
         String encryptedSession = new StringBuilder()
                 .append("eyJhbGciOiJkaXIiLCJraWQiOiIxMjM0IiwiZW5jIjoiQTI1NkdDTSJ9.")
@@ -62,7 +62,8 @@ public class DecryptSessionTest {
     }
 
     @Test
-    public void processWhenNoSessionShouldHalt() throws Exception {
+    public void processWhenRequiredAndNoSessionShouldHalt() throws Exception {
+        DecryptSession<DummySession, DummyUser> subject = subject(Boolean.TRUE);
 
         Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -79,7 +80,8 @@ public class DecryptSessionTest {
     }
 
     @Test
-    public void processWhenInvalidSessionExceptionShouldHalt() throws Exception {
+    public void processWhenRequiredAndInvalidSessionExceptionShouldHalt() throws Exception {
+        DecryptSession<DummySession, DummyUser> subject = subject(Boolean.TRUE);
 
         String encryptedSession = new StringBuilder()
                 .append("notAJWE")
@@ -105,8 +107,7 @@ public class DecryptSessionTest {
     }
 
     @Test
-    public void processWhenSessionDecryptExceptionShouldHalt() throws Exception {
-
+    public void processWhenRequiredAndSessionDecryptExceptionShouldHalt() throws Exception {
         // to force a Halt we will use a bad key.
         SymmetricKey veryBadKey = FixtureFactory.encKey("1234");
         veryBadKey.setKey("MMNj8rE5m7NIDhwKYDmHSnlU1wfKuVvW6G--1234567");
@@ -116,7 +117,8 @@ public class DecryptSessionTest {
                 otterAppFactory.jwtAppFactory(),
                 veryBadKey,
                 FixtureFactory.encRotationKey("5678"),
-                otterAppFactory.objectReader()
+                otterAppFactory.objectReader(),
+                Boolean.TRUE
         );
 
         String encryptedSession = new StringBuilder()
@@ -148,7 +150,8 @@ public class DecryptSessionTest {
 
 
     @Test
-    public void decryptShouldBeOk() throws Exception {
+    public void decryptWhenRequiredShouldBeOk() throws Exception {
+        DecryptSession<DummySession, DummyUser> subject = subject(Boolean.TRUE);
 
         String encryptedSession = new StringBuilder()
             .append("eyJhbGciOiJkaXIiLCJraWQiOiIxMjM0IiwiZW5jIjoiQTI1NkdDTSJ9.")
@@ -166,7 +169,8 @@ public class DecryptSessionTest {
     }
 
     @Test
-    public void decryptWhenJsonToJwtExceptionShouldThrowInvalidJWTException() throws Exception {
+    public void decryptWhenRequiredAndJsonToJwtExceptionShouldThrowInvalidJWTException() throws Exception {
+        DecryptSession<DummySession, DummyUser> subject = subject(Boolean.TRUE);
 
         String encryptedSession = new StringBuilder()
                 .append("notAJWE")
@@ -181,5 +185,44 @@ public class DecryptSessionTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getCause(), is(instanceOf(InvalidJWT.class)));
+    }
+
+    @Test
+    public void processWhenNotRequiredShouldBeOk() throws Exception {
+        DecryptSession<DummySession, DummyUser> subject = subject(Boolean.FALSE);
+
+        String encryptedSession = new StringBuilder()
+                .append("eyJhbGciOiJkaXIiLCJraWQiOiIxMjM0IiwiZW5jIjoiQTI1NkdDTSJ9.")
+                .append(".")
+                .append("AkRUVwJboJnzM5Pt0uqK-Ju15_YSn8x0DCrxDcKUszdQei2Fa7hYxENHJytWK1iMfl4lmcMb-fVTCnUC_bBa1abfeJ1NWWzRNwPEc-zhXvFV2-255lJe8EZYSSwE7cDf.")
+                .append("pvvpZcAtxSFpzjqmgJEjh6oJLAoRAWv9WAQJ6BY08TDLpqZATSP4f4RPLMc8g7ArdMIJQI2coRBDjSg.")
+                .append("Z4eCgEJ-RIfWX1jKYeP5Bw")
+                .toString();
+
+        Cookie sessionCookie = FixtureFactory.makeCookie("session");
+        sessionCookie.setValue(encryptedSession);
+
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        request.getCookies().put("session", sessionCookie);
+
+        Response<DummySession> response = FixtureFactory.makeResponse();
+
+        subject.process(Method.GET, request, response);
+
+        DummySession actual = (DummySession) request.getSession().get();
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getAccessToken(), is("123456789"));
+        assertThat(actual.getRefreshToken(), is("101112131415"));
+    }
+
+    @Test
+    public void processWhenNotRequiredAndNoSessionShouldBeOk() throws Exception {
+        DecryptSession<DummySession, DummyUser> subject = subject(Boolean.FALSE);
+
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Response<DummySession> response = FixtureFactory.makeResponse();
+
+        subject.process(Method.GET, request, response);
+        assertThat(request.getSession().isPresent(), is(false));
     }
 }

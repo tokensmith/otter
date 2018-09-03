@@ -52,15 +52,17 @@ public abstract class DecryptSession<S, U> implements Between<S, U> {
     private SymmetricKey preferredKey;
     private Map<String, SymmetricKey> rotationKeys;
     private ObjectReader objectReader;
+    private Boolean required;
 
 
-    public DecryptSession(Class<S> clazz, String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectReader objectReader) {
+    public DecryptSession(Class<S> clazz, String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectReader objectReader, Boolean required) {
         this.clazz = clazz;
         this.sessionCookieName = sessionCookieName;
         this.jwtAppFactory = jwtAppFactory;
         this.preferredKey = preferredKey;
         this.rotationKeys = rotationKeys;
         this.objectReader = objectReader;
+        this.required = required;
     }
 
     @Override
@@ -68,10 +70,14 @@ public abstract class DecryptSession<S, U> implements Between<S, U> {
         Optional<S> session;
         Cookie sessionCookie = request.getCookies().get(sessionCookieName);
 
-        if (sessionCookie == null) {
+        if (sessionCookie == null && required) {
             HaltException halt = new HaltException(COOKIE_NOT_PRESENT);
             onHalt(halt, response);
             throw halt;
+        } else if (sessionCookie == null && !required) {
+            // ok to proceed to resource. The session is not required.
+            request.setSession(Optional.empty());
+            return;
         }
 
         try {
