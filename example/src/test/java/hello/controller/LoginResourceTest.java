@@ -73,9 +73,13 @@ public class LoginResourceTest {
         // cookie csrf value should match the form's value.
         JwtAppFactory jwtAppFactory = new JwtAppFactory();
         JwtSerde jwtSerializer = jwtAppFactory.jwtSerde();
-        JsonWebToken jsonWebToken = jwtSerializer.stringToJwt(csrfCookie.value(), CsrfClaims.class);
-        CsrfClaims claims = (CsrfClaims) jsonWebToken.getClaims();
-        assertThat(claims.getChallengeToken(), is(formCsrfValue));
+        JsonWebToken cookieJwt = jwtSerializer.stringToJwt(csrfCookie.value(), CsrfClaims.class);
+        CsrfClaims cookieClaims = (CsrfClaims) cookieJwt.getClaims();
+
+        JsonWebToken formJwt = jwtSerializer.stringToJwt(formCsrfValue, CsrfClaims.class);
+        CsrfClaims formClaims = (CsrfClaims) formJwt.getClaims();
+
+        assertThat(cookieClaims.getChallengeToken(), is(formClaims.getChallengeToken()));
     }
 
     @Test

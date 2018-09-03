@@ -13,14 +13,16 @@ import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.security.csrf.CsrfClaims;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import org.rootservices.otter.security.csrf.exception.CsrfException;
+import org.rootservices.otter.security.entity.ChallengeToken;
 import org.rootservices.otter.security.session.Session;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Optional;
 
 
 /**
  * Executed before a request reaches a resource to set the CSRF cookie and
- * assign it to the request.
+ * assign the same token to the request.
  *
  * @param <S> Session implementation for application
  * @param <U> User object, intended to be a authenticated user.
@@ -43,19 +45,29 @@ public class PrepareCSRF<S extends Session, U> implements Between<S, U> {
     public void process(Method method, Request<S, U> request, Response<S> response) throws HaltException {
         if (response.getCookies().get(cookieConfig.getName()) == null) {
             String challengeToken = doubleSubmitCSRF.makeChallengeToken();
+
+            String cookieNoise = doubleSubmitCSRF.makeChallengeToken();
+            String formNoise = doubleSubmitCSRF.makeChallengeToken();
+
+            ChallengeToken cookieChallengeToken = new ChallengeToken(challengeToken, cookieNoise);
+            ChallengeToken formChallengeToken = new ChallengeToken(challengeToken, formNoise);
+
             try {
                 Cookie csrfCookie = doubleSubmitCSRF.makeCsrfCookie(
-                        cookieConfig.getName(), challengeToken, cookieConfig.getSecure(), cookieConfig.getAge()
+                        cookieConfig.getName(), cookieChallengeToken, cookieConfig.getSecure(), cookieConfig.getAge()
                 );
                 response.getCookies().put(cookieConfig.getName(), csrfCookie);
-                request.setCsrfChallenge(Optional.of(challengeToken));
+
+                ByteArrayOutputStream formValue = doubleSubmitCSRF.toJwt(formChallengeToken);
+                request.setCsrfChallenge(Optional.of(formValue.toString()));
+
             } catch (CsrfException e) {
                 logger.error(e.getMessage(), e);
             }
         } else {
             JsonWebToken csrfJwt = null;
             try {
-                csrfJwt = doubleSubmitCSRF.csrfCookieValueToJwt(response.getCookies().get(cookieConfig.getName()).getValue());
+                csrfJwt = doubleSubmitCSRF.csrfToJwt(response.getCookies().get(cookieConfig.getName()).getValue());
             } catch (CsrfException e) {
                 logger.error(e.getMessage(), e);
             }
