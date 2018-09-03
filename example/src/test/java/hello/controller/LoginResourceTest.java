@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 
 @Category(ServletContainerTest.class)
@@ -80,6 +81,7 @@ public class LoginResourceTest {
         CsrfClaims formClaims = (CsrfClaims) formJwt.getClaims();
 
         assertThat(cookieClaims.getChallengeToken(), is(formClaims.getChallengeToken()));
+        assertThat(cookieClaims.getNoise(), is(not(formClaims.getNoise())));
     }
 
     @Test

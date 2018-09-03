@@ -33,6 +33,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
@@ -96,6 +97,7 @@ public class LoginSessionResourceTest {
         CsrfClaims formClaims = (CsrfClaims) formJwt.getClaims();
 
         assertThat(cookieClaims.getChallengeToken(), is(formClaims.getChallengeToken()));
+        assertThat(cookieClaims.getNoise(), is(not(formClaims.getNoise())));
     }
 
     @Test
