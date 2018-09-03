@@ -14,12 +14,10 @@ import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.security.csrf.between.CheckCSRF;
 import org.rootservices.otter.security.csrf.between.PrepareCSRF;
-import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.security.session.between.DecryptSession;
 import org.rootservices.otter.security.session.between.EncryptSession;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,10 +29,10 @@ import java.util.Map;
  *
  * Example extension is, ServletGateway.
  *
- * @param <S> Session implementation for application
+ * @param <S> Session object, intended to contain user session data.
  * @param <U> User object, intended to be a authenticated user.
  */
-public class Gateway<S extends Session, U> {
+public class Gateway<S, U> {
     protected Engine<S, U> engine;
     protected Between<S, U> prepareCSRF;
     protected Between<S, U> checkCSRF;

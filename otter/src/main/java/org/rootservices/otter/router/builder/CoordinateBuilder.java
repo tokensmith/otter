@@ -7,7 +7,6 @@ import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Coordinate;
 import org.rootservices.otter.router.entity.Route;
-import org.rootservices.otter.security.session.Session;
 
 
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class CoordinateBuilder<S extends Session, U> {
+public class CoordinateBuilder<S, U> {
     private Pattern pattern;
     private List<MimeType> contentTypes;
     private Resource<S, U> resource;

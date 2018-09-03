@@ -9,14 +9,13 @@ import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.*;
 import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.router.factory.ErrorRouteFactory;
-import org.rootservices.otter.security.session.Session;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class Engine<S extends Session, U> {
+public class Engine<S, U> {
     private Dispatcher<S, U> dispatcher;
     private ErrorRouteFactory<S, U> errorRouteFactory;
     private Map<StatusCode, Route<S, U>> errorRoutes = new HashMap<StatusCode, Route<S, U>>();

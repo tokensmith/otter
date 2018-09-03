@@ -6,14 +6,13 @@ import org.apache.logging.log4j.Logger;
 import org.rootservices.otter.router.entity.MatchedCoordinate;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Coordinate;
-import org.rootservices.otter.security.session.Session;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 
-public class Dispatcher<S extends Session, U> {
+public class Dispatcher<S, U> {
     protected static Logger LOGGER = LogManager.getLogger(Dispatcher.class);
     private static String OTTER_PREFIX = "/app";
     private static String EMPTY = "";

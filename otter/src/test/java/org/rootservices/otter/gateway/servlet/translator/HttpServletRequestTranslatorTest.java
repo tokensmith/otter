@@ -10,9 +10,7 @@ import org.rootservices.otter.QueryStringToMap;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.mime.MimeType;
-import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.router.entity.Method;
-import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.translator.MimeTypeTranslator;
 
 import javax.servlet.http.HttpServletRequest;

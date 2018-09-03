@@ -14,7 +14,6 @@ import org.rootservices.otter.security.csrf.CsrfClaims;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import org.rootservices.otter.security.csrf.exception.CsrfException;
 import org.rootservices.otter.security.entity.ChallengeToken;
-import org.rootservices.otter.security.session.Session;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Optional;
@@ -24,10 +23,10 @@ import java.util.Optional;
  * Executed before a request reaches a resource to set the CSRF cookie and
  * assign the same token to the request.
  *
- * @param <S> Session implementation for application
+ * @param <S> Session object, intended to contain user session data.
  * @param <U> User object, intended to be a authenticated user.
  */
-public class PrepareCSRF<S extends Session, U> implements Between<S, U> {
+public class PrepareCSRF<S, U> implements Between<S, U> {
     protected static Logger logger = LogManager.getLogger(PrepareCSRF.class);
     private CookieConfig cookieConfig;
     private DoubleSubmitCSRF doubleSubmitCSRF;

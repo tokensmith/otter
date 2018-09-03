@@ -3,12 +3,11 @@ package org.rootservices.otter.router.factory;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.router.entity.MatchedCoordinate;
 import org.rootservices.otter.router.entity.Route;
-import org.rootservices.otter.security.session.Session;
 
 import java.util.Map;
 import java.util.Optional;
 
-public class ErrorRouteFactory<S extends Session, U> {
+public class ErrorRouteFactory<S, U> {
 
     public Route<S, U> fromCoordinate(Optional<MatchedCoordinate<S, U>> matchedCoordinate, Map<StatusCode, Route<S, U>> errorRoutes) {
         if (matchedCoordinate.isPresent() && matchedCoordinate.get().getCoordinate().getErrorRoutes().get(StatusCode.UNSUPPORTED_MEDIA_TYPE) != null) {

@@ -5,10 +5,7 @@ import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.Method;
-import org.rootservices.otter.security.entity.ChallengeToken;
-import org.rootservices.otter.security.session.Session;
 
-import java.io.BufferedReader;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,10 +14,10 @@ import java.util.regex.Matcher;
 /**
  * Builder to build a Otter Request.
  *
- * @param <S> Session implementation for application
+ * @param <S> Session object, intended to contain user session data.
  * @param <U> User object, intended to be a authenticated user.
  */
-public class RequestBuilder<S extends Session, U>  {
+public class RequestBuilder<S, U>  {
     private Optional<Matcher> matcher;
     private Method method;
     private String pathWithParams;

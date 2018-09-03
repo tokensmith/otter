@@ -1,11 +1,10 @@
 package org.rootservices.otter.router.entity;
 
-import org.rootservices.otter.security.session.Session;
 
 import java.util.regex.Matcher;
 
 
-public class MatchedCoordinate<S extends Session, U> {
+public class MatchedCoordinate<S, U> {
     private Matcher matcher;
     private Coordinate<S, U> coordinate;
 

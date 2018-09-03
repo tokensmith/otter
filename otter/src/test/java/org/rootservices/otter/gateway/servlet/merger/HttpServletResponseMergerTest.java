@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestCookieTranslator;
-import org.rootservices.otter.security.session.Session;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;

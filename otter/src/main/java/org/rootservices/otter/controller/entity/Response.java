@@ -1,13 +1,12 @@
 package org.rootservices.otter.controller.entity;
 
 
-import org.rootservices.otter.security.session.Session;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import java.util.Optional;
 
-public class Response<T extends Session> {
+public class Response<T> {
     private StatusCode statusCode;
     private Map<String, String> headers;
     private Map<String,Cookie> cookies;

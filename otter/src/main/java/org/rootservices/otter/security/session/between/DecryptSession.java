@@ -18,7 +18,6 @@ import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.security.session.between.exception.InvalidSessionException;
 import org.rootservices.otter.security.session.between.exception.SessionDecryptException;
 import org.rootservices.otter.router.entity.Between;
@@ -34,10 +33,10 @@ import java.util.Optional;
 /**
  * A Between that will encrypt a session.
  *
- * @param <S> Session implementation for application
+ * @param <S> Session object, intended to contain user session data.
  * @param <U> User object, intended to be a authenticated user.
  */
-public abstract class DecryptSession<S extends Session, U> implements Between<S, U> {
+public abstract class DecryptSession<S, U> implements Between<S, U> {
     public static final String NOT_A_JWT = "Session cookie was not a JWE: %s";
     public static final String COULD_NOT_GET_HEADER_JWE = "Session cookie did have a header member: %s";
     public static final String COULD_NOT_DESERIALIZE_JWE = "Session cookie could not be de-serialized to JSON: %s";

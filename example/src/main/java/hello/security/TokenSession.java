@@ -1,11 +1,10 @@
 package hello.security;
 
-import org.rootservices.otter.security.session.Session;
 
 import java.util.Objects;
 import java.util.UUID;
 
-public class TokenSession implements Session {
+public class TokenSession {
     private UUID accessToken;
 
     public TokenSession() {

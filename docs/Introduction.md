@@ -36,14 +36,14 @@ Implementing a resource is rather straight forward.
 The examples should be sufficient to get started.
 
 ### Session
-An application must implement the `Session` interface. This is used represent user sessions and it 
+An application must have a `Session` class. This is used represent user session and it 
 should be a value object. `Session` implementations are passed into Otter via generics in:
 - [Resource](#resource)
 - [Configuration](#configuration)
 - [Entry Servlet](#entry-servlet)
 - [Between](#between)
 
-The same `Session` implementation must be used in a application.
+The same `Session` class must be used through out an application.
 
 It must have a copy constructor and a equals method. If either of those are not there Otter internals will Halt your requests.
  

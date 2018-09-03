@@ -3,16 +3,14 @@ package org.rootservices.otter.gateway.servlet.merger;
 
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestCookieTranslator;
-import org.rootservices.otter.security.session.Session;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class HttpServletResponseMerger<T extends Session> {
+public class HttpServletResponseMerger<T> {
     private HttpServletRequestCookieTranslator httpServletRequestCookieTranslator;
 
     public HttpServletResponseMerger(HttpServletRequestCookieTranslator httpServletRequestCookieTranslator) {

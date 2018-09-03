@@ -3,7 +3,6 @@ package org.rootservices.otter.router.entity;
 
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
-import org.rootservices.otter.security.session.Session;
 
 import java.util.List;
 import java.util.Map;
@@ -12,10 +11,10 @@ import java.util.regex.Pattern;
 
 /**
  *
- * @param <S> Session implementation for application
+ * @param <S> Session object, intended to contain user session data.
  * @param <U> User object, intended to be a authenticated user.
  */
-public class Coordinate<S extends Session, U> {
+public class Coordinate<S, U> {
     private Pattern pattern;
     private List<MimeType> contentTypes;
     private Route<S, U> route;

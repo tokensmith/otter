@@ -3,10 +3,9 @@ package org.rootservices.otter.controller;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.security.session.Session;
 
 
-public class Resource<S extends Session, U> {
+public class Resource<S, U> {
 
     public Response<S> get(Request<S, U> request, Response<S> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
