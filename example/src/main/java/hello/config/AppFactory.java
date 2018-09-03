@@ -9,14 +9,13 @@ import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwk.Use;
 import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.config.OtterAppFactory;
-import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.security.session.between.EncryptSession;
 import org.rootservices.otter.translator.JsonTranslator;
 
 import java.util.Map;
 import java.util.Optional;
 
-public class AppFactory<S extends Session, U> {
+public class AppFactory<S, U> {
     public OtterAppFactory<S, U> otterAppFactory() {
         return new OtterAppFactory<S, U>();
     }

@@ -23,8 +23,6 @@ import org.rootservices.otter.security.RandomString;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import org.rootservices.otter.security.csrf.between.CheckCSRF;
 import org.rootservices.otter.security.csrf.between.PrepareCSRF;
-import org.rootservices.otter.security.session.Session;
-import org.rootservices.otter.security.session.between.EncryptSession;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 import org.rootservices.otter.server.path.CompiledClassPath;
 import org.rootservices.otter.server.path.WebAppPath;
@@ -38,10 +36,10 @@ import java.util.Base64;
 /**
  * Application Factory to construct objects in project.
  *
- * @param <S> Session implementation for application
+ * @param <S> Session object, intended to contain user session data.
  * @param <U> User object, intended to be a authenticated user.
  */
-public class OtterAppFactory<S extends Session, U> {
+public class OtterAppFactory<S, U> {
     private static ObjectMapper objectMapper;
     private static ObjectReader objectReader;
     private static ObjectWriter objectWriter;

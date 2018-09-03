@@ -6,8 +6,8 @@ import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.router.entity.Coordinate;
-import org.rootservices.otter.router.entity.MatchedCoordinate;
+import org.rootservices.otter.router.entity.Location;
+import org.rootservices.otter.router.entity.MatchedLocation;
 import org.rootservices.otter.router.entity.Route;
 
 import java.util.Map;
@@ -25,68 +25,68 @@ public class ErrorRouteFactoryTest {
     }
 
     @Test
-    public void fromCoordinateShouldBeCoordinateUnSupportedErrorRoute() {
-        Coordinate<DummySession, DummyUser> coordinate = FixtureFactory.makeCoordinateWithErrorRoutes("foo");
+    public void fromLocationShouldBeLocationUnSupportedErrorRoute() {
+        Location<DummySession, DummyUser> location = FixtureFactory.makeLocationWithErrorRoutes("foo");
 
-        Optional<MatchedCoordinate<DummySession, DummyUser>> match = Optional.of(
-                new MatchedCoordinate<DummySession, DummyUser>(coordinate)
+        Optional<MatchedLocation<DummySession, DummyUser>> match = Optional.of(
+                new MatchedLocation<DummySession, DummyUser>(location)
         );
 
         Map<StatusCode, Route<DummySession, DummyUser>> errorRoutes = FixtureFactory.makeErrorRoutes();
 
-        Route<DummySession, DummyUser> actual = subject.fromCoordinate(match, errorRoutes);
+        Route<DummySession, DummyUser> actual = subject.fromLocation(match, errorRoutes);
 
-        assertThat(actual, is(coordinate.getErrorRoutes().get(StatusCode.UNSUPPORTED_MEDIA_TYPE)));
+        assertThat(actual, is(location.getErrorRoutes().get(StatusCode.UNSUPPORTED_MEDIA_TYPE)));
 
     }
 
     @Test
-    public void fromCoordinateShouldBeGlobalUnSupportedErrorRoute() {
-        Coordinate<DummySession, DummyUser> coordinate = FixtureFactory.makeCoordinate("foo");
+    public void fromLocationShouldBeGlobalUnSupportedErrorRoute() {
+        Location<DummySession, DummyUser> location = FixtureFactory.makeLocation("foo");
 
-        Optional<MatchedCoordinate<DummySession, DummyUser>> match = Optional.of(
-                new MatchedCoordinate<DummySession, DummyUser>(coordinate)
+        Optional<MatchedLocation<DummySession, DummyUser>> match = Optional.of(
+                new MatchedLocation<DummySession, DummyUser>(location)
         );
 
         Map<StatusCode, Route<DummySession, DummyUser>> errorRoutes = FixtureFactory.makeErrorRoutes();
 
-        Route<DummySession, DummyUser> actual = subject.fromCoordinate(match, errorRoutes);
+        Route<DummySession, DummyUser> actual = subject.fromLocation(match, errorRoutes);
 
         assertThat(actual, is(errorRoutes.get(StatusCode.UNSUPPORTED_MEDIA_TYPE)));
 
     }
 
     @Test
-    public void fromCoordinateShouldBeGlobalNotFoundErrorRoute() {
-        Optional<MatchedCoordinate<DummySession, DummyUser>> match = Optional.empty();
+    public void fromLocationShouldBeGlobalNotFoundErrorRoute() {
+        Optional<MatchedLocation<DummySession, DummyUser>> match = Optional.empty();
         Map<StatusCode, Route<DummySession, DummyUser>> errorRoutes = FixtureFactory.makeErrorRoutes();
 
-        Route<DummySession, DummyUser> actual = subject.fromCoordinate(match, errorRoutes);
+        Route<DummySession, DummyUser> actual = subject.fromLocation(match, errorRoutes);
 
         assertThat(actual, is(errorRoutes.get(StatusCode.NOT_FOUND)));
     }
 
     @Test
-    public void serverErrorShouldBeCoordinateErrorRoute() {
-        Coordinate<DummySession, DummyUser> coordinate = FixtureFactory.makeCoordinateWithErrorRoutes("foo");
+    public void serverErrorShouldBeLocationErrorRoute() {
+        Location<DummySession, DummyUser> location = FixtureFactory.makeLocationWithErrorRoutes("foo");
 
-        Optional<MatchedCoordinate<DummySession, DummyUser>> match = Optional.of(
-                new MatchedCoordinate<DummySession, DummyUser>(coordinate)
+        Optional<MatchedLocation<DummySession, DummyUser>> match = Optional.of(
+                new MatchedLocation<DummySession, DummyUser>(location)
         );
 
         Map<StatusCode, Route<DummySession, DummyUser>> errorRoutes = FixtureFactory.makeErrorRoutes();
 
         Route<DummySession, DummyUser> actual = subject.serverErrorRoute(match, errorRoutes);
 
-        assertThat(actual, is(coordinate.getErrorRoutes().get(StatusCode.SERVER_ERROR)));
+        assertThat(actual, is(location.getErrorRoutes().get(StatusCode.SERVER_ERROR)));
     }
 
     @Test
-    public void serverErrorWhenNoCoordinateErrorRouteShouldBeGlobalRoute() {
-        Coordinate<DummySession, DummyUser> coordinate = FixtureFactory.makeCoordinate("foo");
+    public void serverErrorWhenNoLocationErrorRouteShouldBeGlobalRoute() {
+        Location<DummySession, DummyUser> location = FixtureFactory.makeLocation("foo");
 
-        Optional<MatchedCoordinate<DummySession, DummyUser>> match = Optional.of(
-                new MatchedCoordinate<DummySession, DummyUser>(coordinate)
+        Optional<MatchedLocation<DummySession, DummyUser>> match = Optional.of(
+                new MatchedLocation<DummySession, DummyUser>(location)
         );
 
         Map<StatusCode, Route<DummySession, DummyUser>> errorRoutes = FixtureFactory.makeErrorRoutes();
@@ -99,7 +99,7 @@ public class ErrorRouteFactoryTest {
 
     @Test
     public void serverErrorShouldBeGlobalRoute() {
-        Optional<MatchedCoordinate<DummySession, DummyUser>> match = Optional.empty();
+        Optional<MatchedLocation<DummySession, DummyUser>> match = Optional.empty();
         Map<StatusCode, Route<DummySession, DummyUser>> errorRoutes = FixtureFactory.makeErrorRoutes();
 
         Route<DummySession, DummyUser> actual = subject.serverErrorRoute(match, errorRoutes);

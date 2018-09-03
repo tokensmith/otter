@@ -2,8 +2,6 @@ package org.rootservices.otter.controller.entity;
 
 
 import org.rootservices.otter.controller.entity.mime.MimeType;
-import org.rootservices.otter.security.entity.ChallengeToken;
-import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.router.entity.Method;
 
 
@@ -15,10 +13,10 @@ import java.util.regex.Matcher;
 /**
  * Http Request
  *
- * @param <S> Session implementation for application
+ * @param <S> Session object, intended to contain user session data.
  * @param <U> User object, intended to be a authenticated user.
  */
-public class Request<S extends Session, U> {
+public class Request<S, U> {
     private Optional<Matcher> matcher;
     private Method method;
     private String pathWithParams;

@@ -10,12 +10,11 @@ import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.exception.CsrfException;
 import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
-import org.rootservices.otter.security.session.Session;
 
 import java.util.List;
 import java.util.Optional;
 
-public class CheckCSRF<S extends Session, U> implements Between<S, U> {
+public class CheckCSRF<S, U> implements Between<S, U> {
     private String cookieName;
     private String formFieldName;
     private DoubleSubmitCSRF doubleSubmitCSRF;

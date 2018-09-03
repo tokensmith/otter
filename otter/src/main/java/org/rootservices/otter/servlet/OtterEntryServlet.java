@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
-import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.servlet.async.OtterAsyncListener;
 import org.rootservices.otter.servlet.async.ReadListenerImpl;
 
@@ -22,10 +21,10 @@ import java.io.IOException;
 /**
  * Entry Servlet for all incoming requests Otter will handle.
  *
- * @param <S> Session implementation for application
+ * @param <S> Session object, intended to contain user session data.
  * @param <U> User object, intended to be a authenticated user.
  */
-public abstract class OtterEntryServlet<S extends Session, U> extends HttpServlet {
+public abstract class OtterEntryServlet<S, U> extends HttpServlet {
     protected static Logger logger = LogManager.getLogger(OtterEntryServlet.class);
     protected OtterAppFactory<S, U> otterAppFactory;
     protected ServletGateway<S, U> servletGateway;

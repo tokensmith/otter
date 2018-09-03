@@ -13,7 +13,6 @@ import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTrans
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.exception.HaltException;
-import org.rootservices.otter.security.session.Session;
 
 
 
@@ -27,10 +26,10 @@ import java.util.*;
  * and dispatches requests to Otter resources. No Servlet API objects can go past
  * this gateway.
  *
- * @param <S> Session implementation for application
+ * @param <S> Session object, intended to contain user session data.
  * @param <U> User object, intended to be a authenticated user.
  */
-public class ServletGateway<S extends Session, U> extends Gateway<S, U>  {
+public class ServletGateway<S, U> extends Gateway<S, U>  {
     protected static Logger logger = LogManager.getLogger(ServletGateway.class);
 
     private HttpServletRequestTranslator<S, U> httpServletRequestTranslator;

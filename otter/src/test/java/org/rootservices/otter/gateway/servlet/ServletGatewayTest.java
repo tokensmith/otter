@@ -18,7 +18,7 @@ import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTrans
 import org.rootservices.otter.router.Dispatcher;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.entity.Between;
-import org.rootservices.otter.router.entity.Coordinate;
+import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
 
@@ -156,15 +156,15 @@ public class ServletGatewayTest {
     @Test
     public void getShouldAddRouteWithEmptyBeforeAfter() {
 
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.GET)).thenReturn(coordinates);
+        List<Location<DummySession, DummyUser>> locations = new ArrayList<>();
+        when(mockDispatcher.locations(Method.GET)).thenReturn(locations);
 
         FakeResource resource = new FakeResource();
-        Coordinate<DummySession, DummyUser> actual = subject.get("/path", resource);
+        Location<DummySession, DummyUser> actual = subject.get("/path", resource);
 
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(actual));
+        assertThat(locations, is(notNullValue()));
+        assertThat(locations.size(), is(1));
+        assertThat(locations.get(0), is(actual));
         assertThat(actual.getRoute(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(resource));
@@ -181,15 +181,15 @@ public class ServletGatewayTest {
 
     @Test
     public void getCsrfProtectShouldAddRouteWithCsrfBeforeEmptyAfter() {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.GET)).thenReturn(coordinates);
+        List<Location<DummySession, DummyUser>> locations = new ArrayList<>();
+        when(mockDispatcher.locations(Method.GET)).thenReturn(locations);
 
         FakeResource resource = new FakeResource();
-        Coordinate<DummySession, DummyUser> actual = subject.getCsrfProtect("/path", resource);
+        Location<DummySession, DummyUser> actual = subject.getCsrfProtect("/path", resource);
 
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(actual));
+        assertThat(locations, is(notNullValue()));
+        assertThat(locations.size(), is(1));
+        assertThat(locations.get(0), is(actual));
         assertThat(actual.getRoute(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(resource));
@@ -208,15 +208,15 @@ public class ServletGatewayTest {
 
     @Test
     public void postShouldAddRouteWithEmptyBeforeAfter() {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.POST)).thenReturn(coordinates);
+        List<Location<DummySession, DummyUser>> locations = new ArrayList<>();
+        when(mockDispatcher.locations(Method.POST)).thenReturn(locations);
 
         FakeResource resource = new FakeResource();
-        Coordinate<DummySession, DummyUser> actual = subject.post("/path", resource);
+        Location<DummySession, DummyUser> actual = subject.post("/path", resource);
 
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(actual));
+        assertThat(locations, is(notNullValue()));
+        assertThat(locations.size(), is(1));
+        assertThat(locations.get(0), is(actual));
         assertThat(actual.getRoute(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(resource));
@@ -233,15 +233,15 @@ public class ServletGatewayTest {
 
     @Test
     public void postCsrfProtectShouldAddRouteWithCsrfBeforeEmptyAfter() {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.POST)).thenReturn(coordinates);
+        List<Location<DummySession, DummyUser>> locations = new ArrayList<>();
+        when(mockDispatcher.locations(Method.POST)).thenReturn(locations);
 
         FakeResource resource = new FakeResource();
-        Coordinate<DummySession, DummyUser> actual = subject.postCsrfProtect("/path", resource);
+        Location<DummySession, DummyUser> actual = subject.postCsrfProtect("/path", resource);
 
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(actual));
+        assertThat(locations, is(notNullValue()));
+        assertThat(locations.size(), is(1));
+        assertThat(locations.get(0), is(actual));
         assertThat(actual.getRoute(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(resource));
@@ -259,15 +259,15 @@ public class ServletGatewayTest {
 
     @Test
     public void putShouldAddRouteWithEmptyBeforeAfter() {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.PUT)).thenReturn(coordinates);
+        List<Location<DummySession, DummyUser>> locations = new ArrayList<>();
+        when(mockDispatcher.locations(Method.PUT)).thenReturn(locations);
 
         Resource<DummySession, DummyUser> resource = new FakeResource();
-        Coordinate<DummySession, DummyUser> actual = subject.put("/path", resource);
+        Location<DummySession, DummyUser> actual = subject.put("/path", resource);
 
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(actual));
+        assertThat(locations, is(notNullValue()));
+        assertThat(locations.size(), is(1));
+        assertThat(locations.get(0), is(actual));
         assertThat(actual.getRoute(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(resource));
@@ -284,15 +284,15 @@ public class ServletGatewayTest {
 
     @Test
     public void patchShouldAddRouteWithEmptyBeforeAfter() {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.PATCH)).thenReturn(coordinates);
+        List<Location<DummySession, DummyUser>> locations = new ArrayList<>();
+        when(mockDispatcher.locations(Method.PATCH)).thenReturn(locations);
 
         Resource<DummySession, DummyUser> resource = new FakeResource();
-        Coordinate<DummySession, DummyUser> actual = subject.patch("/path", resource);
+        Location<DummySession, DummyUser> actual = subject.patch("/path", resource);
 
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(actual));
+        assertThat(locations, is(notNullValue()));
+        assertThat(locations.size(), is(1));
+        assertThat(locations.get(0), is(actual));
         assertThat(actual.getRoute(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(resource));
@@ -309,15 +309,15 @@ public class ServletGatewayTest {
 
     @Test
     public void deleteShouldAddRouteWithEmptyBeforeAfter() {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.DELETE)).thenReturn(coordinates);
+        List<Location<DummySession, DummyUser>> locations = new ArrayList<>();
+        when(mockDispatcher.locations(Method.DELETE)).thenReturn(locations);
 
         Resource<DummySession, DummyUser> resource = new FakeResource();
-        Coordinate<DummySession, DummyUser> actual = subject.delete("/path", resource);
+        Location<DummySession, DummyUser> actual = subject.delete("/path", resource);
 
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(actual));
+        assertThat(locations, is(notNullValue()));
+        assertThat(locations.size(), is(1));
+        assertThat(locations.get(0), is(actual));
         assertThat(actual.getRoute(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(resource));
@@ -334,15 +334,15 @@ public class ServletGatewayTest {
 
     @Test
     public void connectShouldAddRouteWithEmptyBeforeAfter() {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.CONNECT)).thenReturn(coordinates);
+        List<Location<DummySession, DummyUser>> locations = new ArrayList<>();
+        when(mockDispatcher.locations(Method.CONNECT)).thenReturn(locations);
 
         FakeResource resource = new FakeResource();
-        Coordinate<DummySession, DummyUser> actual = subject.connect("/path", resource);
+        Location<DummySession, DummyUser> actual = subject.connect("/path", resource);
 
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(actual));
+        assertThat(locations, is(notNullValue()));
+        assertThat(locations.size(), is(1));
+        assertThat(locations.get(0), is(actual));
         assertThat(actual.getRoute(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(resource));
@@ -359,15 +359,15 @@ public class ServletGatewayTest {
 
     @Test
     public void optionsShouldAddRouteWithEmptyBeforeAfter() {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.OPTIONS)).thenReturn(coordinates);
+        List<Location<DummySession, DummyUser>> locations = new ArrayList<>();
+        when(mockDispatcher.locations(Method.OPTIONS)).thenReturn(locations);
 
         FakeResource resource = new FakeResource();
-        Coordinate<DummySession, DummyUser> actual = subject.options("/path", resource);
+        Location<DummySession, DummyUser> actual = subject.options("/path", resource);
 
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(actual));
+        assertThat(locations, is(notNullValue()));
+        assertThat(locations.size(), is(1));
+        assertThat(locations.get(0), is(actual));
         assertThat(actual.getRoute(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(resource));
@@ -384,15 +384,15 @@ public class ServletGatewayTest {
 
     @Test
     public void traceShouldAddRouteWithEmptyBeforeAfter() {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.TRACE)).thenReturn(coordinates);
+        List<Location<DummySession, DummyUser>> locations = new ArrayList<>();
+        when(mockDispatcher.locations(Method.TRACE)).thenReturn(locations);
 
         FakeResource resource = new FakeResource();
-        Coordinate<DummySession, DummyUser> actual = subject.trace("/path", resource);
+        Location<DummySession, DummyUser> actual = subject.trace("/path", resource);
 
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(actual));
+        assertThat(locations, is(notNullValue()));
+        assertThat(locations.size(), is(1));
+        assertThat(locations.get(0), is(actual));
         assertThat(actual.getRoute(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(resource));
@@ -409,15 +409,15 @@ public class ServletGatewayTest {
 
     @Test
     public void headShouldAddRouteWithEmptyBeforeAfter() {
-        List<Coordinate<DummySession, DummyUser>> coordinates = new ArrayList<>();
-        when(mockDispatcher.coordinates(Method.HEAD)).thenReturn(coordinates);
+        List<Location<DummySession, DummyUser>> locations = new ArrayList<>();
+        when(mockDispatcher.locations(Method.HEAD)).thenReturn(locations);
 
         FakeResource resource = new FakeResource();
-        Coordinate<DummySession, DummyUser> actual = subject.head("/path", resource);
+        Location<DummySession, DummyUser> actual = subject.head("/path", resource);
 
-        assertThat(coordinates, is(notNullValue()));
-        assertThat(coordinates.size(), is(1));
-        assertThat(coordinates.get(0), is(actual));
+        assertThat(locations, is(notNullValue()));
+        assertThat(locations.size(), is(1));
+        assertThat(locations.get(0), is(actual));
         assertThat(actual.getRoute(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(resource));

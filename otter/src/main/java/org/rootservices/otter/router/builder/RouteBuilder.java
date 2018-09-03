@@ -3,11 +3,10 @@ package org.rootservices.otter.router.builder;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Route;
-import org.rootservices.otter.security.session.Session;
 
 import java.util.List;
 
-public class RouteBuilder<S extends Session, U> {
+public class RouteBuilder<S, U> {
     private Resource<S, U> resource;
     private List<Between<S, U>> before;
     private List<Between<S, U>> after;

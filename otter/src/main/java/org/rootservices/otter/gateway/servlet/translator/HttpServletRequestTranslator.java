@@ -8,14 +8,10 @@ import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.controller.entity.mime.SubType;
 import org.rootservices.otter.controller.entity.mime.TopLevelType;
-import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.router.entity.Method;
-import org.rootservices.otter.security.session.Session;
 import org.rootservices.otter.translator.MimeTypeTranslator;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,10 +20,10 @@ import java.util.stream.Collectors;
 /**
  * Translator for a HttpServletRequest to a Otter Request
  *
- * @param <S> Session implementation for application
+ * @param <S> Session object, intended to contain user session data.
  * @param <U> User object, intended to be a authenticated user.
  */
-public class HttpServletRequestTranslator<S extends Session, U>  {
+public class HttpServletRequestTranslator<S, U>  {
     private static String PARAM_DELIMITER = "?";
     private static String EMPTY = "";
 
