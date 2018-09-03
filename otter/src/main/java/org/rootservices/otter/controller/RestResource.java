@@ -8,7 +8,6 @@ import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.exception.DeserializationException;
-import org.rootservices.otter.translatable.Translatable;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.exception.*;
 
@@ -16,7 +15,7 @@ import org.rootservices.otter.translator.exception.*;
 import java.io.ByteArrayOutputStream;
 import java.util.Optional;
 
-public class RestResource<T extends Translatable, S, U> extends Resource<S, U> {
+public class RestResource<T, S, U> extends Resource<S, U> {
     protected static Logger logger = LogManager.getLogger(RestResource.class);
 
     protected JsonTranslator<T> translator;

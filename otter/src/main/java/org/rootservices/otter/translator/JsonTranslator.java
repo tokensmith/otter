@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import org.rootservices.otter.translatable.Translatable;
 import org.rootservices.otter.translator.exception.*;
 
 import java.io.*;
@@ -21,7 +20,7 @@ import java.util.regex.Pattern;
  *
  * @param <T> the type to be marshalled to/from json.
  */
-public class JsonTranslator<T extends Translatable> {
+public class JsonTranslator<T> {
     private ObjectReader objectReader;
     private ObjectWriter objectWriter;
     private Class<T> type;

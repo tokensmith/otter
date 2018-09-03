@@ -26,7 +26,6 @@ import org.rootservices.otter.security.csrf.between.PrepareCSRF;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 import org.rootservices.otter.server.path.CompiledClassPath;
 import org.rootservices.otter.server.path.WebAppPath;
-import org.rootservices.otter.translatable.Translatable;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.MimeTypeTranslator;
 
@@ -66,7 +65,7 @@ public class OtterAppFactory<S, U> {
      * @param <T> Type to be serialized
      * @return instance of a JsonTranslator intended for T
      */
-    public <T extends Translatable> JsonTranslator<T> jsonTranslator(Class<T> clazz) {
+    public <T> JsonTranslator<T> jsonTranslator(Class<T> clazz) {
         return new JsonTranslator<T>(
                 objectReader(), objectWriter(), clazz
         );

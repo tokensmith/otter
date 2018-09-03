@@ -2,12 +2,11 @@ package helper.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.rootservices.otter.translatable.Translatable;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
-public class DummyPayload implements Translatable {
+public class DummyPayload {
     private Integer integer;
     private String string;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
