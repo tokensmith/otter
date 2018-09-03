@@ -8,7 +8,7 @@ import org.rootservices.otter.controller.entity.StatusCode;
 import java.io.ByteArrayOutputStream;
 import java.util.*;
 
-public class ResponseBuilder {
+public class ResponseBuilder<T> {
     private StatusCode statusCode;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
@@ -18,67 +18,67 @@ public class ResponseBuilder {
 
     public ResponseBuilder() {}
 
-    public ResponseBuilder headers(Map<String, String> headers) {
+    public ResponseBuilder<T> headers(Map<String, String> headers) {
         this.headers = headers;
         return this;
     }
 
-    public ResponseBuilder cookies(Map<String, Cookie> cookies) {
+    public ResponseBuilder<T> cookies(Map<String, Cookie> cookies) {
         this.cookies = cookies;
         return this;
     }
 
-    public ResponseBuilder payload(Optional<ByteArrayOutputStream> payload) {
+    public ResponseBuilder<T> payload(Optional<ByteArrayOutputStream> payload) {
         this.payload = payload;
         return this;
     }
 
-    public ResponseBuilder template(Optional<String> template) {
+    public ResponseBuilder<T> template(Optional<String> template) {
         this.template = template;
         return this;
     }
 
-    public ResponseBuilder presenter(Optional<Object> presenter) {
+    public ResponseBuilder<T> presenter(Optional<Object> presenter) {
         this.presenter = presenter;
         return this;
     }
 
-    public ResponseBuilder statusCode(StatusCode statusCode) {
+    public ResponseBuilder<T> statusCode(StatusCode statusCode) {
         this.statusCode = statusCode;
         return this;
     }
 
-    public ResponseBuilder ok() {
+    public ResponseBuilder<T> ok() {
         this.statusCode = StatusCode.OK;
         return this;
     }
 
-    public ResponseBuilder notFound() {
+    public ResponseBuilder<T> notFound() {
         this.statusCode = StatusCode.NOT_FOUND;
         return this;
     }
 
-    public ResponseBuilder notImplemented() {
+    public ResponseBuilder<T> notImplemented() {
         this.statusCode = StatusCode.NOT_IMPLEMENTED;
         return this;
     }
 
-    public ResponseBuilder badRequest() {
+    public ResponseBuilder<T> badRequest() {
         this.statusCode = StatusCode.BAD_REQUEST;
         return this;
     }
 
-    public ResponseBuilder unAuthorized() {
+    public ResponseBuilder<T> unAuthorized() {
         this.statusCode = StatusCode.UNAUTHORIZED;
         return this;
     }
 
-    public ResponseBuilder serverError() {
+    public ResponseBuilder<T> serverError() {
         this.statusCode = StatusCode.SERVER_ERROR;
         return this;
     }
 
-    public Response build() {
-        return new Response(this.statusCode, this.headers, this.cookies, this.payload, this.template, this.presenter);
+    public Response<T> build() {
+        return new Response<T>(this.statusCode, this.headers, this.cookies, this.payload, this.template, this.presenter);
     }
 }

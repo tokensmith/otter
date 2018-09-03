@@ -4,45 +4,60 @@ package org.rootservices.otter.router;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
-import org.rootservices.otter.router.entity.Between;
-import org.rootservices.otter.router.entity.MatchedRoute;
-import org.rootservices.otter.router.entity.Method;
-import org.rootservices.otter.router.entity.Route;
+import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.router.entity.*;
 import org.rootservices.otter.router.exception.HaltException;
+import org.rootservices.otter.router.factory.ErrorRouteFactory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-public class Engine {
-    private Dispatcher dispatcher;
+public class Engine<S, U> {
+    private Dispatcher<S, U> dispatcher;
+    private ErrorRouteFactory<S, U> errorRouteFactory;
+    private Map<StatusCode, Route<S, U>> errorRoutes = new HashMap<StatusCode, Route<S, U>>();
 
-    public Engine(Dispatcher dispatcher) {
+    public Engine(Dispatcher<S, U> dispatcher, ErrorRouteFactory<S, U> errorRouteFactory) {
         this.dispatcher = dispatcher;
+        this.errorRouteFactory = errorRouteFactory;
     }
 
-    public Optional<Response> route(Request request, Response response) throws HaltException {
-        Optional<MatchedRoute> matchedRoute = dispatcher.find(request.getMethod(), request.getPathWithParams());
+    public Response<S> route(Request<S, U> request, Response<S> response) throws HaltException {
+        Response<S> resourceResponse;
+        Optional<MatchedLocation<S, U>> matchedLocation = dispatcher.find(
+                request.getMethod(), request.getPathWithParams()
+        );
 
-        Optional<Response> resourceResponse = Optional.empty();
-        if (matchedRoute.isPresent()) {
-            request.setMatcher(Optional.of(matchedRoute.get().getMatcher()));
-            Response r;
-
-            try {
-                r = executeResourceMethod(matchedRoute.get().getRoute(), request, response);
-            } catch (HaltException e) {
-                throw e;
+        try {
+            if (matches(matchedLocation, request.getContentType())) {
+                request.setMatcher(Optional.of(matchedLocation.get().getMatcher()));
+                resourceResponse = executeResourceMethod(matchedLocation.get().getLocation().getRoute(), request, response);
+            } else {
+                Route<S, U> errorRoute = errorRouteFactory.fromLocation(matchedLocation, errorRoutes);
+                resourceResponse = executeResourceMethod(errorRoute, request, response);
             }
-
-            resourceResponse = Optional.of(r);
+        } catch (HaltException e) {
+            throw e;
+        } catch (Exception e) {
+            Route<S, U> serverErrorRoute = errorRouteFactory.serverErrorRoute(matchedLocation, errorRoutes);
+            resourceResponse = executeResourceMethod(serverErrorRoute, request, response);
         }
 
         return resourceResponse;
     }
 
-    public Response executeResourceMethod(Route route, Request request, Response response) throws HaltException {
-        Resource resource = route.getResource();
-        Response resourceResponse = null;
+    protected Boolean matches(Optional<MatchedLocation<S, U>> matchedLocation, MimeType contentType) {
+        return matchedLocation.isPresent()
+                && ((matchedLocation.get().getLocation().getContentTypes().size() == 0)
+                || (matchedLocation.get().getLocation().getContentTypes().size() > 0 && matchedLocation.get().getLocation().getContentTypes().contains(contentType)));
+    }
+
+    public Response<S> executeResourceMethod(Route<S, U> route, Request<S, U> request, Response<S> response) throws HaltException {
+        Resource<S, U> resource = route.getResource();
+        Response<S> resourceResponse = null;
         Method method = request.getMethod();
 
         try {
@@ -72,7 +87,7 @@ public class Engine {
         }
 
         try {
-            executeBetween(route.getAfter(), method, request, response);
+            executeBetween(route.getAfter(), method, request, resourceResponse);
         } catch (HaltException e) {
             throw e;
         }
@@ -80,8 +95,8 @@ public class Engine {
         return resourceResponse;
     }
 
-    protected void executeBetween(List<Between> betweens, Method method, Request request, Response response) throws HaltException {
-        for(Between between: betweens) {
+    protected void executeBetween(List<Between<S, U>> betweens, Method method, Request<S, U> request, Response<S> response) throws HaltException {
+        for(Between<S, U> between: betweens) {
             try {
                 between.process(method, request, response);
             } catch(HaltException e) {
@@ -89,7 +104,16 @@ public class Engine {
             }
         }
     }
-    public Dispatcher getDispatcher() {
+
+    public Dispatcher<S, U> getDispatcher() {
         return dispatcher;
+    }
+
+    public void setErrorRoutes(Map<StatusCode, Route<S, U>> errorRoutes) {
+        this.errorRoutes = errorRoutes;
+    }
+
+    public Map<StatusCode, Route<S, U>> getErrorRoutes() {
+        return errorRoutes;
     }
 }

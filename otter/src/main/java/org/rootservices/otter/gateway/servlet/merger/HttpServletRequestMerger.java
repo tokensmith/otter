@@ -14,7 +14,7 @@ import java.io.IOException;
 public class HttpServletRequestMerger {
     private static String PRESENTER_ATTR = "presenter";
 
-    public HttpServletRequest merge(HttpServletRequest containerRequest, Response response) throws IOException, ServletException {
+    public HttpServletRequest merge(HttpServletRequest containerRequest, Response response) {
 
         // presenter
         if(response.getPresenter().isPresent()) {

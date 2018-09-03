@@ -1,13 +1,10 @@
 package org.rootservices.otter.security.csrf.between;
 
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.exception.CsrfException;
@@ -17,7 +14,7 @@ import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import java.util.List;
 import java.util.Optional;
 
-public class CheckCSRF implements Between {
+public class CheckCSRF<S, U> implements Between<S, U> {
     private String cookieName;
     private String formFieldName;
     private DoubleSubmitCSRF doubleSubmitCSRF;
@@ -34,7 +31,7 @@ public class CheckCSRF implements Between {
     }
 
     @Override
-    public void process(Method method, Request request, Response response) throws HaltException {
+    public void process(Method method, Request<S, U> request, Response<S> response) throws HaltException {
         Boolean ok;
         Cookie csrfCookie = request.getCookies().get(cookieName);
         List<String> formValue = request.getFormData().get(formFieldName);
@@ -45,11 +42,25 @@ public class CheckCSRF implements Between {
         }
 
         if(!ok) {
-            response.setStatusCode(StatusCode.FORBIDDEN);
-            throw new CsrfException(HALT_MSG);
+            CsrfException haltException = new CsrfException(HALT_MSG);
+            onHalt(haltException, response);
+            throw haltException;
         } else {
             request.setCsrfChallenge(Optional.of(formValue.get(0)));
         }
+    }
+
+    /**
+     * This method will be called before a Halt Exception is thrown.
+     * Override this method if you wish to change the behavior on the
+     * response right before a Halt Exception is going to be thrown.
+     * An Example would be, you may want to redirect the user to a login page.
+     *
+     * @param e a HaltException
+     * @param response a Response
+     */
+    protected void onHalt(HaltException e, Response response) {
+        response.setStatusCode(StatusCode.FORBIDDEN);
     }
 
     public String getCookieName() {

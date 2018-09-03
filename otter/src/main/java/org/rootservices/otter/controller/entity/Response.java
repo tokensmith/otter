@@ -1,20 +1,19 @@
 package org.rootservices.otter.controller.entity;
 
 
-import org.rootservices.otter.security.session.Session;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import java.util.Optional;
 
-public class Response {
+public class Response<T> {
     private StatusCode statusCode;
     private Map<String, String> headers;
     private Map<String,Cookie> cookies;
     private Optional<ByteArrayOutputStream> payload;
     private Optional<String> template;
     private Optional<Object> presenter;
-    private Optional<Session> session = Optional.empty();
+    private Optional<T> session = Optional.empty();
 
     public Response() {
     }
@@ -76,11 +75,11 @@ public class Response {
         this.presenter = presenter;
     }
 
-    public Optional<Session> getSession() {
+    public Optional<T> getSession() {
         return session;
     }
 
-    public void setSession(Optional<Session> session) {
+    public void setSession(Optional<T> session) {
         this.session = session;
     }
 }

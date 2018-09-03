@@ -1,7 +1,7 @@
 package org.rootservices.otter.controller.entity;
 
 
-import org.rootservices.otter.security.session.Session;
+import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.Method;
 
 
@@ -10,26 +10,34 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 
-public class Request {
+/**
+ * Http Request
+ *
+ * @param <S> Session object, intended to contain user session data.
+ * @param <U> User object, intended to be a authenticated user.
+ */
+public class Request<S, U> {
     private Optional<Matcher> matcher;
     private Method method;
     private String pathWithParams;
+    private MimeType contentType;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
     private Map<String, List<String>> queryParams;
     private Map<String, List<String>> formData;
-    private Optional<String> body;
+    private Optional<byte[]> body;
     private Optional<String> csrfChallenge;
     private String ipAddress;
-    private Optional<Session> session = Optional.empty();
-    private Optional<Object> user;
+    private Optional<S> session = Optional.empty();
+    private Optional<U> user;
 
     public Request() {}
 
-    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<String> body, Optional<String> csrfChallenge, String ipAddress) {
+    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, MimeType contentType, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<byte[]> body, Optional<String> csrfChallenge, String ipAddress) {
         this.matcher = matcher;
         this.method = method;
         this.pathWithParams = pathWithParams;
+        this.contentType = contentType;
         this.headers = headers;
         this.cookies = cookies;
         this.queryParams = queryParams;
@@ -61,6 +69,14 @@ public class Request {
 
     public void setPathWithParams(String pathWithParams) {
         this.pathWithParams = pathWithParams;
+    }
+
+    public MimeType getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(MimeType contentType) {
+        this.contentType = contentType;
     }
 
     public Map<String, String> getHeaders() {
@@ -95,11 +111,11 @@ public class Request {
         this.formData = formData;
     }
 
-    public Optional<String> getBody() {
+    public Optional<byte[]> getBody() {
         return body;
     }
 
-    public void setBody(Optional<String> body) {
+    public void setBody(Optional<byte[]> body) {
         this.body = body;
     }
 
@@ -119,19 +135,19 @@ public class Request {
         this.ipAddress = ipAddress;
     }
 
-    public Optional<Object> getUser() {
+    public Optional<U> getUser() {
         return user;
     }
 
-    public void setUser(Optional<Object> user) {
+    public void setUser(Optional<U> user) {
         this.user = user;
     }
 
-    public Optional<Session> getSession() {
+    public Optional<S> getSession() {
         return session;
     }
 
-    public void setSession(Optional<Session> session) {
+    public void setSession(Optional<S> session) {
         this.session = session;
     }
 }

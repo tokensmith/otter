@@ -3,7 +3,8 @@ package org.rootservices.otter.translator;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.rootservices.otter.translatable.Translatable;
@@ -15,8 +16,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+/**
+ * There should be a instance of this class per RestResource.
+ *
+ * @param <T> the type to be marshalled to/from json.
+ */
 public class JsonTranslator<T extends Translatable> {
-    private ObjectMapper objectMapper;
+    private ObjectReader objectReader;
+    private ObjectWriter objectWriter;
+    private Class<T> type;
 
     private static final String DUPLICATE_NAME = "key";
     private static final Pattern DUPLICATE_KEY_PATTERN = Pattern.compile("Duplicate field \'(?<" + DUPLICATE_NAME + ">\\w+)\'");
@@ -26,25 +34,27 @@ public class JsonTranslator<T extends Translatable> {
     private static final String INVALID_PAYLOAD_MSG = "The payload couldn't be parsed";
     private static final String TO_JSON_MSG = "Could not create JSON";
 
-    public JsonTranslator(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public JsonTranslator(ObjectReader objectReader, ObjectWriter objectWriter, Class<T> type) {
+        this.objectReader = objectReader;
+        this.objectWriter = objectWriter;
+        this.type = type;
     }
 
     /**
      * Translates json from T.
      * @param json json to marshal
-     * @param clazz the POJO that is returned.
      * @return an instance of T
      * @throws InvalidPayloadException unpredicted error occurred
      * @throws DuplicateKeyException a key was repeated
      * @throws UnknownKeyException a key was not expected
      * @throws InvalidValueException key value was incorrect for it's type
      */
-    public T from(String json, Class<? extends Translatable> clazz) throws InvalidPayloadException, DuplicateKeyException, UnknownKeyException, InvalidValueException {
+    public T from(byte[] json) throws InvalidPayloadException, DuplicateKeyException, UnknownKeyException, InvalidValueException {
         T entity = null;
 
+        ObjectReader localReader = objectReader.forType(type);
         try {
-            entity = (T) objectMapper.readValue(json, clazz);
+            entity = localReader.readValue(json);
         } catch (JsonParseException e) {
             handleJsonParseException(e);
         } catch (UnrecognizedPropertyException e) {
@@ -64,8 +74,9 @@ public class JsonTranslator<T extends Translatable> {
 
     public ByteArrayOutputStream to(Object object) throws ToJsonException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
+
         try {
-            objectMapper.writeValue(out, object);
+            objectWriter.writeValue(out, object);
         } catch (JsonProcessingException e) {
             throw new ToJsonException(TO_JSON_MSG, e);
         } catch (IOException e) {

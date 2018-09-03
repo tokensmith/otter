@@ -3,7 +3,7 @@ package org.rootservices.otter.controller;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.rootservices.otter.controller.entity.Error;
+import org.rootservices.otter.controller.entity.ErrorPayload;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -14,15 +14,12 @@ import org.rootservices.otter.translator.exception.*;
 
 
 import java.io.ByteArrayOutputStream;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Optional;
 
-public class RestResource<T extends Translatable> extends Resource {
+public class RestResource<T extends Translatable, S, U> extends Resource<S, U> {
     protected static Logger logger = LogManager.getLogger(RestResource.class);
 
     protected JsonTranslator<T> translator;
-    protected Class<T> type;
 
     private static final String DUPLICATE_KEY_MSG = "Duplicate Key";
     private static final String INVALID_VALUE_MSG = "Invalid Value";
@@ -35,30 +32,20 @@ public class RestResource<T extends Translatable> extends Resource {
 
 
     public RestResource() {
-        if(this.type == null) {
-            Type generic = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-            this.type = (Class<T>) generic;
-
-        }
     }
 
     public RestResource(JsonTranslator<T> translator) {
-        this();
         this.translator = translator;
     }
 
-    public Class<T> getType() {
-        return type;
-    }
-
     @Override
-    public Response get(Request request, Response response) {
+    public Response<S> get(Request<S, U> request, Response<S> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
     @Override
-    public Response post(Request request, Response response) {
+    public Response<S> post(Request<S, U> request, Response<S> response) {
         T entity;
 
         try {
@@ -75,7 +62,7 @@ public class RestResource<T extends Translatable> extends Resource {
     }
 
     @Override
-    public Response put(Request request, Response response) {
+    public Response<S> put(Request<S, U> request, Response<S> response) {
         T entity;
 
         try {
@@ -92,13 +79,13 @@ public class RestResource<T extends Translatable> extends Resource {
     }
 
     @Override
-    public Response delete(Request request, Response response) {
+    public Response<S> delete(Request<S, U> request, Response<S> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
     @Override
-    public Response patch(Request request, Response response) {
+    public Response<S> patch(Request<S, U> request, Response<S> response) {
         T entity;
 
         try {
@@ -117,9 +104,9 @@ public class RestResource<T extends Translatable> extends Resource {
     protected Optional<ByteArrayOutputStream> makeError(DeserializationException e) {
 
         Optional<ByteArrayOutputStream> payload = Optional.empty();
-        Error error = new Error(e.getMessage(), e.getDescription());
+        ErrorPayload errorPayload = new ErrorPayload(e.getMessage(), e.getDescription());
         try {
-            ByteArrayOutputStream out = translator.to(error);
+            ByteArrayOutputStream out = translator.to(errorPayload);
             payload = Optional.of(out);
         } catch (ToJsonException e1) {
             logger.error(e1.getMessage(), e1);
@@ -127,11 +114,11 @@ public class RestResource<T extends Translatable> extends Resource {
         return payload;
     }
 
-    protected T makeEntity(String json) throws DeserializationException {
+    protected T makeEntity(byte[] json) throws DeserializationException {
         T entity;
 
         try{
-            entity = translator.from(json, type);
+            entity = translator.from(json);
         } catch (DuplicateKeyException e) {
             String desc = String.format(DUPLICATE_KEY_DESC, e.getKey());
             throw new DeserializationException(DUPLICATE_KEY_MSG, e, desc);
@@ -148,17 +135,17 @@ public class RestResource<T extends Translatable> extends Resource {
 
     }
 
-    protected Response post(Request request, Response response, T entity) {
+    protected Response<S> post(Request<S, U> request, Response<S> response, T entity) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
-    protected Response put(Request request, Response response, T entity) {
+    protected Response<S> put(Request<S, U> request, Response<S> response, T entity) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
-    protected Response patch(Request request, Response response, T entity) {
+    protected Response<S> patch(Request<S, U> request, Response<S> response, T entity) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }

@@ -1,8 +1,9 @@
 package helper;
 
 
+import helper.entity.DummySession;
+import helper.entity.DummyUser;
 import helper.entity.FakeResource;
-import io.netty.handler.codec.http.cookie.DefaultCookie;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwk.Use;
@@ -18,42 +19,85 @@ import org.rootservices.otter.controller.builder.ResponseBuilder;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.controller.header.HeaderValue;
-import org.rootservices.otter.router.entity.MatchedRoute;
+import org.rootservices.otter.router.builder.LocationBuilder;
+import org.rootservices.otter.router.builder.RouteBuilder;
+import org.rootservices.otter.router.entity.MatchedLocation;
 import org.rootservices.otter.router.entity.Regex;
+import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.security.csrf.CsrfClaims;
 
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class FixtureFactory {
     private static JwtAppFactory jwtAppFactory = new JwtAppFactory();
 
-    public static Optional<MatchedRoute> makeMatch(String url) {
-        Route route = makeRoute(url);
+    public static Optional<MatchedLocation<DummySession, DummyUser>> makeMatch(String url) {
+        Location<DummySession, DummyUser> route = makeLocation(url);
         Matcher matcher = route.getPattern().matcher(url);
-        return  Optional.of(new MatchedRoute(matcher, route));
+        return  Optional.of(new MatchedLocation<DummySession, DummyUser>(matcher, route));
     }
 
-    public static Route makeRoute(String regex) {
-        Pattern p = Pattern.compile(regex);
+    public static Route<DummySession, DummyUser> makeRoute() {
         FakeResource resource = new FakeResource();
-        return new Route(p, resource, new ArrayList<>(), new ArrayList<>());
+        return new RouteBuilder<DummySession, DummyUser>()
+                .resource(resource)
+                .before(new ArrayList<>())
+                .after(new ArrayList<>())
+                .build();
     }
 
-    public static List<Route> makeRoutes() {
-        return makeRoutes("/api/v1/foo/");
+    public static Location<DummySession, DummyUser> makeLocation(String regex) {
+        FakeResource resource = new FakeResource();
+        return new LocationBuilder<DummySession, DummyUser>()
+            .path(regex)
+            .contentTypes(new ArrayList<MimeType>())
+            .resource(resource)
+            .before(new ArrayList<>())
+            .after(new ArrayList<>())
+            .build();
     }
 
-    public static List<Route> makeRoutes(String baseContext) {
-        List<Route> routes = new ArrayList<>();
-        routes.add(makeRoute(baseContext + Regex.UUID.getRegex()));
-        routes.add(makeRoute(baseContext + Regex.UUID.getRegex() + "/bar"));
-        return routes;
+    public static Location<DummySession, DummyUser> makeLocationWithErrorRoutes(String regex) {
+        FakeResource resource = new FakeResource();
+        FakeResource unSupportedMediaType = new FakeResource();
+        FakeResource serverError = new FakeResource();
+
+        return new LocationBuilder<DummySession, DummyUser>()
+                .path(regex)
+                .contentTypes(new ArrayList<MimeType>())
+                .resource(resource)
+                .before(new ArrayList<>())
+                .after(new ArrayList<>())
+                .errorResource(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaType)
+                .errorResource(StatusCode.SERVER_ERROR, serverError)
+                .build();
+    }
+
+    public static Map<StatusCode, Route<DummySession, DummyUser>> makeErrorRoutes() {
+        Route<DummySession, DummyUser> notFound = FixtureFactory.makeRoute();
+        Route<DummySession, DummyUser> unSupportedMediaType = FixtureFactory.makeRoute();
+        Route<DummySession, DummyUser> serverError = FixtureFactory.makeRoute();
+
+        Map<StatusCode, Route<DummySession, DummyUser>> errorRoutes = new HashMap<>();
+        errorRoutes.put(StatusCode.NOT_FOUND, notFound);
+        errorRoutes.put(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaType);
+        errorRoutes.put(StatusCode.SERVER_ERROR, serverError);
+
+        return errorRoutes;
+    }
+
+    public static List<Location<DummySession, DummyUser>> makeLocations(String baseContext) {
+        List<Location<DummySession, DummyUser>> locations = new ArrayList<>();
+        locations.add(makeLocation(baseContext + Regex.UUID.getRegex()));
+        locations.add(makeLocation(baseContext + Regex.UUID.getRegex() + "/bar"));
+        return locations;
     }
 
     public static Map<String, List<String>> makeEmptyQueryParams() {
@@ -61,8 +105,8 @@ public class FixtureFactory {
         return params;
     }
 
-    public static Request makeRequest() {
-        Request request = new Request();
+    public static Request<DummySession, DummyUser> makeRequest() {
+        Request<DummySession, DummyUser> request = new Request<DummySession, DummyUser>();
         request.setFormData(new HashMap<>());
         request.setCookies(makeCookies());
         request.setCsrfChallenge(Optional.empty());
@@ -75,8 +119,8 @@ public class FixtureFactory {
         return headers;
     }
 
-    public static Response makeResponse() {
-        return new ResponseBuilder()
+    public static Response<DummySession> makeResponse() {
+        Response<DummySession> response = new ResponseBuilder<DummySession>()
                 .headers(new HashMap<>())
                 .cookies(new HashMap<>())
                 .payload(Optional.empty())
@@ -84,6 +128,8 @@ public class FixtureFactory {
                 .presenter(Optional.empty())
                 .ok()
                 .build();
+
+        return response;
     }
 
     public static Map<String, Cookie> makeCookies() {

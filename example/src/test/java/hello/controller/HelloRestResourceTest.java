@@ -34,6 +34,7 @@ public class HelloRestResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(helloURI)
+                .addHeader("Content-Type", "application/json; charset=utf-8;")
                 .execute();
 
         Response response = f.get();
@@ -59,6 +60,7 @@ public class HelloRestResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(helloURI)
+                .addHeader("Content-Type", "application/json; charset=utf-8;")
                 .setBody(om.writeValueAsString(hello))
                 .execute();
 
@@ -69,5 +71,20 @@ public class HelloRestResourceTest {
         assertThat(hello, is(notNullValue()));
         assertThat(hello.getMessage(), is(notNullValue()));
         assertThat(hello.getMessage(), is("Hello World"));
+    }
+
+
+    @Test
+    public void getWhenWrongContentTypeShouldReturn415() throws Exception {
+        String helloURI = BASE_URI.toString() + "rest/hello";
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .prepareGet(helloURI)
+                .addHeader("Content-Type", "application/xml; charset=utf-8;")
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(StatusCode.UNSUPPORTED_MEDIA_TYPE.getCode()));
     }
 }

@@ -1,6 +1,8 @@
 package org.rootservices.otter.security.csrf.between;
 
 import helper.FixtureFactory;
+import helper.entity.DummySession;
+import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -15,6 +17,8 @@ import org.rootservices.otter.security.csrf.CsrfClaims;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import org.rootservices.otter.security.csrf.exception.CsrfException;
 
+import java.io.ByteArrayOutputStream;
+
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -27,34 +31,39 @@ public class PrepareCSRFTest {
     private static String COOKIE_NAME = "CSRF";
     @Mock
     private DoubleSubmitCSRF mockDoubleSubmitCSRF;
-    private PrepareCSRF subject;
+    private PrepareCSRF<DummySession, DummyUser> subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         CookieConfig cookieConfig = new CookieConfig(COOKIE_NAME, false, -1);
-        subject = new PrepareCSRF(cookieConfig, mockDoubleSubmitCSRF);
+        subject = new PrepareCSRF<DummySession, DummyUser>(cookieConfig, mockDoubleSubmitCSRF);
     }
 
     @Test
     public void processShouldSetCookie() throws Exception {
         String challengeToken = "challenge-token";
+
         when(mockDoubleSubmitCSRF.makeChallengeToken()).thenReturn(challengeToken);
         Cookie cookie = FixtureFactory.makeCookie(COOKIE_NAME);
-        when(mockDoubleSubmitCSRF.makeCsrfCookie(COOKIE_NAME, challengeToken, false, -1)).thenReturn(cookie);
+        when(mockDoubleSubmitCSRF.makeCsrfCookie(eq(COOKIE_NAME), any(), eq(false), eq(-1))).thenReturn(cookie);
 
-        Request request = FixtureFactory.makeRequest();
-        Response response = FixtureFactory.makeResponse();
+        ByteArrayOutputStream formValueJwt = new ByteArrayOutputStream();
+        formValueJwt.write("formValueJwt".getBytes());
+
+        when(mockDoubleSubmitCSRF.toJwt(any())).thenReturn(formValueJwt);
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Response<DummySession> response = FixtureFactory.makeResponse();
 
         subject.process(Method.GET, request, response);
 
         assertThat(response.getCookies().get(COOKIE_NAME), is(notNullValue()));
         assertThat(response.getCookies().get(COOKIE_NAME), is(cookie));
         assertThat(request.getCsrfChallenge().isPresent(), is(true));
-        assertThat(request.getCsrfChallenge().get(), is(challengeToken));
+        assertThat(request.getCsrfChallenge().get(), is("formValueJwt"));
 
-        verify(mockDoubleSubmitCSRF).makeChallengeToken();
-        verify(mockDoubleSubmitCSRF).makeCsrfCookie(COOKIE_NAME, challengeToken, false, -1);
+        verify(mockDoubleSubmitCSRF, times(3)).makeChallengeToken();
+        verify(mockDoubleSubmitCSRF).makeCsrfCookie(eq(COOKIE_NAME), any(), eq(false), eq(-1));
     }
 
     @Test
@@ -62,8 +71,8 @@ public class PrepareCSRFTest {
         String challengeToken = "challenge-token";
         Cookie cookie = FixtureFactory.makeCookie(COOKIE_NAME);
 
-        Request request = FixtureFactory.makeRequest();
-        Response response = FixtureFactory.makeResponse();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Response<DummySession> response = FixtureFactory.makeResponse();
         response.getCookies().put(COOKIE_NAME, cookie);
 
         // set up the csrf cookie value which is a jwt.
@@ -72,7 +81,7 @@ public class PrepareCSRFTest {
         JsonWebToken csrfJwt = new JsonWebToken();
         csrfJwt.setClaims(csrfClaims);
 
-        when(mockDoubleSubmitCSRF.csrfCookieValueToJwt(cookie.getValue())).thenReturn(csrfJwt);
+        when(mockDoubleSubmitCSRF.csrfToJwt(cookie.getValue())).thenReturn(csrfJwt);
 
         subject.process(Method.GET, request, response);
 
@@ -83,7 +92,7 @@ public class PrepareCSRFTest {
         assertThat(request.getCsrfChallenge().get(), is(challengeToken));
 
         verify(mockDoubleSubmitCSRF, never()).makeChallengeToken();
-        verify(mockDoubleSubmitCSRF, never()).makeCsrfCookie(COOKIE_NAME, challengeToken, false, -1);
+        verify(mockDoubleSubmitCSRF, never()).makeCsrfCookie(eq(COOKIE_NAME), any(), eq(false), eq(-1));
     }
 
     @Test
@@ -92,16 +101,16 @@ public class PrepareCSRFTest {
         when(mockDoubleSubmitCSRF.makeChallengeToken()).thenReturn(challengeToken);
 
         CsrfException csrfException = new CsrfException("", null);
-        when(mockDoubleSubmitCSRF.makeCsrfCookie(COOKIE_NAME, challengeToken, false, -1)).thenThrow(csrfException);
+        when(mockDoubleSubmitCSRF.makeCsrfCookie(eq(COOKIE_NAME), any(), eq(false), eq(-1))).thenThrow(csrfException);
 
-        Request request = FixtureFactory.makeRequest();
-        Response response = FixtureFactory.makeResponse();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Response<DummySession> response = FixtureFactory.makeResponse();
 
         subject.process(Method.GET, request, response);
 
         assertThat(response.getCookies().get(COOKIE_NAME), is(nullValue()));
 
-        verify(mockDoubleSubmitCSRF).makeChallengeToken();
-        verify(mockDoubleSubmitCSRF).makeCsrfCookie(COOKIE_NAME, challengeToken, false, -1);
+        verify(mockDoubleSubmitCSRF, times(3)).makeChallengeToken();
+        verify(mockDoubleSubmitCSRF).makeCsrfCookie(eq(COOKIE_NAME), any(), eq(false), eq(-1));
     }
 }

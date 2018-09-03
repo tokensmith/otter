@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 
 @Category(ServletContainerTest.class)
@@ -42,6 +43,7 @@ public class LoginResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(loginURI)
+                .addHeader("Content-Type", "text/html")
                 .execute();
 
         Response response = f.get();
@@ -72,9 +74,14 @@ public class LoginResourceTest {
         // cookie csrf value should match the form's value.
         JwtAppFactory jwtAppFactory = new JwtAppFactory();
         JwtSerde jwtSerializer = jwtAppFactory.jwtSerde();
-        JsonWebToken jsonWebToken = jwtSerializer.stringToJwt(csrfCookie.value(), CsrfClaims.class);
-        CsrfClaims claims = (CsrfClaims) jsonWebToken.getClaims();
-        assertThat(claims.getChallengeToken(), is(formCsrfValue));
+        JsonWebToken cookieJwt = jwtSerializer.stringToJwt(csrfCookie.value(), CsrfClaims.class);
+        CsrfClaims cookieClaims = (CsrfClaims) cookieJwt.getClaims();
+
+        JsonWebToken formJwt = jwtSerializer.stringToJwt(formCsrfValue, CsrfClaims.class);
+        CsrfClaims formClaims = (CsrfClaims) formJwt.getClaims();
+
+        assertThat(cookieClaims.getChallengeToken(), is(formClaims.getChallengeToken()));
+        assertThat(cookieClaims.getNoise(), is(not(formClaims.getNoise())));
     }
 
     @Test
@@ -86,6 +93,7 @@ public class LoginResourceTest {
         // this is the GET request to get the csrf cookie & form value
         ListenableFuture<Response> f = httpClient
                 .prepareGet(loginURI)
+                .addHeader("Content-Type", "text/html")
                 .execute();
 
         Response getResponse = f.get();
@@ -107,6 +115,7 @@ public class LoginResourceTest {
         // this is the POST request
         f = httpClient
                 .preparePost(loginURI)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8;")
                 .setFormParams(formData)
                 .setCookies(getResponse.getCookies())
                 .execute();
@@ -131,6 +140,7 @@ public class LoginResourceTest {
         // this is the POST request
         ListenableFuture<Response> f = httpClient
                 .preparePost(loginURI)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8;")
                 .setFormParams(formData)
                 .execute();
 

@@ -63,7 +63,7 @@ Returned from the dispatcher. It is a container for a Matcher and a Route.
 
 ## Between
 
-The interface that all before and after tasks should implement. They are ivars to a route and are executed in the engine.
+The interface that all before and after tasks should implement. They are ivars to a location and are executed in the engine.
 
 ## PrepareCSRF
 
@@ -77,5 +77,5 @@ The interface that all before and after tasks should implement. They are ivars t
 
 ## Dispatcher
 
-This loops through routes to attempt to find one where a route's pattern matches the request url.
+This loops through routes to attempt to find one where a location's pattern matches the request url.
 The Dispatcher's routes are assigned in the ServletGateway.

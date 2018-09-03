@@ -18,22 +18,27 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-
-public abstract class OtterEntryServlet extends HttpServlet {
+/**
+ * Entry Servlet for all incoming requests Otter will handle.
+ *
+ * @param <S> Session object, intended to contain user session data.
+ * @param <U> User object, intended to be a authenticated user.
+ */
+public abstract class OtterEntryServlet<S, U> extends HttpServlet {
     protected static Logger logger = LogManager.getLogger(OtterEntryServlet.class);
-    protected OtterAppFactory otterAppFactory;
-    protected ServletGateway servletGateway;
+    protected OtterAppFactory<S, U> otterAppFactory;
+    protected ServletGateway<S, U> servletGateway;
 
     @Override
     public void init() {
-        otterAppFactory = new OtterAppFactory();
+        otterAppFactory = new OtterAppFactory<S, U>();
         servletGateway = otterAppFactory.servletGateway();
-        Configure configure = makeConfigure();
+        Configure<S, U> configure = makeConfigure();
         configure.configure(servletGateway);
         configure.routes(servletGateway);
     }
 
-    public abstract Configure makeConfigure();
+    public abstract Configure<S, U> makeConfigure();
 
     public void doAsync(HttpServletRequest request, HttpServletResponse response) throws IOException {
         AsyncContext context = request.startAsync(request, response);

@@ -2,66 +2,52 @@ package org.rootservices.otter.security.session.between;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.jwt.builder.compact.EncryptedCompactBuilder;
 import org.rootservices.jwt.builder.exception.CompactException;
-import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwe.EncryptionAlgorithm;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwt.header.Algorithm;
-import org.rootservices.jwt.entity.jwt.header.Header;
-import org.rootservices.jwt.jwe.entity.JWE;
-import org.rootservices.jwt.jwe.factory.exception.CipherException;
-import org.rootservices.jwt.jwe.serialization.JweSerializer;
-import org.rootservices.jwt.serialization.exception.EncryptException;
-import org.rootservices.jwt.serialization.exception.JsonToJwtException;
 import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
-import org.rootservices.otter.security.session.Session;
+import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.security.session.between.exception.EncryptSessionException;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.exception.HaltException;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Base64;
-import java.util.Optional;
+
 
 /**
  * Intended to be used after a resource has processed the request. This will encrypt the
  * session which will become a cookie.
+ *
+ * @param <S> Session object, intended to contain user session data.
+ * @param <U> User object, intended to be a authenticated user.
  */
-public class EncryptSession implements Between {
-    public static final String NOT_ENCRPTING = "Not re-encrypting session cookie";
+public class EncryptSession<S, U> implements Between<S, U> {
+    public static final String NOT_ENCRYPTING = "Not re-encrypting session cookie";
     public static final String COULD_NOT_ENCRYPT_SESSION = "Could not encrypt session cookie";
     protected static Logger LOGGER = LogManager.getLogger(EncryptSession.class);
 
     private CookieConfig cookieConfig;
-    private JwtAppFactory jwtAppFactory;
-    private Base64.Decoder decoder;
     private SymmetricKey preferredKey;
-    private ObjectMapper objectMapper;
+    private ObjectWriter objectWriter;
 
-    public EncryptSession(JwtAppFactory jwtAppFactory, Base64.Decoder decoder, ObjectMapper objectMapper) {
-        this.jwtAppFactory = jwtAppFactory;
-        this.decoder = decoder;
-        this.objectMapper = objectMapper;
-    }
 
-    public EncryptSession(CookieConfig cookieConfig, JwtAppFactory jwtAppFactory, Base64.Decoder decoder, SymmetricKey preferredKey, ObjectMapper objectMapper) {
+    public EncryptSession(CookieConfig cookieConfig, SymmetricKey preferredKey, ObjectWriter objectWriter) {
         this.cookieConfig = cookieConfig;
-        this.jwtAppFactory = jwtAppFactory;
-        this.decoder = decoder;
         this.preferredKey = preferredKey;
-        this.objectMapper = objectMapper;
+        this.objectWriter = objectWriter;
     }
 
     @Override
-    public void process(Method method, Request request, Response response) throws HaltException {
+    public void process(Method method, Request<S, U> request, Response<S> response) throws HaltException {
         if (shouldEncrypt(request, response)) {
             ByteArrayOutputStream session;
 
@@ -69,6 +55,8 @@ public class EncryptSession implements Between {
                 session = encrypt(response.getSession().get());
             } catch (EncryptSessionException e) {
                 LOGGER.error(e.getMessage(), e);
+                HaltException haltException = new HaltException(COULD_NOT_ENCRYPT_SESSION, e);
+                onHalt(haltException, response);
                 throw new HaltException(COULD_NOT_ENCRYPT_SESSION, e);
             }
 
@@ -80,11 +68,24 @@ public class EncryptSession implements Between {
 
             response.getCookies().put(cookieConfig.getName(), cookie);
         } else {
-            LOGGER.debug(NOT_ENCRPTING);
+            LOGGER.debug(NOT_ENCRYPTING);
         }
     }
 
-    protected Boolean shouldEncrypt(Request request, Response response) {
+    /**
+     * This method will be called before a Halt Exception is thrown.
+     * Override this method if you wish to change the behavior on the
+     * response right before a Halt Exception is going to be thrown.
+     * An Example would be, you may want to redirect the user to a login page.
+     *
+     * @param e a HaltException
+     * @param response a Response
+     */
+    protected void onHalt(HaltException e, Response response) {
+        response.setStatusCode(StatusCode.SERVER_ERROR);
+    }
+
+    protected Boolean shouldEncrypt(Request<S, U> request, Response<S> response) {
         if (request.getSession().isPresent() && response.getSession().isPresent()) {
             if ( response.getSession().get().equals(request.getSession().get()) ) {
                 return false;
@@ -96,11 +97,11 @@ public class EncryptSession implements Between {
         return false;
     }
 
-    protected ByteArrayOutputStream encrypt(Session session) throws EncryptSessionException {
+    protected ByteArrayOutputStream encrypt(S session) throws EncryptSessionException {
         byte[] payload;
 
         try {
-            payload = objectMapper.writeValueAsBytes(session);
+            payload = objectWriter.writeValueAsBytes(session);
         } catch (JsonProcessingException e) {
             throw new EncryptSessionException(e.getMessage(), e);
         }

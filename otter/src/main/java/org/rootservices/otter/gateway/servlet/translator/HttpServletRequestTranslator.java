@@ -5,32 +5,43 @@ import org.rootservices.otter.QueryStringToMap;
 import org.rootservices.otter.controller.builder.RequestBuilder;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.header.ContentType;
+import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.controller.entity.mime.SubType;
+import org.rootservices.otter.controller.entity.mime.TopLevelType;
 import org.rootservices.otter.router.entity.Method;
+import org.rootservices.otter.translator.MimeTypeTranslator;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
-public class HttpServletRequestTranslator {
+/**
+ * Translator for a HttpServletRequest to a Otter Request
+ *
+ * @param <S> Session object, intended to contain user session data.
+ * @param <U> User object, intended to be a authenticated user.
+ */
+public class HttpServletRequestTranslator<S, U>  {
     private static String PARAM_DELIMITER = "?";
     private static String EMPTY = "";
 
     private HttpServletRequestCookieTranslator httpServletCookieTranslator;
     private HttpServletRequestHeaderTranslator httpServletRequestHeaderTranslator;
     private QueryStringToMap queryStringToMap;
+    private MimeTypeTranslator mimeTypeTranslator;
 
-    public HttpServletRequestTranslator(HttpServletRequestCookieTranslator httpServletCookieTranslator, HttpServletRequestHeaderTranslator httpServletRequestHeaderTranslator, QueryStringToMap queryStringToMap) {
+    public HttpServletRequestTranslator(HttpServletRequestCookieTranslator httpServletCookieTranslator,
+                                        HttpServletRequestHeaderTranslator httpServletRequestHeaderTranslator,
+                                        QueryStringToMap queryStringToMap, MimeTypeTranslator mimeTypeTranslator) {
         this.httpServletCookieTranslator = httpServletCookieTranslator;
         this.httpServletRequestHeaderTranslator = httpServletRequestHeaderTranslator;
         this.queryStringToMap = queryStringToMap;
+        this.mimeTypeTranslator = mimeTypeTranslator;
     }
 
-    public Request from(HttpServletRequest containerRequest, String containerBody) throws IOException {
+    public Request<S, U> from(HttpServletRequest containerRequest, byte[] containerBody) throws IOException {
 
         Method method = Method.valueOf(containerRequest.getMethod());
 
@@ -51,23 +62,24 @@ public class HttpServletRequestTranslator {
         Optional<String> queryString = Optional.ofNullable(containerRequest.getQueryString());
         Map<String, List<String>> queryParams = queryStringToMap.run(queryString);
 
+        MimeType contentType = mimeTypeTranslator.to(containerRequest.getContentType());
 
         Map<String, List<String>> formData = new HashMap<>();
-        if (method == Method.POST && ContentType.FORM_URL_ENCODED.getValue().equals(containerRequest.getContentType())) {
-            formData = queryStringToMap.run(Optional.of(containerBody));
-        }
-
-        Optional<String> body = Optional.empty();
-        if (method == Method.POST && !ContentType.FORM_URL_ENCODED.getValue().equals(containerRequest.getContentType())) {
+        Optional<byte[]> body = Optional.empty();
+        if (isForm(method, contentType)) {
+            String form = new String(containerBody);
+            formData = queryStringToMap.run(Optional.of(form));
+        } else if (method == Method.POST && !isForm(method, contentType)) {
             body = Optional.of(containerBody);
         }
 
         String ipAddress = containerRequest.getRemoteAddr();
 
-        return new RequestBuilder()
+        return new RequestBuilder<S, U>()
                 .matcher(Optional.empty())
                 .method(method)
                 .pathWithParams(pathWithParams)
+                .contentType(contentType)
                 .cookies(otterCookies)
                 .headers(headers)
                 .queryParams(queryParams)
@@ -76,6 +88,10 @@ public class HttpServletRequestTranslator {
                 .csrfChallenge(Optional.empty())
                 .ipAddress(ipAddress)
                 .build();
+    }
+
+    protected Boolean isForm(Method method, MimeType contentType) {
+        return method == Method.POST && TopLevelType.APPLICATION.toString().equals(contentType.getType()) && SubType.FORM.toString().equals(contentType.getSubType());
     }
 
     protected String queryStringForUrl(String queryString) {
