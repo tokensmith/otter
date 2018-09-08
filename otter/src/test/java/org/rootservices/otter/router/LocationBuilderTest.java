@@ -5,6 +5,7 @@ import helper.entity.DummyUser;
 import helper.entity.FakeResource;
 import org.junit.Before;
 import org.junit.Test;
+import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.builder.LocationBuilder;
@@ -62,6 +63,30 @@ public class LocationBuilderTest {
 
         Location<DummySession, DummyUser> actual = subject.path(regex)
                 .contentTypes(contentTypes)
+                .resource(resource)
+                .build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getRoute(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(resource));
+        assertThat(actual.getPattern(), is(notNullValue()));
+        assertThat(actual.getPattern().pattern(), is(regex));
+        assertThat(actual.getContentTypes(), is(notNullValue()));
+        assertThat(actual.getContentTypes().size(), is(0));
+
+        assertThat(actual.getErrorRoutes(), is(notNullValue()));
+        assertThat(actual.getErrorRoutes().size(), is(0));
+    }
+
+    @Test
+    public void pathAndResourceAndContentTypeShouldBeOK() {
+        String regex = "/foo/(.*)";
+        MimeType json = new MimeTypeBuilder().json().build();
+        FakeResource resource = new FakeResource();
+
+        Location<DummySession, DummyUser> actual = subject.path(regex)
+                .contentType(json)
                 .resource(resource)
                 .build();
 

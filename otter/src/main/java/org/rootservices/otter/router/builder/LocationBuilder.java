@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 public class LocationBuilder<S, U> {
     private Pattern pattern;
-    private List<MimeType> contentTypes;
+    private List<MimeType> contentTypes = new ArrayList<>();
     private Resource<S, U> resource;
     private List<Between<S, U>> before;
     private List<Between<S, U>> after;
@@ -30,6 +30,11 @@ public class LocationBuilder<S, U> {
 
     public LocationBuilder<S, U> contentTypes(List<MimeType> contentTypes) {
         this.contentTypes = contentTypes;
+        return this;
+    }
+
+    public LocationBuilder<S, U> contentType(MimeType contentType) {
+        this.contentTypes.add(contentType);
         return this;
     }
 

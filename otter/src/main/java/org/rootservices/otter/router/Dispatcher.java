@@ -32,10 +32,10 @@ public class Dispatcher<S, U> {
         String scrubbedUrl = url.replaceAll(OTTER_PREFIX, EMPTY);
 
         Optional<MatchedLocation<S, U>> m = Optional.empty();
-        for(Location<S, U> route: locations(method)) {
-            Matcher matcher = route.getPattern().matcher(scrubbedUrl);
+        for(Location<S, U> location: locations(method)) {
+            Matcher matcher = location.getPattern().matcher(scrubbedUrl);
             if (matcher.matches()) {
-                m = Optional.of(new MatchedLocation<S, U>(matcher, route));
+                m = Optional.of(new MatchedLocation<S, U>(matcher, location));
                 break;
             }
         }
