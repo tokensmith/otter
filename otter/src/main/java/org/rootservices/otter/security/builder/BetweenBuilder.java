@@ -5,13 +5,17 @@ import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.config.OtterAppFactory;
+import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.security.RandomString;
+import org.rootservices.otter.security.builder.entity.Betweens;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import org.rootservices.otter.security.csrf.between.CheckCSRF;
 import org.rootservices.otter.security.csrf.between.PrepareCSRF;
 import org.rootservices.otter.security.session.between.DecryptSession;
 import org.rootservices.otter.security.session.between.EncryptSession;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class BetweenBuilder<S, U> {
@@ -24,6 +28,9 @@ public class BetweenBuilder<S, U> {
     private Map<String, SymmetricKey> rotationSignKeys;
     private SymmetricKey encKey;
     private Map<String, SymmetricKey> rotationEncKeys;
+
+    private List<Between<S,U>> before = new ArrayList<>();
+    private List<Between<S,U>> after = new ArrayList<>();
 
     public BetweenBuilder<S, U> otterFactory(OtterAppFactory<S,U> otterAppFactory) {
         this.otterAppFactory = otterAppFactory;
@@ -48,9 +55,13 @@ public class BetweenBuilder<S, U> {
     public BetweenBuilder<S, U> csrf() {
         CookieConfig csrfCookieConfig = new CookieConfig(CSRF_NAME, secure, -1);
         DoubleSubmitCSRF doubleSubmitCSRF = new DoubleSubmitCSRF(new JwtAppFactory(), new RandomString(), signKey, rotationSignKeys);
-        new PrepareCSRF<S, U>(csrfCookieConfig, doubleSubmitCSRF);
 
-        new CheckCSRF<S, U>(CSRF_NAME, CSRF_NAME, doubleSubmitCSRF);
+        Between<S,U> checkCSRF = new CheckCSRF<S, U>(CSRF_NAME, CSRF_NAME, doubleSubmitCSRF);
+        before.add(checkCSRF);
+
+        Between<S,U> prepareCSRF = new PrepareCSRF<S, U>(csrfCookieConfig, doubleSubmitCSRF);
+        after.add(prepareCSRF);
+
         return this;
     }
 
@@ -66,10 +77,18 @@ public class BetweenBuilder<S, U> {
 
     public BetweenBuilder<S, U> session(Class<S> clazz) {
         CookieConfig sessionCookieConfig = new CookieConfig(SESSION_NAME, secure, -1);
-        new EncryptSession<S, U>(sessionCookieConfig, encKey, otterAppFactory.objectWriter());
-        new DecryptSession<S, U>(clazz, SESSION_NAME, new JwtAppFactory(), encKey, rotationEncKeys, otterAppFactory.objectReader(), true);
+
+        Between<S,U> decryptSession = new DecryptSession<S, U>(clazz, SESSION_NAME, new JwtAppFactory(), encKey, rotationEncKeys, otterAppFactory.objectReader(), true);
+        before.add(decryptSession);
+
+        Between<S,U> encryptSession = new EncryptSession<S, U>(sessionCookieConfig, encKey, otterAppFactory.objectWriter());
+        after.add(encryptSession);
+
         return this;
     }
 
 
+    public Betweens<S,U> build() {
+        return new Betweens<S,U>(before, after);
+    }
 }

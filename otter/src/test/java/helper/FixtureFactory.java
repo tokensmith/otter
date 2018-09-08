@@ -160,12 +160,32 @@ public class FixtureFactory {
         );
     }
 
+    public static Map<String, SymmetricKey> rotationSignKeys(String baseKeyId, Integer qty) {
+        Map<String, SymmetricKey> keys = new HashMap<>();
+        for(int i = 0; i<qty; i++) {
+            String keyId = baseKeyId + i;
+            keys.put(keyId, FixtureFactory.signKey(keyId));
+        }
+
+        return keys;
+    }
+
     public static SymmetricKey encKey(String keyId) {
         return new SymmetricKey(
                 Optional.of(keyId),
                 "MMNj8rE5m7NIDhwKYDmHSnlU1wfKuVvW6G--GKPYkRA",
                 Use.ENCRYPTION
         );
+    }
+
+    public static Map<String, SymmetricKey> rotationEncKeys(String baseKeyId, Integer qty) {
+        Map<String, SymmetricKey> keys = new HashMap<>();
+        for(int i = 0; i<qty; i++) {
+            String keyId = baseKeyId + i;
+            keys.put(keyId, FixtureFactory.encKey(keyId));
+        }
+
+        return keys;
     }
 
     public static Map<String, SymmetricKey> encRotationKey(String keyId) {
