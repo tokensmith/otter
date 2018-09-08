@@ -19,8 +19,8 @@ public class LocationBuilder<S, U> {
     private Pattern pattern;
     private List<MimeType> contentTypes = new ArrayList<>();
     private Resource<S, U> resource;
-    private List<Between<S, U>> before;
-    private List<Between<S, U>> after;
+    private List<Between<S, U>> before = new ArrayList<>();
+    private List<Between<S, U>> after = new ArrayList<>();
     private Map<StatusCode, Route<S, U>> errorRoutes = new HashMap<>();
 
     public LocationBuilder<S, U> path(String path) {

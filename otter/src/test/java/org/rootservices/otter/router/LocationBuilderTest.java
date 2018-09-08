@@ -47,7 +47,10 @@ public class LocationBuilderTest {
         Location<DummySession, DummyUser> actual = subject.resource(resource).build();
 
         assertThat(actual, is(notNullValue()));
+        assertThat(actual.getContentTypes().size(), is(0));
         assertThat(actual.getRoute(), is(notNullValue()));
+        assertThat(actual.getRoute().getBefore().size(), is(0));
+        assertThat(actual.getRoute().getAfter().size(), is(0));
         assertThat(actual.getRoute().getResource(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(resource));
 
@@ -97,7 +100,7 @@ public class LocationBuilderTest {
         assertThat(actual.getPattern(), is(notNullValue()));
         assertThat(actual.getPattern().pattern(), is(regex));
         assertThat(actual.getContentTypes(), is(notNullValue()));
-        assertThat(actual.getContentTypes().size(), is(0));
+        assertThat(actual.getContentTypes().size(), is(1));
 
         assertThat(actual.getErrorRoutes(), is(notNullValue()));
         assertThat(actual.getErrorRoutes().size(), is(0));

@@ -50,8 +50,6 @@ public class Gateway<S, U> {
                 .path(path)
                 .contentTypes(contentTypes)
                 .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
                 .build();
 
         engine.getDispatcher().locations(method).add(location);
@@ -76,7 +74,6 @@ public class Gateway<S, U> {
                 .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(before)
-                .after(new ArrayList<>())
                 .build();
 
         return add(Method.GET, location);
@@ -91,7 +88,6 @@ public class Gateway<S, U> {
 
         Location<S, U> location = new LocationBuilder<S, U>()
                 .path(path)
-                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(before)
                 .after(after)
@@ -109,7 +105,6 @@ public class Gateway<S, U> {
 
         Location<S, U> location = new LocationBuilder<S, U>()
                 .path(path)
-                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(before)
                 .after(after)
@@ -128,7 +123,6 @@ public class Gateway<S, U> {
 
         Location<S, U> location = new LocationBuilder<S, U>()
                 .path(path)
-                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(before)
                 .after(new ArrayList<>())
@@ -147,7 +141,6 @@ public class Gateway<S, U> {
 
         Location<S, U> location = new LocationBuilder<S, U>()
                 .path(path)
-                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(before)
                 .after(after)
@@ -165,7 +158,6 @@ public class Gateway<S, U> {
 
         Location<S, U> location = new LocationBuilder<S, U>()
                 .path(path)
-                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(before)
                 .after(after)
@@ -183,7 +175,6 @@ public class Gateway<S, U> {
 
         Location<S, U> location = new LocationBuilder<S, U>()
                 .path(path)
-                .contentTypes(new ArrayList<>())
                 .resource(resource)
                 .before(before)
                 .after(after)
