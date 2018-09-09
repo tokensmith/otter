@@ -28,6 +28,7 @@ public class BetweenBuilder<S, U> {
     private Map<String, SymmetricKey> rotationSignKeys;
     private SymmetricKey encKey;
     private Map<String, SymmetricKey> rotationEncKeys;
+    private Class<S> sessionClass;
 
     private List<Between<S,U>> before = new ArrayList<>();
     private List<Between<S,U>> after = new ArrayList<>();
@@ -75,10 +76,15 @@ public class BetweenBuilder<S, U> {
         return this;
     }
 
-    public BetweenBuilder<S, U> session(Class<S> clazz) {
+    public BetweenBuilder<S, U> sessionClass(Class<S> sessionClass) {
+        this.sessionClass = sessionClass;
+        return this;
+    }
+
+    public BetweenBuilder<S, U> session() {
         CookieConfig sessionCookieConfig = new CookieConfig(SESSION_NAME, secure, -1);
 
-        Between<S,U> decryptSession = new DecryptSession<S, U>(clazz, SESSION_NAME, new JwtAppFactory(), encKey, rotationEncKeys, otterAppFactory.objectReader(), true);
+        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionClass, SESSION_NAME, new JwtAppFactory(), encKey, rotationEncKeys, otterAppFactory.objectReader(), true);
         before.add(decryptSession);
 
         Between<S,U> encryptSession = new EncryptSession<S, U>(sessionCookieConfig, encKey, otterAppFactory.objectWriter());
@@ -86,6 +92,19 @@ public class BetweenBuilder<S, U> {
 
         return this;
     }
+
+    public BetweenBuilder<S, U> optionalSession() {
+        CookieConfig sessionCookieConfig = new CookieConfig(SESSION_NAME, secure, -1);
+
+        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionClass, SESSION_NAME, new JwtAppFactory(), encKey, rotationEncKeys, otterAppFactory.objectReader(), false);
+        before.add(decryptSession);
+
+        Between<S,U> encryptSession = new EncryptSession<S, U>(sessionCookieConfig, encKey, otterAppFactory.objectWriter());
+        after.add(encryptSession);
+
+        return this;
+    }
+
 
 
     public Betweens<S,U> build() {

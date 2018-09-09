@@ -213,4 +213,8 @@ public class DecryptSession<S, U> implements Between<S, U> {
         }
         return key;
     }
+
+    public Boolean getRequired() {
+        return required;
+    }
 }

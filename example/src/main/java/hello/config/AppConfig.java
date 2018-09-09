@@ -12,18 +12,15 @@ import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
-import org.rootservices.otter.router.builder.LocationBuilder;
 import org.rootservices.otter.router.builder.RouteBuilder;
-import org.rootservices.otter.router.entity.Between;
-import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.security.session.between.EncryptSession;
 
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
+
 
 public class AppConfig implements Configure<TokenSession, User> {
     private AppFactory<TokenSession, User> appFactory;
@@ -84,30 +81,23 @@ public class AppConfig implements Configure<TokenSession, User> {
         // session
         gateway.getSessionProtect(ProtectedResource.URL, new ProtectedResource());
         gateway.postSessionProtect(ProtectedResource.URL, new ProtectedResource());
-
     }
 
     public void errorRoutes(Gateway<TokenSession, User> gateway) {
         Route<TokenSession, User> notFoundRoute = new RouteBuilder<TokenSession, User>()
                 .resource(new NotFoundResource())
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
                 .build();
 
         gateway.setErrorRoute(StatusCode.NOT_FOUND, notFoundRoute);
 
         Route<TokenSession, User> unSupportedMediaTypeRoute = new RouteBuilder<TokenSession, User>()
                 .resource(new UnSupportedMediaTypeResource())
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
                 .build();
 
         gateway.setErrorRoute(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaTypeRoute);
 
         Route<TokenSession, User> serverErrorRoute = new RouteBuilder<TokenSession, User>()
                 .resource(new ServerErrorResource())
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
                 .build();
 
         gateway.setErrorRoute(StatusCode.SERVER_ERROR, serverErrorRoute);

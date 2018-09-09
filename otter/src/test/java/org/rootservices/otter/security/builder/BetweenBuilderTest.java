@@ -6,7 +6,6 @@ import helper.entity.DummyUser;
 import org.junit.Test;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.config.OtterAppFactory;
-import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.security.builder.entity.Betweens;
 import org.rootservices.otter.security.csrf.between.CheckCSRF;
 import org.rootservices.otter.security.csrf.between.PrepareCSRF;
@@ -108,12 +107,16 @@ public class BetweenBuilderTest {
                 .secure(false)
                 .encKey(preferredEncKey)
                 .rotationEncKey(rotationEncKeys)
-                .session(DummySession.class)
+                .sessionClass(DummySession.class)
+                .session()
                 .build();
 
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getBefore().get(0), is(instanceOf(DecryptSession.class)));
+
+        DecryptSession<DummySession, DummyUser> actualDecrypt = (DecryptSession<DummySession, DummyUser>) actual.getBefore().get(0);
+        assertThat(actualDecrypt.getRequired(), is(true));
 
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getAfter().get(0), is(instanceOf(EncryptSession.class)));
@@ -137,11 +140,80 @@ public class BetweenBuilderTest {
                 .secure(true)
                 .encKey(preferredEncKey)
                 .rotationEncKey(rotationEncKeys)
-                .session(DummySession.class)
+                .sessionClass(DummySession.class)
+                .session()
                 .build();
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getBefore().get(0), is(instanceOf(DecryptSession.class)));
+
+        DecryptSession<DummySession, DummyUser> actualDecrypt = (DecryptSession<DummySession, DummyUser>) actual.getBefore().get(0);
+        assertThat(actualDecrypt.getRequired(), is(true));
+
+        assertThat(actual.getAfter().size(), is(1));
+        assertThat(actual.getAfter().get(0), is(instanceOf(EncryptSession.class)));
+
+        EncryptSession<DummySession, DummyUser> actualEncrypt = (EncryptSession<DummySession, DummyUser>) actual.getAfter().get(0);
+        assertThat(actualEncrypt.getCookieConfig().getSecure(), is(true));
+        assertThat(actualEncrypt.getCookieConfig().getAge(), is(-1));
+        assertThat(actualEncrypt.getCookieConfig().getName(), is("session"));
+    }
+
+    @Test
+    public void buildUnSecureOptionalSessionShouldBeOk() {
+        BetweenBuilder<DummySession, DummyUser> subject = new BetweenBuilder<DummySession, DummyUser>();
+        subject.otterFactory(otterAppFactory);
+
+        SymmetricKey preferredEncKey = FixtureFactory.encKey("preferred-key");
+        Map<String, SymmetricKey> rotationEncKeys = FixtureFactory.rotationEncKeys("rotation-key-", 2);
+
+        Betweens<DummySession, DummyUser> actual = subject
+                .otterFactory(otterAppFactory)
+                .secure(false)
+                .encKey(preferredEncKey)
+                .rotationEncKey(rotationEncKeys)
+                .sessionClass(DummySession.class)
+                .optionalSession()
+                .build();
+
+
+        assertThat(actual.getBefore().size(), is(1));
+        assertThat(actual.getBefore().get(0), is(instanceOf(DecryptSession.class)));
+
+        DecryptSession<DummySession, DummyUser> actualDecrypt = (DecryptSession<DummySession, DummyUser>) actual.getBefore().get(0);
+        assertThat(actualDecrypt.getRequired(), is(false));
+
+        assertThat(actual.getAfter().size(), is(1));
+        assertThat(actual.getAfter().get(0), is(instanceOf(EncryptSession.class)));
+
+        EncryptSession<DummySession, DummyUser> actualEncrypt = (EncryptSession<DummySession, DummyUser>) actual.getAfter().get(0);
+        assertThat(actualEncrypt.getCookieConfig().getSecure(), is(false));
+        assertThat(actualEncrypt.getCookieConfig().getAge(), is(-1));
+        assertThat(actualEncrypt.getCookieConfig().getName(), is("session"));
+    }
+
+    @Test
+    public void buildSecureOptionalSessionShouldBeOk() {
+        BetweenBuilder<DummySession, DummyUser> subject = new BetweenBuilder<DummySession, DummyUser>();
+        subject.otterFactory(otterAppFactory);
+
+        SymmetricKey preferredEncKey = FixtureFactory.encKey("preferred-key");
+        Map<String, SymmetricKey> rotationEncKeys = FixtureFactory.rotationEncKeys("rotation-key-", 2);
+
+        Betweens<DummySession, DummyUser> actual = subject
+                .otterFactory(otterAppFactory)
+                .secure(true)
+                .encKey(preferredEncKey)
+                .rotationEncKey(rotationEncKeys)
+                .sessionClass(DummySession.class)
+                .optionalSession()
+                .build();
+
+        assertThat(actual.getBefore().size(), is(1));
+        assertThat(actual.getBefore().get(0), is(instanceOf(DecryptSession.class)));
+
+        DecryptSession<DummySession, DummyUser> actualDecrypt = (DecryptSession<DummySession, DummyUser>) actual.getBefore().get(0);
+        assertThat(actualDecrypt.getRequired(), is(false));
 
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getAfter().get(0), is(instanceOf(EncryptSession.class)));
