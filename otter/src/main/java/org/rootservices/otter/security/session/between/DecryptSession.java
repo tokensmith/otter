@@ -19,7 +19,7 @@ import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.security.session.between.exception.InvalidSessionException;
-import org.rootservices.otter.security.session.between.exception.SessionCtorException;
+import org.rootservices.otter.security.exception.SessionCtorException;
 import org.rootservices.otter.security.session.between.exception.SessionDecryptException;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Method;
@@ -48,7 +48,6 @@ public class DecryptSession<S, U> implements Between<S, U> {
     public static final String INVALID_SESSION_COOKIE = "Invalid value for the session cookie";
     public static final String COOKIE_NOT_PRESENT = "session cookie not present.";
     public static final String FAILED_TO_COPY_REQUEST_SESSION = "failed to copy request session";
-    public static final String COULD_NOT_ACCESS_SESSION_CTORS = "Could not access session constructors";
     public static final String COULD_NOT_CALL_THE_SESSION_COPY_CONSTRUCTOR = "Could not call the session's copy constructor";
     protected static Logger LOGGER = LogManager.getLogger(DecryptSession.class);
 
@@ -61,8 +60,8 @@ public class DecryptSession<S, U> implements Between<S, U> {
     private ObjectReader objectReader;
     private Boolean required;
 
-
-    public DecryptSession(Class<S> clazz, String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectReader objectReader, Boolean required) {
+    public DecryptSession(Constructor<S> ctor, Class<S> clazz, String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectReader objectReader, Boolean required) {
+        this.ctor = ctor;
         this.clazz = clazz;
         this.sessionCookieName = sessionCookieName;
         this.jwtAppFactory = jwtAppFactory;
@@ -123,17 +122,10 @@ public class DecryptSession<S, U> implements Between<S, U> {
      *
      * @param from the session to copy
      * @return an instance of T that is a copy of session
+     * @throws SessionCtorException when ctor could not executed
      */
     protected S copy(S from) throws SessionCtorException {
         S copy;
-        if (ctor == null) {
-            try {
-                ctor = clazz.getConstructor(clazz);
-            } catch (NoSuchMethodException e) {
-                throw new SessionCtorException(COULD_NOT_ACCESS_SESSION_CTORS, e);
-            }
-        }
-
         try {
             copy = ctor.newInstance(from);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
@@ -212,6 +204,10 @@ public class DecryptSession<S, U> implements Between<S, U> {
             key = rotationKeys.get(keyId);
         }
         return key;
+    }
+
+    protected void setPreferredKey(SymmetricKey preferredKey) {
+        this.preferredKey = preferredKey;
     }
 
     public Boolean getRequired() {

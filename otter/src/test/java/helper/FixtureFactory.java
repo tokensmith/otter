@@ -1,6 +1,7 @@
 package helper;
 
 
+import helper.entity.DummyBetween;
 import helper.entity.DummySession;
 import helper.entity.DummyUser;
 import helper.entity.FakeResource;
@@ -15,6 +16,7 @@ import org.rootservices.jwt.jws.serialization.SecureJwtSerializer;
 import org.rootservices.jwt.serialization.JwtSerde;
 import org.rootservices.jwt.serialization.exception.JsonToJwtException;
 import org.rootservices.jwt.serialization.exception.JwtToJsonException;
+import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.builder.ResponseBuilder;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
@@ -23,12 +25,17 @@ import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.controller.header.HeaderValue;
+import org.rootservices.otter.gateway.builder.ErrorTargetBuilder;
+import org.rootservices.otter.gateway.builder.ShapeBuilder;
+import org.rootservices.otter.gateway.builder.TargetBuilder;
+import org.rootservices.otter.gateway.entity.ErrorTarget;
+import org.rootservices.otter.gateway.entity.Label;
+import org.rootservices.otter.gateway.entity.Shape;
+import org.rootservices.otter.gateway.entity.Target;
 import org.rootservices.otter.router.builder.LocationBuilder;
 import org.rootservices.otter.router.builder.RouteBuilder;
-import org.rootservices.otter.router.entity.MatchedLocation;
-import org.rootservices.otter.router.entity.Regex;
-import org.rootservices.otter.router.entity.Location;
-import org.rootservices.otter.router.entity.Route;
+import org.rootservices.otter.router.entity.*;
+import org.rootservices.otter.security.builder.entity.Betweens;
 import org.rootservices.otter.security.csrf.CsrfClaims;
 
 import java.time.OffsetDateTime;
@@ -37,6 +44,18 @@ import java.util.regex.Matcher;
 
 public class FixtureFactory {
     private static JwtAppFactory jwtAppFactory = new JwtAppFactory();
+
+    public static Shape<DummySession> makeShape(String encKeyId, String signKeyId) {
+        SymmetricKey encKey = FixtureFactory.encKey(encKeyId);
+        SymmetricKey signKey = FixtureFactory.signKey(signKeyId);
+
+        return new ShapeBuilder<DummySession>()
+                .sessionClass(DummySession.class)
+                .secure(false)
+                .encKey(encKey)
+                .signkey(signKey)
+                .build();
+    }
 
     public static Optional<MatchedLocation<DummySession, DummyUser>> makeMatch(String url) {
         Location<DummySession, DummyUser> route = makeLocation(url);
@@ -98,6 +117,42 @@ public class FixtureFactory {
         locations.add(makeLocation(baseContext + Regex.UUID.getRegex()));
         locations.add(makeLocation(baseContext + Regex.UUID.getRegex() + "/bar"));
         return locations;
+    }
+
+    public static Target<DummySession, DummyUser> makeTarget() {
+
+        FakeResource notFoundResource = new FakeResource();
+        ErrorTarget<DummySession, DummyUser> notFound = new ErrorTargetBuilder<DummySession, DummyUser>()
+                .resource(notFoundResource)
+                .build();
+
+        FakeResource fakeResource = new FakeResource();
+        MimeType json = new MimeTypeBuilder().json().build();
+
+        TargetBuilder<DummySession, DummyUser> targetBuilder = new TargetBuilder<DummySession, DummyUser>();
+
+        return targetBuilder
+                .regex("/foo")
+                .method(Method.GET)
+                .method(Method.POST)
+                .contentType(json)
+                .resource(fakeResource)
+                .before(new DummyBetween<>())
+                .before(new DummyBetween<>())
+                .after(new DummyBetween<>())
+                .after(new DummyBetween<>())
+                .label(Label.CSRF)
+                .label(Label.SESSION_REQUIRED)
+                .errorTarget(StatusCode.NOT_FOUND, notFound)
+                .build();
+    }
+
+    public static Betweens<DummySession, DummyUser> makeBetweens() {
+        Between<DummySession, DummyUser> before = new DummyBetween<>();
+        Between<DummySession, DummyUser> after = new DummyBetween<>();
+        return new Betweens<>(
+                Arrays.asList(before), Arrays.asList(after)
+        );
     }
 
     public static Map<String, List<String>> makeEmptyQueryParams() {

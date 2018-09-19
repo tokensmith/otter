@@ -10,6 +10,7 @@ import org.rootservices.otter.gateway.Gateway;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
+import org.rootservices.otter.gateway.translator.LocationTranslator;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.exception.HaltException;
@@ -36,8 +37,8 @@ public class ServletGateway<S, U> extends Gateway<S, U>  {
     private HttpServletRequestMerger httpServletRequestMerger;
     private HttpServletResponseMerger<S> httpServletResponseMerger;
 
-    public ServletGateway(HttpServletRequestTranslator<S, U> httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger<S> httpServletResponseMerger, Engine<S, U> engine, Between<S, U> prepareCSRF, Between<S, U> checkCSRF) {
-        super(engine, prepareCSRF, checkCSRF);
+    public ServletGateway(HttpServletRequestTranslator<S, U> httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger<S> httpServletResponseMerger, Engine<S, U> engine, LocationTranslator<S, U> locationTranslator) {
+        super(engine, locationTranslator);
         this.httpServletRequestTranslator = httpServletRequestTranslator;
         this.httpServletRequestMerger = httpServletRequestMerger;
         this.httpServletResponseMerger = httpServletResponseMerger;

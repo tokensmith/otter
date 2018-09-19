@@ -36,7 +36,7 @@ public class BetweenBuilderTest {
     }
 
     @Test
-    public void buildUnSecureCsrfShouldBeOk() {
+    public void buildUnSecureCsrfPrepareShouldBeOk() {
         BetweenBuilder<DummySession, DummyUser> subject = new BetweenBuilder<DummySession, DummyUser>();
 
         SymmetricKey preferredSignKey = FixtureFactory.signKey("preferred-key");
@@ -47,25 +47,21 @@ public class BetweenBuilderTest {
                 .secure(false)
                 .signKey(preferredSignKey)
                 .rotationSignKeys(rotationSignKeys)
-                .csrf()
+                .csrfPrepare()
                 .build();
 
         assertThat(actual.getBefore().size(), is(1));
-        assertThat(actual.getBefore().get(0), is(instanceOf(CheckCSRF.class)));
-        CheckCSRF<DummySession, DummyUser> actualCheck = (CheckCSRF<DummySession, DummyUser>) actual.getBefore().get(0);
-        assertThat(actualCheck.getCookieName(), is("csrfToken"));
-        assertThat(actualCheck.getFormFieldName(), is("csrfToken"));
-
-        assertThat(actual.getAfter().size(), is(1));
-        assertThat(actual.getAfter().get(0), is(instanceOf(PrepareCSRF.class)));
-        PrepareCSRF<DummySession, DummyUser> actualPrepare = (PrepareCSRF<DummySession, DummyUser>) actual.getAfter().get(0);
+        assertThat(actual.getBefore().get(0), is(instanceOf(PrepareCSRF.class)));
+        PrepareCSRF<DummySession, DummyUser> actualPrepare = (PrepareCSRF<DummySession, DummyUser>) actual.getBefore().get(0);
         assertThat(actualPrepare.getCookieConfig().getSecure(), is(false));
         assertThat(actualPrepare.getCookieConfig().getAge(), is(-1));
         assertThat(actualPrepare.getCookieConfig().getName(), is("csrfToken"));
+
+        assertThat(actual.getAfter().size(), is(0));
     }
 
     @Test
-    public void buildSecureCsrfShouldBeOk() {
+    public void buildSecureCsrfPrepareShouldBeOk() {
         BetweenBuilder<DummySession, DummyUser> subject = new BetweenBuilder<DummySession, DummyUser>();
         subject.otterFactory(otterAppFactory);
 
@@ -77,7 +73,34 @@ public class BetweenBuilderTest {
                 .secure(true)
                 .signKey(preferredSignKey)
                 .rotationSignKeys(rotationSignKeys)
-                .csrf()
+                .csrfPrepare()
+                .build();
+
+        assertThat(actual.getBefore().size(), is(1));
+        assertThat(actual.getBefore().get(0), is(instanceOf(PrepareCSRF.class)));
+        PrepareCSRF<DummySession, DummyUser> actualPrepare = (PrepareCSRF<DummySession, DummyUser>) actual.getBefore().get(0);
+        assertThat(actualPrepare.getCookieConfig().getSecure(), is(true));
+        assertThat(actualPrepare.getCookieConfig().getAge(), is(-1));
+        assertThat(actualPrepare.getCookieConfig().getName(), is("csrfToken"));
+
+        assertThat(actual.getAfter().size(), is(0));
+    }
+
+
+    @Test
+    public void buildSecureCsrfProtectShouldBeOk() {
+        BetweenBuilder<DummySession, DummyUser> subject = new BetweenBuilder<DummySession, DummyUser>();
+        subject.otterFactory(otterAppFactory);
+
+        SymmetricKey preferredSignKey = FixtureFactory.signKey("preferred-key");
+        Map<String, SymmetricKey> rotationSignKeys = FixtureFactory.rotationSignKeys("rotation-key-", 2);
+
+        Betweens<DummySession, DummyUser> actual = subject
+                .otterFactory(otterAppFactory)
+                .secure(true)
+                .signKey(preferredSignKey)
+                .rotationSignKeys(rotationSignKeys)
+                .csrfProtect()
                 .build();
 
         assertThat(actual.getBefore().size(), is(1));
@@ -86,16 +109,12 @@ public class BetweenBuilderTest {
         assertThat(actualCheck.getCookieName(), is("csrfToken"));
         assertThat(actualCheck.getFormFieldName(), is("csrfToken"));
 
-        assertThat(actual.getAfter().size(), is(1));
-        assertThat(actual.getAfter().get(0), is(instanceOf(PrepareCSRF.class)));
-        PrepareCSRF<DummySession, DummyUser> actualPrepare = (PrepareCSRF<DummySession, DummyUser>) actual.getAfter().get(0);
-        assertThat(actualPrepare.getCookieConfig().getSecure(), is(true));
-        assertThat(actualPrepare.getCookieConfig().getAge(), is(-1));
-        assertThat(actualPrepare.getCookieConfig().getName(), is("csrfToken"));
+        assertThat(actual.getAfter().size(), is(0));
     }
 
+
     @Test
-    public void buildUnSecureSessionShouldBeOk() {
+    public void buildUnSecureSessionShouldBeOk() throws Exception {
         BetweenBuilder<DummySession, DummyUser> subject = new BetweenBuilder<DummySession, DummyUser>();
         subject.otterFactory(otterAppFactory);
 
@@ -128,7 +147,7 @@ public class BetweenBuilderTest {
     }
 
     @Test
-    public void buildSecureSessionShouldBeOk() {
+    public void buildSecureSessionShouldBeOk() throws Exception {
         BetweenBuilder<DummySession, DummyUser> subject = new BetweenBuilder<DummySession, DummyUser>();
         subject.otterFactory(otterAppFactory);
 
@@ -160,7 +179,7 @@ public class BetweenBuilderTest {
     }
 
     @Test
-    public void buildUnSecureOptionalSessionShouldBeOk() {
+    public void buildUnSecureOptionalSessionShouldBeOk() throws Exception {
         BetweenBuilder<DummySession, DummyUser> subject = new BetweenBuilder<DummySession, DummyUser>();
         subject.otterFactory(otterAppFactory);
 
@@ -193,7 +212,7 @@ public class BetweenBuilderTest {
     }
 
     @Test
-    public void buildSecureOptionalSessionShouldBeOk() {
+    public void buildSecureOptionalSessionShouldBeOk() throws Exception {
         BetweenBuilder<DummySession, DummyUser> subject = new BetweenBuilder<DummySession, DummyUser>();
         subject.otterFactory(otterAppFactory);
 

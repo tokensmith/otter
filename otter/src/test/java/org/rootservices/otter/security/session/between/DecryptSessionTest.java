@@ -3,7 +3,6 @@ package org.rootservices.otter.security.session.between;
 import helper.FixtureFactory;
 import helper.entity.DummySession;
 import helper.entity.DummyUser;
-import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.exception.InvalidJWT;
@@ -11,7 +10,10 @@ import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.router.exception.HaltException;
+import org.rootservices.otter.security.builder.entity.Betweens;
+import org.rootservices.otter.security.exception.SessionCtorException;
 import org.rootservices.otter.security.session.between.exception.InvalidSessionException;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.security.session.between.exception.SessionDecryptException;
@@ -20,17 +22,17 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 public class DecryptSessionTest {
-    private static OtterAppFactory otterAppFactory = new OtterAppFactory();
+    private static OtterAppFactory<DummySession, DummyUser> otterAppFactory = new OtterAppFactory<DummySession, DummyUser>();
 
-    public DecryptSession<DummySession, DummyUser> subject(Boolean required) {
-        return new DecryptDummySession(
-                "session",
-                otterAppFactory.jwtAppFactory(),
-                FixtureFactory.encKey("1234"),
-                FixtureFactory.encRotationKey("5678"),
-                otterAppFactory.objectReader(),
-                required
-        );
+    public DecryptSession<DummySession, DummyUser> subject(Boolean required) throws SessionCtorException {
+        Shape<DummySession> shape = FixtureFactory.makeShape("1234", "5678");
+        Betweens<DummySession, DummyUser> betweens;
+        if (required) {
+            betweens = otterAppFactory.session(shape);
+        } else {
+            betweens = otterAppFactory.sessionOptional(shape);
+        }
+        return (DecryptSession<DummySession, DummyUser>) betweens.getBefore().get(0);
     }
 
     @Test
@@ -112,14 +114,8 @@ public class DecryptSessionTest {
         SymmetricKey veryBadKey = FixtureFactory.encKey("1234");
         veryBadKey.setKey("MMNj8rE5m7NIDhwKYDmHSnlU1wfKuVvW6G--1234567");
 
-        DecryptSession<DummySession, DummyUser> subject = new DecryptDummySession(
-                "session",
-                otterAppFactory.jwtAppFactory(),
-                veryBadKey,
-                FixtureFactory.encRotationKey("5678"),
-                otterAppFactory.objectReader(),
-                Boolean.TRUE
-        );
+        DecryptSession<DummySession, DummyUser> subject = subject(true);
+        subject.setPreferredKey(veryBadKey);
 
         String encryptedSession = new StringBuilder()
                 .append("eyJhbGciOiJkaXIiLCJraWQiOiIxMjM0IiwiZW5jIjoiQTI1NkdDTSJ9.")

@@ -1,5 +1,6 @@
 package org.rootservices.otter.router;
 
+import helper.FixtureFactory;
 import helper.entity.DummySession;
 import helper.entity.DummyUser;
 import helper.entity.FakeResource;
@@ -15,6 +16,7 @@ import org.rootservices.otter.router.entity.Route;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
@@ -133,27 +135,21 @@ public class LocationBuilderTest {
     }
 
     @Test
-    public void errorRouteShouldBeOk() {
+    public void errorRoutesShouldBeOk() {
         String regex = "/foo/(.*)";
         List<MimeType> contentTypes = new ArrayList<>();
         FakeResource resource = new FakeResource();
 
-        FakeResource errorResource = new FakeResource();
-
-        Route<DummySession, DummyUser> errorRoute = new RouteBuilder<DummySession, DummyUser>()
-                .resource(errorResource)
-                .after(new ArrayList<>())
-                .before(new ArrayList<>())
-                .build();
+        Map<StatusCode, Route<DummySession, DummyUser>> errorRoutes = FixtureFactory.makeErrorRoutes();
 
         Location<DummySession, DummyUser> actual = subject.path(regex)
                 .contentTypes(contentTypes)
                 .resource(resource)
-                .errorRoute(StatusCode.NOT_FOUND, errorRoute)
+                .errorRoutes(errorRoutes)
                 .build();
 
-        assertThat(actual.getErrorRoutes().size(), is(1));
-        assertThat(actual.getErrorRoutes().get(StatusCode.NOT_FOUND), is(errorRoute));
+        assertThat(actual.getErrorRoutes().size(), is(3));
+        assertThat(actual.getErrorRoutes(), is(errorRoutes));
     }
 
 }

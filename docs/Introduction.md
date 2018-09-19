@@ -36,7 +36,7 @@ Implementing a resource is rather straight forward.
 The examples should be sufficient to get started.
 
 ### Session
-An application must have a `Session` class. This is used represent user session and it 
+An application must have a `Session` class. This represents a user session and it 
 should be a value object. `Session` implementations are passed into Otter via generics in:
 - [Resource](#resource)
 - [Configuration](#configuration)
@@ -60,45 +60,39 @@ It is passed into Otter via generics in:
 
 ### Between
 A `Between` is a rule that may be executed before a request reaches a resource or after a resoure executes a request.
-A [Between](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/router/entity/Between.java) 
-is a interface that may be implemented. Otter uses between implementations for CSRF protection and session management.
+ Otter uses between implementations for CSRF protection and session management.
 
 ### Configuration
 Otter needs to be configured for CSRF, Session, and Routes. To configure Otter implement the [Configure](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/Configure.java)
 interface. 
 
 An example can be found in [here](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/config/AppConfig.java).
-Which passes `TokenSession` as the `Session`.
 
-##### `configure(Gateway<S, U> gateway)`
-The implementation of `configure(Gateway gateway)` should configure CSRF and Sessions. Both need
-a cookie configuration and symmetric key configuration.
+##### `shape()`
+The implementation of `shape()` must return an instance of `Shape`. Otter uses it to construct `between` instances for
+CSRF and Session management.
 
 ```java
-    // CSRF cookie configuration
-    CookieConfig csrfCookieConfig = new CookieConfig("csrf", false, -1);
-    gateway.setCsrfCookieConfig(csrfCookieConfig);
-    gateway.setCsrfFormFieldName("csrfToken");
-
-    // Session cookie configuration.
-    CookieConfig sessionCookieConfig = new CookieConfig("session", false, -1);
-    gateway.setSessionCookieConfig(sessionCookieConfig);
-
-    // CSRF key configuration.
-    SymmetricKey csrfKey = new SymmetricKey(
+    // You should vault your keys, this is shown for simplicity.
+    SymmetricKey signKey = new SymmetricKey(
         Optional.of("key-1"),
         "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
         Use.SIGNATURE
     );
-    gateway.setSignKey(csrfKey);
-
-    //Session key configuration.
+    
+    // You should vault your keys, this is shown for simplicity.
     SymmetricKey encKey = new SymmetricKey(
         Optional.of("key-2"),
         "MMNj8rE5m7NIDhwKYDmHSnlU1wfKuVvW6G--GKPYkRA",
         Use.ENCRYPTION
     );
-    gateway.setEncKey(key);
+    
+    return new ShapeBuilder<TokenSession>()
+            .sessionClass(TokenSession.class)
+            .secure(false)
+            .encKey(encKey)
+            .signkey(signKey)
+            .build();
 ```
 
 ##### `routes(Gateway<S, U> gateway)`
@@ -107,7 +101,13 @@ that will be handled by the `HelloResorce`.
  
 ```java
     // route a get request.
-    gateway.get(HelloResource.URL, new HelloResource());
+    Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
+            .method(Method.GET)
+            .resource(new HelloResource())
+            .regex(HelloResource.URL)
+            .build();
+
+    gateway.add(hello);
 ```
 
 ###### Not Found
@@ -130,7 +130,16 @@ If desired you can use expected content types when configuring Otter.
 ```java
     // requires content type.
     MimeType json = new MimeTypeBuilder().json().build();
-    gateway.add(Method.GET, HelloRestResource.URL, appFactory.helloRestResource(), Arrays.asList(json));
+    
+    Target<TokenSession, User> helloAPI = new TargetBuilder<TokenSession, User>()
+            .method(Method.GET)
+            .method(Method.POST)
+            .resource(appFactory.helloRestResource())
+            .regex(HelloRestResource.URL)
+            .contentType(json)
+            .build();
+
+    gateway.add(helloAPI);
 
 ```
 
@@ -201,11 +210,16 @@ Otter supports CSRF protection by implementing the double submit strategy.
 
 Here is an example of how to protect a login page:
 
-Use the csrf routing interface to route requests to your resource.
-
 ```java
-    servletGateway.getCsrfProtect(LoginResource.URL, new LoginResource());
-    servletGateway.postCsrfProtect(LoginResource.URL, new LoginResource());
+    Target<TokenSession, User> login = new TargetBuilder<TokenSession, User>()
+        .method(Method.GET)
+        .method(Method.POST)
+        .resource(new LoginResource())
+        .regex(LoginResource.URL)
+        .label(Label.CSRF)
+        .build();
+    
+    gateway.add(login);
 ```
 
 Set the csrf challenge token value on the [login presenter](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/controller/presenter/LoginPresenter.java#L18).
@@ -224,36 +238,23 @@ on the page.
 Otter is stateless. It maintains user sessions with a cookie whose value is encrypted by using JWE. 
 
 To use them the following is needed:
-- Configure the cookie and key
+- Configure the cookie and key.
 - Implement a session class. See [session](#session) documentaion.
-- Implement your DecryptSession between.
-- Inject you DecryptSession into the servletGateway.
 - Add routes to the servletGateway
 
-#### Implement DecryptSession
-An example [implementation](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/security/SessionBefore.java) 
-can be found in the test suite. This is needed because Otter avoids reflection. Notice the ivar, `required` this
-instructs otter if a session cookie is required. This is configurable because there may be Resources that
-optionally would like the `session` populated.
-
-#### Inject your required DecryptSession
-Inject your implementation of the `DecryptSession` into the servletGateway.
+#### Session
 
 ```java
-    SessionBefore sessionBefore = appFactory.sessionBefore("session", encKey, new HashMap<>());
-    gateway.setDecryptSession(sessionBefore);
-```
-
-#### Add Routes
-```java
-    // csrf & session
-    LoginSessionResource loginWithSession = new LoginSessionResource();
-    servletGateway.getCsrfAndSessionProtect(loginWithSession.URL, loginWithSession);
-    servletGateway.postCsrfAndSessionProtect(loginWithSession.URL, loginWithSession);
-
     // session
-    servletGateway.getSessionProtect(ProtectedResource.URL, new ProtectedResource());
-    servletGateway.postSessionProtect(ProtectedResource.URL, new ProtectedResource());
+    Target<TokenSession, User> protectedTarget = new TargetBuilder<TokenSession, User>()
+        .method(Method.GET)
+        .method(Method.POST)
+        .resource(new ProtectedResource())
+        .regex(ProtectedResource.URL)
+        .label(Label.SESSION_REQUIRED)
+        .build();
+
+    gateway.add(protectedTarget);
 ```
 
 ### Async I/O

@@ -9,20 +9,23 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.otter.QueryStringToMap;
+import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestCookieTranslator;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestHeaderTranslator;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
+import org.rootservices.otter.gateway.translator.LocationTranslator;
 import org.rootservices.otter.router.Dispatcher;
 import org.rootservices.otter.router.Engine;
-import org.rootservices.otter.router.entity.Between;
+import org.rootservices.otter.router.factory.BetweenFactory;
 import org.rootservices.otter.router.factory.ErrorRouteFactory;
 import org.rootservices.otter.security.RandomString;
+import org.rootservices.otter.security.builder.BetweenBuilder;
+import org.rootservices.otter.security.builder.entity.Betweens;
+import org.rootservices.otter.security.exception.SessionCtorException;
 import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
-import org.rootservices.otter.security.csrf.between.CheckCSRF;
-import org.rootservices.otter.security.csrf.between.PrepareCSRF;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 import org.rootservices.otter.server.path.CompiledClassPath;
 import org.rootservices.otter.server.path.WebAppPath;
@@ -71,17 +74,74 @@ public class OtterAppFactory<S, U> {
         );
     }
 
-    public ServletGateway<S, U> servletGateway() {
-        DoubleSubmitCSRF doubleSubmitCSRF = doubleSubmitCSRF();
+    public ServletGateway<S, U> servletGateway(Shape<S> shape) throws SessionCtorException {
 
         return new ServletGateway<S, U>(
                 httpServletRequestTranslator(),
                 httpServletRequestMerger(),
                 httpServletResponseMerger(),
                 engine(),
-                prepareCSRF(doubleSubmitCSRF),
-                checkCSRF(doubleSubmitCSRF)
+                locationTranslator(shape)
         );
+    }
+
+    public LocationTranslator<S, U> locationTranslator(Shape<S> shape) throws SessionCtorException {
+        return new LocationTranslator<S, U>(
+                betweenFactory(shape)
+        );
+    }
+
+    public BetweenFactory<S, U> betweenFactory(Shape<S> shape) throws SessionCtorException {
+        return new BetweenFactory<S, U>(
+                csrfPrepare(shape),
+                csrfProtect(shape),
+                session(shape),
+                sessionOptional(shape)
+        );
+    }
+
+    public Betweens<S, U> csrfPrepare(Shape<S> shape) {
+        return new BetweenBuilder<S, U>()
+                .otterFactory(this)
+                .secure(shape.getSecure())
+                .signKey(shape.getSignkey())
+                .rotationSignKeys(shape.getRotationSignKeys())
+                .csrfPrepare()
+                .build();
+
+    }
+
+    public Betweens<S, U> csrfProtect(Shape<S> shape) {
+        return new BetweenBuilder<S, U>()
+                .otterFactory(this)
+                .secure(shape.getSecure())
+                .signKey(shape.getSignkey())
+                .rotationSignKeys(shape.getRotationSignKeys())
+                .csrfProtect()
+                .build();
+
+    }
+
+    public Betweens<S, U> session(Shape<S> shape) throws SessionCtorException {
+        return new BetweenBuilder<S, U>()
+                .otterFactory(this)
+                .secure(shape.getSecure())
+                .encKey(shape.getEncKey())
+                .rotationEncKey(shape.getRotationEncKeys())
+                .sessionClass(shape.getSessionClass())
+                .session()
+                .build();
+    }
+
+    public Betweens<S, U> sessionOptional(Shape<S> shape) throws SessionCtorException {
+        return new BetweenBuilder<S, U>()
+                .otterFactory(this)
+                .secure(shape.getSecure())
+                .encKey(shape.getEncKey())
+                .rotationEncKey(shape.getRotationEncKeys())
+                .sessionClass(shape.getSessionClass())
+                .optionalSession()
+                .build();
     }
 
     public Engine<S, U> engine() {
@@ -142,14 +202,6 @@ public class OtterAppFactory<S, U> {
 
     public DoubleSubmitCSRF doubleSubmitCSRF() {
         return new DoubleSubmitCSRF(jwtAppFactory(), new RandomString());
-    }
-
-    public Between<S, U> checkCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
-        return new CheckCSRF<S, U>(doubleSubmitCSRF);
-    }
-
-    public Between<S, U> prepareCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
-        return new PrepareCSRF<S, U>(doubleSubmitCSRF);
     }
 
     public Base64.Decoder urlDecoder() {

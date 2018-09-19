@@ -32,6 +32,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
@@ -68,7 +69,7 @@ public class LoginSetSessionResourceTest {
         assertThat(errorMsg, response.getStatusCode(), is(StatusCode.OK.getCode()));
 
         // there should be a csrf cookie
-        Cookie csrfCookie = getCookie(response, "csrf");
+        Cookie csrfCookie = getCookie(response, "csrfToken");
         assertThat(csrfCookie, is(notNullValue()));
 
         // there should be a csrf challenge in the form
@@ -84,13 +85,18 @@ public class LoginSetSessionResourceTest {
         // cookie csrf value should match the form's value.
         JwtAppFactory jwtAppFactory = new JwtAppFactory();
         JwtSerde jwtSerializer = jwtAppFactory.jwtSerde();
-        JsonWebToken jsonWebToken = jwtSerializer.stringToJwt(csrfCookie.value(), CsrfClaims.class);
-        CsrfClaims claims = (CsrfClaims) jsonWebToken.getClaims();
-        assertThat(claims.getChallengeToken(), is(formCsrfValue));
+        JsonWebToken cookieJwt = jwtSerializer.stringToJwt(csrfCookie.value(), CsrfClaims.class);
+        CsrfClaims cookieClaims = (CsrfClaims) cookieJwt.getClaims();
+
+        JsonWebToken formJwt = jwtSerializer.stringToJwt(formCsrfValue, CsrfClaims.class);
+        CsrfClaims formClaims = (CsrfClaims) formJwt.getClaims();
+
+        assertThat(cookieClaims.getChallengeToken(), is(formClaims.getChallengeToken()));
+        assertThat(cookieClaims.getNoise(), is(not(formClaims.getNoise())));
     }
 
     @Test
-    public void postShouldReturn200() throws Exception {
+    public void postWhenCsrfAndNoSessionShouldReturn200() throws Exception {
 
         Cookie sessionCookie = FixtureFactory.sessionCookie();
         AsyncHttpClient httpClient = IntegrationTestSuite.getHttpClient();
@@ -116,10 +122,15 @@ public class LoginSetSessionResourceTest {
         formData.add(new Param("password", "foo"));
         formData.add(new Param("csrfToken", formCsrfValue));
 
+        // get the csrf cookie only.
+        Cookie csrfCookie = getCookie(getResponse, "csrfToken");
+        assertThat(csrfCookie, is(notNullValue()));
+
         // this is the POST request
         f = httpClient
                 .preparePost(SUBJECT_URI)
                 .setFormParams(formData)
+                .addCookie(csrfCookie)
                 .execute();
 
         Response postResponse = f.get();
@@ -128,7 +139,7 @@ public class LoginSetSessionResourceTest {
         assertThat(errorMsg, postResponse.getStatusCode(), is(StatusCode.OK.getCode()));
 
         // should also have a session.
-        Cookie actualSessionCookie = getCookie(getResponse, "session");
+        Cookie actualSessionCookie = getCookie(postResponse, "session");
 
         assertThat(actualSessionCookie, is(notNullValue()));
         assertThat(actualSessionCookie.isHttpOnly(), is(false));
@@ -172,49 +183,5 @@ public class LoginSetSessionResourceTest {
 
         String errorMsg = "Attempted POST " + SUBJECT_URI;
         assertThat(errorMsg, postResponse.getStatusCode(), is(StatusCode.FORBIDDEN.getCode()));
-    }
-
-    @Test
-    public void postWhenNoSessionCookieShouldReturn401() throws Exception {
-        Cookie sessionCookie = FixtureFactory.sessionCookie();
-        AsyncHttpClient httpClient = IntegrationTestSuite.getHttpClient();
-
-        // this is the GET request to get the csrf cookie & form value
-        ListenableFuture<Response> f = httpClient
-                .prepareGet(SUBJECT_URI)
-                .addCookie(sessionCookie)
-                .execute();
-
-        Response getResponse = f.get();
-
-        String errorMsg = "Attempted GET " + SUBJECT_URI;
-        assertThat(errorMsg, getResponse.getStatusCode(), is(StatusCode.OK.getCode()));
-
-        // get the csrf value from the form.
-        Pattern csrfPattern = Pattern.compile(".*\"csrfToken\" value=\"([^\"]*)\".*", Pattern.DOTALL);
-        Matcher matcher = csrfPattern.matcher(getResponse.getResponseBody());
-        assertThat(matcher.matches(), is(true));
-        String formCsrfValue = matcher.group(1);
-
-        List<Param> formData = new ArrayList<>();
-        formData.add(new Param("email", "obi-wan@rootservices.org"));
-        formData.add(new Param("password", "foo"));
-        formData.add(new Param("csrfToken", formCsrfValue));
-
-        // get the csrf cookie only.
-        Cookie csrfCookie = getCookie(getResponse, "csrf");
-        assertThat(csrfCookie, is(notNullValue()));
-
-        // this is the POST request
-        f = httpClient
-                .preparePost(SUBJECT_URI)
-                .setFormParams(formData)
-                .addCookie(csrfCookie)
-                .execute();
-
-        Response postResponse = f.get();
-
-        errorMsg = "Attempted POST " + SUBJECT_URI;
-        assertThat(errorMsg, postResponse.getStatusCode(), is(StatusCode.UNAUTHORIZED.getCode()));
     }
 }

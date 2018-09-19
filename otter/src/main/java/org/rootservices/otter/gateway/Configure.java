@@ -1,6 +1,7 @@
 package org.rootservices.otter.gateway;
 
 
+import org.rootservices.otter.gateway.entity.Shape;
 
 /**
  * Interface that must be implemented to configure a Otter application.
@@ -9,6 +10,6 @@ package org.rootservices.otter.gateway;
  * @param <U> User object, intended to be a authenticated user.
  */
 public interface Configure<S, U> {
-    void configure(Gateway<S, U> gateway);
+    Shape<S> shape();
     void routes(Gateway<S, U> gateway);
 }

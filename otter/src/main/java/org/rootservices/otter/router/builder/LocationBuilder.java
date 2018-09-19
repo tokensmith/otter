@@ -53,8 +53,8 @@ public class LocationBuilder<S, U> {
         return this;
     }
 
-    public LocationBuilder<S, U> errorRoute(StatusCode statusCode, Route<S, U> route) {
-        this.errorRoutes.put(statusCode, route);
+    public LocationBuilder<S, U> errorRoutes(Map<StatusCode, Route<S, U>> errorRoutes) {
+        this.errorRoutes = errorRoutes;
         return this;
     }
 
