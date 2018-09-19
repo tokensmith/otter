@@ -1,4 +1,4 @@
-package org.rootservices.otter.security.session.between.exception;
+package org.rootservices.otter.security.exception;
 
 /**
  * Used when a implementation of Session did not have a copy constructor.

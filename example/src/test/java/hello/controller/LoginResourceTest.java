@@ -54,7 +54,7 @@ public class LoginResourceTest {
         // there should be a csrf cookie
         Cookie csrfCookie = null;
         for(Cookie cookie: response.getCookies()){
-            if("csrf".equals(cookie.name())) {
+            if("csrfToken".equals(cookie.name())) {
                 csrfCookie = cookie;
                 break;
             }

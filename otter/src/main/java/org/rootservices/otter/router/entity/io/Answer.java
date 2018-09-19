@@ -1,31 +1,19 @@
-package org.rootservices.otter.controller.entity;
+package org.rootservices.otter.router.entity.io;
 
-
+import org.rootservices.otter.controller.entity.Cookie;
+import org.rootservices.otter.controller.entity.StatusCode;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import java.util.Optional;
 
-public class Response<S> {
+public class Answer {
     private StatusCode statusCode;
     private Map<String, String> headers;
-    private Map<String,Cookie> cookies;
+    private Map<String, Cookie> cookies;
     private Optional<ByteArrayOutputStream> payload;
     private Optional<String> template;
     private Optional<Object> presenter;
-    private Optional<S> session = Optional.empty();
-
-    public Response() {
-    }
-
-    public Response(StatusCode statusCode, Map<String, String> headers, Map<String, Cookie> cookies, Optional<ByteArrayOutputStream> payload, Optional<String> template, Optional<Object> presenter) {
-        this.statusCode = statusCode;
-        this.headers = headers;
-        this.cookies = cookies;
-        this.payload = payload;
-        this.template = template;
-        this.presenter = presenter;
-    }
 
     public StatusCode getStatusCode() {
         return statusCode;
@@ -73,13 +61,5 @@ public class Response<S> {
 
     public void setPresenter(Optional<Object> presenter) {
         this.presenter = presenter;
-    }
-
-    public Optional<S> getSession() {
-        return session;
-    }
-
-    public void setSession(Optional<S> session) {
-        this.session = session;
     }
 }

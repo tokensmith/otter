@@ -17,10 +17,10 @@ import java.util.regex.Pattern;
 
 public class LocationBuilder<S, U> {
     private Pattern pattern;
-    private List<MimeType> contentTypes;
+    private List<MimeType> contentTypes = new ArrayList<>();
     private Resource<S, U> resource;
-    private List<Between<S, U>> before;
-    private List<Between<S, U>> after;
+    private List<Between<S, U>> before = new ArrayList<>();
+    private List<Between<S, U>> after = new ArrayList<>();
     private Map<StatusCode, Route<S, U>> errorRoutes = new HashMap<>();
 
     public LocationBuilder<S, U> path(String path) {
@@ -30,6 +30,11 @@ public class LocationBuilder<S, U> {
 
     public LocationBuilder<S, U> contentTypes(List<MimeType> contentTypes) {
         this.contentTypes = contentTypes;
+        return this;
+    }
+
+    public LocationBuilder<S, U> contentType(MimeType contentType) {
+        this.contentTypes.add(contentType);
         return this;
     }
 
@@ -48,8 +53,8 @@ public class LocationBuilder<S, U> {
         return this;
     }
 
-    public LocationBuilder<S, U> errorRoute(StatusCode statusCode, Route<S, U> route) {
-        this.errorRoutes.put(statusCode, route);
+    public LocationBuilder<S, U> errorRoutes(Map<StatusCode, Route<S, U>> errorRoutes) {
+        this.errorRoutes = errorRoutes;
         return this;
     }
 

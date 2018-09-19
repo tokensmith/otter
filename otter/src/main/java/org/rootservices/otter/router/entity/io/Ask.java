@@ -1,22 +1,15 @@
-package org.rootservices.otter.controller.entity;
+package org.rootservices.otter.router.entity.io;
 
-
+import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.Method;
-
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 
-/**
- * Http Request
- *
- * @param <S> Session object, intended to contain user session data.
- * @param <U> User object, intended to be a authenticated user.
- */
-public class Request<S, U> {
+public class Ask {
     private Optional<Matcher> matcher;
     private Method method;
     private String pathWithParams;
@@ -28,24 +21,6 @@ public class Request<S, U> {
     private Optional<byte[]> body;
     private Optional<String> csrfChallenge;
     private String ipAddress;
-    private Optional<S> session = Optional.empty();
-    private Optional<U> user;
-
-    public Request() {}
-
-    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, MimeType contentType, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<byte[]> body, Optional<String> csrfChallenge, String ipAddress) {
-        this.matcher = matcher;
-        this.method = method;
-        this.pathWithParams = pathWithParams;
-        this.contentType = contentType;
-        this.headers = headers;
-        this.cookies = cookies;
-        this.queryParams = queryParams;
-        this.formData = formData;
-        this.body = body;
-        this.csrfChallenge = csrfChallenge;
-        this.ipAddress = ipAddress;
-    }
 
     public Optional<Matcher> getMatcher() {
         return matcher;
@@ -133,26 +108,5 @@ public class Request<S, U> {
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
-    }
-
-    public Optional<U> getUser() {
-        return user;
-    }
-
-    public void setUser(Optional<U> user) {
-        this.user = user;
-    }
-
-    public Optional<S> getSession() {
-        return session;
-    }
-
-    public void setSession(Optional<S> session) {
-        this.session = session;
-    }
-
-    @Override
-    public String toString() {
-        return new StringBuilder().append(method).append(" ").append(pathWithParams).toString();
     }
 }

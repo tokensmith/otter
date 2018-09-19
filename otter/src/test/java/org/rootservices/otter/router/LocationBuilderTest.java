@@ -1,10 +1,12 @@
 package org.rootservices.otter.router;
 
+import helper.FixtureFactory;
 import helper.entity.DummySession;
 import helper.entity.DummyUser;
 import helper.entity.FakeResource;
 import org.junit.Before;
 import org.junit.Test;
+import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.builder.LocationBuilder;
@@ -14,6 +16,7 @@ import org.rootservices.otter.router.entity.Route;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
@@ -46,7 +49,10 @@ public class LocationBuilderTest {
         Location<DummySession, DummyUser> actual = subject.resource(resource).build();
 
         assertThat(actual, is(notNullValue()));
+        assertThat(actual.getContentTypes().size(), is(0));
         assertThat(actual.getRoute(), is(notNullValue()));
+        assertThat(actual.getRoute().getBefore().size(), is(0));
+        assertThat(actual.getRoute().getAfter().size(), is(0));
         assertThat(actual.getRoute().getResource(), is(notNullValue()));
         assertThat(actual.getRoute().getResource(), is(resource));
 
@@ -79,6 +85,30 @@ public class LocationBuilderTest {
     }
 
     @Test
+    public void pathAndResourceAndContentTypeShouldBeOK() {
+        String regex = "/foo/(.*)";
+        MimeType json = new MimeTypeBuilder().json().build();
+        FakeResource resource = new FakeResource();
+
+        Location<DummySession, DummyUser> actual = subject.path(regex)
+                .contentType(json)
+                .resource(resource)
+                .build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getRoute(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(notNullValue()));
+        assertThat(actual.getRoute().getResource(), is(resource));
+        assertThat(actual.getPattern(), is(notNullValue()));
+        assertThat(actual.getPattern().pattern(), is(regex));
+        assertThat(actual.getContentTypes(), is(notNullValue()));
+        assertThat(actual.getContentTypes().size(), is(1));
+
+        assertThat(actual.getErrorRoutes(), is(notNullValue()));
+        assertThat(actual.getErrorRoutes().size(), is(0));
+    }
+
+    @Test
     public void errorResourceShouldBeOk() {
         String regex = "/foo/(.*)";
         List<MimeType> contentTypes = new ArrayList<>();
@@ -105,27 +135,21 @@ public class LocationBuilderTest {
     }
 
     @Test
-    public void errorRouteShouldBeOk() {
+    public void errorRoutesShouldBeOk() {
         String regex = "/foo/(.*)";
         List<MimeType> contentTypes = new ArrayList<>();
         FakeResource resource = new FakeResource();
 
-        FakeResource errorResource = new FakeResource();
-
-        Route<DummySession, DummyUser> errorRoute = new RouteBuilder<DummySession, DummyUser>()
-                .resource(errorResource)
-                .after(new ArrayList<>())
-                .before(new ArrayList<>())
-                .build();
+        Map<StatusCode, Route<DummySession, DummyUser>> errorRoutes = FixtureFactory.makeErrorRoutes();
 
         Location<DummySession, DummyUser> actual = subject.path(regex)
                 .contentTypes(contentTypes)
                 .resource(resource)
-                .errorRoute(StatusCode.NOT_FOUND, errorRoute)
+                .errorRoutes(errorRoutes)
                 .build();
 
-        assertThat(actual.getErrorRoutes().size(), is(1));
-        assertThat(actual.getErrorRoutes().get(StatusCode.NOT_FOUND), is(errorRoute));
+        assertThat(actual.getErrorRoutes().size(), is(3));
+        assertThat(actual.getErrorRoutes(), is(errorRoutes));
     }
 
 }

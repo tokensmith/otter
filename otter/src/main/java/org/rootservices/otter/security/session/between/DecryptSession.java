@@ -19,12 +19,15 @@ import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.security.session.between.exception.InvalidSessionException;
+import org.rootservices.otter.security.exception.SessionCtorException;
 import org.rootservices.otter.security.session.between.exception.SessionDecryptException;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.exception.HaltException;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
@@ -36,7 +39,7 @@ import java.util.Optional;
  * @param <S> Session object, intended to contain user session data.
  * @param <U> User object, intended to be a authenticated user.
  */
-public abstract class DecryptSession<S, U> implements Between<S, U> {
+public class DecryptSession<S, U> implements Between<S, U> {
     public static final String NOT_A_JWT = "Session cookie was not a JWE: %s";
     public static final String COULD_NOT_GET_HEADER_JWE = "Session cookie did have a header member: %s";
     public static final String COULD_NOT_DESERIALIZE_JWE = "Session cookie could not be de-serialized to JSON: %s";
@@ -44,23 +47,28 @@ public abstract class DecryptSession<S, U> implements Between<S, U> {
     public static final String COULD_NOT_DESERIALIZE = "decrypted payload could be deserialized to session: %s";
     public static final String INVALID_SESSION_COOKIE = "Invalid value for the session cookie";
     public static final String COOKIE_NOT_PRESENT = "session cookie not present.";
+    public static final String FAILED_TO_COPY_REQUEST_SESSION = "failed to copy request session";
+    public static final String COULD_NOT_CALL_THE_SESSION_COPY_CONSTRUCTOR = "Could not call the session's copy constructor";
     protected static Logger LOGGER = LogManager.getLogger(DecryptSession.class);
 
     private Class<S> clazz;
+    private Constructor<S> ctor;
     private String sessionCookieName;
     private JwtAppFactory jwtAppFactory;
     private SymmetricKey preferredKey;
     private Map<String, SymmetricKey> rotationKeys;
     private ObjectReader objectReader;
+    private Boolean required;
 
-
-    public DecryptSession(Class<S> clazz, String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectReader objectReader) {
+    public DecryptSession(Constructor<S> ctor, Class<S> clazz, String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectReader objectReader, Boolean required) {
+        this.ctor = ctor;
         this.clazz = clazz;
         this.sessionCookieName = sessionCookieName;
         this.jwtAppFactory = jwtAppFactory;
         this.preferredKey = preferredKey;
         this.rotationKeys = rotationKeys;
         this.objectReader = objectReader;
+        this.required = required;
     }
 
     @Override
@@ -68,10 +76,14 @@ public abstract class DecryptSession<S, U> implements Between<S, U> {
         Optional<S> session;
         Cookie sessionCookie = request.getCookies().get(sessionCookieName);
 
-        if (sessionCookie == null) {
+        if (sessionCookie == null && required) {
             HaltException halt = new HaltException(COOKIE_NOT_PRESENT);
             onHalt(halt, response);
             throw halt;
+        } else if (sessionCookie == null && !required) {
+            // ok to proceed to resource. The session is not required.
+            request.setSession(Optional.empty());
+            return;
         }
 
         try {
@@ -94,7 +106,14 @@ public abstract class DecryptSession<S, U> implements Between<S, U> {
         request.setSession(session);
         S responseSession;
 
-        responseSession = copy(session.get());
+        try {
+            responseSession = copy(session.get());
+        } catch (SessionCtorException e) {
+            LOGGER.error(e.getMessage(), e);
+            HaltException halt = new HaltException(FAILED_TO_COPY_REQUEST_SESSION, e);
+            onHalt(halt, response);
+            throw halt;
+        }
         response.setSession(Optional.of(responseSession));
     }
 
@@ -103,8 +122,17 @@ public abstract class DecryptSession<S, U> implements Between<S, U> {
      *
      * @param from the session to copy
      * @return an instance of T that is a copy of session
+     * @throws SessionCtorException when ctor could not executed
      */
-    abstract protected S copy(S from);
+    protected S copy(S from) throws SessionCtorException {
+        S copy;
+        try {
+            copy = ctor.newInstance(from);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new SessionCtorException(COULD_NOT_CALL_THE_SESSION_COPY_CONSTRUCTOR,e);
+        }
+        return copy;
+    }
 
     /**
      * This method will be called before a Halt Exception is thrown.
@@ -176,5 +204,13 @@ public abstract class DecryptSession<S, U> implements Between<S, U> {
             key = rotationKeys.get(keyId);
         }
         return key;
+    }
+
+    protected void setPreferredKey(SymmetricKey preferredKey) {
+        this.preferredKey = preferredKey;
+    }
+
+    public Boolean getRequired() {
+        return required;
     }
 }

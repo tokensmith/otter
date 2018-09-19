@@ -17,7 +17,22 @@ import static org.junit.Assert.*;
 public class RouteBuilderTest {
 
     @Test
-    public void build() {
+    public void buildShouldBeOk() {
+        FakeResource resource = new FakeResource();
+
+        Route<DummySession, DummyUser> actual = new RouteBuilder<DummySession, DummyUser>()
+                .resource(resource)
+                .build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getResource(), is(resource));
+        assertThat(actual.getBefore().size(), is(0));
+        assertThat(actual.getAfter().size(), is(0));
+    }
+
+
+    @Test
+    public void buildWhenBetweenShouldAssign() {
         FakeResource resource = new FakeResource();
         List<Between<DummySession, DummyUser>> before = new ArrayList<>();
         List<Between<DummySession, DummyUser>> after = new ArrayList<>();

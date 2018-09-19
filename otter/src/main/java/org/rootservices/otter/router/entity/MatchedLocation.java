@@ -32,4 +32,9 @@ public class MatchedLocation<S, U> {
     public void setLocation(Location<S, U> location) {
         this.location = location;
     }
+
+    @Override
+    public String toString() {
+        return new StringBuilder().append(location.getPattern()).toString();
+    }
 }

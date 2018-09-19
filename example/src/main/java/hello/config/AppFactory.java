@@ -4,7 +4,6 @@ package hello.config;
 
 import hello.controller.HelloRestResource;
 import hello.model.Hello;
-import hello.security.SessionBefore;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwk.Use;
 import org.rootservices.otter.config.CookieConfig;
@@ -51,10 +50,6 @@ public class AppFactory<S, U> {
                 "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
                 Use.SIGNATURE
         );
-    }
-
-    public SessionBefore sessionBefore(String cookieName, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys) {
-        return new SessionBefore(cookieName, otterAppFactory().jwtAppFactory(), preferredKey, rotationKeys, otterAppFactory().objectReader());
     }
 
     public EncryptSession<S, U> encryptSession(CookieConfig sessionCookieConfig, SymmetricKey encKey) {

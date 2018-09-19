@@ -4,12 +4,13 @@ import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Route;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RouteBuilder<S, U> {
     private Resource<S, U> resource;
-    private List<Between<S, U>> before;
-    private List<Between<S, U>> after;
+    private List<Between<S, U>> before = new ArrayList<>();
+    private List<Between<S, U>> after = new ArrayList<>();
 
     public RouteBuilder<S, U> resource(Resource<S, U> resource) {
         this.resource = resource;

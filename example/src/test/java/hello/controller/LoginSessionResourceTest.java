@@ -73,7 +73,7 @@ public class LoginSessionResourceTest {
         assertThat(errorMsg, response.getStatusCode(), is(StatusCode.OK.getCode()));
 
         // there should be a csrf cookie
-        Cookie csrfCookie = getCookie(response, "csrf");
+        Cookie csrfCookie = getCookie(response, "csrfToken");
         assertThat(csrfCookie, is(notNullValue()));
 
         // there should be a csrf challenge in the form
@@ -219,7 +219,7 @@ public class LoginSessionResourceTest {
         formData.add(new Param("csrfToken", formCsrfValue));
 
         // get the csrf cookie only.
-        Cookie csrfCookie = getCookie(getResponse, "csrf");
+        Cookie csrfCookie = getCookie(getResponse, "csrfToken");
         assertThat(csrfCookie, is(notNullValue()));
 
         // this is the POST request

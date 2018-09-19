@@ -6,7 +6,9 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.gateway.Configure;
+import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
+import org.rootservices.otter.security.exception.SessionCtorException;
 import org.rootservices.otter.servlet.async.OtterAsyncListener;
 import org.rootservices.otter.servlet.async.ReadListenerImpl;
 
@@ -30,11 +32,16 @@ public abstract class OtterEntryServlet<S, U> extends HttpServlet {
     protected ServletGateway<S, U> servletGateway;
 
     @Override
-    public void init() {
+    public void init() throws ServletException {
         otterAppFactory = new OtterAppFactory<S, U>();
-        servletGateway = otterAppFactory.servletGateway();
         Configure<S, U> configure = makeConfigure();
-        configure.configure(servletGateway);
+        Shape<S> shape = configure.shape();
+        try {
+            servletGateway = otterAppFactory.servletGateway(shape);
+        } catch (SessionCtorException e) {
+            logger.error(e.getMessage(), e);
+            throw new ServletException(e);
+        }
         configure.routes(servletGateway);
     }
 
