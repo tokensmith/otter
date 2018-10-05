@@ -22,6 +22,20 @@ public class Ask {
     private Optional<String> csrfChallenge;
     private String ipAddress;
 
+    public Ask(Optional<Matcher> matcher, Method method, String pathWithParams, MimeType contentType, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<byte[]> body, Optional<String> csrfChallenge, String ipAddress) {
+        this.matcher = matcher;
+        this.method = method;
+        this.pathWithParams = pathWithParams;
+        this.contentType = contentType;
+        this.headers = headers;
+        this.cookies = cookies;
+        this.queryParams = queryParams;
+        this.formData = formData;
+        this.body = body;
+        this.csrfChallenge = csrfChallenge;
+        this.ipAddress = ipAddress;
+    }
+
     public Optional<Matcher> getMatcher() {
         return matcher;
     }

@@ -3,6 +3,7 @@ package org.rootservices.otter.gateway.servlet.merger;
 
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestCookieTranslator;
+import org.rootservices.otter.router.entity.io.Answer;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;
@@ -19,6 +20,16 @@ public class HttpServletRequestMerger {
         // presenter
         if(response.getPresenter().isPresent()) {
             containerRequest.setAttribute(PRESENTER_ATTR, response.getPresenter().get());
+        }
+
+        return containerRequest;
+    }
+
+    public HttpServletRequest mergeForAnswer(HttpServletRequest containerRequest, Answer answer) {
+
+        // presenter
+        if(answer.getPresenter().isPresent()) {
+            containerRequest.setAttribute(PRESENTER_ATTR, answer.getPresenter().get());
         }
 
         return containerRequest;

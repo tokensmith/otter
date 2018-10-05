@@ -12,7 +12,6 @@ import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
 import org.rootservices.otter.router.Engine;
-import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.exception.HaltException;
 
 

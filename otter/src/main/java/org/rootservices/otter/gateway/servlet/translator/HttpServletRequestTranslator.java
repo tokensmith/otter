@@ -8,7 +8,9 @@ import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.controller.entity.mime.SubType;
 import org.rootservices.otter.controller.entity.mime.TopLevelType;
+import org.rootservices.otter.router.builder.AskBuilder;
 import org.rootservices.otter.router.entity.Method;
+import org.rootservices.otter.router.entity.io.Ask;
 import org.rootservices.otter.translator.MimeTypeTranslator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +41,55 @@ public class HttpServletRequestTranslator<S, U>  {
         this.httpServletRequestHeaderTranslator = httpServletRequestHeaderTranslator;
         this.queryStringToMap = queryStringToMap;
         this.mimeTypeTranslator = mimeTypeTranslator;
+    }
+
+    public Ask fromForAsk(HttpServletRequest containerRequest, byte[] containerBody) throws IOException {
+
+        Method method = Method.valueOf(containerRequest.getMethod());
+
+        String pathWithParams = containerRequest.getRequestURI() +
+                queryStringForUrl(containerRequest.getQueryString());
+
+        Map<String, Cookie> otterCookies = new HashMap<>();
+        if (containerRequest.getCookies() != null) {
+            otterCookies = Arrays.asList(containerRequest.getCookies())
+                    .stream()
+                    .collect(
+                            Collectors.toMap(
+                                    javax.servlet.http.Cookie::getName, httpServletCookieTranslator.from
+                            )
+                    );
+        }
+        Map<String, String> headers = httpServletRequestHeaderTranslator.from(containerRequest);
+        Optional<String> queryString = Optional.ofNullable(containerRequest.getQueryString());
+        Map<String, List<String>> queryParams = queryStringToMap.run(queryString);
+
+        MimeType contentType = mimeTypeTranslator.to(containerRequest.getContentType());
+
+        Map<String, List<String>> formData = new HashMap<>();
+        Optional<byte[]> body = Optional.empty();
+        if (isForm(method, contentType)) {
+            String form = new String(containerBody);
+            formData = queryStringToMap.run(Optional.of(form));
+        } else if (method == Method.POST && !isForm(method, contentType)) {
+            body = Optional.of(containerBody);
+        }
+
+        String ipAddress = containerRequest.getRemoteAddr();
+
+        return new AskBuilder()
+                .matcher(Optional.empty())
+                .method(method)
+                .pathWithParams(pathWithParams)
+                .contentType(contentType)
+                .cookies(otterCookies)
+                .headers(headers)
+                .queryParams(queryParams)
+                .formData(formData)
+                .body(body)
+                .csrfChallenge(Optional.empty())
+                .ipAddress(ipAddress)
+                .build();
     }
 
     public Request<S, U> from(HttpServletRequest containerRequest, byte[] containerBody) throws IOException {

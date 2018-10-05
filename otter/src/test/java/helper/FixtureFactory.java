@@ -32,9 +32,13 @@ import org.rootservices.otter.gateway.entity.ErrorTarget;
 import org.rootservices.otter.gateway.entity.Label;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.entity.Target;
+import org.rootservices.otter.router.builder.AnswerBuilder;
+import org.rootservices.otter.router.builder.AskBuilder;
 import org.rootservices.otter.router.builder.LocationBuilder;
 import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.*;
+import org.rootservices.otter.router.entity.io.Answer;
+import org.rootservices.otter.router.entity.io.Ask;
 import org.rootservices.otter.security.builder.entity.Betweens;
 import org.rootservices.otter.security.csrf.CsrfClaims;
 
@@ -158,6 +162,35 @@ public class FixtureFactory {
     public static Map<String, List<String>> makeEmptyQueryParams() {
         Map<String, List<String>> params = new HashMap<>();
         return params;
+    }
+
+    public static Ask makeAsk() {
+        Ask ask = new AskBuilder()
+            .matcher(Optional.empty())
+            .method(Method.GET)
+            .pathWithParams("")
+            .contentType(new MimeTypeBuilder().html().build())
+            .headers(new HashMap<>())
+            .cookies(new HashMap<>())
+            .queryParams(new HashMap<>())
+            .formData(new HashMap<>())
+            .body(Optional.empty())
+            .csrfChallenge(Optional.empty())
+            .ipAddress("127.0.0.1")
+            .build();
+
+        return ask;
+    }
+
+    public static Answer makeAnswer() {
+        return new AnswerBuilder()
+                .headers(new HashMap<>())
+                .cookies(new HashMap<>())
+                .payload(Optional.empty())
+                .template(Optional.of("template"))
+                .presenter(Optional.empty())
+                .ok()
+                .build();
     }
 
     public static Request<DummySession, DummyUser> makeRequest() {

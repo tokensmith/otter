@@ -15,6 +15,18 @@ public class Answer {
     private Optional<String> template;
     private Optional<Object> presenter;
 
+    public Answer() {
+    }
+
+    public Answer(StatusCode statusCode, Map<String, String> headers, Map<String, Cookie> cookies, Optional<ByteArrayOutputStream> payload, Optional<String> template, Optional<Object> presenter) {
+        this.statusCode = statusCode;
+        this.headers = headers;
+        this.cookies = cookies;
+        this.payload = payload;
+        this.template = template;
+        this.presenter = presenter;
+    }
+
     public StatusCode getStatusCode() {
         return statusCode;
     }
