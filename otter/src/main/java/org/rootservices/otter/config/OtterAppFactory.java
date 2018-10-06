@@ -21,6 +21,7 @@ import org.rootservices.otter.router.Dispatcher;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.factory.BetweenFactory;
 import org.rootservices.otter.router.factory.ErrorRouteFactory;
+import org.rootservices.otter.router.factory.ErrorRouteRunnerFactory;
 import org.rootservices.otter.security.RandomString;
 import org.rootservices.otter.security.builder.BetweenBuilder;
 import org.rootservices.otter.security.builder.entity.Betweens;
@@ -145,7 +146,7 @@ public class OtterAppFactory<S, U> {
     }
 
     public Engine<S, U> engine() {
-        return new Engine<S, U>(new Dispatcher<S, U>(), new ErrorRouteFactory<S, U>());
+        return new Engine<S, U>(new Dispatcher<S, U>(), new ErrorRouteFactory<S, U>(), new ErrorRouteRunnerFactory());
     }
 
     public ObjectMapper objectMapper() {

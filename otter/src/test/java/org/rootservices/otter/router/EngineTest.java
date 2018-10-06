@@ -20,6 +20,7 @@ import org.rootservices.otter.router.entity.MatchedLocation;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.router.factory.ErrorRouteFactory;
+import org.rootservices.otter.router.factory.ErrorRouteRunnerFactory;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -39,12 +40,14 @@ public class EngineTest {
     private Dispatcher<DummySession, DummyUser> mockDispatcher;
     @Mock
     private ErrorRouteFactory<DummySession, DummyUser> mockErrorRouteFactory;
+    @Mock
+    private ErrorRouteRunnerFactory mockErrorRouteRunnerFactory;
     private Engine<DummySession, DummyUser> subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new Engine<DummySession, DummyUser>(mockDispatcher, mockErrorRouteFactory);
+        subject = new Engine<DummySession, DummyUser>(mockDispatcher, mockErrorRouteFactory, mockErrorRouteRunnerFactory);
     }
 
     @Test

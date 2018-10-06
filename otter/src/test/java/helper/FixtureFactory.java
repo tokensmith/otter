@@ -25,6 +25,10 @@ import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.controller.header.HeaderValue;
+import org.rootservices.otter.dispatch.RouteRun;
+import org.rootservices.otter.dispatch.RouteRunner;
+import org.rootservices.otter.dispatch.translator.AnswerTranslator;
+import org.rootservices.otter.dispatch.translator.RequestTranslator;
 import org.rootservices.otter.gateway.builder.ErrorTargetBuilder;
 import org.rootservices.otter.gateway.builder.ShapeBuilder;
 import org.rootservices.otter.gateway.builder.TargetBuilder;
@@ -39,6 +43,7 @@ import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.*;
 import org.rootservices.otter.router.entity.io.Answer;
 import org.rootservices.otter.router.entity.io.Ask;
+import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.security.builder.entity.Betweens;
 import org.rootservices.otter.security.csrf.CsrfClaims;
 
@@ -100,6 +105,8 @@ public class FixtureFactory {
                 .after(new ArrayList<>())
                 .errorResource(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaType)
                 .errorResource(StatusCode.SERVER_ERROR, serverError)
+                .errorRouteRunner(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaType)
+                .errorRouteRunner(StatusCode.SERVER_ERROR, unSupportedMediaType)
                 .build();
     }
 
@@ -114,6 +121,26 @@ public class FixtureFactory {
         errorRoutes.put(StatusCode.SERVER_ERROR, serverError);
 
         return errorRoutes;
+    }
+
+    public static Map<StatusCode, RouteRunner> makeErrorRouteRunners() {
+        Route<DummySession, DummyUser> notFound = FixtureFactory.makeRoute();
+        Route<DummySession, DummyUser> unSupportedMediaType = FixtureFactory.makeRoute();
+        Route<DummySession, DummyUser> serverError = FixtureFactory.makeRoute();
+
+        Map<StatusCode, RouteRunner> errorRouteRunners = new HashMap<>();
+
+        RequestTranslator<DummySession, DummyUser> requestTranslator = new RequestTranslator<>();
+        AnswerTranslator<DummySession> answerTranslator = new AnswerTranslator<>();
+        RouteRunner notFoundRunner = new RouteRun<DummySession, DummyUser>(notFound, requestTranslator, answerTranslator);
+        RouteRunner unSupportedMediaTypeRunner = new RouteRun<DummySession, DummyUser>(unSupportedMediaType, requestTranslator, answerTranslator);
+        RouteRunner serverErrorRunner = new RouteRun<DummySession, DummyUser>(serverError, requestTranslator, answerTranslator);
+
+        errorRouteRunners.put(StatusCode.NOT_FOUND, notFoundRunner);
+        errorRouteRunners.put(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaTypeRunner);
+        errorRouteRunners.put(StatusCode.SERVER_ERROR, serverErrorRunner);
+
+        return errorRouteRunners;
     }
 
     public static List<Location<DummySession, DummyUser>> makeLocations(String baseContext) {

@@ -7,6 +7,7 @@ import org.rootservices.otter.router.entity.Route;
 import java.util.Map;
 import java.util.Optional;
 
+@Deprecated
 public class ErrorRouteFactory<S, U> {
 
     public Route<S, U> fromLocation(Optional<MatchedLocation<S, U>> matchedLocation, Map<StatusCode, Route<S, U>> errorRoutes) {

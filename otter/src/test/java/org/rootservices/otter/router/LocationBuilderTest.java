@@ -58,6 +58,11 @@ public class LocationBuilderTest {
 
         assertThat(actual.getErrorRoutes(), is(notNullValue()));
         assertThat(actual.getErrorRoutes().size(), is(0));
+
+        assertThat(actual.getRouteRunner(), is(notNullValue()));
+
+        assertThat(actual.getErrorRouteRunners(), is(notNullValue()));
+        assertThat(actual.getErrorRouteRunners().size(), is(0));
     }
 
     @Test
@@ -150,6 +155,43 @@ public class LocationBuilderTest {
 
         assertThat(actual.getErrorRoutes().size(), is(3));
         assertThat(actual.getErrorRoutes(), is(errorRoutes));
+    }
+
+    @Test
+    public void errorRouteRunnerShouldBeOk() {
+        String regex = "/foo/(.*)";
+        List<MimeType> contentTypes = new ArrayList<>();
+        FakeResource resource = new FakeResource();
+
+        FakeResource errorResource = new FakeResource();
+
+        Location<DummySession, DummyUser> actual = subject.path(regex)
+                .contentTypes(contentTypes)
+                .resource(resource)
+                .errorRouteRunner(StatusCode.NOT_FOUND, errorResource)
+                .build();
+
+        assertThat(actual.getErrorRouteRunners().size(), is(1));
+        assertThat(actual.getErrorRouteRunners().get(StatusCode.NOT_FOUND), is(notNullValue()));
+
+        Route<DummySession, DummyUser> actualErrorRoute = actual.getErrorRoutes().get(StatusCode.NOT_FOUND);
+    }
+
+    @Test
+    public void errorRouteRunnersShouldBeOk() {
+        String regex = "/foo/(.*)";
+        List<MimeType> contentTypes = new ArrayList<>();
+        FakeResource resource = new FakeResource();
+
+        Map<StatusCode, Route<DummySession, DummyUser>> errorRoutes = FixtureFactory.makeErrorRoutes();
+
+        Location<DummySession, DummyUser> actual = subject.path(regex)
+                .contentTypes(contentTypes)
+                .resource(resource)
+                .errorRouteRunners(errorRoutes)
+                .build();
+
+        assertThat(actual.getErrorRouteRunners().size(), is(3));
     }
 
 }

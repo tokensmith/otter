@@ -3,7 +3,9 @@ package org.rootservices.otter.router.entity;
 
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.dispatch.RouteRunner;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -18,14 +20,20 @@ import java.util.regex.Pattern;
 public class Location<S, U> {
     private Pattern pattern;
     private List<MimeType> contentTypes;
+    @Deprecated
     private Route<S, U> route;
+    @Deprecated
     private Map<StatusCode, Route<S, U>> errorRoutes;
+    private RouteRunner routeRunner;
+    private Map<StatusCode, RouteRunner> errorRouteRunners = new HashMap<>();
 
-    public Location(Pattern pattern, List<MimeType> contentTypes, Route<S, U> route, Map<StatusCode, Route<S, U>> errorRoutes) {
+    public Location(Pattern pattern, List<MimeType> contentTypes, Route<S, U> route, Map<StatusCode, Route<S, U>> errorRoutes, RouteRunner routeRunner, Map<StatusCode, RouteRunner> errorRouteRunners) {
         this.pattern = pattern;
         this.contentTypes = contentTypes;
         this.route = route;
         this.errorRoutes = errorRoutes;
+        this.routeRunner = routeRunner;
+        this.errorRouteRunners = errorRouteRunners;
     }
 
     public Pattern getPattern() {
@@ -58,6 +66,22 @@ public class Location<S, U> {
 
     public void setErrorRoutes(Map<StatusCode, Route<S, U>> errorRoutes) {
         this.errorRoutes = errorRoutes;
+    }
+
+    public RouteRunner getRouteRunner() {
+        return routeRunner;
+    }
+
+    public void setRouteRunner(RouteRunner routeRunner) {
+        this.routeRunner = routeRunner;
+    }
+
+    public Map<StatusCode, RouteRunner> getErrorRouteRunners() {
+        return errorRouteRunners;
+    }
+
+    public void setErrorRouteRunners(Map<StatusCode, RouteRunner> errorRouteRunners) {
+        this.errorRouteRunners = errorRouteRunners;
     }
 
     @Override

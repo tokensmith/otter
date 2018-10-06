@@ -6,11 +6,13 @@ import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.dispatch.RouteRunner;
 import org.rootservices.otter.router.entity.*;
 import org.rootservices.otter.router.entity.io.Answer;
 import org.rootservices.otter.router.entity.io.Ask;
 import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.router.factory.ErrorRouteFactory;
+import org.rootservices.otter.router.factory.ErrorRouteRunnerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,10 +22,15 @@ import java.util.Optional;
 public class Engine<S, U> {
     private Dispatcher<S, U> dispatcher;
     private ErrorRouteFactory<S, U> errorRouteFactory;
+    @Deprecated
     private Map<StatusCode, Route<S, U>> errorRoutes = new HashMap<StatusCode, Route<S, U>>();
+    private ErrorRouteRunnerFactory errorRouteRunnerFactory;
 
-    public Engine(Dispatcher<S, U> dispatcher, ErrorRouteFactory<S, U> errorRouteFactory) {
+    private Map<StatusCode, RouteRunner> errorRouteRunners = new HashMap<StatusCode, RouteRunner>();
+
+    public Engine(Dispatcher<S, U> dispatcher, ErrorRouteFactory<S, U> errorRouteFactory, ErrorRouteRunnerFactory errorRouteRunnerFactory) {
         this.dispatcher = dispatcher;
+        this.errorRouteFactory = errorRouteFactory;
         this.errorRouteFactory = errorRouteFactory;
     }
 
@@ -111,10 +118,12 @@ public class Engine<S, U> {
         return dispatcher;
     }
 
+    @Deprecated
     public void setErrorRoutes(Map<StatusCode, Route<S, U>> errorRoutes) {
         this.errorRoutes = errorRoutes;
     }
 
+    @Deprecated
     public Map<StatusCode, Route<S, U>> getErrorRoutes() {
         return errorRoutes;
     }

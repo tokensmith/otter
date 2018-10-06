@@ -77,6 +77,9 @@ public class LocationTranslatorTest {
         assertThat(actual.get(Method.GET).getErrorRoutes(), Is.is(notNullValue()));
         assertThat(actual.get(Method.GET).getErrorRoutes().size(), Is.is(1));
 
+        assertThat(actual.get(Method.GET).getErrorRouteRunners(), Is.is(notNullValue()));
+        assertThat(actual.get(Method.GET).getErrorRouteRunners().size(), Is.is(1));
+
 
         // POST
         assertThat(actual.get(Method.POST).getRoute(), Is.is(notNullValue()));
@@ -103,5 +106,7 @@ public class LocationTranslatorTest {
         assertThat(actual.get(Method.POST).getErrorRoutes(), Is.is(notNullValue()));
         assertThat(actual.get(Method.POST).getErrorRoutes().size(), Is.is(1));
 
+        assertThat(actual.get(Method.POST).getErrorRouteRunners(), Is.is(notNullValue()));
+        assertThat(actual.get(Method.POST).getErrorRouteRunners().size(), Is.is(1));
     }
 }

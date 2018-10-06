@@ -57,6 +57,14 @@ public class LocationTranslator<S, U> {
                             e -> toRoute(e.getValue())
                         ))
                 )
+                .errorRouteRunners(
+                    from.getErrorTargets()
+                            .entrySet().stream()
+                            .collect(Collectors.toMap(
+                                    Map.Entry::getKey,
+                                    e -> toRoute(e.getValue())
+                            ))
+                )
                 .build();
 
             to.put(method, location);
