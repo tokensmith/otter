@@ -4,15 +4,15 @@ package org.rootservices.otter.router.entity;
 import java.util.regex.Matcher;
 
 
-public class MatchedLocation<S, U> {
+public class MatchedLocation {
     private Matcher matcher;
-    private Location<S, U> location;
+    private Location location;
 
-    public MatchedLocation(Location<S, U> location) {
+    public MatchedLocation(Location location) {
         this.location = location;
     }
 
-    public MatchedLocation(Matcher matcher, Location<S, U> location) {
+    public MatchedLocation(Matcher matcher, Location location) {
         this.matcher = matcher;
         this.location = location;
     }
@@ -25,11 +25,11 @@ public class MatchedLocation<S, U> {
         this.matcher = matcher;
     }
 
-    public Location<S, U> getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation(Location<S, U> location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 

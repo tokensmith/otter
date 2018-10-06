@@ -23,8 +23,8 @@ public class LocationTranslator<S, U> {
         this.betweenFactory = betweenFactory;
     }
 
-    public Map<Method, Location<S, U>> to(Target<S, U> from) {
-        Map<Method, Location<S, U>> to = new HashMap<>();
+    public Map<Method, Location> to(Target<S, U> from) {
+        Map<Method, Location> to = new HashMap<>();
 
         for(Method method: from.getMethods()) {
 
@@ -35,7 +35,7 @@ public class LocationTranslator<S, U> {
                 contentTypes = new ArrayList<>();
             }
 
-            Location<S, U> location = new LocationBuilder<S, U>()
+            Location location = new LocationBuilder<S, U>()
                 .path(from.getRegex())
                 .contentTypes(contentTypes)
                 .resource(from.getResource())
@@ -48,14 +48,6 @@ public class LocationTranslator<S, U> {
                     Stream.of(betweens.getAfter(), from.getAfter())
                             .flatMap(Collection::stream)
                             .collect(Collectors.toList())
-                )
-                .errorRoutes(
-                    from.getErrorTargets()
-                        .entrySet().stream()
-                        .collect(Collectors.toMap(
-                            Map.Entry::getKey,
-                            e -> toRoute(e.getValue())
-                        ))
                 )
                 .errorRouteRunners(
                     from.getErrorTargets()

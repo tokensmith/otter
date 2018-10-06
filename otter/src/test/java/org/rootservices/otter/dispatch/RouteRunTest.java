@@ -30,7 +30,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class RouteRunTest {
-    private static OtterAppFactory<DummySession, DummyUser> otterAppFactory = new OtterAppFactory<DummySession, DummyUser>();
+    private static OtterAppFactory otterAppFactory = new OtterAppFactory();
     private RouteRun<DummySession, DummyUser> subject;
 
     @Before

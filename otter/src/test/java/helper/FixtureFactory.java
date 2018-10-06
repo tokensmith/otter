@@ -54,22 +54,21 @@ import java.util.regex.Matcher;
 public class FixtureFactory {
     private static JwtAppFactory jwtAppFactory = new JwtAppFactory();
 
-    public static Shape<DummySession> makeShape(String encKeyId, String signKeyId) {
+    public static Shape makeShape(String encKeyId, String signKeyId) {
         SymmetricKey encKey = FixtureFactory.encKey(encKeyId);
         SymmetricKey signKey = FixtureFactory.signKey(signKeyId);
 
-        return new ShapeBuilder<DummySession>()
-                .sessionClass(DummySession.class)
+        return new ShapeBuilder()
                 .secure(false)
                 .encKey(encKey)
                 .signkey(signKey)
                 .build();
     }
 
-    public static Optional<MatchedLocation<DummySession, DummyUser>> makeMatch(String url) {
-        Location<DummySession, DummyUser> route = makeLocation(url);
+    public static Optional<MatchedLocation> makeMatch(String url) {
+        Location route = makeLocation(url);
         Matcher matcher = route.getPattern().matcher(url);
-        return  Optional.of(new MatchedLocation<DummySession, DummyUser>(matcher, route));
+        return  Optional.of(new MatchedLocation(matcher, route));
     }
 
     public static Route<DummySession, DummyUser> makeRoute() {
@@ -81,7 +80,7 @@ public class FixtureFactory {
                 .build();
     }
 
-    public static Location<DummySession, DummyUser> makeLocation(String regex) {
+    public static Location makeLocation(String regex) {
         FakeResource resource = new FakeResource();
         return new LocationBuilder<DummySession, DummyUser>()
             .path(regex)
@@ -92,7 +91,7 @@ public class FixtureFactory {
             .build();
     }
 
-    public static Location<DummySession, DummyUser> makeLocationWithErrorRoutes(String regex) {
+    public static Location makeLocationWithErrorRoutes(String regex) {
         FakeResource resource = new FakeResource();
         FakeResource unSupportedMediaType = new FakeResource();
         FakeResource serverError = new FakeResource();
@@ -103,8 +102,6 @@ public class FixtureFactory {
                 .resource(resource)
                 .before(new ArrayList<>())
                 .after(new ArrayList<>())
-                .errorResource(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaType)
-                .errorResource(StatusCode.SERVER_ERROR, serverError)
                 .errorRouteRunner(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaType)
                 .errorRouteRunner(StatusCode.SERVER_ERROR, unSupportedMediaType)
                 .build();
@@ -115,7 +112,7 @@ public class FixtureFactory {
         Route<DummySession, DummyUser> unSupportedMediaType = FixtureFactory.makeRoute();
         Route<DummySession, DummyUser> serverError = FixtureFactory.makeRoute();
 
-        Map<StatusCode, Route<DummySession, DummyUser>> errorRoutes = new HashMap<>();
+        Map<StatusCode,Route<DummySession, DummyUser>> errorRoutes = new HashMap<>();
         errorRoutes.put(StatusCode.NOT_FOUND, notFound);
         errorRoutes.put(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaType);
         errorRoutes.put(StatusCode.SERVER_ERROR, serverError);
@@ -143,8 +140,8 @@ public class FixtureFactory {
         return errorRouteRunners;
     }
 
-    public static List<Location<DummySession, DummyUser>> makeLocations(String baseContext) {
-        List<Location<DummySession, DummyUser>> locations = new ArrayList<>();
+    public static List<Location> makeLocations(String baseContext) {
+        List<Location> locations = new ArrayList<>();
         locations.add(makeLocation(baseContext + Regex.UUID.getRegex()));
         locations.add(makeLocation(baseContext + Regex.UUID.getRegex() + "/bar"));
         return locations;

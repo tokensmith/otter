@@ -13,13 +13,15 @@ import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.dispatch.RouteRunner;
 import org.rootservices.otter.router.builder.LocationBuilder;
 import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.MatchedLocation;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
-import org.rootservices.otter.router.factory.ErrorRouteFactory;
+import org.rootservices.otter.router.entity.io.Answer;
+import org.rootservices.otter.router.entity.io.Ask;
 import org.rootservices.otter.router.factory.ErrorRouteRunnerFactory;
 
 import java.util.ArrayList;
@@ -37,316 +39,114 @@ import static org.mockito.Mockito.when;
 
 public class EngineTest {
     @Mock
-    private Dispatcher<DummySession, DummyUser> mockDispatcher;
-    @Mock
-    private ErrorRouteFactory<DummySession, DummyUser> mockErrorRouteFactory;
+    private Dispatcher mockDispatcher;
     @Mock
     private ErrorRouteRunnerFactory mockErrorRouteRunnerFactory;
-    private Engine<DummySession, DummyUser> subject;
+    private Engine subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new Engine<DummySession, DummyUser>(mockDispatcher, mockErrorRouteFactory, mockErrorRouteRunnerFactory);
+        subject = new Engine(mockDispatcher, mockErrorRouteRunnerFactory);
+    }
+
+    public void routeWhenMethodIsXShouldMatch(Method method) throws Exception {
+        String url = "foo";
+        Optional<MatchedLocation> match = FixtureFactory.makeMatch(url);
+
+        MimeType json = new MimeTypeBuilder().json().build();
+        Ask ask = FixtureFactory.makeAsk();
+        ask.setMethod(method);
+        ask.setPathWithParams(url);
+        ask.setContentType(json);
+
+        Answer answer = FixtureFactory.makeAnswer();
+
+        RouteRunner mockRouteRunner = mock(RouteRunner.class);
+        when(mockRouteRunner.run(ask, answer)).thenReturn(answer);
+
+        Location location = new LocationBuilder<DummySession, DummyUser>()
+                .contentTypes(new ArrayList<MimeType>())
+                .build();
+
+        // TODO: 99: should this be in the builder?
+        location.setRouteRunner(mockRouteRunner);
+
+        match.get().setLocation(location);
+
+        when(mockDispatcher.find(method, url)).thenReturn(match);
+
+        Answer actual = subject.route(ask, answer);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual, is(answer));
     }
 
     @Test
     public void routeWhenMethodIsGetShouldMatch() throws Exception {
-        String url = "foo";
-        Optional<MatchedLocation<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
-
-        MimeType json = new MimeTypeBuilder().json().build();
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
-        request.setMethod(Method.GET);
-        request.setPathWithParams(url);
-        request.setContentType(json);
-
-        Response<DummySession> response = FixtureFactory.makeResponse();
-
-        FakeResource mockResource = mock(FakeResource.class);
-        when(mockResource.get(request, response)).thenReturn(response);
-
-        Location<DummySession, DummyUser> location = new LocationBuilder<DummySession, DummyUser>()
-                .contentTypes(new ArrayList<MimeType>())
-                .resource(mockResource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-
-        match.get().setLocation(location);
-
-        when(mockDispatcher.find(Method.GET, url)).thenReturn(match);
-
-        Response<DummySession> actual = subject.route(request, response);
-
-        assertThat(actual, is(notNullValue()));
-        assertThat(actual, is(response));
+        routeWhenMethodIsXShouldMatch(Method.GET);
     }
 
     @Test
     public void routeWhenMethodIsPostShouldMatch() throws Exception {
-        String url = "foo";
-        Optional<MatchedLocation<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
-
-        MimeType json = new MimeTypeBuilder().json().build();
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
-        request.setMethod(Method.POST);
-        request.setPathWithParams(url);
-        request.setContentType(json);
-
-        Response<DummySession> response = FixtureFactory.makeResponse();
-
-        FakeResource mockResource = mock(FakeResource.class);
-        when(mockResource.post(request, response)).thenReturn(response);
-
-        Location<DummySession, DummyUser> location = new LocationBuilder<DummySession, DummyUser>()
-                .contentTypes(new ArrayList<MimeType>())
-                .resource(mockResource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-
-        // set the resource merge the mock one.
-        match.get().setLocation(location);
-
-        when(mockDispatcher.find(Method.POST, url)).thenReturn(match);
-
-        Response<DummySession> actual = subject.route(request, response);
-
-        assertThat(actual, is(notNullValue()));
-        assertThat(actual, is(response));
+        routeWhenMethodIsXShouldMatch(Method.POST);
     }
 
     @Test
     public void routeWhenMethodIsPutShouldMatch() throws Exception {
-        String url = "foo";
-        Optional<MatchedLocation<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
-
-        MimeType json = new MimeTypeBuilder().json().build();
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
-        request.setMethod(Method.PUT);
-        request.setPathWithParams(url);
-        request.setContentType(json);
-
-        Response<DummySession> response = FixtureFactory.makeResponse();
-
-        FakeResource mockResource = mock(FakeResource.class);
-        when(mockResource.put(request, response)).thenReturn(response);
-
-        Location<DummySession, DummyUser> location = new LocationBuilder<DummySession, DummyUser>()
-                .contentTypes(new ArrayList<MimeType>())
-                .resource(mockResource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-
-        // set the resource merge the mock one.
-        match.get().setLocation(location);
-        when(mockDispatcher.find(Method.PUT, url)).thenReturn(match);
-
-        Response<DummySession> actual = subject.route(request, response);
-
-        assertThat(actual, is(notNullValue()));
-        assertThat(actual, is(response));
+        routeWhenMethodIsXShouldMatch(Method.PUT);
     }
 
     @Test
     public void routeWhenMethodIsDeleteShouldMatch() throws Exception {
-        String url = "foo";
-        Optional<MatchedLocation<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
-
-        MimeType json = new MimeTypeBuilder().json().build();
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
-        request.setMethod(Method.DELETE);
-        request.setPathWithParams(url);
-        request.setContentType(json);
-
-        Response<DummySession> response = FixtureFactory.makeResponse();
-
-        FakeResource mockResource = mock(FakeResource.class);
-        when(mockResource.delete(request, response)).thenReturn(response);
-
-        Location<DummySession, DummyUser> location = new LocationBuilder<DummySession, DummyUser>()
-                .contentTypes(new ArrayList<MimeType>())
-                .resource(mockResource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-
-        // set the resource merge the mock one.
-        match.get().setLocation(location);
-        when(mockDispatcher.find(Method.DELETE, url)).thenReturn(match);
-
-        Response<DummySession> actual = subject.route(request, response);
-
-        assertThat(actual, is(notNullValue()));
-        assertThat(actual, is(response));
+        routeWhenMethodIsXShouldMatch(Method.DELETE);
     }
 
     @Test
     public void routeWhenMethodIsConnectShouldMatch() throws Exception {
-        String url = "foo";
-        Optional<MatchedLocation<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
-
-        MimeType json = new MimeTypeBuilder().json().build();
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
-        request.setMethod(Method.CONNECT);
-        request.setPathWithParams(url);
-        request.setContentType(json);
-
-        Response<DummySession> response = FixtureFactory.makeResponse();
-
-        FakeResource mockResource = mock(FakeResource.class);
-        when(mockResource.connect(request, response)).thenReturn(response);
-
-        Location<DummySession, DummyUser> location = new LocationBuilder<DummySession, DummyUser>()
-                .contentTypes(new ArrayList<MimeType>())
-                .resource(mockResource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-
-        // set the resource merge the mock one.
-        match.get().setLocation(location);
-        when(mockDispatcher.find(Method.CONNECT, url)).thenReturn(match);
-
-        Response<DummySession> actual = subject.route(request, response);
-
-        assertThat(actual, is(notNullValue()));
-        assertThat(actual, is(response));
+        routeWhenMethodIsXShouldMatch(Method.CONNECT);
     }
 
     @Test
     public void routeWhenMethodIsOptionsShouldMatch() throws Exception {
-        String url = "foo";
-        Optional<MatchedLocation<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
-
-        MimeType json = new MimeTypeBuilder().json().build();
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
-        request.setMethod(Method.OPTIONS);
-        request.setPathWithParams(url);
-        request.setContentType(json);
-
-        Response<DummySession> response = FixtureFactory.makeResponse();
-
-        FakeResource mockResource = mock(FakeResource.class);
-        when(mockResource.options(request, response)).thenReturn(response);
-
-        Location<DummySession, DummyUser> location = new LocationBuilder<DummySession, DummyUser>()
-                .contentTypes(new ArrayList<MimeType>())
-                .resource(mockResource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-
-        // set the resource merge the mock one.
-        match.get().setLocation(location);
-        when(mockDispatcher.find(Method.OPTIONS, url)).thenReturn(match);
-
-        Response<DummySession> actual = subject.route(request, response);
-
-        assertThat(actual, is(notNullValue()));
-        assertThat(actual, is(response));
+        routeWhenMethodIsXShouldMatch(Method.OPTIONS);
     }
 
     @Test
     public void routeWhenMethodIsTraceShouldMatch() throws Exception {
-        String url = "foo";
-        Optional<MatchedLocation<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
-
-        MimeType json = new MimeTypeBuilder().json().build();
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
-        request.setMethod(Method.TRACE);
-        request.setPathWithParams(url);
-        request.setContentType(json);
-
-        Response<DummySession> response = FixtureFactory.makeResponse();
-
-        FakeResource mockResource = mock(FakeResource.class);
-        when(mockResource.trace(request, response)).thenReturn(response);
-
-        Location<DummySession, DummyUser> location = new LocationBuilder<DummySession, DummyUser>()
-                .contentTypes(new ArrayList<MimeType>())
-                .resource(mockResource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-
-        // set the resource merge the mock one.
-        match.get().setLocation(location);
-        when(mockDispatcher.find(Method.TRACE, url)).thenReturn(match);
-
-        Response<DummySession> actual = subject.route(request, response);
-
-        assertThat(actual, is(notNullValue()));
-        assertThat(actual, is(response));
+        routeWhenMethodIsXShouldMatch(Method.TRACE);
     }
 
     @Test
     public void routeWhenMethodIsHeadShouldMatch() throws Exception {
-        String url = "foo";
-        Optional<MatchedLocation<DummySession, DummyUser>> match = FixtureFactory.makeMatch(url);
-
-        MimeType json = new MimeTypeBuilder().json().build();
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
-        request.setMethod(Method.HEAD);
-        request.setPathWithParams(url);
-        request.setContentType(json);
-
-        Response<DummySession> response = FixtureFactory.makeResponse();
-
-        FakeResource mockResource = mock(FakeResource.class);
-        when(mockResource.head(request, response)).thenReturn(response);
-
-        Location<DummySession, DummyUser> location = new LocationBuilder<DummySession, DummyUser>()
-                .contentTypes(new ArrayList<MimeType>())
-                .resource(mockResource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-
-        // set the resource merge the mock one.
-        match.get().setLocation(location);
-        when(mockDispatcher.find(Method.HEAD, url)).thenReturn(match);
-
-        Response<DummySession> actual = subject.route(request, response);
-
-        assertThat(actual, is(notNullValue()));
-        assertThat(actual, is(response));
+        routeWhenMethodIsXShouldMatch(Method.HEAD);
     }
-
 
     @Test
     public void routeWhenGetAndNoMatchedRouteShouldRunErrorRoute() throws Exception {
+        Method method = Method.GET;
         String url = "foo";
-        Optional<MatchedLocation<DummySession, DummyUser>> match = Optional.empty();
+        Optional<MatchedLocation> match = Optional.empty();
 
         MimeType json = new MimeTypeBuilder().json().build();
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
-        request.setMethod(Method.GET);
-        request.setPathWithParams(url);
-        request.setContentType(json);
+        Ask ask = FixtureFactory.makeAsk();
+        ask.setMethod(method);
+        ask.setPathWithParams(url);
+        ask.setContentType(json);
 
-        Response<DummySession> response = FixtureFactory.makeResponse();
+        Answer answer = FixtureFactory.makeAnswer();
 
         when(mockDispatcher.find(Method.GET, url)).thenReturn(match);
 
-        FakeResource mockErrorResource = mock(FakeResource.class);
-        when(mockErrorResource.get(request, response)).thenReturn(response);
+        RouteRunner errorRouteRunner = mock(RouteRunner.class);
+        when(errorRouteRunner.run(ask, answer)).thenReturn(answer);
 
-        Route<DummySession, DummyUser> errorRoute = new RouteBuilder<DummySession, DummyUser>()
-                .resource(mockErrorResource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-
-        Map<StatusCode, Route<DummySession, DummyUser>> errorRoutes = FixtureFactory.makeErrorRoutes();
-        when(mockErrorRouteFactory.fromLocation(match, errorRoutes)).thenReturn(errorRoute);
+        Map<StatusCode, RouteRunner> errorRoutes = FixtureFactory.makeErrorRouteRunners();
+        when(mockErrorRouteRunnerFactory.fromLocation(match, errorRoutes)).thenReturn(errorRouteRunner);
 
         subject.setErrorRoutes(errorRoutes);
-        Response actual = subject.route(request, response);
+        Answer actual = subject.route(ask, answer);
 
-        assertThat(actual, is(response));
+        assertThat(actual, is(answer));
     }
-    
 }

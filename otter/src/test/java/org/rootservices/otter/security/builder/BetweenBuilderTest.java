@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 
 
 public class BetweenBuilderTest {
-    private static OtterAppFactory<DummySession, DummyUser> otterAppFactory = new OtterAppFactory<DummySession, DummyUser>();
+    private static OtterAppFactory otterAppFactory = new OtterAppFactory();
 
     @Test
     public void buildShouldBeEmptyLists() {

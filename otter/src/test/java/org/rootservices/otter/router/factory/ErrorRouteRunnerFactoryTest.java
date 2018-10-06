@@ -27,7 +27,7 @@ public class ErrorRouteRunnerFactoryTest {
 
     @Test
     public void fromLocationShouldBeLocationUnSupportedErrorRoute() {
-        Location<DummySession, DummyUser> location = FixtureFactory.makeLocationWithErrorRoutes("foo");
+        Location location = FixtureFactory.makeLocationWithErrorRoutes("foo");
 
         Optional<MatchedLocation> match = Optional.of(
                 new MatchedLocation(location)
@@ -43,7 +43,7 @@ public class ErrorRouteRunnerFactoryTest {
 
     @Test
     public void fromLocationShouldBeGlobalUnSupportedErrorRoute() {
-        Location<DummySession, DummyUser> location = FixtureFactory.makeLocation("foo");
+        Location location = FixtureFactory.makeLocation("foo");
 
         Optional<MatchedLocation> match = Optional.of(
                 new MatchedLocation(location)
@@ -69,7 +69,7 @@ public class ErrorRouteRunnerFactoryTest {
 
     @Test
     public void serverErrorShouldBeLocationErrorRoute() {
-        Location<DummySession, DummyUser> location = FixtureFactory.makeLocationWithErrorRoutes("foo");
+        Location location = FixtureFactory.makeLocationWithErrorRoutes("foo");
 
         Optional<MatchedLocation> match = Optional.of(
                 new MatchedLocation(location)
@@ -84,7 +84,7 @@ public class ErrorRouteRunnerFactoryTest {
 
     @Test
     public void serverErrorWhenNoLocationErrorRouteShouldBeGlobalRoute() {
-        Location<DummySession, DummyUser> location = FixtureFactory.makeLocation("foo");
+        Location location = FixtureFactory.makeLocation("foo");
 
         Optional<MatchedLocation> match = Optional.of(
                 new MatchedLocation(location)

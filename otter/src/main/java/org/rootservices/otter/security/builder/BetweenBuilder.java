@@ -25,7 +25,7 @@ public class BetweenBuilder<S, U> {
     private static String SESSION_NAME = "session";
     public static final String COULD_NOT_ACCESS_SESSION_CTORS = "Could not access session copy constructor";
 
-    private OtterAppFactory<S, U> otterAppFactory;
+    private OtterAppFactory otterAppFactory;
     private Boolean secure;
     private SymmetricKey signKey;
     private Map<String, SymmetricKey> rotationSignKeys;
@@ -37,7 +37,7 @@ public class BetweenBuilder<S, U> {
     private List<Between<S,U>> before = new ArrayList<>();
     private List<Between<S,U>> after = new ArrayList<>();
 
-    public BetweenBuilder<S, U> otterFactory(OtterAppFactory<S,U> otterAppFactory) {
+    public BetweenBuilder<S, U> otterFactory(OtterAppFactory otterAppFactory) {
         this.otterAppFactory = otterAppFactory;
         return this;
     }

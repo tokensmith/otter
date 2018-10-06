@@ -21,8 +21,8 @@ public class LocationTranslatorFactory {
         );
     }
 
-    protected  <S, U> BetweenFactory<S, U> betweenFactory(Class<S> sessionClazz) throws SessionCtorException {
-        OtterAppFactory<S, U> otterAppFactory = new OtterAppFactory<>();
+    public <S, U> BetweenFactory<S, U> betweenFactory(Class<S> sessionClazz) throws SessionCtorException {
+        OtterAppFactory otterAppFactory = new OtterAppFactory();
 
         return new BetweenFactory<S, U>(
                 csrfPrepare(otterAppFactory),
@@ -32,7 +32,7 @@ public class LocationTranslatorFactory {
         );
     }
 
-    protected <S, U> Betweens<S, U> csrfPrepare(OtterAppFactory<S, U> otterAppFactory) {
+    protected <S, U> Betweens<S, U> csrfPrepare(OtterAppFactory otterAppFactory) {
         return new BetweenBuilder<S, U>()
                 .otterFactory(otterAppFactory)
                 .secure(shape.getSecure())
@@ -43,7 +43,7 @@ public class LocationTranslatorFactory {
 
     }
 
-    protected <S, U> Betweens<S, U> csrfProtect(OtterAppFactory<S, U> otterAppFactory) {
+    protected <S, U> Betweens<S, U> csrfProtect(OtterAppFactory otterAppFactory) {
         return new BetweenBuilder<S, U>()
                 .otterFactory(otterAppFactory)
                 .secure(shape.getSecure())
@@ -54,7 +54,7 @@ public class LocationTranslatorFactory {
 
     }
 
-    protected <S, U> Betweens<S, U> session(OtterAppFactory<S, U> otterAppFactory, Class<S> sessionClazz) throws SessionCtorException {
+    protected <S, U> Betweens<S, U> session(OtterAppFactory otterAppFactory, Class<S> sessionClazz) throws SessionCtorException {
         return new BetweenBuilder<S, U>()
                 .otterFactory(otterAppFactory)
                 .secure(shape.getSecure())
@@ -66,7 +66,7 @@ public class LocationTranslatorFactory {
     }
 
 
-    protected <S, U> Betweens<S, U> sessionOptional(OtterAppFactory<S, U> otterAppFactory, Class<S> sessionClazz) throws SessionCtorException {
+    protected <S, U> Betweens<S, U> sessionOptional(OtterAppFactory otterAppFactory, Class<S> sessionClazz) throws SessionCtorException {
         return new BetweenBuilder<S, U>()
                 .otterFactory(otterAppFactory)
                 .secure(shape.getSecure())

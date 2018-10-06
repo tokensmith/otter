@@ -1,7 +1,7 @@
 package org.rootservices.otter.gateway.servlet.merger;
 
 
-import org.rootservices.otter.controller.entity.Response;
+
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestCookieTranslator;
 import org.rootservices.otter.router.entity.io.Answer;
 
@@ -11,57 +11,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class HttpServletResponseMerger<T> {
+public class HttpServletResponseMerger {
     private HttpServletRequestCookieTranslator httpServletRequestCookieTranslator;
 
     public HttpServletResponseMerger(HttpServletRequestCookieTranslator httpServletRequestCookieTranslator) {
         this.httpServletRequestCookieTranslator = httpServletRequestCookieTranslator;
     }
 
-    public HttpServletResponse merge(HttpServletResponse containerResponse, Cookie[] containerCookies, Response<T> response) {
-
-        // headers
-        for(Map.Entry<String, String> header: response.getHeaders().entrySet()) {
-            containerResponse.setHeader(header.getKey(), header.getValue());
-        }
-
-        // cookies
-        Map<String, Cookie> containerCookiesMap = deleteAndUpdateCookies(containerResponse, containerCookies, response);
-        createCookies(containerResponse, containerCookiesMap, response.getCookies());
-
-        // status code
-        containerResponse.setStatus(response.getStatusCode().getCode());
-
-        return containerResponse;
-    }
-
-    protected Map<String, Cookie> deleteAndUpdateCookies(HttpServletResponse containerResponse, Cookie[] containerCookies, Response<T> response) {
-        Map<String, Cookie> containerCookiesMap = new HashMap<>();
-
-        if (containerCookies == null) {
-            return containerCookiesMap;
-        }
-
-        for(Cookie containerCookie: containerCookies) {
-            containerCookiesMap.put(containerCookie.getName(), containerCookie);
-
-            // delete cookie
-            org.rootservices.otter.controller.entity.Cookie otterCookie = response.getCookies().get(containerCookie.getName());
-            if(otterCookie == null) {
-                containerCookie.setMaxAge(0);
-                containerResponse.addCookie(containerCookie);
-            } else {
-                // update an existing cookie
-                containerCookie = httpServletRequestCookieTranslator.to.apply(otterCookie);
-                containerResponse.addCookie(containerCookie);
-            }
-        }
-        return containerCookiesMap;
-    }
-
-    // Answer
-
-    public HttpServletResponse mergeForAnswer(HttpServletResponse containerResponse, Cookie[] containerCookies, Answer answer) {
+    public HttpServletResponse merge(HttpServletResponse containerResponse, Cookie[] containerCookies, Answer answer) {
 
         // headers
         for(Map.Entry<String, String> header: answer.getHeaders().entrySet()) {
@@ -69,7 +26,7 @@ public class HttpServletResponseMerger<T> {
         }
 
         // cookies
-        Map<String, Cookie> containerCookiesMap = deleteAndUpdateCookiesForAnswer(containerResponse, containerCookies, answer);
+        Map<String, Cookie> containerCookiesMap = deleteAndUpdateCookies(containerResponse, containerCookies, answer);
         createCookies(containerResponse, containerCookiesMap, answer.getCookies());
 
         // status code
@@ -78,7 +35,7 @@ public class HttpServletResponseMerger<T> {
         return containerResponse;
     }
 
-    protected Map<String, Cookie> deleteAndUpdateCookiesForAnswer(HttpServletResponse containerResponse, Cookie[] containerCookies, Answer answer) {
+    protected Map<String, Cookie> deleteAndUpdateCookies(HttpServletResponse containerResponse, Cookie[] containerCookies, Answer answer) {
         Map<String, Cookie> containerCookiesMap = new HashMap<>();
 
         if (containerCookies == null) {

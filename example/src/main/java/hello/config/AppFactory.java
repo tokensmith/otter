@@ -14,9 +14,9 @@ import org.rootservices.otter.translator.JsonTranslator;
 import java.util.Map;
 import java.util.Optional;
 
-public class AppFactory<S, U> {
-    public OtterAppFactory<S, U> otterAppFactory() {
-        return new OtterAppFactory<S, U>();
+public class AppFactory {
+    public OtterAppFactory otterAppFactory() {
+        return new OtterAppFactory();
     }
 
     public HelloRestResource helloRestResource() {
@@ -50,9 +50,5 @@ public class AppFactory<S, U> {
                 "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
                 Use.SIGNATURE
         );
-    }
-
-    public EncryptSession<S, U> encryptSession(CookieConfig sessionCookieConfig, SymmetricKey encKey) {
-        return new EncryptSession<S, U>(sessionCookieConfig, encKey, otterAppFactory().objectWriter());
     }
 }

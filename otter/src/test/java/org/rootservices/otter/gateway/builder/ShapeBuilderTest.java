@@ -21,13 +21,12 @@ public class ShapeBuilderTest {
         Map<String, SymmetricKey> rotationEncKeys = FixtureFactory.rotationEncKeys("test-enc-key", 1);
         Map<String, SymmetricKey> rotationSignKeys = FixtureFactory.rotationSignKeys("test-sign-key", 1);
 
-        Shape<DummySession> actual = new ShapeBuilder<DummySession>()
+        Shape actual = new ShapeBuilder()
                 .encKey(encKey)
                 .signkey(signKey)
                 .rotationEncKeys(rotationEncKeys)
                 .rotationSignKeys(rotationSignKeys)
                 .secure(true)
-                .sessionClass(DummySession.class)
                 .build();
 
         assertThat(actual.getEncKey(), is(encKey));
@@ -35,6 +34,5 @@ public class ShapeBuilderTest {
         assertThat(actual.getRotationEncKeys(), is(rotationEncKeys));
         assertThat(actual.getRotationSignKeys(), is(rotationSignKeys));
         assertThat(actual.getSecure(), is(true));
-        assertThat(actual.getSessionClass(), typeCompatibleWith(DummySession.class));
     }
 }

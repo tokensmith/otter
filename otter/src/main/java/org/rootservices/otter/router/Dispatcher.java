@@ -12,37 +12,37 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 
-public class Dispatcher<S, U> {
+public class Dispatcher {
     protected static Logger LOGGER = LogManager.getLogger(Dispatcher.class);
     private static String OTTER_PREFIX = "/app";
     private static String EMPTY = "";
-    private List<Location<S, U>> get = new ArrayList<>();
-    private List<Location<S, U>> post = new ArrayList<>();
-    private List<Location<S, U>> put = new ArrayList<>();
-    private List<Location<S, U>> patch = new ArrayList<>();
-    private List<Location<S, U>> delete = new ArrayList<>();
-    private List<Location<S, U>> connect = new ArrayList<>();
-    private List<Location<S, U>> options = new ArrayList<>();
-    private List<Location<S, U>> trace = new ArrayList<>();
-    private List<Location<S, U>> head = new ArrayList<>();
+    private List<Location> get = new ArrayList<>();
+    private List<Location> post = new ArrayList<>();
+    private List<Location> put = new ArrayList<>();
+    private List<Location> patch = new ArrayList<>();
+    private List<Location> delete = new ArrayList<>();
+    private List<Location> connect = new ArrayList<>();
+    private List<Location> options = new ArrayList<>();
+    private List<Location> trace = new ArrayList<>();
+    private List<Location> head = new ArrayList<>();
 
 
-    public Optional<MatchedLocation<S, U>> find(Method method, String url) {
+    public Optional<MatchedLocation> find(Method method, String url) {
         // this allows urls to resources to not have the otter prefix, /app
         String scrubbedUrl = url.replaceAll(OTTER_PREFIX, EMPTY);
 
-        Optional<MatchedLocation<S, U>> m = Optional.empty();
-        for(Location<S, U> location: locations(method)) {
+        Optional<MatchedLocation> m = Optional.empty();
+        for(Location location: locations(method)) {
             Matcher matcher = location.getPattern().matcher(scrubbedUrl);
             if (matcher.matches()) {
-                m = Optional.of(new MatchedLocation<S, U>(matcher, location));
+                m = Optional.of(new MatchedLocation(matcher, location));
                 break;
             }
         }
         return m;
     }
 
-    public List<Location<S, U>> locations(Method method) {
+    public List<Location> locations(Method method) {
         if (method == Method.GET) {
             return get;
         } else if (method == Method.POST) {
@@ -67,39 +67,39 @@ public class Dispatcher<S, U> {
         return new ArrayList<>();
     }
 
-    public List<Location<S, U>> getGet() {
+    public List<Location> getGet() {
         return get;
     }
 
-    public List<Location<S, U>> getPost() {
+    public List<Location> getPost() {
         return post;
     }
 
-    public List<Location<S, U>> getPut() {
+    public List<Location> getPut() {
         return put;
     }
 
-    public List<Location<S, U>> getPatch() {
+    public List<Location> getPatch() {
         return patch;
     }
 
-    public List<Location<S, U>> getDelete() {
+    public List<Location> getDelete() {
         return delete;
     }
 
-    public List<Location<S, U>> getConnect() {
+    public List<Location> getConnect() {
         return connect;
     }
 
-    public List<Location<S, U>> getOptions() {
+    public List<Location> getOptions() {
         return options;
     }
 
-    public List<Location<S, U>> getTrace() {
+    public List<Location> getTrace() {
         return trace;
     }
 
-    public List<Location<S, U>> getHead() {
+    public List<Location> getHead() {
         return head;
     }
 }

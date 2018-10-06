@@ -18,23 +18,22 @@ import org.rootservices.otter.gateway.entity.Target;
 import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
+import org.rootservices.otter.security.exception.SessionCtorException;
 
 
+public class AppConfig implements Configure {
+    private AppFactory appFactory;
 
-public class AppConfig implements Configure<TokenSession, User> {
-    private AppFactory<TokenSession, User> appFactory;
-
-    public AppConfig(AppFactory<TokenSession, User> appFactory) {
+    public AppConfig(AppFactory appFactory) {
         this.appFactory = appFactory;
     }
 
     @Override
-    public Shape<TokenSession> shape() {
+    public Shape shape() {
         SymmetricKey encKey = appFactory.encKey();
         SymmetricKey signKey = appFactory.signKey();
 
-        return new ShapeBuilder<TokenSession>()
-                .sessionClass(TokenSession.class)
+        return new ShapeBuilder()
                 .secure(false)
                 .encKey(encKey)
                 .signkey(signKey)
@@ -42,7 +41,7 @@ public class AppConfig implements Configure<TokenSession, User> {
     }
 
     @Override
-    public void routes(Gateway<TokenSession, User> gateway) {
+    public void routes(Gateway gateway) throws SessionCtorException {
         errorRoutes(gateway);
         
         // does not require content-type
@@ -50,6 +49,7 @@ public class AppConfig implements Configure<TokenSession, User> {
             .method(Method.GET)
             .resource(new HelloResource())
             .regex(HelloResource.URL)
+            .sessionClazz(TokenSession.class)
             .build();
 
         gateway.add(hello);
@@ -62,6 +62,7 @@ public class AppConfig implements Configure<TokenSession, User> {
                 .resource(appFactory.helloRestResource())
                 .regex(HelloRestResource.URL)
                 .contentType(json)
+                .sessionClazz(TokenSession.class)
                 .build();
 
         gateway.add(helloAPI);
@@ -73,6 +74,7 @@ public class AppConfig implements Configure<TokenSession, User> {
                 .resource(new LoginResource())
                 .regex(LoginResource.URL)
                 .label(Label.CSRF)
+                .sessionClazz(TokenSession.class)
                 .build();
 
         gateway.add(login);
@@ -85,6 +87,7 @@ public class AppConfig implements Configure<TokenSession, User> {
                 .regex(LoginSessionResource.URL)
                 .label(Label.CSRF)
                 .label(Label.SESSION_REQUIRED)
+                .sessionClazz(TokenSession.class)
                 .build();
 
         gateway.add(loginWithSession);
@@ -97,6 +100,7 @@ public class AppConfig implements Configure<TokenSession, User> {
                 .regex(LoginSetSessionResource.URL)
                 .label(Label.CSRF)
                 .label(Label.SESSION_OPTIONAL)
+                .sessionClazz(TokenSession.class)
                 .build();
 
         gateway.add(loginSetSessionResource);
@@ -108,12 +112,13 @@ public class AppConfig implements Configure<TokenSession, User> {
                 .resource(new ProtectedResource())
                 .regex(ProtectedResource.URL)
                 .label(Label.SESSION_REQUIRED)
+                .sessionClazz(TokenSession.class)
                 .build();
 
         gateway.add(protectedTarget);
     }
 
-    public void errorRoutes(Gateway<TokenSession, User> gateway) {
+    public void errorRoutes(Gateway gateway) {
         Route<TokenSession, User> notFoundRoute = new RouteBuilder<TokenSession, User>()
                 .resource(new NotFoundResource())
                 .build();

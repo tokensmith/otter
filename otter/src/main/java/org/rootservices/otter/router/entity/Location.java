@@ -13,25 +13,16 @@ import java.util.regex.Pattern;
 
 /**
  * The target entity to match a http request to.
- *
- * @param <S> Session object, intended to contain user session data.
- * @param <U> User object, intended to be a authenticated user.
  */
-public class Location<S, U> {
+public class Location {
     private Pattern pattern;
     private List<MimeType> contentTypes;
-    @Deprecated
-    private Route<S, U> route;
-    @Deprecated
-    private Map<StatusCode, Route<S, U>> errorRoutes;
     private RouteRunner routeRunner;
     private Map<StatusCode, RouteRunner> errorRouteRunners = new HashMap<>();
 
-    public Location(Pattern pattern, List<MimeType> contentTypes, Route<S, U> route, Map<StatusCode, Route<S, U>> errorRoutes, RouteRunner routeRunner, Map<StatusCode, RouteRunner> errorRouteRunners) {
+    public Location(Pattern pattern, List<MimeType> contentTypes, RouteRunner routeRunner, Map<StatusCode, RouteRunner> errorRouteRunners) {
         this.pattern = pattern;
         this.contentTypes = contentTypes;
-        this.route = route;
-        this.errorRoutes = errorRoutes;
         this.routeRunner = routeRunner;
         this.errorRouteRunners = errorRouteRunners;
     }
@@ -50,22 +41,6 @@ public class Location<S, U> {
 
     public void setContentTypes(List<MimeType> contentTypes) {
         this.contentTypes = contentTypes;
-    }
-
-    public Route<S, U> getRoute() {
-        return route;
-    }
-
-    public void setRoute(Route<S, U> route) {
-        this.route = route;
-    }
-
-    public Map<StatusCode, Route<S, U>> getErrorRoutes() {
-        return errorRoutes;
-    }
-
-    public void setErrorRoutes(Map<StatusCode, Route<S, U>> errorRoutes) {
-        this.errorRoutes = errorRoutes;
     }
 
     public RouteRunner getRouteRunner() {

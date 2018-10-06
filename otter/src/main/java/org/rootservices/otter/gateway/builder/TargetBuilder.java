@@ -23,6 +23,7 @@ public class TargetBuilder<S, U> {
     private List<Between<S, U>> before = new ArrayList<>();
     private List<Between<S, U>> after = new ArrayList<>();
     private Map<StatusCode, ErrorTarget<S, U>> errorTargets = new HashMap<>();
+    private Class<S> sessionClazz;
 
     public TargetBuilder<S, U> method(Method method) {
         methods.add(method);
@@ -76,7 +77,11 @@ public class TargetBuilder<S, U> {
         return this;
     }
 
+    public TargetBuilder<S, U> sessionClazz(Class<S> sessionClazz) {
+        this.sessionClazz = sessionClazz;
+        return this;
+    }
     public Target<S, U> build() {
-        return new Target<S, U>(methods, regex, resource, contentTypes, labels, before, after, errorTargets);
+        return new Target<S, U>(methods, regex, resource, contentTypes, labels, before, after, errorTargets, sessionClazz);
     }
 }

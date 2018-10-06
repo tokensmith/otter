@@ -25,7 +25,6 @@ public class LocationBuilder<S, U> {
     private Resource<S, U> resource;
     private List<Between<S, U>> before = new ArrayList<>();
     private List<Between<S, U>> after = new ArrayList<>();
-    private Map<StatusCode, Route<S, U>> errorRoutes = new HashMap<>();
     private Map<StatusCode, RouteRunner> errorRouteRunners = new HashMap<>();
 
     // used when building routeRunner, errorRouteRunners
@@ -62,25 +61,6 @@ public class LocationBuilder<S, U> {
         return this;
     }
 
-    @Deprecated
-    public LocationBuilder<S, U> errorRoutes(Map<StatusCode, Route<S, U>> errorRoutes) {
-        this.errorRoutes = errorRoutes;
-        return this;
-    }
-
-    @Deprecated
-    public LocationBuilder<S, U> errorResource(StatusCode statusCode, Resource<S, U> resource) {
-        Route<S, U> errorResource = new RouteBuilder<S, U>()
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-
-        this.errorRoutes.put(statusCode, errorResource);
-        return this;
-    }
-
-    // TODO: rename when integrated.
     public LocationBuilder<S, U> errorRouteRunners(Map<StatusCode, Route<S, U>> errorRoutes) {
 
         for (Map.Entry<StatusCode, Route<S, U>> entry : errorRoutes.entrySet()) {
@@ -102,7 +82,7 @@ public class LocationBuilder<S, U> {
         return this;
     }
 
-    public Location<S, U> build() {
+    public Location build() {
         Route<S, U> route = new RouteBuilder<S, U>()
                 .resource(resource)
                 .before(before)
@@ -111,6 +91,6 @@ public class LocationBuilder<S, U> {
 
 
         RouteRunner routeRunner = new RouteRun<S, U>(route, requestTranslator, answerTranslator);
-        return new Location<S, U>(pattern, contentTypes, route, errorRoutes, routeRunner, errorRouteRunners);
+        return new Location(pattern, contentTypes, routeRunner, errorRouteRunners);
     }
 }
