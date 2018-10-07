@@ -53,7 +53,7 @@ public class Gateway {
      * This attempts to find an existing `locationTranslator` in the cache.
      * If its not found then a new one is constructed and added to the cache with the key, `group`.
      *
-     * This speeds up start up the time by using the same betweens for targets within the same group.
+     * This speeds up start up time by using the same betweens for targets within the same group.
      *
      * @param group
      * @param sessionClazz the class of a session
