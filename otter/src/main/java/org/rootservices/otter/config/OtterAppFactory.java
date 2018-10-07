@@ -56,7 +56,8 @@ public class OtterAppFactory {
     }
 
     /**
-     * Make a JsonTranslator used in RestResource
+     * Make a JsonTranslator used in RestResource.
+     * It must be used exclusively for {@code Class<T> clazz}
      *
      * @param clazz Class to be serialized
      * @param <T> Type to be serialized
@@ -64,7 +65,7 @@ public class OtterAppFactory {
      */
     public <T> JsonTranslator<T> jsonTranslator(Class<T> clazz) {
         return new JsonTranslator<T>(
-                objectReader(), objectWriter(), clazz
+                objectReader().forType(clazz), objectWriter(), clazz
         );
     }
 

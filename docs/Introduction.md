@@ -43,9 +43,9 @@ should be a value object. `Session` implementations are passed into Otter via ge
 - [Entry Servlet](#entry-servlet)
 - [Between](#between)
 
-The same `Session` class must be used through out an application.
+An application may have many `Session` implementations. 
 
-It must have a copy constructor and a equals method. If either of those are not there Otter internals will Halt your requests.
+It must have a copy constructor and a equals method. If either of those are not there Otter will not start up.
  
 See [TokenSession](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/security/TokenSession.java) 
 as an example.
@@ -57,6 +57,8 @@ It is passed into Otter via generics in:
 - [Configuration](#configuration)
 - [Entry Servlet](#entry-servlet)
 - [Between](#between)
+
+An application may have many `User` implementations.
 
 ### Between
 A `Between` is a rule that may be executed before a request reaches a resource or after a resoure executes a request.
@@ -87,7 +89,7 @@ CSRF and Session management.
         Use.ENCRYPTION
     );
     
-    return new ShapeBuilder<TokenSession>()
+    return new ShapeBuilder()
             .sessionClass(TokenSession.class)
             .secure(false)
             .encKey(encKey)
@@ -95,7 +97,7 @@ CSRF and Session management.
             .build();
 ```
 
-##### `routes(Gateway<S, U> gateway)`
+##### `routes(Gateway gateway)`
 Generally, routes instruct Otter which Resource should handle a given request. Below is an example of a `GET` request 
 that will be handled by the `HelloResorce`. 
  
@@ -105,6 +107,7 @@ that will be handled by the `HelloResorce`.
             .method(Method.GET)
             .resource(new HelloResource())
             .regex(HelloResource.URL)
+            .sessionClazz(TokenSession.class)
             .build();
 
     gateway.add(hello);
@@ -116,10 +119,8 @@ When Otter cannot find a route to satisfy a request it will use it's `notFoundRo
 This should be configured in the `routes(Gateway gateway)` implementation.
 
 ```java
-    Route<TokenSession> notFoundRoute = new RouteBuilder<TokenSession>()
+    Route<TokenSession, User> notFoundRoute = new RouteBuilder<TokenSession, User>()
         .resource(new NotFoundResource())
-        .before(new ArrayList<>())
-        .after(new ArrayList<>())
         .build();
 
     gateway.setErrorRoute(StatusCode.NOT_FOUND, notFoundRoute);
@@ -129,6 +130,7 @@ This should be configured in the `routes(Gateway gateway)` implementation.
 If desired you can use expected content types when configuring Otter. 
 ```java
     // requires content type.
+    
     MimeType json = new MimeTypeBuilder().json().build();
     
     Target<TokenSession, User> helloAPI = new TargetBuilder<TokenSession, User>()
@@ -137,6 +139,7 @@ If desired you can use expected content types when configuring Otter.
             .resource(appFactory.helloRestResource())
             .regex(HelloRestResource.URL)
             .contentType(json)
+            .sessionClazz(TokenSession.class)
             .build();
 
     gateway.add(helloAPI);
@@ -148,11 +151,9 @@ will be executed.
 
 ```java
     Route<TokenSession, User> unSupportedMediaTypeRoute = new RouteBuilder<TokenSession, User>()
-                .resource(new UnSupportedMediaTypeRoute())
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-
+        .resource(new UnSupportedMediaTypeResource())
+        .build();
+    
     gateway.setErrorRoute(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaTypeRoute);
 ```
 
@@ -161,10 +162,8 @@ When an unexpected error occurs then otter will execute a server error route. Co
 
 ```java
     Route<TokenSession, User> serverErrorRoute = new RouteBuilder<TokenSession, User>()
-                    .resource(new ServerErrorResource())
-                    .before(new ArrayList<>())
-                    .after(new ArrayList<>())
-                    .build();
+        .resource(new ServerErrorResource())
+        .build();
     
     gateway.setErrorRoute(StatusCode.SERVER_ERROR, serverErrorRoute);
 ``` 
@@ -217,6 +216,7 @@ Here is an example of how to protect a login page:
         .resource(new LoginResource())
         .regex(LoginResource.URL)
         .label(Label.CSRF)
+        .sessionClazz(TokenSession.class)
         .build();
     
     gateway.add(login);
@@ -240,7 +240,7 @@ Otter is stateless. It maintains user sessions with a cookie whose value is encr
 To use them the following is needed:
 - Configure the cookie and key.
 - Implement a session class. See [session](#session) documentaion.
-- Add routes to the servletGateway
+- Add targets to the servletGateway
 
 #### Session
 
@@ -252,6 +252,7 @@ To use them the following is needed:
         .resource(new ProtectedResource())
         .regex(ProtectedResource.URL)
         .label(Label.SESSION_REQUIRED)
+        .sessionClazz(TokenSession.class)
         .build();
 
     gateway.add(protectedTarget);

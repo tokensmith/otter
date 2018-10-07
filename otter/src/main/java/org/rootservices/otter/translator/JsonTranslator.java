@@ -51,9 +51,8 @@ public class JsonTranslator<T> {
     public T from(byte[] json) throws InvalidPayloadException, DuplicateKeyException, UnknownKeyException, InvalidValueException {
         T entity = null;
 
-        ObjectReader localReader = objectReader.forType(type);
         try {
-            entity = localReader.readValue(json);
+            entity = objectReader.readValue(json);
         } catch (JsonParseException e) {
             handleJsonParseException(e);
         } catch (UnrecognizedPropertyException e) {

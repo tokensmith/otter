@@ -25,9 +25,7 @@ public class JsonTranslatorTest {
     @Before
     public void setUp() {
         OtterAppFactory factory = new OtterAppFactory();
-        subject = new JsonTranslator<DummyPayload>(
-                factory.objectReader(), factory.objectWriter(), DummyPayload.class
-        );
+        subject = factory.jsonTranslator(DummyPayload.class);
     }
 
     @Test
