@@ -55,11 +55,11 @@ public class Gateway {
      *
      * This speeds up start up time by using the same betweens for targets within the same group.
      *
-     * @param group
+     * @param group used as a key to lookup a {@code LocationTranslator<S, U>}
      * @param sessionClazz the class of a session
      * @param <S> Session
      * @param <U> User
-     * @return an instance of LocationTranslator<S, U>
+     * @return an instance of {@code LocationTranslator<S, U>}
      * @throws SessionCtorException if Session does not have a copy constructor
      */
     @SuppressWarnings("unchecked")
