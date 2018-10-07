@@ -4,21 +4,19 @@ import org.rootservices.jwt.entity.jwk.SymmetricKey;
 
 import java.util.Map;
 
-public class Shape<S> {
+public class Shape {
     private Boolean secure;
     private SymmetricKey signkey;
     private SymmetricKey encKey;
     private Map<String, SymmetricKey> rotationSignKeys;
     private Map<String, SymmetricKey> rotationEncKeys;
-    private Class<S> sessionClass;
 
-    public Shape(Boolean secure, SymmetricKey signkey, SymmetricKey encKey, Map<String, SymmetricKey> rotationSignKeys, Map<String, SymmetricKey> rotationEncKeys, Class<S> sessionClass) {
+    public Shape(Boolean secure, SymmetricKey signkey, SymmetricKey encKey, Map<String, SymmetricKey> rotationSignKeys, Map<String, SymmetricKey> rotationEncKeys) {
         this.secure = secure;
         this.signkey = signkey;
         this.encKey = encKey;
         this.rotationSignKeys = rotationSignKeys;
         this.rotationEncKeys = rotationEncKeys;
-        this.sessionClass = sessionClass;
     }
 
     public Boolean getSecure() {
@@ -59,13 +57,5 @@ public class Shape<S> {
 
     public void setRotationEncKeys(Map<String, SymmetricKey> rotationEncKeys) {
         this.rotationEncKeys = rotationEncKeys;
-    }
-
-    public Class<S> getSessionClass() {
-        return sessionClass;
-    }
-
-    public void setSessionClass(Class<S> sessionClass) {
-        this.sessionClass = sessionClass;
     }
 }

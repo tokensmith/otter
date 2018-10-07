@@ -51,7 +51,6 @@ public class DecryptSession<S, U> implements Between<S, U> {
     public static final String COULD_NOT_CALL_THE_SESSION_COPY_CONSTRUCTOR = "Could not call the session's copy constructor";
     protected static Logger LOGGER = LogManager.getLogger(DecryptSession.class);
 
-    private Class<S> clazz;
     private Constructor<S> ctor;
     private String sessionCookieName;
     private JwtAppFactory jwtAppFactory;
@@ -60,9 +59,8 @@ public class DecryptSession<S, U> implements Between<S, U> {
     private ObjectReader objectReader;
     private Boolean required;
 
-    public DecryptSession(Constructor<S> ctor, Class<S> clazz, String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectReader objectReader, Boolean required) {
+    public DecryptSession(Constructor<S> ctor, String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectReader objectReader, Boolean required) {
         this.ctor = ctor;
-        this.clazz = clazz;
         this.sessionCookieName = sessionCookieName;
         this.jwtAppFactory = jwtAppFactory;
         this.preferredKey = preferredKey;
@@ -184,9 +182,9 @@ public class DecryptSession<S, U> implements Between<S, U> {
 
     protected S toSession(byte[] json) {
         S session = null;
-        ObjectReader localReader = objectReader.forType(clazz);
+        //ObjectReader localReader = objectReader.forType(clazz);
         try {
-            session = localReader.readValue(json);
+            session = objectReader.readValue(json);
         } catch (IOException e) {
             String msg = String.format(COULD_NOT_DESERIALIZE, new String(json, StandardCharsets.UTF_8));
             LOGGER.error(msg);

@@ -20,37 +20,37 @@ import static org.junit.Assert.*;
 
 
 public class DispatcherTest {
-    private Dispatcher<DummySession, DummyUser> subject;
+    private Dispatcher subject;
 
     @Before
     public void setUp() {
 
-        subject = new Dispatcher<DummySession, DummyUser>();
-        List<Location<DummySession, DummyUser>> getLocations = FixtureFactory.makeLocations("get");
+        subject = new Dispatcher();
+        List<Location> getLocations = FixtureFactory.makeLocations("get");
         subject.getGet().addAll(getLocations);
 
-        List<Location<DummySession, DummyUser>> postLocations = FixtureFactory.makeLocations("post");
+        List<Location> postLocations = FixtureFactory.makeLocations("post");
         subject.getPost().addAll(postLocations);
 
-        List<Location<DummySession, DummyUser>> patchLocations = FixtureFactory.makeLocations("patch");
+        List<Location> patchLocations = FixtureFactory.makeLocations("patch");
         subject.getPatch().addAll(patchLocations);
 
-        List<Location<DummySession, DummyUser>> putLocations = FixtureFactory.makeLocations("put");
+        List<Location> putLocations = FixtureFactory.makeLocations("put");
         subject.getPut().addAll(putLocations);
 
-        List<Location<DummySession, DummyUser>> deleteLocations = FixtureFactory.makeLocations("delete");
+        List<Location> deleteLocations = FixtureFactory.makeLocations("delete");
         subject.getDelete().addAll(deleteLocations);
 
-        List<Location<DummySession, DummyUser>> connectLocations = FixtureFactory.makeLocations("connect");
+        List<Location> connectLocations = FixtureFactory.makeLocations("connect");
         subject.getConnect().addAll(connectLocations);
 
-        List<Location<DummySession, DummyUser>> optionLocations = FixtureFactory.makeLocations("option");
+        List<Location> optionLocations = FixtureFactory.makeLocations("option");
         subject.getOptions().addAll(optionLocations);
 
-        List<Location<DummySession, DummyUser>> traceLocations = FixtureFactory.makeLocations("trace");
+        List<Location> traceLocations = FixtureFactory.makeLocations("trace");
         subject.getTrace().addAll(traceLocations);
 
-        List<Location<DummySession, DummyUser>> headLocations = FixtureFactory.makeLocations("head");
+        List<Location> headLocations = FixtureFactory.makeLocations("head");
         subject.getHead().addAll(headLocations);
     }
 
@@ -59,7 +59,7 @@ public class DispatcherTest {
         UUID id = UUID.randomUUID();
         String url = "get" + id.toString();
 
-        Optional<MatchedLocation<DummySession, DummyUser>> actual = subject.find(Method.GET, url);
+        Optional<MatchedLocation> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -77,7 +77,7 @@ public class DispatcherTest {
         String url = "get" + id.toString() + "/bar";
 
 
-        Optional<MatchedLocation<DummySession, DummyUser>> actual = subject.find(Method.GET, url);
+        Optional<MatchedLocation> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -94,7 +94,7 @@ public class DispatcherTest {
         UUID id = UUID.randomUUID();
         String url = "/get/v2/" + id.toString() + "/bar";
 
-        Optional<MatchedLocation<DummySession, DummyUser>> actual = subject.find(Method.GET, url);
+        Optional<MatchedLocation> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(false));

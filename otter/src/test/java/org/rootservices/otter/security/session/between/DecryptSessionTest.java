@@ -10,27 +10,42 @@ import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.gateway.LocationTranslatorFactory;
+import org.rootservices.otter.gateway.entity.Label;
 import org.rootservices.otter.gateway.entity.Shape;
+import org.rootservices.otter.gateway.translator.LocationTranslator;
 import org.rootservices.otter.router.exception.HaltException;
+import org.rootservices.otter.router.factory.BetweenFactory;
 import org.rootservices.otter.security.builder.entity.Betweens;
 import org.rootservices.otter.security.exception.SessionCtorException;
 import org.rootservices.otter.security.session.between.exception.InvalidSessionException;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.security.session.between.exception.SessionDecryptException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 public class DecryptSessionTest {
-    private static OtterAppFactory<DummySession, DummyUser> otterAppFactory = new OtterAppFactory<DummySession, DummyUser>();
+    private static OtterAppFactory otterAppFactory = new OtterAppFactory();
 
     public DecryptSession<DummySession, DummyUser> subject(Boolean required) throws SessionCtorException {
-        Shape<DummySession> shape = FixtureFactory.makeShape("1234", "5678");
+        Shape shape = FixtureFactory.makeShape("1234", "5678");
         Betweens<DummySession, DummyUser> betweens;
+
+        LocationTranslatorFactory locationTranslatorFactory = otterAppFactory.locationTranslatorFactory(shape);
+        BetweenFactory<DummySession, DummyUser> betweenFactory = locationTranslatorFactory.betweenFactory(DummySession.class);
+
         if (required) {
-            betweens = otterAppFactory.session(shape);
+            List<Label> labels = new ArrayList<>();
+            labels.add(Label.SESSION_REQUIRED);
+            betweens = betweenFactory.make(Method.GET, labels);
         } else {
-            betweens = otterAppFactory.sessionOptional(shape);
+            List<Label> labels = new ArrayList<>();
+            labels.add(Label.SESSION_OPTIONAL);
+            betweens = betweenFactory.make(Method.GET, labels);
         }
         return (DecryptSession<DummySession, DummyUser>) betweens.getBefore().get(0);
     }

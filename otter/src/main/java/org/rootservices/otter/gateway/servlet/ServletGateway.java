@@ -3,16 +3,15 @@ package org.rootservices.otter.gateway.servlet;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.rootservices.otter.controller.builder.ResponseBuilder;
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.gateway.Gateway;
+import org.rootservices.otter.gateway.LocationTranslatorFactory;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
-import org.rootservices.otter.gateway.translator.LocationTranslator;
 import org.rootservices.otter.router.Engine;
-import org.rootservices.otter.router.entity.Between;
+import org.rootservices.otter.router.builder.AnswerBuilder;
+import org.rootservices.otter.router.entity.io.Answer;
+import org.rootservices.otter.router.entity.io.Ask;
 import org.rootservices.otter.router.exception.HaltException;
 
 
@@ -27,18 +26,16 @@ import java.util.*;
  * and dispatches requests to Otter resources. No Servlet API objects can go past
  * this gateway.
  *
- * @param <S> Session object, intended to contain user session data.
- * @param <U> User object, intended to be a authenticated user.
  */
-public class ServletGateway<S, U> extends Gateway<S, U>  {
+public class ServletGateway extends Gateway {
     protected static Logger logger = LogManager.getLogger(ServletGateway.class);
 
-    private HttpServletRequestTranslator<S, U> httpServletRequestTranslator;
+    private HttpServletRequestTranslator httpServletRequestTranslator;
     private HttpServletRequestMerger httpServletRequestMerger;
-    private HttpServletResponseMerger<S> httpServletResponseMerger;
+    private HttpServletResponseMerger httpServletResponseMerger;
 
-    public ServletGateway(HttpServletRequestTranslator<S, U> httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger<S> httpServletResponseMerger, Engine<S, U> engine, LocationTranslator<S, U> locationTranslator) {
-        super(engine, locationTranslator);
+    public ServletGateway(HttpServletRequestTranslator httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger httpServletResponseMerger, Engine engine, LocationTranslatorFactory locationTranslatorFactory) {
+        super(engine, locationTranslatorFactory);
         this.httpServletRequestTranslator = httpServletRequestTranslator;
         this.httpServletRequestMerger = httpServletRequestMerger;
         this.httpServletResponseMerger = httpServletResponseMerger;
@@ -47,33 +44,33 @@ public class ServletGateway<S, U> extends Gateway<S, U>  {
     public GatewayResponse processRequest(HttpServletRequest containerRequest, HttpServletResponse containerResponse, byte[] body) {
         GatewayResponse gatewayResponse = new GatewayResponse();
         try {
-            Request<S, U> request = httpServletRequestTranslator.from(containerRequest, body);
+            Ask ask = httpServletRequestTranslator.from(containerRequest, body);
 
-            Response<S> response = new ResponseBuilder<S>()
+            Answer answer = new AnswerBuilder()
                     .headers(new HashMap<>())
-                    .cookies(request.getCookies())
+                    .cookies(ask.getCookies())
                     .payload(Optional.empty())
                     .presenter(Optional.empty())
                     .template(Optional.empty())
                     .build();
 
-            Response<S> resourceResponse;
+            Answer resourceAnswer;
             try {
-                resourceResponse = engine.route(request, response);
+                resourceAnswer = engine.route(ask, answer);
             } catch (HaltException e) {
                 logger.debug(e.getMessage(), e);
-                resourceResponse = response;
+                resourceAnswer = answer;
             }
 
-            httpServletResponseMerger.merge(containerResponse, containerRequest.getCookies(), resourceResponse);
-            httpServletRequestMerger.merge(containerRequest, resourceResponse);
+            httpServletResponseMerger.merge(containerResponse, containerRequest.getCookies(), resourceAnswer);
+            httpServletRequestMerger.merge(containerRequest, resourceAnswer);
 
-            if (resourceResponse.getPayload().isPresent()) {
-                gatewayResponse.setPayload(Optional.of(resourceResponse.getPayload().get().toByteArray()));
+            if (resourceAnswer.getPayload().isPresent()) {
+                gatewayResponse.setPayload(Optional.of(resourceAnswer.getPayload().get().toByteArray()));
             } else {
                 gatewayResponse.setPayload(Optional.empty());
             }
-            gatewayResponse.setTemplate(response.getTemplate());
+            gatewayResponse.setTemplate(resourceAnswer.getTemplate());
 
         } catch (IOException e) {
             logger.error(e.getMessage(), e);

@@ -25,6 +25,10 @@ import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.controller.header.HeaderValue;
+import org.rootservices.otter.dispatch.RouteRun;
+import org.rootservices.otter.dispatch.RouteRunner;
+import org.rootservices.otter.dispatch.translator.AnswerTranslator;
+import org.rootservices.otter.dispatch.translator.RequestTranslator;
 import org.rootservices.otter.gateway.builder.ErrorTargetBuilder;
 import org.rootservices.otter.gateway.builder.ShapeBuilder;
 import org.rootservices.otter.gateway.builder.TargetBuilder;
@@ -32,9 +36,14 @@ import org.rootservices.otter.gateway.entity.ErrorTarget;
 import org.rootservices.otter.gateway.entity.Label;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.entity.Target;
+import org.rootservices.otter.router.builder.AnswerBuilder;
+import org.rootservices.otter.router.builder.AskBuilder;
 import org.rootservices.otter.router.builder.LocationBuilder;
 import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.*;
+import org.rootservices.otter.router.entity.io.Answer;
+import org.rootservices.otter.router.entity.io.Ask;
+import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.security.builder.entity.Betweens;
 import org.rootservices.otter.security.csrf.CsrfClaims;
 
@@ -45,22 +54,21 @@ import java.util.regex.Matcher;
 public class FixtureFactory {
     private static JwtAppFactory jwtAppFactory = new JwtAppFactory();
 
-    public static Shape<DummySession> makeShape(String encKeyId, String signKeyId) {
+    public static Shape makeShape(String encKeyId, String signKeyId) {
         SymmetricKey encKey = FixtureFactory.encKey(encKeyId);
         SymmetricKey signKey = FixtureFactory.signKey(signKeyId);
 
-        return new ShapeBuilder<DummySession>()
-                .sessionClass(DummySession.class)
+        return new ShapeBuilder()
                 .secure(false)
                 .encKey(encKey)
                 .signkey(signKey)
                 .build();
     }
 
-    public static Optional<MatchedLocation<DummySession, DummyUser>> makeMatch(String url) {
-        Location<DummySession, DummyUser> route = makeLocation(url);
+    public static Optional<MatchedLocation> makeMatch(String url) {
+        Location route = makeLocation(url);
         Matcher matcher = route.getPattern().matcher(url);
-        return  Optional.of(new MatchedLocation<DummySession, DummyUser>(matcher, route));
+        return  Optional.of(new MatchedLocation(matcher, route));
     }
 
     public static Route<DummySession, DummyUser> makeRoute() {
@@ -72,7 +80,7 @@ public class FixtureFactory {
                 .build();
     }
 
-    public static Location<DummySession, DummyUser> makeLocation(String regex) {
+    public static Location makeLocation(String regex) {
         FakeResource resource = new FakeResource();
         return new LocationBuilder<DummySession, DummyUser>()
             .path(regex)
@@ -83,7 +91,7 @@ public class FixtureFactory {
             .build();
     }
 
-    public static Location<DummySession, DummyUser> makeLocationWithErrorRoutes(String regex) {
+    public static Location makeLocationWithErrorRoutes(String regex) {
         FakeResource resource = new FakeResource();
         FakeResource unSupportedMediaType = new FakeResource();
         FakeResource serverError = new FakeResource();
@@ -94,8 +102,8 @@ public class FixtureFactory {
                 .resource(resource)
                 .before(new ArrayList<>())
                 .after(new ArrayList<>())
-                .errorResource(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaType)
-                .errorResource(StatusCode.SERVER_ERROR, serverError)
+                .errorRouteRunner(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaType)
+                .errorRouteRunner(StatusCode.SERVER_ERROR, unSupportedMediaType)
                 .build();
     }
 
@@ -104,7 +112,7 @@ public class FixtureFactory {
         Route<DummySession, DummyUser> unSupportedMediaType = FixtureFactory.makeRoute();
         Route<DummySession, DummyUser> serverError = FixtureFactory.makeRoute();
 
-        Map<StatusCode, Route<DummySession, DummyUser>> errorRoutes = new HashMap<>();
+        Map<StatusCode,Route<DummySession, DummyUser>> errorRoutes = new HashMap<>();
         errorRoutes.put(StatusCode.NOT_FOUND, notFound);
         errorRoutes.put(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaType);
         errorRoutes.put(StatusCode.SERVER_ERROR, serverError);
@@ -112,8 +120,28 @@ public class FixtureFactory {
         return errorRoutes;
     }
 
-    public static List<Location<DummySession, DummyUser>> makeLocations(String baseContext) {
-        List<Location<DummySession, DummyUser>> locations = new ArrayList<>();
+    public static Map<StatusCode, RouteRunner> makeErrorRouteRunners() {
+        Route<DummySession, DummyUser> notFound = FixtureFactory.makeRoute();
+        Route<DummySession, DummyUser> unSupportedMediaType = FixtureFactory.makeRoute();
+        Route<DummySession, DummyUser> serverError = FixtureFactory.makeRoute();
+
+        Map<StatusCode, RouteRunner> errorRouteRunners = new HashMap<>();
+
+        RequestTranslator<DummySession, DummyUser> requestTranslator = new RequestTranslator<>();
+        AnswerTranslator<DummySession> answerTranslator = new AnswerTranslator<>();
+        RouteRunner notFoundRunner = new RouteRun<DummySession, DummyUser>(notFound, requestTranslator, answerTranslator);
+        RouteRunner unSupportedMediaTypeRunner = new RouteRun<DummySession, DummyUser>(unSupportedMediaType, requestTranslator, answerTranslator);
+        RouteRunner serverErrorRunner = new RouteRun<DummySession, DummyUser>(serverError, requestTranslator, answerTranslator);
+
+        errorRouteRunners.put(StatusCode.NOT_FOUND, notFoundRunner);
+        errorRouteRunners.put(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaTypeRunner);
+        errorRouteRunners.put(StatusCode.SERVER_ERROR, serverErrorRunner);
+
+        return errorRouteRunners;
+    }
+
+    public static List<Location> makeLocations(String baseContext) {
+        List<Location> locations = new ArrayList<>();
         locations.add(makeLocation(baseContext + Regex.UUID.getRegex()));
         locations.add(makeLocation(baseContext + Regex.UUID.getRegex() + "/bar"));
         return locations;
@@ -158,6 +186,35 @@ public class FixtureFactory {
     public static Map<String, List<String>> makeEmptyQueryParams() {
         Map<String, List<String>> params = new HashMap<>();
         return params;
+    }
+
+    public static Ask makeAsk() {
+        Ask ask = new AskBuilder()
+            .matcher(Optional.empty())
+            .method(Method.GET)
+            .pathWithParams("")
+            .contentType(new MimeTypeBuilder().html().build())
+            .headers(new HashMap<>())
+            .cookies(new HashMap<>())
+            .queryParams(new HashMap<>())
+            .formData(new HashMap<>())
+            .body(Optional.empty())
+            .csrfChallenge(Optional.empty())
+            .ipAddress("127.0.0.1")
+            .build();
+
+        return ask;
+    }
+
+    public static Answer makeAnswer() {
+        return new AnswerBuilder()
+                .headers(new HashMap<>())
+                .cookies(new HashMap<>())
+                .payload(Optional.empty())
+                .template(Optional.of("template"))
+                .presenter(Optional.empty())
+                .ok()
+                .build();
     }
 
     public static Request<DummySession, DummyUser> makeRequest() {

@@ -48,60 +48,28 @@ public class LocationTranslatorTest {
 
         Target<DummySession, DummyUser> target = FixtureFactory.makeTarget();
 
-        Map<Method, Location<DummySession, DummyUser>> actual =  subject.to(target);
+        Map<Method, Location> actual =  subject.to(target);
 
         assertThat(actual.size(), is(2));
 
         // GET
-        assertThat(actual.get(Method.GET).getRoute(), Is.is(notNullValue()));
-        assertThat(actual.get(Method.GET).getRoute().getResource(), Is.is(notNullValue()));
-        assertThat(actual.get(Method.GET).getRoute().getResource(), Is.is(target.getResource()));
-
-        assertThat(actual.get(Method.GET).getRoute().getBefore().size(), is(3));
-        // ordering of before.
-        assertThat(actual.get(Method.GET).getRoute().getBefore().get(0), is(betweens.getBefore().get(0)));
-        assertThat(actual.get(Method.GET).getRoute().getBefore().get(1), is(target.getBefore().get(0)));
-        assertThat(actual.get(Method.GET).getRoute().getBefore().get(2), is(target.getBefore().get(1)));
-
-        assertThat(actual.get(Method.GET).getRoute().getAfter().size(), is(3));
-
-        // ordering of after.
-        assertThat(actual.get(Method.GET).getRoute().getAfter().get(0), is(betweens.getAfter().get(0)));
-        assertThat(actual.get(Method.GET).getRoute().getAfter().get(1), is(target.getAfter().get(0)));
-        assertThat(actual.get(Method.GET).getRoute().getAfter().get(2), is(target.getAfter().get(1)));
+        assertThat(actual.get(Method.GET).getRouteRunner(), Is.is(notNullValue()));
 
         assertThat(actual.get(Method.GET).getPattern(), Is.is(notNullValue()));
         assertThat(actual.get(Method.GET).getContentTypes(), Is.is(notNullValue()));
         assertThat(actual.get(Method.GET).getContentTypes().size(), Is.is(1));
 
-        assertThat(actual.get(Method.GET).getErrorRoutes(), Is.is(notNullValue()));
-        assertThat(actual.get(Method.GET).getErrorRoutes().size(), Is.is(1));
-
+        assertThat(actual.get(Method.GET).getErrorRouteRunners(), Is.is(notNullValue()));
+        assertThat(actual.get(Method.GET).getErrorRouteRunners().size(), Is.is(1));
 
         // POST
-        assertThat(actual.get(Method.POST).getRoute(), Is.is(notNullValue()));
-        assertThat(actual.get(Method.POST).getRoute().getResource(), Is.is(notNullValue()));
-        assertThat(actual.get(Method.POST).getRoute().getResource(), Is.is(target.getResource()));
-        assertThat(actual.get(Method.POST).getRoute().getBefore().size(), is(3));
-
-        // ordering of before.
-        assertThat(actual.get(Method.POST).getRoute().getBefore().get(0), is(betweens.getBefore().get(0)));
-        assertThat(actual.get(Method.POST).getRoute().getBefore().get(1), is(target.getBefore().get(0)));
-        assertThat(actual.get(Method.POST).getRoute().getBefore().get(2), is(target.getBefore().get(1)));
-
-        assertThat(actual.get(Method.POST).getRoute().getAfter().size(), is(3));
-
-        // ordering of after.
-        assertThat(actual.get(Method.POST).getRoute().getAfter().get(0), is(betweens.getAfter().get(0)));
-        assertThat(actual.get(Method.POST).getRoute().getAfter().get(1), is(target.getAfter().get(0)));
-        assertThat(actual.get(Method.POST).getRoute().getAfter().get(2), is(target.getAfter().get(1)));
+        assertThat(actual.get(Method.POST).getRouteRunner(), Is.is(notNullValue()));
 
         assertThat(actual.get(Method.POST).getPattern(), Is.is(notNullValue()));
         assertThat(actual.get(Method.POST).getContentTypes(), Is.is(notNullValue()));
         assertThat(actual.get(Method.POST).getContentTypes().size(), Is.is(1));
 
-        assertThat(actual.get(Method.POST).getErrorRoutes(), Is.is(notNullValue()));
-        assertThat(actual.get(Method.POST).getErrorRoutes().size(), Is.is(1));
-
+        assertThat(actual.get(Method.POST).getErrorRouteRunners(), Is.is(notNullValue()));
+        assertThat(actual.get(Method.POST).getErrorRouteRunners().size(), Is.is(1));
     }
 }

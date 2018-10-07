@@ -2,13 +2,13 @@ package org.rootservices.otter.gateway.servlet.translator;
 
 
 import org.rootservices.otter.QueryStringToMap;
-import org.rootservices.otter.controller.builder.RequestBuilder;
 import org.rootservices.otter.controller.entity.Cookie;
-import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.controller.entity.mime.SubType;
 import org.rootservices.otter.controller.entity.mime.TopLevelType;
+import org.rootservices.otter.router.builder.AskBuilder;
 import org.rootservices.otter.router.entity.Method;
+import org.rootservices.otter.router.entity.io.Ask;
 import org.rootservices.otter.translator.MimeTypeTranslator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,11 +19,8 @@ import java.util.stream.Collectors;
 
 /**
  * Translator for a HttpServletRequest to a Otter Request
- *
- * @param <S> Session object, intended to contain user session data.
- * @param <U> User object, intended to be a authenticated user.
  */
-public class HttpServletRequestTranslator<S, U>  {
+public class HttpServletRequestTranslator  {
     private static String PARAM_DELIMITER = "?";
     private static String EMPTY = "";
 
@@ -41,7 +38,7 @@ public class HttpServletRequestTranslator<S, U>  {
         this.mimeTypeTranslator = mimeTypeTranslator;
     }
 
-    public Request<S, U> from(HttpServletRequest containerRequest, byte[] containerBody) throws IOException {
+    public Ask from(HttpServletRequest containerRequest, byte[] containerBody) throws IOException {
 
         Method method = Method.valueOf(containerRequest.getMethod());
 
@@ -75,7 +72,7 @@ public class HttpServletRequestTranslator<S, U>  {
 
         String ipAddress = containerRequest.getRemoteAddr();
 
-        return new RequestBuilder<S, U>()
+        return new AskBuilder()
                 .matcher(Optional.empty())
                 .method(method)
                 .pathWithParams(pathWithParams)

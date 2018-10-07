@@ -1,24 +1,20 @@
 package org.rootservices.otter.gateway;
 
 
-import org.rootservices.jwt.entity.jwk.SymmetricKey;
-import org.rootservices.otter.config.CookieConfig;
-import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.dispatch.RouteRun;
+import org.rootservices.otter.dispatch.RouteRunner;
+import org.rootservices.otter.dispatch.translator.AnswerTranslator;
+import org.rootservices.otter.dispatch.translator.RequestTranslator;
 import org.rootservices.otter.gateway.entity.Target;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
 import org.rootservices.otter.router.Engine;
-import org.rootservices.otter.router.builder.LocationBuilder;
-import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
-import org.rootservices.otter.security.session.between.DecryptSession;
-import org.rootservices.otter.security.session.between.EncryptSession;
+import org.rootservices.otter.security.exception.SessionCtorException;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -28,36 +24,65 @@ import java.util.Map;
  * internals.
  *
  * Example extension is, ServletGateway.
- *
- * @param <S> Session object, intended to contain user session data.
- * @param <U> User object, intended to be a authenticated user.
  */
-public class Gateway<S, U> {
-    protected Engine<S, U> engine;
-    protected LocationTranslator<S, U> locationTranslator;
+public class Gateway {
+    protected Engine engine;
+    protected LocationTranslatorFactory locationTranslatorFactory;
+    protected Map<String, LocationTranslator> locationTranslatorCache = new HashMap<>();
 
-    public Gateway(Engine<S, U> engine, LocationTranslator<S, U> locationTranslator) {
+    public Gateway(Engine engine, LocationTranslatorFactory locationTranslatorFactory) {
         this.engine = engine;
-        this.locationTranslator = locationTranslator;
+        this.locationTranslatorFactory = locationTranslatorFactory;
     }
 
-    public Location<S, U> add(Method method, Location<S, U> location) {
+    public Location add(Method method, Location location) {
         engine.getDispatcher().locations(method).add(location);
         return location;
     }
 
-    public void add(Target<S, U> target) {
-        Map<Method, Location<S, U>> locations = locationTranslator.to(target);
-        for(Map.Entry<Method, Location<S, U>> location: locations.entrySet()) {
+    public <S, U> void add(Target<S, U> target) throws SessionCtorException {
+        LocationTranslator<S, U> locationTranslator = locationTranslator(target.getGroup(), target.getSessionClazz());
+
+        Map<Method, Location> locations = locationTranslator.to(target);
+        for(Map.Entry<Method, Location> location: locations.entrySet()) {
             add(location.getKey(), location.getValue());
         }
     }
 
-    public void setErrorRoute(StatusCode statusCode, Route<S, U> errorRoute) {
-        this.engine.getErrorRoutes().put(statusCode, errorRoute);
+    /**
+     * This attempts to find an existing `locationTranslator` in the cache.
+     * If its not found then a new one is constructed and added to the cache with the key, `group`.
+     *
+     * This speeds up start up time by using the same betweens for targets within the same group.
+     *
+     * @param group used as a key to lookup a {@code LocationTranslator<S, U>}
+     * @param sessionClazz the class of a session
+     * @param <S> Session
+     * @param <U> User
+     * @return an instance of {@code LocationTranslator<S, U>}
+     * @throws SessionCtorException if Session does not have a copy constructor
+     */
+    @SuppressWarnings("unchecked")
+    protected <S, U> LocationTranslator<S, U> locationTranslator(String group, Class<S> sessionClazz) throws SessionCtorException {
+        LocationTranslator<S, U> locationTranslator = (LocationTranslator<S, U>) locationTranslatorCache.get(group);
+        if (locationTranslator == null && group != null) {
+            locationTranslator = locationTranslatorFactory.make(sessionClazz);
+            locationTranslatorCache.put(group, locationTranslator);
+        } else if (locationTranslator == null) {
+            locationTranslator = locationTranslatorFactory.make(sessionClazz);
+        }
+        return locationTranslator;
     }
 
-    public Route<S, U> getErrorRoute(StatusCode statusCode) {
+    public <S, U> void setErrorRoute(StatusCode statusCode, Route<S, U> errorRoute) {
+        RequestTranslator<S, U> requestTranslator = new RequestTranslator<>();
+        AnswerTranslator<S> answerTranslator = new AnswerTranslator<>();
+
+        RouteRunner errorRouteRunner = new RouteRun<S, U>(errorRoute, requestTranslator, answerTranslator);
+        this.engine.getErrorRoutes().put(statusCode, errorRouteRunner);
+    }
+
+    public RouteRunner getErrorRoute(StatusCode statusCode) {
         return this.engine.getErrorRoutes().get(statusCode);
     }
 }

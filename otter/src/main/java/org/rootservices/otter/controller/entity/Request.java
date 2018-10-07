@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
  * @param <U> User object, intended to be a authenticated user.
  */
 public class Request<S, U> {
+    // TODO: this won't be optional once Ask is integrated.
     private Optional<Matcher> matcher;
     private Method method;
     private String pathWithParams;
