@@ -1,6 +1,7 @@
 package org.rootservices.otter.security.builder;
 
 
+import com.fasterxml.jackson.databind.ObjectReader;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.config.CookieConfig;
@@ -32,6 +33,7 @@ public class BetweenBuilder<S, U> {
     private SymmetricKey encKey;
     private Map<String, SymmetricKey> rotationEncKeys;
     private Class<S> sessionClass;
+    private ObjectReader sessionObjectReader;
     private Constructor<S> sessionCtor;
 
     private List<Between<S,U>> before = new ArrayList<>();
@@ -89,6 +91,7 @@ public class BetweenBuilder<S, U> {
 
     public BetweenBuilder<S, U> sessionClass(Class<S> sessionClass) {
         this.sessionClass = sessionClass;
+        this.sessionObjectReader =  otterAppFactory.objectReader().forType(sessionClass);
         return this;
     }
 
@@ -101,7 +104,7 @@ public class BetweenBuilder<S, U> {
             throw new SessionCtorException(COULD_NOT_ACCESS_SESSION_CTORS, e);
         }
 
-        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, sessionClass, SESSION_NAME, new JwtAppFactory(), encKey, rotationEncKeys, otterAppFactory.objectReader(), true);
+        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, SESSION_NAME, new JwtAppFactory(), encKey, rotationEncKeys, sessionObjectReader, true);
         before.add(decryptSession);
 
         Between<S,U> encryptSession = new EncryptSession<S, U>(sessionCookieConfig, encKey, otterAppFactory.objectWriter());
@@ -119,7 +122,7 @@ public class BetweenBuilder<S, U> {
             throw new SessionCtorException(COULD_NOT_ACCESS_SESSION_CTORS, e);
         }
 
-        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, sessionClass, SESSION_NAME, new JwtAppFactory(), encKey, rotationEncKeys, otterAppFactory.objectReader(), false);
+        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, SESSION_NAME, new JwtAppFactory(), encKey, rotationEncKeys, sessionObjectReader, false);
         before.add(decryptSession);
 
         Between<S,U> encryptSession = new EncryptSession<S, U>(sessionCookieConfig, encKey, otterAppFactory.objectWriter());

@@ -1,5 +1,6 @@
 package org.rootservices.otter.gateway;
 
+import com.fasterxml.jackson.databind.ObjectReader;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.translator.LocationTranslator;

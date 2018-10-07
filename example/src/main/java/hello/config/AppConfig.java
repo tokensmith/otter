@@ -50,6 +50,7 @@ public class AppConfig implements Configure {
             .resource(new HelloResource())
             .regex(HelloResource.URL)
             .sessionClazz(TokenSession.class)
+            .group("TokenSession-User")
             .build();
 
         gateway.add(hello);
@@ -63,6 +64,7 @@ public class AppConfig implements Configure {
                 .regex(HelloRestResource.URL)
                 .contentType(json)
                 .sessionClazz(TokenSession.class)
+                .group("TokenSession-User")
                 .build();
 
         gateway.add(helloAPI);
@@ -75,6 +77,7 @@ public class AppConfig implements Configure {
                 .regex(LoginResource.URL)
                 .label(Label.CSRF)
                 .sessionClazz(TokenSession.class)
+                .group("TokenSession-User")
                 .build();
 
         gateway.add(login);
@@ -88,6 +91,7 @@ public class AppConfig implements Configure {
                 .label(Label.CSRF)
                 .label(Label.SESSION_REQUIRED)
                 .sessionClazz(TokenSession.class)
+                .group("TokenSession-User")
                 .build();
 
         gateway.add(loginWithSession);
@@ -101,6 +105,7 @@ public class AppConfig implements Configure {
                 .label(Label.CSRF)
                 .label(Label.SESSION_OPTIONAL)
                 .sessionClazz(TokenSession.class)
+                .group("TokenSession-User")
                 .build();
 
         gateway.add(loginSetSessionResource);
@@ -113,6 +118,7 @@ public class AppConfig implements Configure {
                 .regex(ProtectedResource.URL)
                 .label(Label.SESSION_REQUIRED)
                 .sessionClazz(TokenSession.class)
+                .group("TokenSession-User")
                 .build();
 
         gateway.add(protectedTarget);
