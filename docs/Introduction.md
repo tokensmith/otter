@@ -65,7 +65,7 @@ A `Between` is a rule that may be executed before a request reaches a resource o
  Otter uses between implementations for CSRF protection and session management.
 
 ### Configuration
-Otter needs to be configured for CSRF, Session, and Routes. To configure Otter implement the [Configure](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/Configure.java)
+Otter needs to be configured for CSRF, Session, and Targets. To configure Otter implement the [Configure](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/Configure.java)
 interface. 
 
 An example can be found in [here](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/config/AppConfig.java).
@@ -90,24 +90,43 @@ CSRF and Session management.
     );
     
     return new ShapeBuilder()
-            .sessionClass(TokenSession.class)
             .secure(false)
             .encKey(encKey)
             .signkey(signKey)
             .build();
 ```
 
+##### `groups(Gateway gateway)`
+The gateway must be configured with groups. They are used to constuct betweens which satisfy CSRF and 
+Session restrictions.
+
+```java
+    Group<TokenSession> webSiteGroup = new GroupBuilder<TokenSession>()
+        .name(WEB_SITE_GROUP)
+        .sessionClazz(TokenSession.class)
+        .build();
+    
+    gateway.group(webSiteGroup);
+    
+    Group<TokenSession> apiGroup = new GroupBuilder<TokenSession>()
+        .name(API_GROUP)
+        .sessionClazz(TokenSession.class)
+        .build();
+    
+    gateway.group(apiGroup);
+```
+
 ##### `routes(Gateway gateway)`
-Generally, routes instruct Otter which Resource should handle a given request. Below is an example of a `GET` request 
+Generally, targets instruct Otter which Resource should handle a given request. Below is an example of a `GET` request 
 that will be handled by the `HelloResorce`. 
  
 ```java
-    // route a get request.
+    // get request.
     Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
             .method(Method.GET)
             .resource(new HelloResource())
             .regex(HelloResource.URL)
-            .sessionClazz(TokenSession.class)
+            .groupName(WEB_SITE_GROUP)
             .build();
 
     gateway.add(hello);
@@ -139,7 +158,7 @@ If desired you can use expected content types when configuring Otter.
             .resource(appFactory.helloRestResource())
             .regex(HelloRestResource.URL)
             .contentType(json)
-            .sessionClazz(TokenSession.class)
+            .groupName(API_GROUP)
             .build();
 
     gateway.add(helloAPI);
@@ -216,7 +235,7 @@ Here is an example of how to protect a login page:
         .resource(new LoginResource())
         .regex(LoginResource.URL)
         .label(Label.CSRF)
-        .sessionClazz(TokenSession.class)
+        .groupName(WEB_SITE_GROUP)
         .build();
     
     gateway.add(login);
@@ -252,7 +271,7 @@ To use them the following is needed:
         .resource(new ProtectedResource())
         .regex(ProtectedResource.URL)
         .label(Label.SESSION_REQUIRED)
-        .sessionClazz(TokenSession.class)
+        .groupName(WEB_SITE_GROUP)
         .build();
 
     gateway.add(protectedTarget);

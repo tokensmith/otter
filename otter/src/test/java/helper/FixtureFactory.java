@@ -4,7 +4,7 @@ package helper;
 import helper.entity.DummyBetween;
 import helper.entity.DummySession;
 import helper.entity.DummyUser;
-import helper.entity.FakeResource;
+import helper.fake.FakeResource;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwk.Use;
@@ -43,7 +43,6 @@ import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.*;
 import org.rootservices.otter.router.entity.io.Answer;
 import org.rootservices.otter.router.entity.io.Ask;
-import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.security.builder.entity.Betweens;
 import org.rootservices.otter.security.csrf.CsrfClaims;
 

@@ -19,10 +19,9 @@ public class Target<S, U> {
     private List<Between<S, U>> before;
     private List<Between<S, U>> after;
     private Map<StatusCode, ErrorTarget<S, U>> errorTargets;
-    private Class<S> sessionClazz;
-    private String group;
+    private String groupName;
 
-    public Target(List<Method> methods, String regex, Resource<S, U> resource, Map<Method, List<MimeType>> contentTypes, List<Label> labels, List<Between<S, U>> before, List<Between<S, U>> after, Map<StatusCode, ErrorTarget<S, U>> errorTargets, Class<S> sessionClazz, String group) {
+    public Target(List<Method> methods, String regex, Resource<S, U> resource, Map<Method, List<MimeType>> contentTypes, List<Label> labels, List<Between<S, U>> before, List<Between<S, U>> after, Map<StatusCode, ErrorTarget<S, U>> errorTargets, String groupName) {
         this.methods = methods;
         this.regex = regex;
         this.resource = resource;
@@ -31,8 +30,7 @@ public class Target<S, U> {
         this.before = before;
         this.after = after;
         this.errorTargets = errorTargets;
-        this.sessionClazz = sessionClazz;
-        this.group = group;
+        this.groupName = groupName;
     }
 
     public List<Method> getMethods() {
@@ -71,19 +69,11 @@ public class Target<S, U> {
         this.errorTargets = errorTargets;
     }
 
-    public Class<S> getSessionClazz() {
-        return sessionClazz;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setSessionClazz(Class<S> sessionClazz) {
-        this.sessionClazz = sessionClazz;
-    }
-
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 }

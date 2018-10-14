@@ -4,7 +4,7 @@ package org.rootservices.otter.gateway.builder;
 import helper.entity.DummyBetween;
 import helper.entity.DummySession;
 import helper.entity.DummyUser;
-import helper.entity.FakeResource;
+import helper.fake.FakeResource;
 import org.junit.Test;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.StatusCode;

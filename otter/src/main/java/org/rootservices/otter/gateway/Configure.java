@@ -10,5 +10,6 @@ import org.rootservices.otter.security.exception.SessionCtorException;
  */
 public interface Configure {
     Shape shape();
-    void routes(Gateway gateway) throws SessionCtorException;
+    void groups(Gateway gateway) throws SessionCtorException;
+    void routes(Gateway gateway);
 }

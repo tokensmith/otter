@@ -2,7 +2,7 @@ package org.rootservices.otter.controller.builder;
 
 
 import helper.entity.DummySession;
-import helper.entity.FakePresenter;
+import helper.fake.FakePresenter;
 import helper.FixtureFactory;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.Cookie;
