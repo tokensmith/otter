@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.rootservices.otter.dispatch.RouteRun;
 import org.rootservices.otter.gateway.entity.Target;
 import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Method;
@@ -33,6 +34,7 @@ public class LocationTranslatorTest {
         subject = new LocationTranslator<DummySession, DummyUser>(mockBetweenFactory);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void toShouldBeOk() {
         Betweens<DummySession, DummyUser> betweens = FixtureFactory.makeBetweens();
@@ -54,6 +56,18 @@ public class LocationTranslatorTest {
         assertThat(actual.get(Method.GET).getErrorRouteRunners(), Is.is(notNullValue()));
         assertThat(actual.get(Method.GET).getErrorRouteRunners().size(), Is.is(1));
 
+        RouteRun<DummySession, DummyUser> getRouteRunner = (RouteRun<DummySession, DummyUser>) actual.get(Method.GET).getRouteRunner();
+
+        // ordering of before.
+        assertThat(getRouteRunner.getRoute().getBefore().get(0), is(betweens.getBefore().get(0)));
+        assertThat(getRouteRunner.getRoute().getBefore().get(1), is(target.getBefore().get(0)));
+        assertThat(getRouteRunner.getRoute().getBefore().get(2), is(target.getBefore().get(1)));
+
+        // ordering of after
+        assertThat(getRouteRunner.getRoute().getAfter().get(0), is(betweens.getAfter().get(0)));
+        assertThat(getRouteRunner.getRoute().getAfter().get(1), is(target.getAfter().get(0)));
+        assertThat(getRouteRunner.getRoute().getAfter().get(2), is(target.getAfter().get(1)));
+
         // POST
         assertThat(actual.get(Method.POST).getRouteRunner(), Is.is(notNullValue()));
 
@@ -63,5 +77,17 @@ public class LocationTranslatorTest {
 
         assertThat(actual.get(Method.POST).getErrorRouteRunners(), Is.is(notNullValue()));
         assertThat(actual.get(Method.POST).getErrorRouteRunners().size(), Is.is(1));
+
+        RouteRun<DummySession, DummyUser> postRouteRunner = (RouteRun<DummySession, DummyUser>) actual.get(Method.POST).getRouteRunner();
+
+        // ordering of before.
+        assertThat(postRouteRunner.getRoute().getBefore().get(0), is(betweens.getBefore().get(0)));
+        assertThat(postRouteRunner.getRoute().getBefore().get(1), is(target.getBefore().get(0)));
+        assertThat(postRouteRunner.getRoute().getBefore().get(2), is(target.getBefore().get(1)));
+
+        // ordering of after.
+        assertThat(postRouteRunner.getRoute().getAfter().get(0), is(betweens.getAfter().get(0)));
+        assertThat(postRouteRunner.getRoute().getAfter().get(1), is(target.getAfter().get(0)));
+        assertThat(postRouteRunner.getRoute().getAfter().get(2), is(target.getAfter().get(1)));
     }
 }
