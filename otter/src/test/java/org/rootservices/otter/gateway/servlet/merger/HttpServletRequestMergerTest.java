@@ -1,7 +1,7 @@
 package org.rootservices.otter.gateway.servlet.merger;
 
 import helper.FixtureFactory;
-import helper.entity.FakePresenter;
+import helper.fake.FakePresenter;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.router.entity.io.Answer;

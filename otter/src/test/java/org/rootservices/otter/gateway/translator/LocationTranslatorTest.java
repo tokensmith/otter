@@ -1,24 +1,16 @@
 package org.rootservices.otter.gateway.translator;
 
 import helper.FixtureFactory;
-import helper.entity.DummyBetween;
 import helper.entity.DummySession;
 import helper.entity.DummyUser;
-import helper.entity.FakeResource;
 import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.rootservices.otter.controller.builder.MimeTypeBuilder;
-import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.mime.MimeType;
-import org.rootservices.otter.gateway.builder.TargetBuilder;
-import org.rootservices.otter.gateway.entity.Label;
 import org.rootservices.otter.gateway.entity.Target;
 import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Method;
-import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.router.factory.BetweenFactory;
 import org.rootservices.otter.security.builder.entity.Betweens;
 

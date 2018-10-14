@@ -1,7 +1,7 @@
 package org.rootservices.otter.router.builder;
 
 import helper.FixtureFactory;
-import helper.entity.FakePresenter;
+import helper.fake.FakePresenter;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.StatusCode;

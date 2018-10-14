@@ -10,8 +10,10 @@ import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
+import org.rootservices.otter.gateway.builder.GroupBuilder;
 import org.rootservices.otter.gateway.builder.ShapeBuilder;
 import org.rootservices.otter.gateway.builder.TargetBuilder;
+import org.rootservices.otter.gateway.entity.Group;
 import org.rootservices.otter.gateway.entity.Label;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.entity.Target;
@@ -22,6 +24,8 @@ import org.rootservices.otter.security.exception.SessionCtorException;
 
 
 public class AppConfig implements Configure {
+    public static final String API_GROUP = "API";
+    public static final String WEB_SITE_GROUP = "WebSite";
     private AppFactory appFactory;
 
     public AppConfig(AppFactory appFactory) {
@@ -41,19 +45,25 @@ public class AppConfig implements Configure {
     }
 
     @Override
-    public void routes(Gateway gateway) throws SessionCtorException {
-        errorRoutes(gateway);
-        
-        // does not require content-type
-        Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
-            .method(Method.GET)
-            .resource(new HelloResource())
-            .regex(HelloResource.URL)
-            .sessionClazz(TokenSession.class)
-            .group("TokenSession-User")
-            .build();
+    public void groups(Gateway gateway) throws SessionCtorException {
+        Group<TokenSession> webSiteGroup = new GroupBuilder<TokenSession>()
+                .name(WEB_SITE_GROUP)
+                .sessionClazz(TokenSession.class)
+                .build();
 
-        gateway.add(hello);
+        gateway.group(webSiteGroup);
+
+        Group<TokenSession> apiGroup = new GroupBuilder<TokenSession>()
+                .name(API_GROUP)
+                .sessionClazz(TokenSession.class)
+                .build();
+
+        gateway.group(apiGroup);
+    }
+
+    @Override
+    public void routes(Gateway gateway) {
+        errorRoutes(gateway);
 
         // requires content type.
         MimeType json = new MimeTypeBuilder().json().build();
@@ -63,11 +73,20 @@ public class AppConfig implements Configure {
                 .resource(appFactory.helloRestResource())
                 .regex(HelloRestResource.URL)
                 .contentType(json)
-                .sessionClazz(TokenSession.class)
-                .group("TokenSession-User")
+                .groupName(API_GROUP)
                 .build();
 
         gateway.add(helloAPI);
+
+        // does not require content-type
+        Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
+            .method(Method.GET)
+            .resource(new HelloResource())
+            .regex(HelloResource.URL)
+            .groupName(WEB_SITE_GROUP)
+            .build();
+
+        gateway.add(hello);
 
         // csrf
         Target<TokenSession, User> login = new TargetBuilder<TokenSession, User>()
@@ -76,8 +95,7 @@ public class AppConfig implements Configure {
                 .resource(new LoginResource())
                 .regex(LoginResource.URL)
                 .label(Label.CSRF)
-                .sessionClazz(TokenSession.class)
-                .group("TokenSession-User")
+                .groupName(WEB_SITE_GROUP)
                 .build();
 
         gateway.add(login);
@@ -90,8 +108,7 @@ public class AppConfig implements Configure {
                 .regex(LoginSessionResource.URL)
                 .label(Label.CSRF)
                 .label(Label.SESSION_REQUIRED)
-                .sessionClazz(TokenSession.class)
-                .group("TokenSession-User")
+                .groupName(WEB_SITE_GROUP)
                 .build();
 
         gateway.add(loginWithSession);
@@ -104,8 +121,7 @@ public class AppConfig implements Configure {
                 .regex(LoginSetSessionResource.URL)
                 .label(Label.CSRF)
                 .label(Label.SESSION_OPTIONAL)
-                .sessionClazz(TokenSession.class)
-                .group("TokenSession-User")
+                .groupName(WEB_SITE_GROUP)
                 .build();
 
         gateway.add(loginSetSessionResource);
@@ -117,8 +133,7 @@ public class AppConfig implements Configure {
                 .resource(new ProtectedResource())
                 .regex(ProtectedResource.URL)
                 .label(Label.SESSION_REQUIRED)
-                .sessionClazz(TokenSession.class)
-                .group("TokenSession-User")
+                .groupName(WEB_SITE_GROUP)
                 .build();
 
         gateway.add(protectedTarget);

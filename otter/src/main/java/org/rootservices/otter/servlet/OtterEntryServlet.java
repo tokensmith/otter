@@ -40,12 +40,15 @@ public abstract class OtterEntryServlet extends HttpServlet {
             logger.error(e.getMessage(), e);
             throw new ServletException(e);
         }
+
         try {
-            configure.routes(servletGateway);
+            configure.groups(servletGateway);
         } catch (SessionCtorException e) {
             logger.error(e.getMessage(), e);
             throw new ServletException(e);
         }
+
+        configure.routes(servletGateway);
     }
 
     public abstract Configure makeConfigure();

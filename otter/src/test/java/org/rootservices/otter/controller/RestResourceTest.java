@@ -5,7 +5,7 @@ import helper.FixtureFactory;
 import helper.entity.DummyPayload;
 import helper.entity.DummySession;
 import helper.entity.DummyUser;
-import helper.entity.FakeRestResource;
+import helper.fake.FakeRestResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

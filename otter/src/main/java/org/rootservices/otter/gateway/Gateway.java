@@ -6,6 +6,7 @@ import org.rootservices.otter.dispatch.RouteRun;
 import org.rootservices.otter.dispatch.RouteRunner;
 import org.rootservices.otter.dispatch.translator.AnswerTranslator;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;
+import org.rootservices.otter.gateway.entity.Group;
 import org.rootservices.otter.gateway.entity.Target;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
 import org.rootservices.otter.router.Engine;
@@ -35,18 +36,28 @@ public class Gateway {
         this.locationTranslatorFactory = locationTranslatorFactory;
     }
 
+    public Gateway(Engine engine, LocationTranslatorFactory locationTranslatorFactory, Map<String, LocationTranslator> locationTranslatorCache) {
+        this.engine = engine;
+        this.locationTranslatorFactory = locationTranslatorFactory;
+        this.locationTranslatorCache = locationTranslatorCache;
+    }
+
     public Location add(Method method, Location location) {
         engine.getDispatcher().locations(method).add(location);
         return location;
     }
 
-    public <S, U> void add(Target<S, U> target) throws SessionCtorException {
-        LocationTranslator<S, U> locationTranslator = locationTranslator(target.getGroup(), target.getSessionClazz());
+    public <S, U> void add(Target<S, U> target) {
+        LocationTranslator<S, U> locationTranslator = locationTranslator(target.getGroupName());
 
         Map<Method, Location> locations = locationTranslator.to(target);
         for(Map.Entry<Method, Location> location: locations.entrySet()) {
             add(location.getKey(), location.getValue());
         }
+    }
+
+    public <S> void group(Group<S> group) throws SessionCtorException {
+        locationTranslator(group.getName(), group.getSessionClazz());
     }
 
     /**
@@ -55,22 +66,28 @@ public class Gateway {
      *
      * This speeds up start up time by using the same betweens for targets within the same group.
      *
-     * @param group used as a key to lookup a {@code LocationTranslator<S, U>}
+     * @param groupName used as a key to lookup a {@code LocationTranslator<S, U>}
      * @param sessionClazz the class of a session
      * @param <S> Session
      * @param <U> User
      * @return an instance of {@code LocationTranslator<S, U>}
      * @throws SessionCtorException if Session does not have a copy constructor
      */
-    @SuppressWarnings("unchecked")
-    protected <S, U> LocationTranslator<S, U> locationTranslator(String group, Class<S> sessionClazz) throws SessionCtorException {
-        LocationTranslator<S, U> locationTranslator = (LocationTranslator<S, U>) locationTranslatorCache.get(group);
-        if (locationTranslator == null && group != null) {
+    protected <S, U> LocationTranslator<S, U> locationTranslator(String groupName, Class<S> sessionClazz) throws SessionCtorException {
+        LocationTranslator<S, U> locationTranslator = locationTranslator(groupName);
+
+        if (locationTranslator == null && groupName != null) {
             locationTranslator = locationTranslatorFactory.make(sessionClazz);
-            locationTranslatorCache.put(group, locationTranslator);
+            locationTranslatorCache.put(groupName, locationTranslator);
         } else if (locationTranslator == null) {
             locationTranslator = locationTranslatorFactory.make(sessionClazz);
         }
+        return locationTranslator;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <S, U> LocationTranslator<S, U> locationTranslator(String groupName) {
+        LocationTranslator<S, U> locationTranslator = (LocationTranslator<S, U>) locationTranslatorCache.get(groupName);
         return locationTranslator;
     }
 
