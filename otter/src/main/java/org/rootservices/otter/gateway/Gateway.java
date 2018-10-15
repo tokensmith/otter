@@ -56,7 +56,7 @@ public class Gateway {
         }
     }
 
-    public <S> void group(Group<S> group) throws SessionCtorException {
+    public <S, U> void group(Group<S, U> group) throws SessionCtorException {
         locationTranslator(group.getName(), group.getSessionClazz());
     }
 

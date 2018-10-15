@@ -33,7 +33,7 @@ public class GatewayTest {
 
     @Test
     public void groupShouldCache() throws Exception {
-        Group<DummySession> apiGroup = new GroupBuilder<DummySession>()
+        Group<DummySession, DummyUser> apiGroup = new GroupBuilder<DummySession, DummyUser>()
                 .name("API")
                 .sessionClazz(DummySession.class)
                 .build();

@@ -46,14 +46,14 @@ public class AppConfig implements Configure {
 
     @Override
     public void groups(Gateway gateway) throws SessionCtorException {
-        Group<TokenSession> webSiteGroup = new GroupBuilder<TokenSession>()
+        Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
                 .name(WEB_SITE_GROUP)
                 .sessionClazz(TokenSession.class)
                 .build();
 
         gateway.group(webSiteGroup);
 
-        Group<TokenSession> apiGroup = new GroupBuilder<TokenSession>()
+        Group<TokenSession, User> apiGroup = new GroupBuilder<TokenSession, User>()
                 .name(API_GROUP)
                 .sessionClazz(TokenSession.class)
                 .build();
