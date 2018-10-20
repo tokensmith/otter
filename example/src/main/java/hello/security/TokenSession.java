@@ -1,14 +1,13 @@
 package hello.security;
 
 
+import org.rootservices.otter.controller.entity.DefaultSession;
+
 import java.util.Objects;
 import java.util.UUID;
 
-public class TokenSession {
+public class TokenSession implements DefaultSession {
     private UUID accessToken;
-
-    public TokenSession() {
-    }
 
     public TokenSession(TokenSession from) {
         this.accessToken = from.accessToken;

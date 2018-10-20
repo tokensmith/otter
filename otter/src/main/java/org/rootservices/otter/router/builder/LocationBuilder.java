@@ -2,6 +2,8 @@ package org.rootservices.otter.router.builder;
 
 
 import org.rootservices.otter.controller.Resource;
+import org.rootservices.otter.controller.entity.DefaultSession;
+import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.dispatch.RouteRun;
@@ -19,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class LocationBuilder<S, U> {
+public class LocationBuilder<S extends DefaultSession, U extends DefaultUser> {
     private Pattern pattern;
     private List<MimeType> contentTypes = new ArrayList<>();
     private Resource<S, U> resource;

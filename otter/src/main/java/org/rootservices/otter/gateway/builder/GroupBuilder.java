@@ -1,12 +1,14 @@
 package org.rootservices.otter.gateway.builder;
 
+import org.rootservices.otter.controller.entity.DefaultSession;
+import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.gateway.entity.Group;
 import org.rootservices.otter.router.entity.Between;
 
 import java.util.Optional;
 
 
-public class GroupBuilder<S, U> {
+public class GroupBuilder<S extends DefaultSession, U extends DefaultUser> {
     private String name;
     private Class<S> sessionClazz;
     private Between<S, U> authRequired;

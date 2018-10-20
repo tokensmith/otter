@@ -1,6 +1,5 @@
 package org.rootservices.otter.gateway;
 
-import com.fasterxml.jackson.databind.ObjectReader;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
@@ -9,6 +8,10 @@ import org.rootservices.otter.security.builder.BetweenBuilder;
 import org.rootservices.otter.security.builder.entity.Betweens;
 import org.rootservices.otter.security.exception.SessionCtorException;
 
+
+/**
+ * Responsible for constructing a LocationTranslator.
+ */
 public class LocationTranslatorFactory {
     private Shape shape;
 

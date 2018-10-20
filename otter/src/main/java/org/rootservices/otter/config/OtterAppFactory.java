@@ -9,7 +9,10 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.otter.QueryStringToMap;
+import org.rootservices.otter.controller.entity.DefaultSession;
+import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.gateway.LocationTranslatorFactory;
+import org.rootservices.otter.gateway.entity.Group;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
@@ -17,6 +20,7 @@ import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestCookieTranslator;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestHeaderTranslator;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
+import org.rootservices.otter.gateway.translator.LocationTranslator;
 import org.rootservices.otter.router.Dispatcher;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.factory.ErrorRouteRunnerFactory;
@@ -30,6 +34,9 @@ import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.MimeTypeTranslator;
 
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -69,7 +76,9 @@ public class OtterAppFactory {
         );
     }
 
-    public ServletGateway servletGateway(Shape shape) throws SessionCtorException {
+    public <S extends DefaultSession, U extends DefaultUser> ServletGateway servletGateway(Shape shape, List<Group<? extends S,? extends U>> groups) throws SessionCtorException {
+        LocationTranslatorFactory locationTranslatorFactory = locationTranslatorFactory(shape);
+        Map<String, LocationTranslator<? extends S, ? extends U>> locationTranslators = locationTranslators(locationTranslatorFactory, groups);
 
         return new ServletGateway(
                 httpServletRequestTranslator(),
@@ -86,6 +95,16 @@ public class OtterAppFactory {
 
     public LocationTranslatorFactory locationTranslatorFactory(Shape shape) {
         return new LocationTranslatorFactory(shape);
+    }
+
+    public <S extends DefaultSession, U extends DefaultUser> Map<String, LocationTranslator<? extends S, ? extends U>> locationTranslators(LocationTranslatorFactory locationTranslatorFactory, List<Group<? extends S, ? extends U>> groups) throws SessionCtorException {
+        Map<String, LocationTranslator<? extends S, ? extends U>> locationTranslators = new HashMap<>();
+
+        for(Group<? extends S, ? extends U> group: groups) {
+            locationTranslators.put(group.getName(), locationTranslatorFactory.make(group.getSessionClazz()));
+        }
+
+        return locationTranslators;
     }
 
     public ObjectMapper objectMapper() {

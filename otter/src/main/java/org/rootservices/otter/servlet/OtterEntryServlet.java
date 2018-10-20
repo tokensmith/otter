@@ -5,7 +5,10 @@ package org.rootservices.otter.servlet;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.otter.config.OtterAppFactory;
+import org.rootservices.otter.controller.entity.DefaultSession;
+import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.gateway.Configure;
+import org.rootservices.otter.gateway.entity.Group;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
 import org.rootservices.otter.security.exception.SessionCtorException;
@@ -18,6 +21,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -34,18 +39,11 @@ public abstract class OtterEntryServlet extends HttpServlet {
         otterAppFactory = new OtterAppFactory();
         Configure configure = makeConfigure();
         Shape shape = configure.shape();
+        List<Group<? extends DefaultSession, ? extends DefaultUser>> groups = configure.groups();
         try {
-            servletGateway = otterAppFactory.servletGateway(shape);
+            servletGateway = otterAppFactory.servletGateway(shape, groups);
         } catch (SessionCtorException e) {
-            logger.error(e.getMessage(), e);
-            throw new ServletException(e);
-        }
-
-        try {
-            configure.groups(servletGateway);
-        } catch (SessionCtorException e) {
-            logger.error(e.getMessage(), e);
-            throw new ServletException(e);
+            e.printStackTrace();
         }
 
         configure.routes(servletGateway);
