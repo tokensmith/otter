@@ -1,22 +1,48 @@
 package org.rootservices.otter.gateway.builder;
 
+import org.rootservices.otter.controller.entity.DefaultSession;
+import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.gateway.entity.Group;
+import org.rootservices.otter.router.entity.Between;
 
-public class GroupBuilder<S> {
+import java.util.Optional;
+
+
+public class GroupBuilder<S extends DefaultSession, U extends DefaultUser> {
     private String name;
     private Class<S> sessionClazz;
+    private Between<S, U> authRequired;
+    private Between<S, U> authOptional;
 
-    public GroupBuilder<S> name(String name) {
+    public GroupBuilder<S, U> name(String name) {
         this.name = name;
         return this;
     }
 
-    public GroupBuilder<S> sessionClazz(Class<S> sessionClazz) {
+    public GroupBuilder<S, U> sessionClazz(Class<S> sessionClazz) {
         this.sessionClazz = sessionClazz;
         return this;
     }
 
-    public Group<S> build() {
-        return new Group<S>(name, sessionClazz);
+    public GroupBuilder<S, U> authRequired(Between<S, U> authRequired) {
+        this.authRequired = authRequired;
+        return this;
+    }
+
+    public GroupBuilder<S, U> authOptional(Between<S, U> authOptional) {
+        this.authOptional = authOptional;
+        return this;
+    }
+
+    public Group<S, U> build() {
+        return new Group<S, U>(name, sessionClazz, makeBetween(authRequired), makeBetween(authOptional));
+    }
+
+    protected Optional<Between<S, U>> makeBetween(Between<S, U> between) {
+        if (between == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(between);
+        }
     }
 }

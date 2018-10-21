@@ -1,6 +1,8 @@
 package org.rootservices.otter.gateway.entity;
 
 import org.rootservices.otter.controller.Resource;
+import org.rootservices.otter.controller.entity.DefaultSession;
+import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.Between;
@@ -10,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class Target<S, U> {
+public class Target<S extends DefaultSession, U extends DefaultUser> {
     private List<Method> methods;
     private String regex;
     private Resource<S, U> resource;

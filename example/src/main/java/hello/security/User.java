@@ -1,4 +1,6 @@
 package hello.security;
 
-public class User {
+import org.rootservices.otter.controller.entity.DefaultUser;
+
+public class User extends DefaultUser {
 }

@@ -96,24 +96,29 @@ CSRF and Session management.
             .build();
 ```
 
-##### `groups(Gateway gateway)`
+##### `groups()`
 The gateway must be configured with groups. They are used to constuct betweens which satisfy CSRF and 
 Session restrictions.
 
 ```java
-    Group<TokenSession> webSiteGroup = new GroupBuilder<TokenSession>()
-        .name(WEB_SITE_GROUP)
-        .sessionClazz(TokenSession.class)
-        .build();
+    List<Group<? extends DefaultSession, ? extends DefaultUser>> groups = new ArrayList<>();
     
-    gateway.group(webSiteGroup);
-    
-    Group<TokenSession> apiGroup = new GroupBuilder<TokenSession>()
-        .name(API_GROUP)
-        .sessionClazz(TokenSession.class)
-        .build();
-    
-    gateway.group(apiGroup);
+    Group<TokenSession, DefaultUser> webSiteGroup = new GroupBuilder<TokenSession, DefaultUser>()
+            .name(WEB_SITE_GROUP)
+            .sessionClazz(TokenSession.class)
+            .build();
+
+    groups.add(webSiteGroup);
+
+    AuthRestBetween authRestBetween = new AuthRestBetween();
+    Group<ApiSession, ApiUser> apiGroup = new GroupBuilder<ApiSession, ApiUser>()
+            .name(API_GROUP)
+            .sessionClazz(ApiSession.class)
+            .authRequired(authRestBetween)
+            .build();
+
+    groups.add(apiGroup);
+    return groups;
 ```
 
 ##### `routes(Gateway gateway)`

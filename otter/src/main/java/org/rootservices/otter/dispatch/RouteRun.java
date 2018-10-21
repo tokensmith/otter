@@ -1,6 +1,8 @@
 package org.rootservices.otter.dispatch;
 
 import org.rootservices.otter.controller.Resource;
+import org.rootservices.otter.controller.entity.DefaultSession;
+import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;
@@ -14,7 +16,7 @@ import org.rootservices.otter.router.exception.HaltException;
 
 import java.util.List;
 
-public class RouteRun<S, U> implements RouteRunner {
+public class RouteRun<S extends DefaultSession, U extends DefaultUser> implements RouteRunner {
 
     private Route<S, U> route;
     private RequestTranslator<S, U> requestTranslator;

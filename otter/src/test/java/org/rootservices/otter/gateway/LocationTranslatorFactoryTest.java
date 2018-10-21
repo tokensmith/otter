@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
 
+import java.util.Optional;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
@@ -23,7 +25,7 @@ public class LocationTranslatorFactoryTest {
 
     @Test
     public void shouldMakeLocationTranslator() throws Exception {
-        LocationTranslator<DummySession, DummyUser> actual = subject.make(DummySession.class);
+        LocationTranslator<DummySession, DummyUser> actual = subject.make(DummySession.class, Optional.empty(), Optional.empty());
 
         assertThat(actual, is(notNullValue()));
     }

@@ -1,6 +1,8 @@
 package org.rootservices.otter.gateway.builder;
 
 import org.rootservices.otter.controller.Resource;
+import org.rootservices.otter.controller.entity.DefaultSession;
+import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.gateway.entity.ErrorTarget;
@@ -14,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TargetBuilder<S, U> {
+public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
     private List<Method> methods = new ArrayList<>();
     private String regex;
     private Resource<S, U> resource;

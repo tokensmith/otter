@@ -1,4 +1,6 @@
 package helper.entity;
 
-public class DummyUser {
+import org.rootservices.otter.controller.entity.DefaultUser;
+
+public class DummyUser extends DefaultUser {
 }

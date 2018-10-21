@@ -47,7 +47,7 @@ public class HelloRestResourceTest {
 
         assertThat(hello, is(notNullValue()));
         assertThat(hello.getMessage(), is(notNullValue()));
-        assertThat(hello.getMessage(), is("Hello World"));
+        assertThat(hello.getMessage(), is("Hello, Obi-Wan Kenobi"));
     }
 
     @Test

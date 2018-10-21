@@ -2,11 +2,13 @@ package org.rootservices.otter.router.factory;
 
 
 import org.rootservices.otter.gateway.entity.Label;
+import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.security.builder.entity.Betweens;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 public class BetweenFactory<S, U> {
@@ -15,11 +17,16 @@ public class BetweenFactory<S, U> {
     private Betweens<S, U> sessionRequired;
     private Betweens<S, U> sessionOptional;
 
-    public BetweenFactory(Betweens<S, U> csrfPrepare, Betweens<S, U> csrfProtect, Betweens<S, U> sessionRequired, Betweens<S, U> sessionOptional) {
+    private Optional<Between<S, U>> authRequired;
+    private Optional<Between<S, U>> authOptional;
+
+    public BetweenFactory(Betweens<S, U> csrfPrepare, Betweens<S, U> csrfProtect, Betweens<S, U> sessionRequired, Betweens<S, U> sessionOptional, Optional<Between<S, U>> authRequired, Optional<Between<S, U>> authOptional) {
         this.csrfPrepare = csrfPrepare;
         this.csrfProtect = csrfProtect;
         this.sessionRequired = sessionRequired;
         this.sessionOptional = sessionOptional;
+        this.authRequired = authRequired;
+        this.authOptional = authOptional;
     }
 
     public Betweens<S, U> make(Method method, List<Label> labels) {
@@ -47,6 +54,12 @@ public class BetweenFactory<S, U> {
             betweens.getBefore().addAll(sessionRequired.getBefore());
             betweens.getAfter().addAll(sessionRequired.getAfter());
         }
+        if (labels.contains(Label.AUTH_OPTIONAL) && authOptional.isPresent()) {
+            betweens.getBefore().add(authOptional.get());
+        }
+        if (labels.contains(Label.AUTH_REQUIRED) && authRequired.isPresent()) {
+            betweens.getBefore().add(authRequired.get());
+        }
         return betweens;
     }
 
@@ -62,6 +75,12 @@ public class BetweenFactory<S, U> {
         if (labels.contains(Label.SESSION_REQUIRED)) {
             betweens.getBefore().addAll(sessionRequired.getBefore());
             betweens.getAfter().addAll(sessionRequired.getAfter());
+        }
+        if (labels.contains(Label.AUTH_OPTIONAL) && authOptional.isPresent()) {
+            betweens.getBefore().add(authOptional.get());
+        }
+        if (labels.contains(Label.AUTH_REQUIRED) && authRequired.isPresent()) {
+            betweens.getBefore().add(authRequired.get());
         }
         return betweens;
     }

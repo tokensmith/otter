@@ -1,6 +1,8 @@
 package org.rootservices.otter.gateway.translator;
 
 
+import org.rootservices.otter.controller.entity.DefaultSession;
+import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.gateway.entity.ErrorTarget;
 import org.rootservices.otter.gateway.entity.Target;
@@ -16,7 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class LocationTranslator<S, U> {
+public class LocationTranslator<S extends DefaultSession, U extends DefaultUser> {
     private BetweenFactory<S, U> betweenFactory;
 
     public LocationTranslator(BetweenFactory<S, U> betweenFactory) {

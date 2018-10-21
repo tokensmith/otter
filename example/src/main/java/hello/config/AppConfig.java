@@ -2,10 +2,16 @@ package hello.config;
 
 
 import hello.controller.*;
+import hello.controller.api.HelloRestResource;
+import hello.controller.api.between.AuthRestBetween;
+import hello.controller.api.model.ApiSession;
+import hello.controller.api.model.ApiUser;
 import hello.security.TokenSession;
 import hello.security.User;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
+import org.rootservices.otter.controller.entity.DefaultSession;
+import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.gateway.Configure;
@@ -20,7 +26,10 @@ import org.rootservices.otter.gateway.entity.Target;
 import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
-import org.rootservices.otter.security.exception.SessionCtorException;
+
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class AppConfig implements Configure {
@@ -45,20 +54,25 @@ public class AppConfig implements Configure {
     }
 
     @Override
-    public void groups(Gateway gateway) throws SessionCtorException {
-        Group<TokenSession> webSiteGroup = new GroupBuilder<TokenSession>()
+    public List<Group<? extends DefaultSession, ? extends DefaultUser>> groups() {
+        List<Group<? extends DefaultSession, ? extends DefaultUser>> groups = new ArrayList<>();
+
+        Group<TokenSession, DefaultUser> webSiteGroup = new GroupBuilder<TokenSession, DefaultUser>()
                 .name(WEB_SITE_GROUP)
                 .sessionClazz(TokenSession.class)
                 .build();
 
-        gateway.group(webSiteGroup);
+        groups.add(webSiteGroup);
 
-        Group<TokenSession> apiGroup = new GroupBuilder<TokenSession>()
+        AuthRestBetween authRestBetween = new AuthRestBetween();
+        Group<ApiSession, ApiUser> apiGroup = new GroupBuilder<ApiSession, ApiUser>()
                 .name(API_GROUP)
-                .sessionClazz(TokenSession.class)
+                .sessionClazz(ApiSession.class)
+                .authRequired(authRestBetween)
                 .build();
 
-        gateway.group(apiGroup);
+        groups.add(apiGroup);
+        return groups;
     }
 
     @Override
@@ -67,11 +81,12 @@ public class AppConfig implements Configure {
 
         // requires content type.
         MimeType json = new MimeTypeBuilder().json().build();
-        Target<TokenSession, User> helloAPI = new TargetBuilder<TokenSession, User>()
+        Target<ApiSession, ApiUser> helloAPI = new TargetBuilder<ApiSession, ApiUser>()
                 .method(Method.GET)
                 .method(Method.POST)
                 .resource(appFactory.helloRestResource())
                 .regex(HelloRestResource.URL)
+                .label(Label.AUTH_REQUIRED)
                 .contentType(json)
                 .groupName(API_GROUP)
                 .build();

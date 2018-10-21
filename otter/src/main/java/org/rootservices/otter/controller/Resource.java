@@ -1,11 +1,9 @@
 package org.rootservices.otter.controller;
 
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
-import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.entity.*;
 
 
-public class Resource<S, U> {
+public class Resource<S extends DefaultSession, U extends DefaultUser> {
 
     public Response<S> get(Request<S, U> request, Response<S> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);

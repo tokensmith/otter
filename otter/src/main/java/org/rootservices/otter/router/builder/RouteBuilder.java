@@ -1,13 +1,15 @@
 package org.rootservices.otter.router.builder;
 
 import org.rootservices.otter.controller.Resource;
+import org.rootservices.otter.controller.entity.DefaultSession;
+import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Route;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RouteBuilder<S, U> {
+public class RouteBuilder<S extends DefaultSession, U extends DefaultUser> {
     private Resource<S, U> resource;
     private List<Between<S, U>> before = new ArrayList<>();
     private List<Between<S, U>> after = new ArrayList<>();

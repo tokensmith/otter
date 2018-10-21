@@ -1,11 +1,13 @@
 package org.rootservices.otter.gateway.entity;
 
 import org.rootservices.otter.controller.Resource;
+import org.rootservices.otter.controller.entity.DefaultSession;
+import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.router.entity.Between;
 
 import java.util.List;
 
-public class ErrorTarget<S, U> {
+public class ErrorTarget<S extends DefaultSession, U extends DefaultUser> {
     private Resource<S, U> resource;
     private List<Between<S, U>> before;
     private List<Between<S, U>> after;
