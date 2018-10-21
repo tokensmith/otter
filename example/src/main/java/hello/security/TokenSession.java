@@ -6,8 +6,11 @@ import org.rootservices.otter.controller.entity.DefaultSession;
 import java.util.Objects;
 import java.util.UUID;
 
-public class TokenSession implements DefaultSession {
+public class TokenSession extends DefaultSession {
     private UUID accessToken;
+
+    public TokenSession() {
+    }
 
     public TokenSession(TokenSession from) {
         this.accessToken = from.accessToken;

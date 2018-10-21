@@ -76,16 +76,16 @@ public class OtterAppFactory {
         );
     }
 
-    public <S extends DefaultSession, U extends DefaultUser> ServletGateway servletGateway(Shape shape, List<Group<? extends S,? extends U>> groups) throws SessionCtorException {
+    public ServletGateway servletGateway(Shape shape, List<Group<? extends DefaultSession,? extends DefaultUser>> groups) throws SessionCtorException {
         LocationTranslatorFactory locationTranslatorFactory = locationTranslatorFactory(shape);
-        Map<String, LocationTranslator<? extends S, ? extends U>> locationTranslators = locationTranslators(locationTranslatorFactory, groups);
+        Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators = locationTranslators(locationTranslatorFactory, groups);
 
         return new ServletGateway(
                 httpServletRequestTranslator(),
                 httpServletRequestMerger(),
                 httpServletResponseMerger(),
                 engine(),
-                locationTranslatorFactory(shape)
+                locationTranslators
         );
     }
 

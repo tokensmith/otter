@@ -1,10 +1,12 @@
 package org.rootservices.otter.router.entity;
 
 import org.rootservices.otter.controller.Resource;
+import org.rootservices.otter.controller.entity.DefaultSession;
+import org.rootservices.otter.controller.entity.DefaultUser;
 
 import java.util.List;
 
-public class Route<S, U> {
+public class Route<S extends DefaultSession, U extends DefaultUser> {
     private Resource<S, U> resource;
     private List<Between<S, U>> before;
     private List<Between<S, U>> after;

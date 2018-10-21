@@ -1,6 +1,8 @@
 package org.rootservices.otter.gateway;
 
 import org.rootservices.otter.config.OtterAppFactory;
+import org.rootservices.otter.controller.entity.DefaultSession;
+import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
 import org.rootservices.otter.router.factory.BetweenFactory;
@@ -19,7 +21,7 @@ public class LocationTranslatorFactory {
         this.shape = shape;
     }
 
-    public <S, U> LocationTranslator<S, U> make(Class<S> sessionClazz) throws SessionCtorException {
+    public <S extends DefaultSession, U extends DefaultUser> LocationTranslator<S, U> make(Class<S> sessionClazz) throws SessionCtorException {
         return new LocationTranslator<S, U>(
                 betweenFactory(sessionClazz)
         );

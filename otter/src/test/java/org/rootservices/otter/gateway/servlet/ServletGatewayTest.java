@@ -7,12 +7,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.rootservices.otter.controller.entity.DefaultSession;
+import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.dispatch.RouteRunner;
 import org.rootservices.otter.gateway.LocationTranslatorFactory;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
+import org.rootservices.otter.gateway.translator.LocationTranslator;
 import org.rootservices.otter.router.Dispatcher;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.entity.Route;
@@ -45,8 +48,6 @@ public class ServletGatewayTest {
     private Engine mockEngine;
     @Mock
     private Dispatcher mockDispatcher;
-    @Mock
-    private LocationTranslatorFactory mockLocationTranslatorFactory;
 
     private ServletGateway subject;
 
@@ -55,12 +56,16 @@ public class ServletGatewayTest {
         MockitoAnnotations.initMocks(this);
 
         when(mockEngine.getDispatcher()).thenReturn(mockDispatcher);
+
+        Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators;
+        locationTranslators = new HashMap<>();
+
         subject = new ServletGateway(
                 mockHttpServletRequestTranslator,
                 mockHttpServletRequestMerger,
                 mockHttpServletResponseMerger,
                 mockEngine,
-                mockLocationTranslatorFactory
+                locationTranslators
         );
     }
 

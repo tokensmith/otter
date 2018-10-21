@@ -29,12 +29,10 @@ import java.util.Map;
  */
 public class Gateway {
     protected Engine engine;
-    protected LocationTranslatorFactory locationTranslatorFactory;
-    protected Map<String, LocationTranslator<DefaultSession, DefaultUser>> locationTranslators;
+    protected Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators;
 
-    public Gateway(Engine engine, LocationTranslatorFactory locationTranslatorFactory, Map<String, LocationTranslator<DefaultSession, DefaultUser>> locationTranslators) {
+    public Gateway(Engine engine, Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators) {
         this.engine = engine;
-        this.locationTranslatorFactory = locationTranslatorFactory;
         this.locationTranslators = locationTranslators;
     }
 
@@ -44,7 +42,7 @@ public class Gateway {
     }
 
     public <S extends DefaultSession, U extends DefaultUser> void add(Target<S, U> target) {
-        LocationTranslator<S, U> locationTranslator = locationTranslators.get(target.getGroupName());
+        LocationTranslator<S, U> locationTranslator = locationTranslator(target.getGroupName());
 
         Map<Method, Location> locations = locationTranslator.to(target);
         for(Map.Entry<Method, Location> location: locations.entrySet()) {
@@ -52,7 +50,26 @@ public class Gateway {
         }
     }
 
-    public <S, U> void setErrorRoute(StatusCode statusCode, Route<S, U> errorRoute) {
+    /**
+     * Finds the location translator for the groupName.
+     *
+     * Casting is safe here because the type of the value in locationTranslators
+     * are upper bound wild cards for, DefaultSession and DefaultUser. Therefore the
+     * values extend, DefaultSession and DefaultUser.
+     *
+     * https://docs.oracle.com/javase/tutorial/java/generics/subtyping.html
+     *
+     * @param groupName the name of the group. Used as a lookup key for the translator.
+     * @param <S> Session
+     * @param <U> User
+     * @return the locationTranslator for the group
+     */
+    @SuppressWarnings("unchecked")
+    public <S extends DefaultSession, U extends DefaultUser> LocationTranslator<S, U> locationTranslator(String groupName) {
+        return (LocationTranslator<S, U>) locationTranslators.get(groupName);
+    }
+
+    public <S extends DefaultSession, U extends DefaultUser> void setErrorRoute(StatusCode statusCode, Route<S, U> errorRoute) {
         RequestTranslator<S, U> requestTranslator = new RequestTranslator<>();
         AnswerTranslator<S> answerTranslator = new AnswerTranslator<>();
 

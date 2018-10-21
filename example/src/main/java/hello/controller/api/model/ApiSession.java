@@ -4,7 +4,9 @@ import org.rootservices.otter.controller.entity.DefaultSession;
 
 public class ApiSession extends DefaultSession {
 
-    public ApiSession(ApiSession apiSession) {
+    public ApiSession() {
+    }
 
+    public ApiSession(ApiSession apiSession) {
     }
 }
