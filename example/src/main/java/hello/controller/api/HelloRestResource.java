@@ -25,7 +25,7 @@ public class HelloRestResource extends RestResource<Hello, ApiSession, ApiUser> 
     public Response<ApiSession> get(Request<ApiSession, ApiUser> request, Response<ApiSession> response) {
         response.setStatusCode(StatusCode.OK);
 
-        Hello hello = new Hello("Hello World");
+        Hello hello = new Hello("Hello, " + request.getUser().get().getFirstName() + " " + request.getUser().get().getLastName());
         Optional<ByteArrayOutputStream> payload = Optional.empty();
 
         try {

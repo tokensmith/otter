@@ -24,6 +24,7 @@ import org.rootservices.otter.security.session.between.exception.SessionDecryptE
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -36,7 +37,11 @@ public class DecryptSessionTest {
         Betweens<DummySession, DummyUser> betweens;
 
         LocationTranslatorFactory locationTranslatorFactory = otterAppFactory.locationTranslatorFactory(shape);
-        BetweenFactory<DummySession, DummyUser> betweenFactory = locationTranslatorFactory.betweenFactory(DummySession.class);
+        BetweenFactory<DummySession, DummyUser> betweenFactory = locationTranslatorFactory.betweenFactory(
+                DummySession.class,
+                Optional.empty(),
+                Optional.empty()
+        );
 
         if (required) {
             List<Label> labels = new ArrayList<>();

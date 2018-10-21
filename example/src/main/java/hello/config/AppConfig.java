@@ -86,6 +86,7 @@ public class AppConfig implements Configure {
                 .method(Method.POST)
                 .resource(appFactory.helloRestResource())
                 .regex(HelloRestResource.URL)
+                .label(Label.AUTH_REQUIRED)
                 .contentType(json)
                 .groupName(API_GROUP)
                 .build();

@@ -97,11 +97,20 @@ public class OtterAppFactory {
         return new LocationTranslatorFactory(shape);
     }
 
+    @SuppressWarnings("unchecked")
     public <S extends DefaultSession, U extends DefaultUser> Map<String, LocationTranslator<? extends S, ? extends U>> locationTranslators(LocationTranslatorFactory locationTranslatorFactory, List<Group<? extends S, ? extends U>> groups) throws SessionCtorException {
         Map<String, LocationTranslator<? extends S, ? extends U>> locationTranslators = new HashMap<>();
 
         for(Group<? extends S, ? extends U> group: groups) {
-            locationTranslators.put(group.getName(), locationTranslatorFactory.make(group.getSessionClazz()));
+            Group<S, U> castedGroup = (Group<S,U>) group;
+            locationTranslators.put(
+                    group.getName(),
+                    locationTranslatorFactory.make(
+                            castedGroup.getSessionClazz(),
+                            castedGroup.getAuthRequired(),
+                            castedGroup.getAuthOptional()
+                    )
+            );
         }
 
         return locationTranslators;
