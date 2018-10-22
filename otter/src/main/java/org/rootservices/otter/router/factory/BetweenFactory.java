@@ -36,6 +36,12 @@ public class BetweenFactory<S, U> {
             betweens = makeGet(labels);
         } else if (Method.POST.equals(method)) {
             betweens = makePost(labels);
+        } else if (Method.PUT.equals(method)) {
+            betweens = makePut(labels);
+        } else if (Method.PATCH.equals(method)) {
+            betweens = makePatch(labels);
+        } else if (Method.DELETE.equals(method)) {
+            betweens = makeDelete(labels);
         }
         return betweens;
 
@@ -54,12 +60,7 @@ public class BetweenFactory<S, U> {
             betweens.getBefore().addAll(sessionRequired.getBefore());
             betweens.getAfter().addAll(sessionRequired.getAfter());
         }
-        if (labels.contains(Label.AUTH_OPTIONAL) && authOptional.isPresent()) {
-            betweens.getBefore().add(authOptional.get());
-        }
-        if (labels.contains(Label.AUTH_REQUIRED) && authRequired.isPresent()) {
-            betweens.getBefore().add(authRequired.get());
-        }
+        authentication(labels, betweens);
         return betweens;
     }
 
@@ -76,12 +77,34 @@ public class BetweenFactory<S, U> {
             betweens.getBefore().addAll(sessionRequired.getBefore());
             betweens.getAfter().addAll(sessionRequired.getAfter());
         }
+        authentication(labels, betweens);
+        return betweens;
+    }
+
+    public Betweens<S, U> makePut(List<Label> labels) {
+        Betweens<S, U> betweens = new Betweens<S, U>(new ArrayList<>(), new ArrayList<>());
+        authentication(labels, betweens);
+        return betweens;
+    }
+
+    public Betweens<S, U> makePatch(List<Label> labels) {
+        Betweens<S, U> betweens = new Betweens<S, U>(new ArrayList<>(), new ArrayList<>());
+        authentication(labels, betweens);
+        return betweens;
+    }
+
+    public Betweens<S, U> makeDelete(List<Label> labels) {
+        Betweens<S, U> betweens = new Betweens<S, U>(new ArrayList<>(), new ArrayList<>());
+        authentication(labels, betweens);
+        return betweens;
+    }
+
+    protected void authentication(List<Label> labels, Betweens<S, U> betweens) {
         if (labels.contains(Label.AUTH_OPTIONAL) && authOptional.isPresent()) {
             betweens.getBefore().add(authOptional.get());
         }
         if (labels.contains(Label.AUTH_REQUIRED) && authRequired.isPresent()) {
             betweens.getBefore().add(authRequired.get());
         }
-        return betweens;
     }
 }

@@ -27,9 +27,9 @@ import java.util.List;
 
 /**
  * Entry Servlet for all incoming requests Otter will handle.
- *
  */
 public abstract class OtterEntryServlet extends HttpServlet {
+    public static final String DESTROYING_SERVLET = "destroying servlet";
     protected static Logger logger = LogManager.getLogger(OtterEntryServlet.class);
     protected OtterAppFactory otterAppFactory;
     protected ServletGateway servletGateway;
@@ -43,7 +43,8 @@ public abstract class OtterEntryServlet extends HttpServlet {
         try {
             servletGateway = otterAppFactory.servletGateway(shape, groups);
         } catch (SessionCtorException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new ServletException(e);
         }
 
         configure.routes(servletGateway);
@@ -86,5 +87,10 @@ public abstract class OtterEntryServlet extends HttpServlet {
         doAsync(req, resp);
     }
 
+    @Override
+    public void destroy() {
+        logger.info(DESTROYING_SERVLET);
+        super.destroy();
+    }
 }
 

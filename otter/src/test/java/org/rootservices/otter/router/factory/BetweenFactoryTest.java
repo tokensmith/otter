@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.*;
 
 public class BetweenFactoryTest {
@@ -256,5 +258,77 @@ public class BetweenFactoryTest {
 
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getAfter().get(0), is(sessionOptional.getAfter().get(0)));
+    }
+
+    @Test
+    public void makeWhenPutAndAuthRequired() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.AUTH_REQUIRED);
+
+        Betweens<DummySession, DummyUser> actual = subject.make(Method.PUT, labels);
+
+        assertThat(actual.getBefore().size(), is(1));
+        assertThat(actual.getAfter().size(), is(0));
+        assertThat(actual.getBefore().get(0), is(authRequired.get()));
+    }
+
+    @Test
+    public void makeWhenPutAndAuthOptional() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.AUTH_OPTIONAL);
+
+        Betweens<DummySession, DummyUser> actual = subject.make(Method.PUT, labels);
+
+        assertThat(actual.getBefore().size(), is(1));
+        assertThat(actual.getAfter().size(), is(0));
+        assertThat(actual.getBefore().get(0), is(authOptional.get()));
+    }
+
+    @Test
+    public void makeWhenPatchAndAuthRequired() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.AUTH_REQUIRED);
+
+        Betweens<DummySession, DummyUser> actual = subject.make(Method.PATCH, labels);
+
+        assertThat(actual.getBefore().size(), is(1));
+        assertThat(actual.getAfter().size(), is(0));
+        assertThat(actual.getBefore().get(0), is(authRequired.get()));
+    }
+
+    @Test
+    public void makeWhenPatchAndAuthOptional() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.AUTH_OPTIONAL);
+
+        Betweens<DummySession, DummyUser> actual = subject.make(Method.PATCH, labels);
+
+        assertThat(actual.getBefore().size(), is(1));
+        assertThat(actual.getAfter().size(), is(0));
+        assertThat(actual.getBefore().get(0), is(authOptional.get()));
+    }
+
+    @Test
+    public void makeWhenDeleteAndAuthRequired() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.AUTH_REQUIRED);
+
+        Betweens<DummySession, DummyUser> actual = subject.make(Method.DELETE, labels);
+
+        assertThat(actual.getBefore().size(), is(1));
+        assertThat(actual.getAfter().size(), is(0));
+        assertThat(actual.getBefore().get(0), is(authRequired.get()));
+    }
+
+    @Test
+    public void makeWhenDeleteAndAuthOptional() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.AUTH_OPTIONAL);
+
+        Betweens<DummySession, DummyUser> actual = subject.make(Method.DELETE, labels);
+
+        assertThat(actual.getBefore().size(), is(1));
+        assertThat(actual.getAfter().size(), is(0));
+        assertThat(actual.getBefore().get(0), is(authOptional.get()));
     }
 }
