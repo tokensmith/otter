@@ -1,14 +1,12 @@
 package org.rootservices.otter.gateway.builder;
 
 import helper.FixtureFactory;
-import helper.entity.DummySession;
 import org.junit.Test;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.gateway.entity.Shape;
 
 import java.util.Map;
 
-import static java.util.function.Predicate.isEqual;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -27,6 +25,8 @@ public class ShapeBuilderTest {
                 .rotationEncKeys(rotationEncKeys)
                 .rotationSignKeys(rotationSignKeys)
                 .secure(true)
+                .writeChunkSize(1024)
+                .readChunkSize(1024)
                 .build();
 
         assertThat(actual.getEncKey(), is(encKey));
@@ -34,5 +34,7 @@ public class ShapeBuilderTest {
         assertThat(actual.getRotationEncKeys(), is(rotationEncKeys));
         assertThat(actual.getRotationSignKeys(), is(rotationSignKeys));
         assertThat(actual.getSecure(), is(true));
+        assertThat(actual.getWriteChunkSize(), is(1024));
+        assertThat(actual.getReadChunkSize(), is(1024));
     }
 }

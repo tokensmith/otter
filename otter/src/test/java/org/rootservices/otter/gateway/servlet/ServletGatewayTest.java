@@ -7,11 +7,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.dispatch.RouteRunner;
-import org.rootservices.otter.gateway.LocationTranslatorFactory;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
@@ -65,7 +65,8 @@ public class ServletGatewayTest {
                 mockHttpServletRequestMerger,
                 mockHttpServletResponseMerger,
                 mockEngine,
-                locationTranslators
+                locationTranslators,
+                OtterAppFactory.WRITE_CHUNK_SIZE
         );
     }
 

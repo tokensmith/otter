@@ -36,12 +36,14 @@ public class ServletGateway extends Gateway {
     private HttpServletRequestTranslator httpServletRequestTranslator;
     private HttpServletRequestMerger httpServletRequestMerger;
     private HttpServletResponseMerger httpServletResponseMerger;
+    private Integer writeChunkSize;
 
-    public ServletGateway(HttpServletRequestTranslator httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger httpServletResponseMerger, Engine engine, Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators) {
+    public ServletGateway(HttpServletRequestTranslator httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger httpServletResponseMerger, Engine engine, Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators, Integer writeChunkSize) {
         super(engine, locationTranslators);
         this.httpServletRequestTranslator = httpServletRequestTranslator;
         this.httpServletRequestMerger = httpServletRequestMerger;
         this.httpServletResponseMerger = httpServletResponseMerger;
+        this.writeChunkSize = writeChunkSize;
     }
 
     public GatewayResponse processRequest(HttpServletRequest containerRequest, HttpServletResponse containerResponse, byte[] body) {
@@ -73,6 +75,7 @@ public class ServletGateway extends Gateway {
             } else {
                 gatewayResponse.setPayload(Optional.empty());
             }
+            gatewayResponse.setWriteChunkSize(writeChunkSize);
             gatewayResponse.setTemplate(resourceAnswer.getTemplate());
 
         } catch (IOException e) {

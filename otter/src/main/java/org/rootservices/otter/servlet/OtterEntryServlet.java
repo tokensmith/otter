@@ -30,11 +30,15 @@ import java.util.List;
  */
 public abstract class OtterEntryServlet extends HttpServlet {
     public static final String DESTROYING_SERVLET = "destroying servlet";
-    public static final String INIT_AGAIN = "Servlet initializing after being destroyed. Not initializing Otter again";
+    public static final String INIT_AGAIN = "Servlet initializing after being destroyed. Not initializing Otter again.";
     public static final String INIT_OTTER = "Initializing Otter";
     protected static Logger LOGGER = LogManager.getLogger(OtterEntryServlet.class);
     protected static OtterAppFactory otterAppFactory;
     protected static ServletGateway servletGateway;
+
+    // async i/o read chunk size
+    protected static Integer DEFAULT_READ_CHUNK_SIZE = 1024;
+    protected static Integer readChunkSize;
 
     @Override
     public void init() throws ServletException {
@@ -60,6 +64,10 @@ public abstract class OtterEntryServlet extends HttpServlet {
         }
 
         configure.routes(servletGateway);
+
+        // async i/o read chunk size.
+        readChunkSize = (shape.getReadChunkSize() != null) ? shape.getReadChunkSize() : DEFAULT_READ_CHUNK_SIZE;
+
     }
 
     /**
@@ -68,7 +76,7 @@ public abstract class OtterEntryServlet extends HttpServlet {
      *
      * @return True if its been destroyed before. False if it has not been destroyed.
      */
-    public Boolean hasBeenDestroyed() {
+    protected Boolean hasBeenDestroyed() {
         Boolean hasBeenDestroyed = false;
         if (otterAppFactory != null || servletGateway != null) {
             hasBeenDestroyed = true;
@@ -84,7 +92,7 @@ public abstract class OtterEntryServlet extends HttpServlet {
         context.addListener(asyncListener);
 
         ServletInputStream input = request.getInputStream();
-        ReadListener readListener = new ReadListenerImpl(servletGateway, input, context);
+        ReadListener readListener = new ReadListenerImpl(servletGateway, input, context, readChunkSize);
         input.setReadListener(readListener);
     }
 

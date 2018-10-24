@@ -11,6 +11,8 @@ public class ShapeBuilder {
     private SymmetricKey encKey;
     private Map<String, SymmetricKey> rotationSignKeys;
     private Map<String, SymmetricKey> rotationEncKeys;
+    private Integer writeChunkSize;
+    private Integer readChunkSize;
 
     public ShapeBuilder secure(Boolean secure) {
         this.secure = secure;
@@ -37,7 +39,17 @@ public class ShapeBuilder {
         return this;
     }
 
+    public ShapeBuilder writeChunkSize(Integer writeChunkSize) {
+        this.writeChunkSize = writeChunkSize;
+        return this;
+    }
+
+    public ShapeBuilder readChunkSize(Integer readChunkSize) {
+        this.readChunkSize = readChunkSize;
+        return this;
+    }
+
     public Shape build() {
-        return new Shape(secure, signKey, encKey, rotationSignKeys, rotationEncKeys);
+        return new Shape(secure, signKey, encKey, rotationSignKeys, rotationEncKeys, writeChunkSize, readChunkSize);
     }
 }

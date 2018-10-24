@@ -43,6 +43,7 @@ import java.util.Map;
  * Application Factory to construct objects in project.
  */
 public class OtterAppFactory {
+    public static Integer WRITE_CHUNK_SIZE = 1024;
     private static ObjectMapper objectMapper;
     private static ObjectReader objectReader;
     private static ObjectWriter objectWriter;
@@ -80,12 +81,15 @@ public class OtterAppFactory {
         LocationTranslatorFactory locationTranslatorFactory = locationTranslatorFactory(shape);
         Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators = locationTranslators(locationTranslatorFactory, groups);
 
+        Integer writeChunkSize = (shape.getWriteChunkSize() != null) ? shape.getWriteChunkSize() : WRITE_CHUNK_SIZE;
+
         return new ServletGateway(
                 httpServletRequestTranslator(),
                 httpServletRequestMerger(),
                 httpServletResponseMerger(),
                 engine(),
-                locationTranslators
+                locationTranslators,
+                writeChunkSize
         );
     }
 
