@@ -10,13 +10,17 @@ public class Shape {
     private SymmetricKey encKey;
     private Map<String, SymmetricKey> rotationSignKeys;
     private Map<String, SymmetricKey> rotationEncKeys;
+    private Integer writeChunkSize;
+    private Integer readChunkSize;
 
-    public Shape(Boolean secure, SymmetricKey signkey, SymmetricKey encKey, Map<String, SymmetricKey> rotationSignKeys, Map<String, SymmetricKey> rotationEncKeys) {
+    public Shape(Boolean secure, SymmetricKey signkey, SymmetricKey encKey, Map<String, SymmetricKey> rotationSignKeys, Map<String, SymmetricKey> rotationEncKeys, Integer writeChunkSize, Integer readChunkSize) {
         this.secure = secure;
         this.signkey = signkey;
         this.encKey = encKey;
         this.rotationSignKeys = rotationSignKeys;
         this.rotationEncKeys = rotationEncKeys;
+        this.writeChunkSize = writeChunkSize;
+        this.readChunkSize = readChunkSize;
     }
 
     public Boolean getSecure() {
@@ -57,5 +61,21 @@ public class Shape {
 
     public void setRotationEncKeys(Map<String, SymmetricKey> rotationEncKeys) {
         this.rotationEncKeys = rotationEncKeys;
+    }
+
+    public Integer getWriteChunkSize() {
+        return writeChunkSize;
+    }
+
+    public void setWriteChunkSize(Integer writeChunkSize) {
+        this.writeChunkSize = writeChunkSize;
+    }
+
+    public Integer getReadChunkSize() {
+        return readChunkSize;
+    }
+
+    public void setReadChunkSize(Integer readChunkSize) {
+        this.readChunkSize = readChunkSize;
     }
 }

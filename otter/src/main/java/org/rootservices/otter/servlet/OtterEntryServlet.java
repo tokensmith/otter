@@ -30,12 +30,28 @@ import java.util.List;
  */
 public abstract class OtterEntryServlet extends HttpServlet {
     public static final String DESTROYING_SERVLET = "destroying servlet";
-    protected static Logger logger = LogManager.getLogger(OtterEntryServlet.class);
-    protected OtterAppFactory otterAppFactory;
-    protected ServletGateway servletGateway;
+    public static final String INIT_AGAIN = "Servlet initializing after being destroyed. Not initializing Otter again.";
+    public static final String INIT_OTTER = "Initializing Otter";
+    protected static Logger LOGGER = LogManager.getLogger(OtterEntryServlet.class);
+    protected static OtterAppFactory otterAppFactory;
+    protected static ServletGateway servletGateway;
+
+    // async i/o read chunk size
+    protected static Integer DEFAULT_READ_CHUNK_SIZE = 1024;
+    protected static Integer readChunkSize;
 
     @Override
     public void init() throws ServletException {
+
+        if (hasBeenDestroyed()) {
+            LOGGER.info(INIT_AGAIN);
+        } else {
+            LOGGER.info(INIT_OTTER);
+            initOtter();
+        }
+    }
+
+    public void initOtter() throws ServletException {
         otterAppFactory = new OtterAppFactory();
         Configure configure = makeConfigure();
         Shape shape = configure.shape();
@@ -43,11 +59,29 @@ public abstract class OtterEntryServlet extends HttpServlet {
         try {
             servletGateway = otterAppFactory.servletGateway(shape, groups);
         } catch (SessionCtorException e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             throw new ServletException(e);
         }
 
         configure.routes(servletGateway);
+
+        // async i/o read chunk size.
+        readChunkSize = (shape.getReadChunkSize() != null) ? shape.getReadChunkSize() : DEFAULT_READ_CHUNK_SIZE;
+
+    }
+
+    /**
+     * Determines if this servlet has been destroyed. It is possible to check because
+     * otterAppFactory and servletGateway are static.
+     *
+     * @return True if its been destroyed before. False if it has not been destroyed.
+     */
+    protected Boolean hasBeenDestroyed() {
+        Boolean hasBeenDestroyed = false;
+        if (otterAppFactory != null || servletGateway != null) {
+            hasBeenDestroyed = true;
+        }
+        return hasBeenDestroyed;
     }
 
     public abstract Configure makeConfigure();
@@ -58,7 +92,7 @@ public abstract class OtterEntryServlet extends HttpServlet {
         context.addListener(asyncListener);
 
         ServletInputStream input = request.getInputStream();
-        ReadListener readListener = new ReadListenerImpl(servletGateway, input, context);
+        ReadListener readListener = new ReadListenerImpl(servletGateway, input, context, readChunkSize);
         input.setReadListener(readListener);
     }
 
@@ -89,7 +123,7 @@ public abstract class OtterEntryServlet extends HttpServlet {
 
     @Override
     public void destroy() {
-        logger.info(DESTROYING_SERVLET);
+        LOGGER.info(DESTROYING_SERVLET);
         super.destroy();
     }
 }

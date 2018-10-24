@@ -20,19 +20,21 @@ public class ReadListenerImpl implements ReadListener {
     private ServletGateway servletGateway;
     private ServletInputStream input = null;
     private AsyncContext ac = null;
+    private Integer readChunkSize;
     private Queue<byte[]> queue = new LinkedBlockingQueue<byte[]>();
 
-    public ReadListenerImpl(ServletGateway sg, ServletInputStream in, AsyncContext c) {
-        servletGateway = sg;
-        input = in;
-        ac = c;
+    public ReadListenerImpl(ServletGateway sg, ServletInputStream in, AsyncContext ac, Integer readChunkSize) {
+        this.servletGateway = sg;
+        this.input = in;
+        this.ac = ac;
+        this.readChunkSize = readChunkSize;
     }
 
     @Override
     public void onDataAvailable() throws IOException {
 
         int len = -1;
-        byte fixedBuffer[] = new byte[1024];
+        byte fixedBuffer[] = new byte[readChunkSize];
         ByteArrayOutputStream variableBuffer = new ByteArrayOutputStream();
 
         while (input.isReady() && (len = input.read(fixedBuffer)) != -1 && !input.isFinished()) {
@@ -51,8 +53,8 @@ public class ReadListenerImpl implements ReadListener {
         GatewayResponse gatewayResponse = servletGateway.processRequest(request, response, body);
 
         if (gatewayResponse.getPayload().isPresent()) {
-            // its a API .. json
-            Queue out = byteArrayToQueue(gatewayResponse.getPayload().get(), 1024);
+            // its an API .. json
+            Queue out = byteArrayToQueue(gatewayResponse.getPayload().get(), gatewayResponse.getWriteChunkSize());
             ServletOutputStream output = response.getOutputStream();
             WriteListener writeListener = new WriteListenerImpl(output, out, ac);
             output.setWriteListener(writeListener);
@@ -63,15 +65,6 @@ public class ReadListenerImpl implements ReadListener {
             // probably the not found resource.
             ac.complete();
         }
-    }
-
-    public String queueToString(Queue<byte[]> queue) {
-        StringBuilder sb = new StringBuilder();
-        while (queue.peek() != null) {
-            String data = new String(queue.poll());
-            sb.append(data);
-        }
-        return sb.toString();
     }
 
     public byte[] queueToByteArray(Queue<byte[]> queue) {
