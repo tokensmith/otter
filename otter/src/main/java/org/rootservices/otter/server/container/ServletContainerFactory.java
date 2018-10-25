@@ -21,6 +21,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.EnumSet;
+import java.util.Map;
 
 
 /**
@@ -50,22 +51,23 @@ public class ServletContainerFactory {
      * @param clazz a class in your project.
      * @param port the port the container should use. 0 will randomly assign a port.
      * @param requestLog path to the request log
+     * @param errorPageHandler Map of status codes to urls for the container to handle errors.
      * @return a configured instance of ServletContainer
      * @throws URISyntaxException if an issue occurred constructing a URI
      * @throws IOException if issues come up regarding webapp or containerResources
      */
-    public ServletContainer makeServletContainer(String documentRoot, Class clazz, int port, String requestLog) throws URISyntaxException, IOException {
+    public ServletContainer makeServletContainer(String documentRoot, Class clazz, int port, String requestLog, Map<Integer, String> errorPageHandler) throws URISyntaxException, IOException {
         URI compliedClassPath = compiledClassPath.getForClass(clazz);
         URI webApp = webAppPath.fromClassURI(compliedClassPath);
 
-        return makeServletContainer(documentRoot, webApp, compliedClassPath, port, requestLog);
+        return makeServletContainer(documentRoot, webApp, compliedClassPath, port, requestLog, errorPageHandler);
     }
 
-    public ServletContainer makeServletContainer(String documentRoot, Class clazz, String customWebAppLocation, int port, String requestLog) throws URISyntaxException, IOException {
+    public ServletContainer makeServletContainer(String documentRoot, Class clazz, String customWebAppLocation, int port, String requestLog, Map<Integer, String> errorPageHandler) throws URISyntaxException, IOException {
         URI compliedClassPath = compiledClassPath.getForClass(clazz);
         URI webApp = webAppPath.fromClassURI(compliedClassPath, customWebAppLocation);
 
-        return makeServletContainer(documentRoot, webApp, compliedClassPath, port, requestLog);
+        return makeServletContainer(documentRoot, webApp, compliedClassPath, port, requestLog, errorPageHandler);
     }
 
     /**
@@ -75,10 +77,11 @@ public class ServletContainerFactory {
      * @param compliedClassPath absolute file path to, target/classes/ in your project.
      * @param port the port the container should use. 0 will randomly assign a port.
      * @param requestLog path to the request log
+     * @param errorPageHandler Map of status codes to urls for the container to handle errors.
      * @return a configured instance of ServletContainer
      * @throws IOException if issues come up regarding webapp or containerResources
      */
-    public ServletContainer makeServletContainer(String documentRoot, URI webApp, URI compliedClassPath, int port, String requestLog) throws IOException {
+    public ServletContainer makeServletContainer(String documentRoot, URI webApp, URI compliedClassPath, int port, String requestLog, Map<Integer, String> errorPageHandler) throws IOException {
         logger.debug("Web App location: " + webApp.toURL());
         logger.debug("Compiled Class path: " + compliedClassPath.toURL());
         Server jetty = new Server(port);
@@ -91,12 +94,12 @@ public class ServletContainerFactory {
         WebAppContext context;
         if (compliedClassPath.toURL().getFile().endsWith("war")) {
             logger.debug("Using a war file");
-            context = makeWebAppContextForWAR(documentRoot, configurations, containerResources);
+            context = makeWebAppContextForWAR(documentRoot, configurations, containerResources, errorPageHandler);
         } else {
             logger.debug("Not a war file");
 
             context = makeWebAppContext(
-                    documentRoot, resourceBase, configurations, containerResources
+                    documentRoot, resourceBase, configurations, containerResources, errorPageHandler
             );
         }
         jetty.setHandler(context);
@@ -114,11 +117,11 @@ public class ServletContainerFactory {
         return server;
     }
 
-    public ServletContainer makeServletContainerFromWar(String documentRoot, URI warFilePath, int port, String requestLog) throws IOException {
+    public ServletContainer makeServletContainerFromWar(String documentRoot, URI warFilePath, int port, String requestLog, Map<Integer, String> errorPageHandler) throws IOException {
 
         Configuration[] configurations = makeConfigurations();
         PathResource warFileResource = makeFileResource(warFilePath);
-        WebAppContext context = makeWebAppContextForWAR(documentRoot, configurations, warFileResource);
+        WebAppContext context = makeWebAppContextForWAR(documentRoot, configurations, warFileResource, errorPageHandler);
 
         Server jetty = new Server(port);
         jetty.setHandler(context);
@@ -135,9 +138,9 @@ public class ServletContainerFactory {
         return server;
     }
 
-    protected WebAppContext makeWebAppContext(String documentRoot, String resourceBase, Configuration[] configurations, PathResource containerResources) {
+    protected WebAppContext makeWebAppContext(String documentRoot, String resourceBase, Configuration[] configurations, PathResource containerResources, Map<Integer, String> errorPageHandler) {
 
-        WebAppContext webAppContext = new WebAppContextBuilder()
+        WebAppContextBuilder webAppContextBuilder = new WebAppContextBuilder()
                 .classLoader(Thread.currentThread().getContextClassLoader())
                 .resourceBase(resourceBase)
                 .configurations(configurations)
@@ -147,20 +150,24 @@ public class ServletContainerFactory {
                 .parentLoaderPriority(true)
                 .attribute(INCLUDE_JAR_PATTERN, JARS_TO_INCLUDE)
                 .jspServlet(JSP_SERVLET)
-                .errorPageHandler(404, "/notFound")
                 .stateless()
-                .staticAssetServlet(resourceBase + "/public/")
-                .build();
+                .staticAssetServlet(resourceBase + "/public/");
+
+        errorPageHandler.entrySet().stream().forEach(
+                e -> webAppContextBuilder.errorPageHandler(e.getKey(), e.getValue())
+        );
+
+        WebAppContext webAppContext = webAppContextBuilder.build();
 
         webAppContext.addFilter(EntryFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
 
         return webAppContext;
     }
 
-    protected WebAppContext makeWebAppContextForWAR(String documentRoot, Configuration[] configurations, Resource war) {
+    protected WebAppContext makeWebAppContextForWAR(String documentRoot, Configuration[] configurations, Resource war, Map<Integer, String> errorPageHandler) {
         logger.debug("war: " + war.getURI().toString());
 
-        WebAppContext webAppContext = new WebAppContextBuilder()
+        WebAppContextBuilder webAppContextBuilder = new WebAppContextBuilder()
                 .classLoader(Thread.currentThread().getContextClassLoader())
                 .configurations(configurations)
                 .initParameter(DIR_ALLOWED_KEY, FALSE)
@@ -168,10 +175,14 @@ public class ServletContainerFactory {
                 .parentLoaderPriority(true)
                 .attribute(INCLUDE_JAR_PATTERN, JARS_TO_INCLUDE)
                 .jspServlet(JSP_SERVLET)
-                .errorPageHandler(404, "/notFound")
                 .stateless()
-                .staticAssetServletWar("/public/")
-                .build();
+                .staticAssetServletWar("/public/");
+
+        errorPageHandler.entrySet().stream().forEach(
+                e -> webAppContextBuilder.errorPageHandler(e.getKey(), e.getValue())
+        );
+
+        WebAppContext webAppContext = webAppContextBuilder.build();
 
         webAppContext.addFilter(EntryFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         webAppContext.setExtractWAR(true);

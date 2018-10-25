@@ -122,6 +122,7 @@ public class ServletGatewayTest {
         assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate(), is(notNullValue()));
         assertThat(actual.getTemplate().isPresent(), is(false));
+        assertThat(actual.getWriteChunkSize(), is(OtterAppFactory.WRITE_CHUNK_SIZE));
 
         verify(mockContainerResponse).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
@@ -144,6 +145,7 @@ public class ServletGatewayTest {
         assertThat(actual.getPayload().isPresent(), is(false));
         assertThat(actual.getTemplate(), is(notNullValue()));
         assertThat(actual.getTemplate().isPresent(), is(false));
+        assertThat(actual.getWriteChunkSize(), is(OtterAppFactory.WRITE_CHUNK_SIZE));
 
         verify(mockContainerResponse).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }

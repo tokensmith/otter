@@ -11,10 +11,13 @@ import org.junit.experimental.categories.Categories;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.rootservices.otter.config.OtterAppFactory;
+import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.server.container.ServletContainer;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.asynchttpclient.Dsl.asyncHttpClient;
 
@@ -39,6 +42,7 @@ public class IntegrationTestSuite {
     private static String DOCUMENT_ROOT = "/";
     private static int RANDOM_PORT = 0;
     private static String REQUEST_LOG = "logs/jetty/jetty-test-yyyy_mm_dd.request.log";
+    public static final String NOT_FOUND_PATH = "/notFound";
 
     /**
      * Configures a servlet container then starts it.
@@ -51,10 +55,12 @@ public class IntegrationTestSuite {
         otterTestAppFactory = new OtterAppFactory();
         servletContainerFactory = otterTestAppFactory.servletContainerFactory();
 
-        String webAppLocation = "/src/test/java/integration/app/webapp";
+        Map<Integer, String> errorPageHandler = new HashMap<>();
+        errorPageHandler.put(StatusCode.NOT_FOUND.getCode(), NOT_FOUND_PATH);
 
-        // servletContainer = servletContainerFactory.makeServletContainer(DOCUMENT_ROOT, HelloResource.class, webAppLocation, RANDOM_PORT, REQUEST_LOG);
-        servletContainer = servletContainerFactory.makeServletContainer(DOCUMENT_ROOT, HelloResource.class, RANDOM_PORT, REQUEST_LOG);
+        servletContainer = servletContainerFactory.makeServletContainer(
+                DOCUMENT_ROOT, HelloResource.class, RANDOM_PORT, REQUEST_LOG, errorPageHandler
+        );
         servletContainer.start();
 
         servletContainerURI = servletContainer.getURI();

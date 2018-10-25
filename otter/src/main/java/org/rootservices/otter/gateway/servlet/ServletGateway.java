@@ -75,15 +75,15 @@ public class ServletGateway extends Gateway {
             } else {
                 gatewayResponse.setPayload(Optional.empty());
             }
-            gatewayResponse.setWriteChunkSize(writeChunkSize);
             gatewayResponse.setTemplate(resourceAnswer.getTemplate());
-
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
             containerResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             containerResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        } finally {
+            gatewayResponse.setWriteChunkSize(writeChunkSize);
         }
         return gatewayResponse;
     }
