@@ -7,6 +7,7 @@ import helper.entity.DummyUser;
 import helper.fake.FakeResource;
 import org.junit.Test;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
+import org.rootservices.otter.controller.entity.DefaultPayload;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.gateway.entity.ErrorTarget;
@@ -21,15 +22,15 @@ import static org.junit.Assert.*;
 
 public class TargetBuilderTest {
 
-    public TargetBuilder<DummySession, DummyUser> subject() {
-        return new TargetBuilder<DummySession, DummyUser>();
+    public TargetBuilder<DummySession, DummyUser, DefaultPayload> subject() {
+        return new TargetBuilder<DummySession, DummyUser, DefaultPayload>();
     }
 
     @Test
     public void buildShouldHaveEmptyLists() {
-        TargetBuilder<DummySession, DummyUser> subject = subject();
+        TargetBuilder<DummySession, DummyUser, DefaultPayload> subject = subject();
 
-        Target<DummySession, DummyUser> actual = subject.build();
+        Target<DummySession, DummyUser, DefaultPayload> actual = subject.build();
 
         assertThat(actual.getContentTypes().size(), is(0));
         assertThat(actual.getMethods().size(), is(0));
@@ -40,7 +41,7 @@ public class TargetBuilderTest {
 
     @Test
     public void buildShouldBeOk() {
-        TargetBuilder<DummySession, DummyUser> subject = subject();
+        TargetBuilder<DummySession, DummyUser, DefaultPayload> subject = subject();
 
         FakeResource notFoundResource = new FakeResource();
         ErrorTarget<DummySession, DummyUser> notFound = new ErrorTargetBuilder<DummySession, DummyUser>()
@@ -50,7 +51,7 @@ public class TargetBuilderTest {
         FakeResource fakeResource = new FakeResource();
         MimeType json = new MimeTypeBuilder().json().build();
 
-        Target<DummySession, DummyUser> actual = subject
+        Target<DummySession, DummyUser, DefaultPayload> actual = subject
                 .regex("/foo")
                 .method(Method.GET)
                 .method(Method.POST)
@@ -83,7 +84,7 @@ public class TargetBuilderTest {
 
     @Test
     public void buildWhenMethodContentTypeShouldBeOk() {
-        TargetBuilder<DummySession, DummyUser> subject = subject();
+        TargetBuilder<DummySession, DummyUser, DefaultPayload> subject = subject();
 
         FakeResource notFoundResource = new FakeResource();
         ErrorTarget<DummySession, DummyUser> notFound = new ErrorTargetBuilder<DummySession, DummyUser>()
@@ -94,7 +95,7 @@ public class TargetBuilderTest {
         MimeType json = new MimeTypeBuilder().json().build();
         MimeType jwt = new MimeTypeBuilder().jwt().build();
 
-        Target<DummySession, DummyUser> actual = subject
+        Target<DummySession, DummyUser, DefaultPayload> actual = subject
                 .regex("/foo")
                 .method(Method.GET)
                 .method(Method.POST)

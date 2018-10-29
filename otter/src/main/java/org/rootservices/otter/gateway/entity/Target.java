@@ -7,12 +7,13 @@ import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Method;
+import org.rootservices.otter.translatable.Translatable;
 
 import java.util.List;
 import java.util.Map;
 
 
-public class Target<S extends DefaultSession, U extends DefaultUser> {
+public class Target<S extends DefaultSession, U extends DefaultUser, P extends Translatable> {
     private List<Method> methods;
     private String regex;
     private Resource<S, U> resource;

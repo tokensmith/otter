@@ -5,6 +5,7 @@ import helper.entity.DummySession;
 import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
+import org.rootservices.otter.controller.entity.DefaultPayload;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
 
@@ -25,7 +26,7 @@ public class LocationTranslatorFactoryTest {
 
     @Test
     public void shouldMakeLocationTranslator() throws Exception {
-        LocationTranslator<DummySession, DummyUser> actual = subject.make(DummySession.class, Optional.empty(), Optional.empty());
+        LocationTranslator<DummySession, DummyUser, DefaultPayload> actual = subject.make(DummySession.class, Optional.empty(), Optional.empty());
 
         assertThat(actual, is(notNullValue()));
     }

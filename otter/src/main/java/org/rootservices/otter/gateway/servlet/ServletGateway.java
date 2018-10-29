@@ -16,7 +16,7 @@ import org.rootservices.otter.router.builder.AnswerBuilder;
 import org.rootservices.otter.router.entity.io.Answer;
 import org.rootservices.otter.router.entity.io.Ask;
 import org.rootservices.otter.router.exception.HaltException;
-
+import org.rootservices.otter.translatable.Translatable;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +38,7 @@ public class ServletGateway extends Gateway {
     private HttpServletResponseMerger httpServletResponseMerger;
     private Integer writeChunkSize;
 
-    public ServletGateway(HttpServletRequestTranslator httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger httpServletResponseMerger, Engine engine, Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators, Integer writeChunkSize) {
+    public ServletGateway(HttpServletRequestTranslator httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger httpServletResponseMerger, Engine engine, Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser, ? extends Translatable>> locationTranslators, Integer writeChunkSize) {
         super(engine, locationTranslators);
         this.httpServletRequestTranslator = httpServletRequestTranslator;
         this.httpServletRequestMerger = httpServletRequestMerger;

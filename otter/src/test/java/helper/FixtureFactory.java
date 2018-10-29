@@ -18,10 +18,7 @@ import org.rootservices.jwt.serialization.exception.JsonToJwtException;
 import org.rootservices.jwt.serialization.exception.JwtToJsonException;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.builder.ResponseBuilder;
-import org.rootservices.otter.controller.entity.Cookie;
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
-import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.entity.*;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.controller.header.HeaderValue;
@@ -146,7 +143,7 @@ public class FixtureFactory {
         return locations;
     }
 
-    public static Target<DummySession, DummyUser> makeTarget() {
+    public static Target<DummySession, DummyUser, DefaultPayload> makeTarget() {
 
         FakeResource notFoundResource = new FakeResource();
         ErrorTarget<DummySession, DummyUser> notFound = new ErrorTargetBuilder<DummySession, DummyUser>()
@@ -156,7 +153,7 @@ public class FixtureFactory {
         FakeResource fakeResource = new FakeResource();
         MimeType json = new MimeTypeBuilder().json().build();
 
-        TargetBuilder<DummySession, DummyUser> targetBuilder = new TargetBuilder<DummySession, DummyUser>();
+        TargetBuilder<DummySession, DummyUser, DefaultPayload> targetBuilder = new TargetBuilder<DummySession, DummyUser, DefaultPayload>();
 
         return targetBuilder
                 .regex("/foo")

@@ -13,19 +13,20 @@ import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.router.factory.BetweenFactory;
 import org.rootservices.otter.security.builder.entity.Betweens;
+import org.rootservices.otter.translatable.Translatable;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class LocationTranslator<S extends DefaultSession, U extends DefaultUser> {
+public class LocationTranslator<S extends DefaultSession, U extends DefaultUser, P extends Translatable> {
     private BetweenFactory<S, U> betweenFactory;
 
     public LocationTranslator(BetweenFactory<S, U> betweenFactory) {
         this.betweenFactory = betweenFactory;
     }
 
-    public Map<Method, Location> to(Target<S, U> from) {
+    public Map<Method, Location> to(Target<S, U, P> from) {
         Map<Method, Location> to = new HashMap<>();
 
         for(Method method: from.getMethods()) {

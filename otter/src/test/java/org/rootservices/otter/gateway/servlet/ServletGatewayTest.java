@@ -21,6 +21,7 @@ import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.router.entity.io.Answer;
 import org.rootservices.otter.router.entity.io.Ask;
+import org.rootservices.otter.translatable.Translatable;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,7 +58,7 @@ public class ServletGatewayTest {
 
         when(mockEngine.getDispatcher()).thenReturn(mockDispatcher);
 
-        Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators;
+        Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser, ? extends Translatable>> locationTranslators;
         locationTranslators = new HashMap<>();
 
         subject = new ServletGateway(

@@ -10,6 +10,7 @@ import org.rootservices.otter.router.factory.BetweenFactory;
 import org.rootservices.otter.security.builder.BetweenBuilder;
 import org.rootservices.otter.security.builder.entity.Betweens;
 import org.rootservices.otter.security.exception.SessionCtorException;
+import org.rootservices.otter.translatable.Translatable;
 
 import java.util.Optional;
 
@@ -24,8 +25,8 @@ public class LocationTranslatorFactory {
         this.shape = shape;
     }
 
-    public <S extends DefaultSession, U extends DefaultUser> LocationTranslator<S, U> make(Class<S> sessionClazz, Optional<Between<S,U>> authRequired, Optional<Between<S,U>> authOptional) throws SessionCtorException {
-        return new LocationTranslator<S, U>(
+    public <S extends DefaultSession, U extends DefaultUser, P extends Translatable> LocationTranslator<S, U, P> make(Class<S> sessionClazz, Optional<Between<S,U>> authRequired, Optional<Between<S,U>> authOptional) throws SessionCtorException {
+        return new LocationTranslator<S, U, P>(
                 betweenFactory(sessionClazz, authRequired, authOptional)
         );
     }

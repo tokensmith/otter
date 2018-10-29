@@ -10,13 +10,14 @@ import org.rootservices.otter.gateway.entity.Target;
 import org.rootservices.otter.gateway.entity.Label;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Method;
+import org.rootservices.otter.translatable.Translatable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
+public class TargetBuilder<S extends DefaultSession, U extends DefaultUser, P extends Translatable> {
     private List<Method> methods = new ArrayList<>();
     private String regex;
     private Resource<S, U> resource;
@@ -27,29 +28,29 @@ public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
     private Map<StatusCode, ErrorTarget<S, U>> errorTargets = new HashMap<>();
     private String groupName;
 
-    public TargetBuilder<S, U> method(Method method) {
+    public TargetBuilder<S, U, P> method(Method method) {
         methods.add(method);
         return this;
     }
 
-    public TargetBuilder<S, U> regex(String regex) {
+    public TargetBuilder<S, U, P> regex(String regex) {
         this.regex = regex;
         return this;
     }
 
-    public TargetBuilder<S, U> resource(Resource<S, U> resource) {
+    public TargetBuilder<S, U, P> resource(Resource<S, U> resource) {
         this.resource = resource;
         return this;
     }
 
-    public TargetBuilder<S, U> contentType(MimeType contentType) {
+    public TargetBuilder<S, U, P> contentType(MimeType contentType) {
         for(Method method: Method.values()) {
             contentType(method, contentType);
         }
         return this;
     }
 
-    public TargetBuilder<S, U> contentType(Method method, MimeType contentType) {
+    public TargetBuilder<S, U, P> contentType(Method method, MimeType contentType) {
         List<MimeType> mimeTypes = this.contentTypes.get(method);
         if (mimeTypes == null) {
             mimeTypes = new ArrayList<>();
@@ -59,32 +60,32 @@ public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
         return this;
     }
 
-    public TargetBuilder<S, U> label(Label label) {
+    public TargetBuilder<S, U, P> label(Label label) {
         this.labels.add(label);
         return this;
     }
 
-    public TargetBuilder<S, U> before(Between<S, U> before) {
+    public TargetBuilder<S, U, P> before(Between<S, U> before) {
         this.before.add(before);
         return this;
     }
 
-    public TargetBuilder<S, U> after(Between<S, U> after) {
+    public TargetBuilder<S, U, P> after(Between<S, U> after) {
         this.after.add(after);
         return this;
     }
 
-    public TargetBuilder<S, U> errorTarget(StatusCode statusCode, ErrorTarget<S, U> errorTarget) {
+    public TargetBuilder<S, U, P> errorTarget(StatusCode statusCode, ErrorTarget<S, U> errorTarget) {
         this.errorTargets.put(statusCode, errorTarget);
         return this;
     }
 
-    public TargetBuilder<S, U> groupName(String groupName) {
+    public TargetBuilder<S, U, P> groupName(String groupName) {
         this.groupName = groupName;
         return this;
     }
 
-    public Target<S, U> build() {
-        return new Target<S, U>(methods, regex, resource, contentTypes, labels, before, after, errorTargets, groupName);
+    public Target<S, U, P> build() {
+        return new Target<S, U, P>(methods, regex, resource, contentTypes, labels, before, after, errorTargets, groupName);
     }
 }

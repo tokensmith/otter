@@ -30,6 +30,7 @@ import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 import org.rootservices.otter.server.path.CompiledClassPath;
 import org.rootservices.otter.server.path.WebAppPath;
+import org.rootservices.otter.translatable.Translatable;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.MimeTypeTranslator;
 
@@ -79,7 +80,7 @@ public class OtterAppFactory {
 
     public ServletGateway servletGateway(Shape shape, List<Group<? extends DefaultSession,? extends DefaultUser>> groups) throws SessionCtorException {
         LocationTranslatorFactory locationTranslatorFactory = locationTranslatorFactory(shape);
-        Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators = locationTranslators(locationTranslatorFactory, groups);
+        Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser, ? extends Translatable>> locationTranslators = locationTranslators(locationTranslatorFactory, groups);
 
         Integer writeChunkSize = (shape.getWriteChunkSize() != null) ? shape.getWriteChunkSize() : WRITE_CHUNK_SIZE;
 
@@ -102,8 +103,8 @@ public class OtterAppFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public <S extends DefaultSession, U extends DefaultUser> Map<String, LocationTranslator<? extends S, ? extends U>> locationTranslators(LocationTranslatorFactory locationTranslatorFactory, List<Group<? extends S, ? extends U>> groups) throws SessionCtorException {
-        Map<String, LocationTranslator<? extends S, ? extends U>> locationTranslators = new HashMap<>();
+    public <S extends DefaultSession, U extends DefaultUser, P extends Translatable> Map<String, LocationTranslator<? extends S, ? extends U, ? extends P>> locationTranslators(LocationTranslatorFactory locationTranslatorFactory, List<Group<? extends S, ? extends U>> groups) throws SessionCtorException {
+        Map<String, LocationTranslator<? extends S, ? extends U, ? extends P>> locationTranslators = new HashMap<>();
 
         for(Group<? extends S, ? extends U> group: groups) {
             Group<S, U> castedGroup = (Group<S,U>) group;

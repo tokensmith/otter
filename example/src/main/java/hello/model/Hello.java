@@ -1,8 +1,9 @@
 package hello.model;
 
 
+import org.rootservices.otter.translatable.Translatable;
 
-public class Hello {
+public class Hello implements Translatable {
     private String message;
 
     public Hello() {}

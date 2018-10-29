@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.rootservices.otter.controller.entity.DefaultPayload;
 import org.rootservices.otter.dispatch.RouteRun;
 import org.rootservices.otter.gateway.entity.Target;
 import org.rootservices.otter.router.entity.Location;
@@ -24,14 +25,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class LocationTranslatorTest {
-    private LocationTranslator<DummySession, DummyUser> subject;
+    private LocationTranslator<DummySession, DummyUser, DefaultPayload> subject;
     @Mock
     private BetweenFactory<DummySession, DummyUser> mockBetweenFactory;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        subject = new LocationTranslator<DummySession, DummyUser>(mockBetweenFactory);
+        subject = new LocationTranslator<DummySession, DummyUser, DefaultPayload>(mockBetweenFactory);
     }
 
     @SuppressWarnings("unchecked")
@@ -40,7 +41,7 @@ public class LocationTranslatorTest {
         Betweens<DummySession, DummyUser> betweens = FixtureFactory.makeBetweens();
         when(mockBetweenFactory.make(any(), any())).thenReturn(betweens);
 
-        Target<DummySession, DummyUser> target = FixtureFactory.makeTarget();
+        Target<DummySession, DummyUser, DefaultPayload> target = FixtureFactory.makeTarget();
 
         Map<Method, Location> actual =  subject.to(target);
 

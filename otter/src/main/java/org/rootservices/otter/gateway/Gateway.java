@@ -8,13 +8,13 @@ import org.rootservices.otter.dispatch.RouteRun;
 import org.rootservices.otter.dispatch.RouteRunner;
 import org.rootservices.otter.dispatch.translator.AnswerTranslator;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;
-import org.rootservices.otter.gateway.entity.Group;
 import org.rootservices.otter.gateway.entity.Target;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
+import org.rootservices.otter.translatable.Translatable;
 
 
 import java.util.Map;
@@ -29,9 +29,9 @@ import java.util.Map;
  */
 public class Gateway {
     protected Engine engine;
-    protected Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators;
+    protected Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser, ? extends Translatable>> locationTranslators;
 
-    public Gateway(Engine engine, Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators) {
+    public Gateway(Engine engine, Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser, ? extends Translatable>> locationTranslators) {
         this.engine = engine;
         this.locationTranslators = locationTranslators;
     }
@@ -41,8 +41,8 @@ public class Gateway {
         return location;
     }
 
-    public <S extends DefaultSession, U extends DefaultUser> void add(Target<S, U> target) {
-        LocationTranslator<S, U> locationTranslator = locationTranslator(target.getGroupName());
+    public <S extends DefaultSession, U extends DefaultUser, P extends Translatable> void add(Target<S, U, P> target) {
+        LocationTranslator<S, U, P> locationTranslator = locationTranslator(target.getGroupName());
 
         Map<Method, Location> locations = locationTranslator.to(target);
         for(Map.Entry<Method, Location> location: locations.entrySet()) {
@@ -65,8 +65,8 @@ public class Gateway {
      * @return the locationTranslator for the group
      */
     @SuppressWarnings("unchecked")
-    public <S extends DefaultSession, U extends DefaultUser> LocationTranslator<S, U> locationTranslator(String groupName) {
-        return (LocationTranslator<S, U>) locationTranslators.get(groupName);
+    public <S extends DefaultSession, U extends DefaultUser, P extends Translatable> LocationTranslator<S, U, P> locationTranslator(String groupName) {
+        return (LocationTranslator<S, U, P>) locationTranslators.get(groupName);
     }
 
     public <S extends DefaultSession, U extends DefaultUser> void setErrorRoute(StatusCode statusCode, Route<S, U> errorRoute) {

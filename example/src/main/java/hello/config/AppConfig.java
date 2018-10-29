@@ -6,10 +6,12 @@ import hello.controller.api.HelloRestResource;
 import hello.controller.api.between.AuthRestBetween;
 import hello.controller.api.model.ApiSession;
 import hello.controller.api.model.ApiUser;
+import hello.model.Hello;
 import hello.security.TokenSession;
 import hello.security.User;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
+import org.rootservices.otter.controller.entity.DefaultPayload;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -81,7 +83,7 @@ public class AppConfig implements Configure {
 
         // requires content type.
         MimeType json = new MimeTypeBuilder().json().build();
-        Target<ApiSession, ApiUser> helloAPI = new TargetBuilder<ApiSession, ApiUser>()
+        Target<ApiSession, ApiUser, Hello> helloAPI = new TargetBuilder<ApiSession, ApiUser, Hello>()
                 .method(Method.GET)
                 .method(Method.POST)
                 .resource(appFactory.helloRestResource())
@@ -94,7 +96,7 @@ public class AppConfig implements Configure {
         gateway.add(helloAPI);
 
         // does not require content-type
-        Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
+        Target<TokenSession, User, DefaultPayload> hello = new TargetBuilder<TokenSession, User, DefaultPayload>()
             .method(Method.GET)
             .resource(new HelloResource())
             .regex(HelloResource.URL)
@@ -104,7 +106,7 @@ public class AppConfig implements Configure {
         gateway.add(hello);
 
         // csrf
-        Target<TokenSession, User> login = new TargetBuilder<TokenSession, User>()
+        Target<TokenSession, User, DefaultPayload> login = new TargetBuilder<TokenSession, User, DefaultPayload>()
                 .method(Method.GET)
                 .method(Method.POST)
                 .resource(new LoginResource())
@@ -116,7 +118,7 @@ public class AppConfig implements Configure {
         gateway.add(login);
 
         // csrf & session
-        Target<TokenSession, User> loginWithSession = new TargetBuilder<TokenSession, User>()
+        Target<TokenSession, User, DefaultPayload> loginWithSession = new TargetBuilder<TokenSession, User, DefaultPayload>()
                 .method(Method.GET)
                 .method(Method.POST)
                 .resource(new LoginSessionResource())
@@ -129,7 +131,7 @@ public class AppConfig implements Configure {
         gateway.add(loginWithSession);
 
         // set session
-        Target<TokenSession, User> loginSetSessionResource = new TargetBuilder<TokenSession, User>()
+        Target<TokenSession, User, DefaultPayload> loginSetSessionResource = new TargetBuilder<TokenSession, User, DefaultPayload>()
                 .method(Method.GET)
                 .method(Method.POST)
                 .resource(new LoginSetSessionResource())
@@ -142,7 +144,7 @@ public class AppConfig implements Configure {
         gateway.add(loginSetSessionResource);
 
         // session
-        Target<TokenSession, User> protectedTarget = new TargetBuilder<TokenSession, User>()
+        Target<TokenSession, User, DefaultPayload> protectedTarget = new TargetBuilder<TokenSession, User, DefaultPayload>()
                 .method(Method.GET)
                 .method(Method.POST)
                 .resource(new ProtectedResource())
