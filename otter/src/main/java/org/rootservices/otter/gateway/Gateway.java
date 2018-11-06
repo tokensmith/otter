@@ -4,11 +4,11 @@ package org.rootservices.otter.gateway;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.dispatch.RouteRun;
+import org.rootservices.otter.dispatch.HtmlRouteRun;
 import org.rootservices.otter.dispatch.RouteRunner;
 import org.rootservices.otter.dispatch.translator.AnswerTranslator;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;
-import org.rootservices.otter.gateway.entity.Target;
+import org.rootservices.otter.gateway.entity.target.Target;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.entity.Location;
@@ -62,6 +62,7 @@ public class Gateway {
      * @param groupName the name of the group. Used as a lookup key for the translator.
      * @param <S> Session
      * @param <U> User
+     * @param <U> Payload
      * @return the locationTranslator for the group
      */
     @SuppressWarnings("unchecked")
@@ -69,11 +70,11 @@ public class Gateway {
         return (LocationTranslator<S, U, P>) locationTranslators.get(groupName);
     }
 
-    public <S extends DefaultSession, U extends DefaultUser> void setErrorRoute(StatusCode statusCode, Route<S, U> errorRoute) {
-        RequestTranslator<S, U> requestTranslator = new RequestTranslator<>();
+    public <S extends DefaultSession, U extends DefaultUser, P extends Translatable> void setErrorRoute(StatusCode statusCode, Route<S, U, P> errorRoute) {
+        RequestTranslator<S, U, P> requestTranslator = new RequestTranslator<S, U, P>();
         AnswerTranslator<S> answerTranslator = new AnswerTranslator<>();
 
-        RouteRunner errorRouteRunner = new RouteRun<S, U>(errorRoute, requestTranslator, answerTranslator);
+        RouteRunner errorRouteRunner = new HtmlRouteRun<S, U, P>(errorRoute, requestTranslator, answerTranslator);
         this.engine.getErrorRoutes().put(statusCode, errorRouteRunner);
     }
 

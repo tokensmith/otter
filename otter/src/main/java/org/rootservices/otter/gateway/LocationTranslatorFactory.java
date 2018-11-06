@@ -25,16 +25,16 @@ public class LocationTranslatorFactory {
         this.shape = shape;
     }
 
-    public <S extends DefaultSession, U extends DefaultUser, P extends Translatable> LocationTranslator<S, U, P> make(Class<S> sessionClazz, Optional<Between<S,U>> authRequired, Optional<Between<S,U>> authOptional) throws SessionCtorException {
+    public <S extends DefaultSession, U extends DefaultUser, P extends Translatable> LocationTranslator<S, U, P> make(Class<S> sessionClazz, Optional<Between<S,U, P>> authRequired, Optional<Between<S,U, P>> authOptional) throws SessionCtorException {
         return new LocationTranslator<S, U, P>(
                 betweenFactory(sessionClazz, authRequired, authOptional)
         );
     }
 
-    public <S, U> BetweenFactory<S, U> betweenFactory(Class<S> sessionClazz, Optional<Between<S,U>> authRequired, Optional<Between<S,U>> authOptional) throws SessionCtorException {
+    public <S, U, P> BetweenFactory<S, U, P> betweenFactory(Class<S> sessionClazz, Optional<Between<S,U, P>> authRequired, Optional<Between<S,U, P>> authOptional) throws SessionCtorException {
         OtterAppFactory otterAppFactory = new OtterAppFactory();
 
-        return new BetweenFactory<S, U>(
+        return new BetweenFactory<S, U, P>(
                 csrfPrepare(otterAppFactory),
                 csrfProtect(otterAppFactory),
                 session(otterAppFactory, sessionClazz),
@@ -44,8 +44,8 @@ public class LocationTranslatorFactory {
         );
     }
 
-    protected <S, U> Betweens<S, U> csrfPrepare(OtterAppFactory otterAppFactory) {
-        return new BetweenBuilder<S, U>()
+    protected <S, U, P> Betweens<S, U, P> csrfPrepare(OtterAppFactory otterAppFactory) {
+        return new BetweenBuilder<S, U, P>()
                 .otterFactory(otterAppFactory)
                 .secure(shape.getSecure())
                 .signKey(shape.getSignkey())
@@ -55,8 +55,8 @@ public class LocationTranslatorFactory {
 
     }
 
-    protected <S, U> Betweens<S, U> csrfProtect(OtterAppFactory otterAppFactory) {
-        return new BetweenBuilder<S, U>()
+    protected <S, U, P> Betweens<S, U, P> csrfProtect(OtterAppFactory otterAppFactory) {
+        return new BetweenBuilder<S, U, P>()
                 .otterFactory(otterAppFactory)
                 .secure(shape.getSecure())
                 .signKey(shape.getSignkey())
@@ -66,8 +66,8 @@ public class LocationTranslatorFactory {
 
     }
 
-    protected <S, U> Betweens<S, U> session(OtterAppFactory otterAppFactory, Class<S> sessionClazz) throws SessionCtorException {
-        return new BetweenBuilder<S, U>()
+    protected <S, U, P> Betweens<S, U, P> session(OtterAppFactory otterAppFactory, Class<S> sessionClazz) throws SessionCtorException {
+        return new BetweenBuilder<S, U, P>()
                 .otterFactory(otterAppFactory)
                 .secure(shape.getSecure())
                 .encKey(shape.getEncKey())
@@ -78,8 +78,8 @@ public class LocationTranslatorFactory {
     }
 
 
-    protected <S, U> Betweens<S, U> sessionOptional(OtterAppFactory otterAppFactory, Class<S> sessionClazz) throws SessionCtorException {
-        return new BetweenBuilder<S, U>()
+    protected <S, U, P> Betweens<S, U, P> sessionOptional(OtterAppFactory otterAppFactory, Class<S> sessionClazz) throws SessionCtorException {
+        return new BetweenBuilder<S, U, P>()
                 .otterFactory(otterAppFactory)
                 .secure(shape.getSecure())
                 .encKey(shape.getEncKey())

@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 public class RestResourceTest {
     @Mock
     private JsonTranslator<DummyPayload> mockJsonTranslator;
-    private RestResource<DummyPayload, DummySession, DummyUser> subject;
+    private RestResource<DummySession, DummyUser, DummyPayload> subject;
 
     @Before
     public void setUp() {
@@ -48,7 +48,7 @@ public class RestResourceTest {
 
     @Test
     public void getShouldBeNotImplemented() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         Response<DummySession> actual = subject.get(request, response);
@@ -64,7 +64,7 @@ public class RestResourceTest {
 
     @Test
     public void postShouldBeNotImplemented() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         request.setBody(makeBody());
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -85,7 +85,7 @@ public class RestResourceTest {
 
     @Test
     public void postWhenDuplicateKeyExceptionShouldBeBadRequest() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         request.setBody(makeBody());
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -109,7 +109,7 @@ public class RestResourceTest {
 
     @Test
     public void postWhenInvalidValueExceptionShouldBeBadRequest() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         request.setBody(makeBody());
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -133,7 +133,7 @@ public class RestResourceTest {
 
     @Test
     public void postWhenUnknownKeyExceptionShouldBeBadRequest() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         request.setBody(makeBody());
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -157,7 +157,7 @@ public class RestResourceTest {
 
     @Test
     public void postWhenInvalidPayloadExceptionShouldBeBadRequest() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         request.setBody(makeBody());
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -181,7 +181,7 @@ public class RestResourceTest {
 
     @Test
     public void postWhenToJsonExceptionShouldBeBadRequest() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         request.setBody(makeBody());
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -205,7 +205,7 @@ public class RestResourceTest {
 
     @Test
     public void putShouldBeNotImplemented() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         request.setBody(makeBody());
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -226,7 +226,7 @@ public class RestResourceTest {
 
     @Test
     public void putWhenDuplicateKeyExceptionShouldBeBadRequest() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         request.setBody(makeBody());
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -250,7 +250,7 @@ public class RestResourceTest {
 
     @Test
     public void putWhenInvalidValueExceptionShouldBeBadRequest() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         request.setBody(makeBody());
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -274,7 +274,7 @@ public class RestResourceTest {
 
     @Test
     public void putWhenUnknownKeyExceptionShouldBeBadRequest() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         request.setBody(makeBody());
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -298,7 +298,7 @@ public class RestResourceTest {
 
     @Test
     public void putWhenInvalidPayloadExceptionShouldBeBadRequest() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         request.setBody(makeBody());
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -322,7 +322,7 @@ public class RestResourceTest {
 
     @Test
     public void putWhenToJsonExceptionShouldBeBadRequest() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         request.setBody(makeBody());
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -346,7 +346,7 @@ public class RestResourceTest {
 
     @Test
     public void deleteShouldBeNotImplemented() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         Response<DummySession> actual = subject.delete(request, response);
@@ -362,7 +362,7 @@ public class RestResourceTest {
 
     @Test
     public void connectShouldBeNotImplemented() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         Response<DummySession> actual = subject.connect(request, response);
@@ -378,7 +378,7 @@ public class RestResourceTest {
 
     @Test
     public void optionsShouldBeNotImplemented() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         Response<DummySession> actual = subject.options(request, response);
@@ -394,7 +394,7 @@ public class RestResourceTest {
 
     @Test
     public void traceShouldBeNotImplemented() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         Response<DummySession> actual = subject.trace(request, response);
@@ -410,7 +410,7 @@ public class RestResourceTest {
 
     @Test
     public void patchShouldBeNotImplemented() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         request.setBody(makeBody());
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -431,7 +431,7 @@ public class RestResourceTest {
 
     @Test
     public void patchWhenDuplicateKeyExceptionShouldBeBadRequest() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         request.setBody(makeBody());
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -455,7 +455,7 @@ public class RestResourceTest {
 
     @Test
     public void patchWhenInvalidValueExceptionShouldBeBadRequest() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         request.setBody(makeBody());
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -479,7 +479,7 @@ public class RestResourceTest {
 
     @Test
     public void patchWhenUnknownKeyExceptionShouldBeBadRequest() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         request.setBody(makeBody());
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -503,7 +503,7 @@ public class RestResourceTest {
 
     @Test
     public void patchWhenInvalidPayloadExceptionShouldBeBadRequest() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         request.setBody(makeBody());
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -527,7 +527,7 @@ public class RestResourceTest {
 
     @Test
     public void patchWhenToJsonExceptionShouldBeBadRequest() throws Exception {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, DummyPayload> request = FixtureFactory.makeRestRequest();
         request.setBody(makeBody());
 
         Response<DummySession> response = FixtureFactory.makeResponse();

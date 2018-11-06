@@ -2,18 +2,15 @@ package org.rootservices.otter.dispatch;
 
 import helper.FixtureFactory;
 import helper.entity.*;
+import helper.fake.FakeResource;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
 import org.rootservices.otter.config.OtterAppFactory;
+import org.rootservices.otter.controller.entity.EmptyPayload;
 import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.dispatch.translator.AnswerTranslator;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;
-import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.router.entity.io.Answer;
@@ -27,23 +24,22 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-public class RouteRunTest {
+// TODO: these have rest tests need to remove them.
+public class HtmlRouteRunTest {
     private static OtterAppFactory otterAppFactory = new OtterAppFactory();
-    private RouteRun<DummySession, DummyUser> subject;
+    private HtmlRouteRun<DummySession, DummyUser, EmptyPayload> subject;
 
     @Before
     public void setUp(){
-        Route<DummySession, DummyUser> route = FixtureFactory.makeRoute();
-        JsonTranslator<DummyPayload> jsonTranslator = otterAppFactory.jsonTranslator(DummyPayload.class);
-        OkResource okResource = new OkResource(jsonTranslator);
+        Route<DummySession, DummyUser, EmptyPayload> route = FixtureFactory.makeRoute();
+        OkResource okResource = new OkResource();
         route.setResource(okResource);
 
-        RequestTranslator<DummySession, DummyUser> requestTranslator = new RequestTranslator<DummySession, DummyUser>();
+        RequestTranslator<DummySession, DummyUser, EmptyPayload> requestTranslator = new RequestTranslator<DummySession, DummyUser, EmptyPayload>();
         AnswerTranslator<DummySession> answerTranslator = new AnswerTranslator<DummySession>();
 
-        subject = new RouteRun<DummySession, DummyUser>(
+        subject = new HtmlRouteRun<DummySession, DummyUser, EmptyPayload>(
                 route, requestTranslator, answerTranslator
         );
     }
@@ -54,7 +50,7 @@ public class RouteRunTest {
     }
 
     @Test
-    public void whenPostShouldReturnOk() throws Exception {
+    public void whenPostShouldReturnCreated() throws Exception {
         DummyPayload dummyPayload = new DummyPayload();
         dummyPayload.setInteger(123);
         byte[] body = otterAppFactory.objectWriter().writeValueAsBytes(dummyPayload);
@@ -122,7 +118,7 @@ public class RouteRunTest {
         Ask ask = FixtureFactory.makeAsk();
         Answer answer = FixtureFactory.makeAnswer();
 
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, EmptyPayload> request = FixtureFactory.makeRequest();
         request.setMethod(Method.GET);
 
         // add a before that will throw halt.

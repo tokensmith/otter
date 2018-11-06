@@ -6,6 +6,7 @@ import helper.entity.DummySession;
 import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
+import org.rootservices.otter.controller.entity.EmptyPayload;
 import org.rootservices.otter.gateway.entity.Label;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Method;
@@ -21,13 +22,13 @@ import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.*;
 
 public class BetweenFactoryTest {
-    private BetweenFactory<DummySession, DummyUser> subject;
-    private Betweens<DummySession, DummyUser> csrfPrepare;
-    private Betweens<DummySession, DummyUser> csrfProtect;
-    private Betweens<DummySession, DummyUser> sessionRequired;
-    private Betweens<DummySession, DummyUser> sessionOptional;
-    private Optional<Between<DummySession, DummyUser>> authRequired;
-    private Optional<Between<DummySession, DummyUser>> authOptional;
+    private BetweenFactory<DummySession, DummyUser, EmptyPayload> subject;
+    private Betweens<DummySession, DummyUser, EmptyPayload> csrfPrepare;
+    private Betweens<DummySession, DummyUser, EmptyPayload> csrfProtect;
+    private Betweens<DummySession, DummyUser, EmptyPayload> sessionRequired;
+    private Betweens<DummySession, DummyUser, EmptyPayload> sessionOptional;
+    private Optional<Between<DummySession, DummyUser, EmptyPayload>> authRequired;
+    private Optional<Between<DummySession, DummyUser, EmptyPayload>> authOptional;
 
     @Before
     public void setUp() {
@@ -46,7 +47,7 @@ public class BetweenFactoryTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.CSRF);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.GET, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.GET, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
@@ -58,7 +59,7 @@ public class BetweenFactoryTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.SESSION_OPTIONAL);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.GET, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.GET, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getBefore(), is(sessionOptional.getBefore()));
@@ -72,7 +73,7 @@ public class BetweenFactoryTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.SESSION_REQUIRED);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.GET, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.GET, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getBefore(), is(sessionRequired.getBefore()));
@@ -88,7 +89,7 @@ public class BetweenFactoryTest {
         labels.add(Label.CSRF);
         labels.add(Label.SESSION_REQUIRED);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.GET, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.GET, labels);
 
         assertThat(actual.getBefore().size(), is(2));
         assertThat(actual.getBefore().get(0), is(csrfPrepare.getBefore().get(0)));
@@ -105,7 +106,7 @@ public class BetweenFactoryTest {
         labels.add(Label.SESSION_REQUIRED);
         labels.add(Label.AUTH_REQUIRED);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.GET, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.GET, labels);
 
         assertThat(actual.getBefore().size(), is(3));
         assertThat(actual.getBefore().get(0), is(csrfPrepare.getBefore().get(0)));
@@ -122,7 +123,7 @@ public class BetweenFactoryTest {
         labels.add(Label.CSRF);
         labels.add(Label.SESSION_OPTIONAL);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.GET, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.GET, labels);
 
         assertThat(actual.getBefore().size(), is(2));
         assertThat(actual.getBefore().get(0), is(csrfPrepare.getBefore().get(0)));
@@ -139,7 +140,7 @@ public class BetweenFactoryTest {
         labels.add(Label.SESSION_OPTIONAL);
         labels.add(Label.AUTH_OPTIONAL);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.GET, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.GET, labels);
 
         assertThat(actual.getBefore().size(), is(3));
         assertThat(actual.getBefore().get(0), is(csrfPrepare.getBefore().get(0)));
@@ -155,7 +156,7 @@ public class BetweenFactoryTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.CSRF);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.POST, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.POST, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getBefore(), is(csrfProtect.getBefore()));
@@ -168,7 +169,7 @@ public class BetweenFactoryTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.SESSION_OPTIONAL);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.POST, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.POST, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getBefore(), is(sessionOptional.getBefore()));
@@ -182,7 +183,7 @@ public class BetweenFactoryTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.SESSION_REQUIRED);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.POST, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.POST, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getBefore(), is(sessionRequired.getBefore()));
@@ -198,7 +199,7 @@ public class BetweenFactoryTest {
         labels.add(Label.CSRF);
         labels.add(Label.SESSION_REQUIRED);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.POST, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.POST, labels);
 
         assertThat(actual.getBefore().size(), is(2));
         assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
@@ -215,7 +216,7 @@ public class BetweenFactoryTest {
         labels.add(Label.SESSION_REQUIRED);
         labels.add(Label.AUTH_REQUIRED);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.POST, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.POST, labels);
 
         assertThat(actual.getBefore().size(), is(3));
         assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
@@ -232,7 +233,7 @@ public class BetweenFactoryTest {
         labels.add(Label.CSRF);
         labels.add(Label.SESSION_OPTIONAL);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.POST, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.POST, labels);
 
         assertThat(actual.getBefore().size(), is(2));
         assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
@@ -249,7 +250,7 @@ public class BetweenFactoryTest {
         labels.add(Label.SESSION_OPTIONAL);
         labels.add(Label.AUTH_OPTIONAL);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.POST, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.POST, labels);
 
         assertThat(actual.getBefore().size(), is(3));
         assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
@@ -265,7 +266,7 @@ public class BetweenFactoryTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.AUTH_REQUIRED);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.PUT, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.PUT, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
@@ -277,7 +278,7 @@ public class BetweenFactoryTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.AUTH_OPTIONAL);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.PUT, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.PUT, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
@@ -289,7 +290,7 @@ public class BetweenFactoryTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.AUTH_REQUIRED);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.PATCH, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.PATCH, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
@@ -301,7 +302,7 @@ public class BetweenFactoryTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.AUTH_OPTIONAL);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.PATCH, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.PATCH, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
@@ -313,7 +314,7 @@ public class BetweenFactoryTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.AUTH_REQUIRED);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.DELETE, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.DELETE, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
@@ -325,7 +326,7 @@ public class BetweenFactoryTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.AUTH_OPTIONAL);
 
-        Betweens<DummySession, DummyUser> actual = subject.make(Method.DELETE, labels);
+        Betweens<DummySession, DummyUser, EmptyPayload> actual = subject.make(Method.DELETE, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));

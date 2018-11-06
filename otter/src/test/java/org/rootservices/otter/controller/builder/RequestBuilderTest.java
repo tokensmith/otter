@@ -6,6 +6,7 @@ import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.Cookie;
+import org.rootservices.otter.controller.entity.EmptyPayload;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.Method;
@@ -18,16 +19,16 @@ import static org.junit.Assert.*;
 
 
 public class RequestBuilderTest {
-    private RequestBuilder<DummySession, DummyUser> subject;
+    private RequestBuilder<DummySession, DummyUser, EmptyPayload> subject;
 
     @Before
     public void setUp() {
-        subject = new RequestBuilder<DummySession, DummyUser>();
+        subject = new RequestBuilder<DummySession, DummyUser, EmptyPayload>();
     }
 
     @Test
     public void buildWhenMatcherShouldBeOk() {
-        Request<DummySession, DummyUser> actual = subject.matcher(Optional.empty()).build();
+        Request<DummySession, DummyUser, EmptyPayload> actual = subject.matcher(Optional.empty()).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMatcher().isPresent(), is(false));
@@ -36,7 +37,7 @@ public class RequestBuilderTest {
     @Test
     public void buildWhenPathWithParamsShouldBeOk() {
         String url = "/pathWithParams";
-        Request<DummySession, DummyUser> actual = subject.pathWithParams(url).build();
+        Request<DummySession, DummyUser, EmptyPayload> actual = subject.pathWithParams(url).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPathWithParams(), is(url));
@@ -44,7 +45,7 @@ public class RequestBuilderTest {
 
     @Test
     public void buildWhenMethodShouldBeOk() {
-        Request<DummySession, DummyUser> actual = subject.method(Method.GET).build();
+        Request<DummySession, DummyUser, EmptyPayload> actual = subject.method(Method.GET).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMethod(), is(Method.GET));
@@ -54,7 +55,7 @@ public class RequestBuilderTest {
     public void buildWhenContentTypeShouldBeOk() {
 
         MimeType contentType = new MimeType();
-        Request<DummySession, DummyUser> actual = subject.contentType(contentType).build();
+        Request<DummySession, DummyUser, EmptyPayload> actual = subject.contentType(contentType).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getContentType(), is(notNullValue()));
@@ -65,7 +66,7 @@ public class RequestBuilderTest {
     public void buildWhenHeadersShouldBeOk() {
         Map<String, String> headers = FixtureFactory.makeHeaders();
 
-        Request<DummySession, DummyUser> actual = subject.headers(headers).build();
+        Request<DummySession, DummyUser, EmptyPayload> actual = subject.headers(headers).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getHeaders(), is(notNullValue()));
@@ -76,7 +77,7 @@ public class RequestBuilderTest {
     public void buildWhenCookiesShouldBeOk() {
         Map<String, Cookie> cookies = FixtureFactory.makeCookies();
 
-        Request<DummySession, DummyUser> actual = subject.cookies(cookies).build();
+        Request<DummySession, DummyUser, EmptyPayload> actual = subject.cookies(cookies).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getCookies(), is(cookies));
@@ -86,7 +87,7 @@ public class RequestBuilderTest {
     public void buildWhenQueryParamsShouldBeOk() {
         Map<String, List<String>> queryParams = FixtureFactory.makeEmptyQueryParams();
 
-        Request<DummySession, DummyUser> actual = subject.queryParams(queryParams).build();
+        Request<DummySession, DummyUser, EmptyPayload> actual = subject.queryParams(queryParams).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getQueryParams(), is(queryParams));
@@ -97,7 +98,7 @@ public class RequestBuilderTest {
         Map<String, List<String>> formData = new HashMap<>();
         formData.put("foo", Arrays.asList("bar"));
 
-        Request<DummySession, DummyUser> actual = subject.formData(formData).build();
+        Request<DummySession, DummyUser, EmptyPayload> actual = subject.formData(formData).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getFormData(), is(formData));
@@ -108,7 +109,7 @@ public class RequestBuilderTest {
         byte[] body = "{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}".getBytes();
         Optional<byte[]> json = Optional.of(body);
 
-        Request<DummySession, DummyUser> actual = subject.body(json).build();
+        Request<DummySession, DummyUser, EmptyPayload> actual = subject.body(json).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getBody(), is(json));
@@ -118,7 +119,7 @@ public class RequestBuilderTest {
     public void buildWhenIpAddressShouldBeOk() {
 
         String ipAddress = "127.0.0.1";
-        Request<DummySession, DummyUser> actual = subject.ipAddress(ipAddress).build();
+        Request<DummySession, DummyUser, EmptyPayload> actual = subject.ipAddress(ipAddress).build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getIpAddress(), is(ipAddress));

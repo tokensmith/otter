@@ -14,6 +14,7 @@ import org.rootservices.otter.gateway.servlet.ServletGateway;
 import org.rootservices.otter.security.exception.SessionCtorException;
 import org.rootservices.otter.servlet.async.OtterAsyncListener;
 import org.rootservices.otter.servlet.async.ReadListenerImpl;
+import org.rootservices.otter.translatable.Translatable;
 
 
 import javax.servlet.*;
@@ -55,7 +56,7 @@ public abstract class OtterEntryServlet extends HttpServlet {
         otterAppFactory = new OtterAppFactory();
         Configure configure = makeConfigure();
         Shape shape = configure.shape();
-        List<Group<? extends DefaultSession, ? extends DefaultUser>> groups = configure.groups();
+        List<Group<? extends DefaultSession, ? extends DefaultUser, ? extends Translatable>> groups = configure.groups();
         try {
             servletGateway = otterAppFactory.servletGateway(shape, groups);
         } catch (SessionCtorException e) {

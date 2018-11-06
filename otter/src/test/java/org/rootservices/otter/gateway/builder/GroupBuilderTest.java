@@ -4,6 +4,7 @@ import helper.entity.DummyBetween;
 import helper.entity.DummySession;
 import helper.entity.DummyUser;
 import org.junit.Test;
+import org.rootservices.otter.controller.entity.EmptyPayload;
 import org.rootservices.otter.gateway.entity.Group;
 
 import static org.hamcrest.Matchers.is;
@@ -16,7 +17,7 @@ public class GroupBuilderTest {
     @Test
     public void buildShouldHaveEmptyAuthBetweens() {
 
-        Group<DummySession, DummyUser> actual = new GroupBuilder<DummySession, DummyUser>()
+        Group<DummySession, DummyUser, EmptyPayload> actual = new GroupBuilder<DummySession, DummyUser, EmptyPayload>()
                 .name("API")
                 .sessionClazz(DummySession.class)
                 .build();
@@ -33,10 +34,10 @@ public class GroupBuilderTest {
     @Test
     public void buildShouldHaveAuthBetweens() {
 
-        DummyBetween<DummySession, DummyUser> authRequired = new DummyBetween<DummySession, DummyUser>();
-        DummyBetween<DummySession, DummyUser> authOptional = new DummyBetween<DummySession, DummyUser>();
+        DummyBetween<DummySession, DummyUser, EmptyPayload> authRequired = new DummyBetween<DummySession, DummyUser, EmptyPayload>();
+        DummyBetween<DummySession, DummyUser, EmptyPayload> authOptional = new DummyBetween<DummySession, DummyUser, EmptyPayload>();
 
-        Group<DummySession, DummyUser> actual = new GroupBuilder<DummySession, DummyUser>()
+        Group<DummySession, DummyUser, EmptyPayload> actual = new GroupBuilder<DummySession, DummyUser, EmptyPayload>()
                 .name("API")
                 .sessionClazz(DummySession.class)
                 .authRequired(authRequired)

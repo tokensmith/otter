@@ -11,6 +11,7 @@ import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.Cookie;
+import org.rootservices.otter.controller.entity.EmptyPayload;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.router.entity.Method;
@@ -25,12 +26,12 @@ import static org.junit.Assert.*;
 
 public class EncryptSessionTest {
     private OtterAppFactory otterAppFactory = new OtterAppFactory();
-    private EncryptSession<DummySession, DummyUser> subject;
+    private EncryptSession<DummySession, DummyUser, EmptyPayload> subject;
 
     @Before
     public void setUp() {
         CookieConfig cookieConfig = new CookieConfig("session", true, -1);
-        subject = new EncryptSession<DummySession, DummyUser>(
+        subject = new EncryptSession<DummySession, DummyUser, EmptyPayload>(
                 cookieConfig,
                 FixtureFactory.encKey("1234"),
                 otterAppFactory.objectWriter()
@@ -43,7 +44,7 @@ public class EncryptSessionTest {
         requestSession.setAccessToken("123456789");
         requestSession.setRefreshToken("101112131415");
 
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, EmptyPayload> request = FixtureFactory.makeRequest();
         request.setSession(Optional.of(requestSession));
 
         DummySession responseSession = new DummySession(requestSession);
@@ -74,7 +75,7 @@ public class EncryptSessionTest {
         veryBadKey.setKey("MMNj8rE5m7NIDhwKYDmHSnlU1wfKuVvW6G--");
 
         CookieConfig cookieConfig = new CookieConfig("session", true, -1);
-        EncryptSession<DummySession, DummyUser> subject = new EncryptSession<DummySession, DummyUser>(
+        EncryptSession<DummySession, DummyUser, EmptyPayload> subject = new EncryptSession<DummySession, DummyUser, EmptyPayload>(
                 cookieConfig,
                 veryBadKey,
                 otterAppFactory.objectWriter()
@@ -84,7 +85,7 @@ public class EncryptSessionTest {
         requestSession.setAccessToken("123456789");
         requestSession.setRefreshToken("101112131415");
 
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, EmptyPayload> request = FixtureFactory.makeRequest();
         request.setSession(Optional.of(requestSession));
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -124,7 +125,7 @@ public class EncryptSessionTest {
         requestSession.setAccessToken("123456789");
         requestSession.setRefreshToken("101112131415");
 
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, EmptyPayload> request = FixtureFactory.makeRequest();
         request.setSession(Optional.of(requestSession));
 
         DummySession responseSession = new DummySession(requestSession);
@@ -145,7 +146,7 @@ public class EncryptSessionTest {
         requestSession.setAccessToken("123456789");
         requestSession.setRefreshToken("101112131415");
 
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, EmptyPayload> request = FixtureFactory.makeRequest();
         request.setSession(Optional.of(requestSession));
 
         DummySession responseSession = new DummySession(requestSession);
@@ -161,7 +162,7 @@ public class EncryptSessionTest {
     @Test
     public void shouldEncryptWhenRequestSessionNotPresentAndResponseSessionPresentShouldReturnTrue() {
 
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, EmptyPayload> request = FixtureFactory.makeRequest();
 
         DummySession responseSession = new DummySession();
         responseSession.setAccessToken("123456789");
@@ -181,7 +182,7 @@ public class EncryptSessionTest {
         requestSession.setAccessToken("123456789");
         requestSession.setRefreshToken("101112131415");
 
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, EmptyPayload> request = FixtureFactory.makeRequest();
         request.setSession(Optional.of(requestSession));
 
         Response<DummySession> response = FixtureFactory.makeResponse();
@@ -194,7 +195,7 @@ public class EncryptSessionTest {
     @Test
     public void setPreferredKey() {
         CookieConfig cookieConfig = new CookieConfig("session", true, -1);
-        EncryptSession<DummySession, DummyUser> subject = new EncryptSession<DummySession, DummyUser>(
+        EncryptSession<DummySession, DummyUser, EmptyPayload> subject = new EncryptSession<DummySession, DummyUser, EmptyPayload>(
                 cookieConfig,
                 FixtureFactory.encKey("1234"),
                 otterAppFactory.objectWriter()
@@ -210,7 +211,7 @@ public class EncryptSessionTest {
     @Test
     public void setCookieConfig() {
         CookieConfig cookieConfig = new CookieConfig("session", true, -1);
-        EncryptSession<DummySession, DummyUser> subject = new EncryptSession<DummySession, DummyUser>(
+        EncryptSession<DummySession, DummyUser, EmptyPayload> subject = new EncryptSession<DummySession, DummyUser, EmptyPayload>(
                 cookieConfig,
                 FixtureFactory.encKey("1234"),
                 otterAppFactory.objectWriter()

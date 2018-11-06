@@ -25,8 +25,9 @@ import java.util.Optional;
  *
  * @param <S> Session object, intended to contain user session data.
  * @param <U> User object, intended to be a authenticated user.
+ * @param <P> Payload object, used for rest requests.
  */
-public class PrepareCSRF<S, U> implements Between<S, U> {
+public class PrepareCSRF<S, U, P> implements Between<S, U, P> {
     protected static Logger logger = LogManager.getLogger(PrepareCSRF.class);
     private CookieConfig cookieConfig;
     private DoubleSubmitCSRF doubleSubmitCSRF;
@@ -41,7 +42,7 @@ public class PrepareCSRF<S, U> implements Between<S, U> {
     }
 
     @Override
-    public void process(Method method, Request<S, U> request, Response<S> response) throws HaltException {
+    public void process(Method method, Request<S, U, P> request, Response<S> response) throws HaltException {
         if (response.getCookies().get(cookieConfig.getName()) == null) {
             String challengeToken = doubleSubmitCSRF.makeChallengeToken();
 

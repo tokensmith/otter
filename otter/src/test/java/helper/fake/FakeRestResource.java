@@ -7,7 +7,10 @@ import helper.entity.DummyUser;
 import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.translator.JsonTranslator;
 
-public class FakeRestResource extends RestResource<DummyPayload, DummySession, DummyUser> {
+public class FakeRestResource extends RestResource<DummySession, DummyUser, DummyPayload> {
+    public FakeRestResource() {
+    }
+
     public FakeRestResource(JsonTranslator<DummyPayload> translator) {
         super(translator);
     }

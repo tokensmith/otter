@@ -27,13 +27,13 @@ public class ErrorRouteRunnerFactoryTest {
 
     @Test
     public void fromLocationShouldBeLocationUnSupportedErrorRoute() {
-        Location location = FixtureFactory.makeLocationWithErrorRoutes("foo");
+        Location location = FixtureFactory.makeRestLocationWithErrorRoutes("foo");
 
         Optional<MatchedLocation> match = Optional.of(
                 new MatchedLocation(location)
         );
 
-        Map<StatusCode, RouteRunner> errorRouteRunners = FixtureFactory.makeErrorRouteRunners();
+        Map<StatusCode, RouteRunner> errorRouteRunners = FixtureFactory.makeRestErrorRouteRunners();
 
         RouteRunner actual = subject.fromLocation(match, errorRouteRunners);
 
@@ -43,13 +43,13 @@ public class ErrorRouteRunnerFactoryTest {
 
     @Test
     public void fromLocationShouldBeGlobalUnSupportedErrorRoute() {
-        Location location = FixtureFactory.makeLocation("foo");
+        Location location = FixtureFactory.makeRestLocation("foo");
 
         Optional<MatchedLocation> match = Optional.of(
                 new MatchedLocation(location)
         );
 
-        Map<StatusCode, RouteRunner> errorRouteRunners = FixtureFactory.makeErrorRouteRunners();
+        Map<StatusCode, RouteRunner> errorRouteRunners = FixtureFactory.makeRestErrorRouteRunners();
 
         RouteRunner actual = subject.fromLocation(match, errorRouteRunners);
 
@@ -60,7 +60,7 @@ public class ErrorRouteRunnerFactoryTest {
     @Test
     public void fromLocationShouldBeGlobalNotFoundErrorRoute() {
         Optional<MatchedLocation> match = Optional.empty();
-        Map<StatusCode, RouteRunner> errorRouteRunners = FixtureFactory.makeErrorRouteRunners();
+        Map<StatusCode, RouteRunner> errorRouteRunners = FixtureFactory.makeRestErrorRouteRunners();
 
         RouteRunner actual = subject.fromLocation(match, errorRouteRunners);
 
@@ -69,13 +69,13 @@ public class ErrorRouteRunnerFactoryTest {
 
     @Test
     public void serverErrorShouldBeLocationErrorRoute() {
-        Location location = FixtureFactory.makeLocationWithErrorRoutes("foo");
+        Location location = FixtureFactory.makeRestLocationWithErrorRoutes("foo");
 
         Optional<MatchedLocation> match = Optional.of(
                 new MatchedLocation(location)
         );
 
-        Map<StatusCode, RouteRunner> errorRouteRunners = FixtureFactory.makeErrorRouteRunners();
+        Map<StatusCode, RouteRunner> errorRouteRunners = FixtureFactory.makeRestErrorRouteRunners();
 
         RouteRunner actual = subject.serverErrorRouteRunner(match, errorRouteRunners);
 
@@ -84,13 +84,13 @@ public class ErrorRouteRunnerFactoryTest {
 
     @Test
     public void serverErrorWhenNoLocationErrorRouteShouldBeGlobalRoute() {
-        Location location = FixtureFactory.makeLocation("foo");
+        Location location = FixtureFactory.makeRestLocation("foo");
 
         Optional<MatchedLocation> match = Optional.of(
                 new MatchedLocation(location)
         );
 
-        Map<StatusCode, RouteRunner> errorRouteRunners = FixtureFactory.makeErrorRouteRunners();
+        Map<StatusCode, RouteRunner> errorRouteRunners = FixtureFactory.makeRestErrorRouteRunners();
 
         RouteRunner actual = subject.serverErrorRouteRunner(match, errorRouteRunners);
 
@@ -101,7 +101,7 @@ public class ErrorRouteRunnerFactoryTest {
     @Test
     public void serverErrorShouldBeGlobalRoute() {
         Optional<MatchedLocation> match = Optional.empty();
-        Map<StatusCode, RouteRunner> errorRouteRunners = FixtureFactory.makeErrorRouteRunners();
+        Map<StatusCode, RouteRunner> errorRouteRunners = FixtureFactory.makeRestErrorRouteRunners();
 
         RouteRunner actual = subject.serverErrorRouteRunner(match, errorRouteRunners);
 

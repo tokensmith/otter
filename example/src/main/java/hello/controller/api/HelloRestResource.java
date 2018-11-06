@@ -14,7 +14,7 @@ import org.rootservices.otter.translator.exception.ToJsonException;
 import java.io.ByteArrayOutputStream;
 import java.util.Optional;
 
-public class HelloRestResource extends RestResource<Hello, ApiSession, ApiUser> {
+public class HelloRestResource extends RestResource<ApiSession, ApiUser, Hello> {
     public static String URL = "/rest/hello";
 
     public HelloRestResource(JsonTranslator<Hello> translator) {
@@ -22,7 +22,7 @@ public class HelloRestResource extends RestResource<Hello, ApiSession, ApiUser> 
     }
 
     @Override
-    public Response<ApiSession> get(Request<ApiSession, ApiUser> request, Response<ApiSession> response) {
+    public Response<ApiSession> get(Request<ApiSession, ApiUser, Hello> request, Response<ApiSession> response) {
         response.setStatusCode(StatusCode.OK);
 
         Hello hello = new Hello("Hello, " + request.getUser().get().getFirstName() + " " + request.getUser().get().getLastName());
@@ -39,7 +39,7 @@ public class HelloRestResource extends RestResource<Hello, ApiSession, ApiUser> 
     }
 
     @Override
-    public Response<ApiSession> post(Request<ApiSession, ApiUser> request, Response<ApiSession> response, Hello entity) {
+    public Response<ApiSession> post(Request<ApiSession, ApiUser, Hello> request, Response<ApiSession> response, Hello entity) {
         response.setStatusCode(StatusCode.CREATED);
 
         Optional<ByteArrayOutputStream> payload = Optional.empty();

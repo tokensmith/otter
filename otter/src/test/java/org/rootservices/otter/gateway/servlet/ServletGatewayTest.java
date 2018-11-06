@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
+import org.rootservices.otter.controller.entity.EmptyPayload;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.dispatch.RouteRunner;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
@@ -94,7 +95,7 @@ public class ServletGatewayTest {
 
     @Test
     public void setErrorRouteShouldAssign() {
-        Route<DummySession, DummyUser> notFoundRoute = FixtureFactory.makeRoute();
+        Route<DummySession, DummyUser, EmptyPayload> notFoundRoute = FixtureFactory.makeRoute();
 
         Map<StatusCode, RouteRunner> errorRoutes = new HashMap<>();
         when(mockEngine.getErrorRoutes()).thenReturn(errorRoutes);
@@ -107,7 +108,7 @@ public class ServletGatewayTest {
 
     @Test
     public void processRequestWhenExceptionShouldReturnServerError() throws Exception {
-        Route<DummySession, DummyUser> notFoundRoute = FixtureFactory.makeRoute();
+        Route<DummySession, DummyUser, EmptyPayload> notFoundRoute = FixtureFactory.makeRoute();
         subject.setErrorRoute(StatusCode.NOT_FOUND, notFoundRoute);
 
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
@@ -130,7 +131,7 @@ public class ServletGatewayTest {
 
     @Test
     public void processRequestWhenIOExceptionShouldReturnServerError() throws Exception {
-        Route<DummySession, DummyUser> notFoundRoute = FixtureFactory.makeRoute();
+        Route<DummySession, DummyUser, EmptyPayload> notFoundRoute = FixtureFactory.makeRoute();
         subject.setErrorRoute(StatusCode.NOT_FOUND, notFoundRoute);
 
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);

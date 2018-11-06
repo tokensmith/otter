@@ -1,6 +1,7 @@
 package org.rootservices.otter.router;
 
 import helper.FixtureFactory;
+import helper.entity.DummyPayload;
 import helper.entity.DummySession;
 import helper.entity.DummyUser;
 import org.junit.Before;
@@ -47,7 +48,7 @@ public class EngineTest {
 
     public void routeWhenMethodIsXShouldMatch(Method method) throws Exception {
         String url = "foo";
-        Optional<MatchedLocation> match = FixtureFactory.makeMatch(url);
+        Optional<MatchedLocation> match = FixtureFactory.makeRestMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
         Ask ask = FixtureFactory.makeAsk();
@@ -60,7 +61,7 @@ public class EngineTest {
         RouteRunner mockRouteRunner = mock(RouteRunner.class);
         when(mockRouteRunner.run(ask, answer)).thenReturn(answer);
 
-        Location location = new LocationBuilder<DummySession, DummyUser>()
+        Location location = new LocationBuilder<DummySession, DummyUser, DummyPayload>()
                 .contentTypes(new ArrayList<MimeType>())
                 .build();
 
@@ -136,7 +137,7 @@ public class EngineTest {
         RouteRunner errorRouteRunner = mock(RouteRunner.class);
         when(errorRouteRunner.run(ask, answer)).thenReturn(answer);
 
-        Map<StatusCode, RouteRunner> errorRoutes = FixtureFactory.makeErrorRouteRunners();
+        Map<StatusCode, RouteRunner> errorRoutes = FixtureFactory.makeRestErrorRouteRunners();
         when(mockErrorRouteRunnerFactory.fromLocation(match, errorRoutes)).thenReturn(errorRouteRunner);
 
         subject.setErrorRoutes(errorRoutes);

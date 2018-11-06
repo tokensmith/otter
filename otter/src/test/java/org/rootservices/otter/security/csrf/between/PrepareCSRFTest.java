@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.jwt.entity.jwt.JsonWebToken;
 import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.controller.entity.Cookie;
+import org.rootservices.otter.controller.entity.EmptyPayload;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.router.entity.Method;
@@ -31,13 +32,13 @@ public class PrepareCSRFTest {
     private static String COOKIE_NAME = "CSRF";
     @Mock
     private DoubleSubmitCSRF mockDoubleSubmitCSRF;
-    private PrepareCSRF<DummySession, DummyUser> subject;
+    private PrepareCSRF<DummySession, DummyUser, EmptyPayload> subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         CookieConfig cookieConfig = new CookieConfig(COOKIE_NAME, false, -1);
-        subject = new PrepareCSRF<DummySession, DummyUser>(cookieConfig, mockDoubleSubmitCSRF);
+        subject = new PrepareCSRF<DummySession, DummyUser, EmptyPayload>(cookieConfig, mockDoubleSubmitCSRF);
     }
 
     @Test
@@ -52,7 +53,7 @@ public class PrepareCSRFTest {
         formValueJwt.write("formValueJwt".getBytes());
 
         when(mockDoubleSubmitCSRF.toJwt(any())).thenReturn(formValueJwt);
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, EmptyPayload> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         subject.process(Method.GET, request, response);
@@ -71,7 +72,7 @@ public class PrepareCSRFTest {
         String challengeToken = "challenge-token";
         Cookie cookie = FixtureFactory.makeCookie(COOKIE_NAME);
 
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, EmptyPayload> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
         response.getCookies().put(COOKIE_NAME, cookie);
 
@@ -103,7 +104,7 @@ public class PrepareCSRFTest {
         CsrfException csrfException = new CsrfException("", null);
         when(mockDoubleSubmitCSRF.makeCsrfCookie(eq(COOKIE_NAME), any(), eq(false), eq(-1))).thenThrow(csrfException);
 
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, EmptyPayload> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         subject.process(Method.GET, request, response);

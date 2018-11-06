@@ -14,7 +14,7 @@ import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import java.util.List;
 import java.util.Optional;
 
-public class CheckCSRF<S, U> implements Between<S, U> {
+public class CheckCSRF<S, U, P> implements Between<S, U, P> {
     private String cookieName;
     private String formFieldName;
     private DoubleSubmitCSRF doubleSubmitCSRF;
@@ -31,7 +31,7 @@ public class CheckCSRF<S, U> implements Between<S, U> {
     }
 
     @Override
-    public void process(Method method, Request<S, U> request, Response<S> response) throws HaltException {
+    public void process(Method method, Request<S, U, P> request, Response<S> response) throws HaltException {
         Boolean ok;
         Cookie csrfCookie = request.getCookies().get(cookieName);
         List<String> formValue = request.getFormData().get(formFieldName);

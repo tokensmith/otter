@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class BetweenBuilder<S, U> {
+public class BetweenBuilder<S, U, P> {
     private static String CSRF_NAME = "csrfToken";
     private static String SESSION_NAME = "session";
     public static final String COULD_NOT_ACCESS_SESSION_CTORS = "Could not access session copy constructor";
@@ -36,66 +36,66 @@ public class BetweenBuilder<S, U> {
     private ObjectReader sessionObjectReader;
     private Constructor<S> sessionCtor;
 
-    private List<Between<S,U>> before = new ArrayList<>();
-    private List<Between<S,U>> after = new ArrayList<>();
+    private List<Between<S, U, P>> before = new ArrayList<>();
+    private List<Between<S, U, P>> after = new ArrayList<>();
 
-    public BetweenBuilder<S, U> otterFactory(OtterAppFactory otterAppFactory) {
+    public BetweenBuilder<S, U, P> otterFactory(OtterAppFactory otterAppFactory) {
         this.otterAppFactory = otterAppFactory;
         return this;
     }
 
-    public BetweenBuilder<S, U> secure(Boolean secure) {
+    public BetweenBuilder<S, U, P> secure(Boolean secure) {
         this.secure = secure;
         return this;
     }
 
-    public BetweenBuilder<S, U> signKey(SymmetricKey signKey) {
+    public BetweenBuilder<S, U, P> signKey(SymmetricKey signKey) {
         this.signKey = signKey;
         return this;
     }
 
-    public BetweenBuilder<S, U> rotationSignKeys(Map<String, SymmetricKey> rotationSignKeys) {
+    public BetweenBuilder<S, U, P> rotationSignKeys(Map<String, SymmetricKey> rotationSignKeys) {
         this.rotationSignKeys = rotationSignKeys;
         return this;
     }
 
-    public BetweenBuilder<S, U> csrfPrepare() {
+    public BetweenBuilder<S, U, P> csrfPrepare() {
         CookieConfig csrfCookieConfig = new CookieConfig(CSRF_NAME, secure, -1);
         DoubleSubmitCSRF doubleSubmitCSRF = new DoubleSubmitCSRF(new JwtAppFactory(), new RandomString(), signKey, rotationSignKeys);
 
-        Between<S,U> prepareCSRF = new PrepareCSRF<S, U>(csrfCookieConfig, doubleSubmitCSRF);
+        Between<S, U, P> prepareCSRF = new PrepareCSRF<S, U, P>(csrfCookieConfig, doubleSubmitCSRF);
         before.add(prepareCSRF);
 
         return this;
     }
 
-    public BetweenBuilder<S, U> csrfProtect() {
+    public BetweenBuilder<S, U, P> csrfProtect() {
         DoubleSubmitCSRF doubleSubmitCSRF = new DoubleSubmitCSRF(new JwtAppFactory(), new RandomString(), signKey, rotationSignKeys);
 
-        Between<S,U> checkCSRF = new CheckCSRF<S, U>(CSRF_NAME, CSRF_NAME, doubleSubmitCSRF);
+        Between<S, U, P> checkCSRF = new CheckCSRF<S, U, P>(CSRF_NAME, CSRF_NAME, doubleSubmitCSRF);
         before.add(checkCSRF);
 
         return this;
     }
 
 
-    public BetweenBuilder<S, U> encKey(SymmetricKey encKey) {
+    public BetweenBuilder<S, U, P> encKey(SymmetricKey encKey) {
         this.encKey = encKey;
         return this;
     }
 
-    public BetweenBuilder<S, U> rotationEncKey(Map<String, SymmetricKey> rotationEncKeys) {
+    public BetweenBuilder<S, U, P> rotationEncKey(Map<String, SymmetricKey> rotationEncKeys) {
         this.rotationEncKeys = rotationEncKeys;
         return this;
     }
 
-    public BetweenBuilder<S, U> sessionClass(Class<S> sessionClass) {
+    public BetweenBuilder<S, U, P> sessionClass(Class<S> sessionClass) {
         this.sessionClass = sessionClass;
         this.sessionObjectReader =  otterAppFactory.objectReader().forType(sessionClass);
         return this;
     }
 
-    public BetweenBuilder<S, U> session() throws SessionCtorException {
+    public BetweenBuilder<S, U, P> session() throws SessionCtorException {
         CookieConfig sessionCookieConfig = new CookieConfig(SESSION_NAME, secure, -1);
 
         try {
@@ -104,16 +104,16 @@ public class BetweenBuilder<S, U> {
             throw new SessionCtorException(COULD_NOT_ACCESS_SESSION_CTORS, e);
         }
 
-        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, SESSION_NAME, new JwtAppFactory(), encKey, rotationEncKeys, sessionObjectReader, true);
+        Between<S,U,P> decryptSession = new DecryptSession<S, U, P>(sessionCtor, SESSION_NAME, new JwtAppFactory(), encKey, rotationEncKeys, sessionObjectReader, true);
         before.add(decryptSession);
 
-        Between<S,U> encryptSession = new EncryptSession<S, U>(sessionCookieConfig, encKey, otterAppFactory.objectWriter());
+        Between<S,U,P> encryptSession = new EncryptSession<S, U, P>(sessionCookieConfig, encKey, otterAppFactory.objectWriter());
         after.add(encryptSession);
 
         return this;
     }
 
-    public BetweenBuilder<S, U> optionalSession() throws SessionCtorException {
+    public BetweenBuilder<S, U, P> optionalSession() throws SessionCtorException {
         CookieConfig sessionCookieConfig = new CookieConfig(SESSION_NAME, secure, -1);
 
         try {
@@ -122,16 +122,16 @@ public class BetweenBuilder<S, U> {
             throw new SessionCtorException(COULD_NOT_ACCESS_SESSION_CTORS, e);
         }
 
-        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, SESSION_NAME, new JwtAppFactory(), encKey, rotationEncKeys, sessionObjectReader, false);
+        Between<S, U, P> decryptSession = new DecryptSession<S, U, P>(sessionCtor, SESSION_NAME, new JwtAppFactory(), encKey, rotationEncKeys, sessionObjectReader, false);
         before.add(decryptSession);
 
-        Between<S,U> encryptSession = new EncryptSession<S, U>(sessionCookieConfig, encKey, otterAppFactory.objectWriter());
+        Between<S, U, P> encryptSession = new EncryptSession<S, U, P>(sessionCookieConfig, encKey, otterAppFactory.objectWriter());
         after.add(encryptSession);
 
         return this;
     }
 
-    public Betweens<S,U> build() {
-        return new Betweens<S,U>(before, after);
+    public Betweens<S, U, P> build() {
+        return new Betweens<S, U, P>(before, after);
     }
 }

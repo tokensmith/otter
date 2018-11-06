@@ -7,6 +7,7 @@ import helper.fake.FakeResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
+import org.rootservices.otter.controller.entity.EmptyPayload;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.builder.LocationBuilder;
@@ -23,11 +24,11 @@ import static org.junit.Assert.*;
 
 
 public class LocationBuilderTest {
-    private LocationBuilder<DummySession, DummyUser> subject;
+    private LocationBuilder<DummySession, DummyUser, EmptyPayload> subject;
 
     @Before
     public void setUp() {
-        subject = new LocationBuilder<DummySession, DummyUser>();
+        subject = new LocationBuilder<DummySession, DummyUser, EmptyPayload>();
     }
 
     @Test
@@ -123,7 +124,7 @@ public class LocationBuilderTest {
         List<MimeType> contentTypes = new ArrayList<>();
         FakeResource resource = new FakeResource();
 
-        Map<StatusCode, Route<DummySession, DummyUser>> errorRoutes = FixtureFactory.makeErrorRoutes();
+        Map<StatusCode, Route<DummySession, DummyUser, EmptyPayload>> errorRoutes = FixtureFactory.makeErrorRoutes();
 
         Location actual = subject.path(regex)
                 .contentTypes(contentTypes)

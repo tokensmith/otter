@@ -5,6 +5,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.otter.controller.entity.*;
 import org.rootservices.otter.controller.exception.DeserializationException;
+import org.rootservices.otter.translatable.Translatable;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.exception.*;
 
@@ -12,10 +13,10 @@ import org.rootservices.otter.translator.exception.*;
 import java.io.ByteArrayOutputStream;
 import java.util.Optional;
 
-public class RestResource<T, S extends DefaultSession, U extends DefaultUser> extends Resource<S, U> {
+public class RestResource<S extends DefaultSession, U extends DefaultUser, P extends Translatable> extends Resource<S, U, P> {
     protected static Logger logger = LogManager.getLogger(RestResource.class);
 
-    protected JsonTranslator<T> translator;
+    protected JsonTranslator<P> translator;
 
     private static final String DUPLICATE_KEY_MSG = "Duplicate Key";
     private static final String INVALID_VALUE_MSG = "Invalid Value";
@@ -30,19 +31,19 @@ public class RestResource<T, S extends DefaultSession, U extends DefaultUser> ex
     public RestResource() {
     }
 
-    public RestResource(JsonTranslator<T> translator) {
+    public RestResource(JsonTranslator<P> translator) {
         this.translator = translator;
     }
 
     @Override
-    public Response<S> get(Request<S, U> request, Response<S> response) {
+    public Response<S> get(Request<S, U, P> request, Response<S> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
     @Override
-    public Response<S> post(Request<S, U> request, Response<S> response) {
-        T entity;
+    public Response<S> post(Request<S, U, P> request, Response<S> response) {
+        P entity;
 
         try {
             entity = makeEntity(request.getBody().get());
@@ -58,8 +59,8 @@ public class RestResource<T, S extends DefaultSession, U extends DefaultUser> ex
     }
 
     @Override
-    public Response<S> put(Request<S, U> request, Response<S> response) {
-        T entity;
+    public Response<S> put(Request<S, U, P> request, Response<S> response) {
+        P entity;
 
         try {
             entity = makeEntity(request.getBody().get());
@@ -75,14 +76,14 @@ public class RestResource<T, S extends DefaultSession, U extends DefaultUser> ex
     }
 
     @Override
-    public Response<S> delete(Request<S, U> request, Response<S> response) {
+    public Response<S> delete(Request<S, U, P> request, Response<S> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
     @Override
-    public Response<S> patch(Request<S, U> request, Response<S> response) {
-        T entity;
+    public Response<S> patch(Request<S, U, P> request, Response<S> response) {
+        P entity;
 
         try {
             entity = makeEntity(request.getBody().get());
@@ -110,8 +111,8 @@ public class RestResource<T, S extends DefaultSession, U extends DefaultUser> ex
         return payload;
     }
 
-    protected T makeEntity(byte[] json) throws DeserializationException {
-        T entity;
+    protected P makeEntity(byte[] json) throws DeserializationException {
+        P entity;
 
         try{
             entity = translator.from(json);
@@ -131,17 +132,17 @@ public class RestResource<T, S extends DefaultSession, U extends DefaultUser> ex
 
     }
 
-    protected Response<S> post(Request<S, U> request, Response<S> response, T entity) {
+    protected Response<S> post(Request<S, U, P> request, Response<S> response, P entity) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
-    protected Response<S> put(Request<S, U> request, Response<S> response, T entity) {
+    protected Response<S> put(Request<S, U, P> request, Response<S> response, P entity) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }
 
-    protected Response<S> patch(Request<S, U> request, Response<S> response, T entity) {
+    protected Response<S> patch(Request<S, U, P> request, Response<S> response, P entity) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;
     }

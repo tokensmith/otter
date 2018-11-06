@@ -15,8 +15,9 @@ import java.util.regex.Matcher;
  *
  * @param <S> Session object, intended to contain user session data.
  * @param <U> User object, intended to be a authenticated user.
+ * @param <P> Payload object, used for rest requests.
  */
-public class Request<S, U> {
+public class Request<S, U, P> {
     // TODO: this won't be optional once Ask is integrated.
     private Optional<Matcher> matcher;
     private Method method;
@@ -31,10 +32,11 @@ public class Request<S, U> {
     private String ipAddress;
     private Optional<S> session = Optional.empty();
     private Optional<U> user;
+    private Optional<P> payload = Optional.empty();
 
     public Request() {}
 
-    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, MimeType contentType, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<byte[]> body, Optional<String> csrfChallenge, String ipAddress) {
+    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, MimeType contentType, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<byte[]> body, Optional<String> csrfChallenge, String ipAddress, Optional<P> payload) {
         this.matcher = matcher;
         this.method = method;
         this.pathWithParams = pathWithParams;
@@ -46,6 +48,7 @@ public class Request<S, U> {
         this.body = body;
         this.csrfChallenge = csrfChallenge;
         this.ipAddress = ipAddress;
+        this.payload = payload;
     }
 
     public Optional<Matcher> getMatcher() {

@@ -78,7 +78,7 @@ public class OtterAppFactory {
         );
     }
 
-    public ServletGateway servletGateway(Shape shape, List<Group<? extends DefaultSession,? extends DefaultUser>> groups) throws SessionCtorException {
+    public ServletGateway servletGateway(Shape shape, List<Group<? extends DefaultSession,? extends DefaultUser,? extends Translatable>> groups) throws SessionCtorException {
         LocationTranslatorFactory locationTranslatorFactory = locationTranslatorFactory(shape);
         Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser, ? extends Translatable>> locationTranslators = locationTranslators(locationTranslatorFactory, groups);
 
@@ -103,11 +103,11 @@ public class OtterAppFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public <S extends DefaultSession, U extends DefaultUser, P extends Translatable> Map<String, LocationTranslator<? extends S, ? extends U, ? extends P>> locationTranslators(LocationTranslatorFactory locationTranslatorFactory, List<Group<? extends S, ? extends U>> groups) throws SessionCtorException {
+    public <S extends DefaultSession, U extends DefaultUser, P extends Translatable> Map<String, LocationTranslator<? extends S, ? extends U, ? extends P>> locationTranslators(LocationTranslatorFactory locationTranslatorFactory, List<Group<? extends S, ? extends U, ? extends P>> groups) throws SessionCtorException {
         Map<String, LocationTranslator<? extends S, ? extends U, ? extends P>> locationTranslators = new HashMap<>();
 
-        for(Group<? extends S, ? extends U> group: groups) {
-            Group<S, U> castedGroup = (Group<S,U>) group;
+        for(Group<? extends S, ? extends U, ? extends P> group: groups) {
+            Group<S, U, P> castedGroup = (Group<S,U,P>) group;
             locationTranslators.put(
                     group.getName(),
                     locationTranslatorFactory.make(

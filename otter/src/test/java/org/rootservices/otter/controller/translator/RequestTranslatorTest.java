@@ -5,6 +5,7 @@ import helper.entity.DummySession;
 import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
+import org.rootservices.otter.controller.entity.EmptyPayload;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;
 import org.rootservices.otter.router.entity.io.Ask;
@@ -14,7 +15,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
 
 public class RequestTranslatorTest {
-    private RequestTranslator<DummySession, DummyUser> subject;
+    private RequestTranslator<DummySession, DummyUser, EmptyPayload> subject;
 
     @Before
     public void setUp() {
@@ -25,7 +26,7 @@ public class RequestTranslatorTest {
     public void to() {
         Ask from = FixtureFactory.makeAsk();
 
-        Request<DummySession, DummyUser> actual = subject.to(from);
+        Request<DummySession, DummyUser, EmptyPayload> actual = subject.to(from);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMatcher(), is(from.getMatcher()));

@@ -16,8 +16,9 @@ import java.util.regex.Matcher;
  *
  * @param <S> Session object, intended to contain user session data.
  * @param <U> User object, intended to be a authenticated user.
+ * @param <P> Payload object, used for rest requests.
  */
-public class RequestBuilder<S, U>  {
+public class RequestBuilder<S, U, P>  {
     private Optional<Matcher> matcher;
     private Method method;
     private String pathWithParams;
@@ -29,63 +30,69 @@ public class RequestBuilder<S, U>  {
     private Optional<byte[]> body;
     private Optional<String> csrfChallenge;
     private String ipAddress;
+    private Optional<P> payload = Optional.empty();
 
-    public RequestBuilder<S, U> matcher(Optional<Matcher> matcher) {
+    public RequestBuilder<S, U, P> matcher(Optional<Matcher> matcher) {
         this.matcher = matcher;
         return this;
     }
 
-    public RequestBuilder<S, U> method(Method method) {
+    public RequestBuilder<S, U, P> method(Method method) {
         this.method = method;
         return this;
     }
 
-    public RequestBuilder<S, U> pathWithParams(String pathWithParams) {
+    public RequestBuilder<S, U, P> pathWithParams(String pathWithParams) {
         this.pathWithParams = pathWithParams;
         return this;
     }
 
-    public RequestBuilder<S, U> contentType(MimeType contentType) {
+    public RequestBuilder<S, U, P> contentType(MimeType contentType) {
         this.contentType = contentType;
         return this;
     }
 
-    public RequestBuilder<S, U> headers(Map<String, String> headers) {
+    public RequestBuilder<S, U, P> headers(Map<String, String> headers) {
         this.headers = headers;
         return this;
     }
 
-    public RequestBuilder<S, U> cookies(Map<String, Cookie> cookies) {
+    public RequestBuilder<S, U, P> cookies(Map<String, Cookie> cookies) {
         this.cookies = cookies;
         return this;
     }
 
-    public RequestBuilder<S, U> queryParams(Map<String, List<String>> queryParams) {
+    public RequestBuilder<S, U, P> queryParams(Map<String, List<String>> queryParams) {
         this.queryParams = queryParams;
         return this;
     }
 
-    public RequestBuilder<S, U> formData(Map<String, List<String>> formData) {
+    public RequestBuilder<S, U, P> formData(Map<String, List<String>> formData) {
         this.formData = formData;
         return this;
     }
 
-    public RequestBuilder<S, U> body(Optional<byte[]> body) {
+    public RequestBuilder<S, U, P> body(Optional<byte[]> body) {
         this.body = body;
         return this;
     }
 
-    public RequestBuilder<S, U> csrfChallenge(Optional<String> csrfChallenge) {
+    public RequestBuilder<S, U, P> csrfChallenge(Optional<String> csrfChallenge) {
         this.csrfChallenge = csrfChallenge;
         return this;
     }
 
-    public RequestBuilder<S, U> ipAddress(String ipAddress) {
+    public RequestBuilder<S, U, P> ipAddress(String ipAddress) {
         this.ipAddress = ipAddress;
         return this;
     }
 
-    public Request<S, U> build() {
-        return new Request<S, U>(this.matcher, this.method, this.pathWithParams, this.contentType, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge, this.ipAddress);
+    public RequestBuilder<S, U, P> payload(P payload) {
+        this.payload = Optional.of(payload);
+        return this;
+    }
+
+    public Request<S, U, P> build() {
+        return new Request<S, U, P>(this.matcher, this.method, this.pathWithParams, this.contentType, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge, this.ipAddress, this.payload);
     }
 }

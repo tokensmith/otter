@@ -1,6 +1,7 @@
 package org.rootservices.otter.gateway.translator;
 
 import helper.FixtureFactory;
+import helper.entity.DummyPayload;
 import helper.entity.DummySession;
 import helper.entity.DummyUser;
 import org.hamcrest.core.Is;
@@ -8,9 +9,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.rootservices.otter.controller.entity.DefaultPayload;
-import org.rootservices.otter.dispatch.RouteRun;
-import org.rootservices.otter.gateway.entity.Target;
+import org.rootservices.otter.controller.entity.EmptyPayload;
+import org.rootservices.otter.dispatch.HtmlRouteRun;
+import org.rootservices.otter.gateway.entity.target.Target;
 import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.factory.BetweenFactory;
@@ -25,23 +26,23 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class LocationTranslatorTest {
-    private LocationTranslator<DummySession, DummyUser, DefaultPayload> subject;
+    private LocationTranslator<DummySession, DummyUser, EmptyPayload> subject;
     @Mock
-    private BetweenFactory<DummySession, DummyUser> mockBetweenFactory;
+    private BetweenFactory<DummySession, DummyUser, EmptyPayload> mockBetweenFactory;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        subject = new LocationTranslator<DummySession, DummyUser, DefaultPayload>(mockBetweenFactory);
+        subject = new LocationTranslator<DummySession, DummyUser, EmptyPayload>(mockBetweenFactory);
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void toShouldBeOk() {
-        Betweens<DummySession, DummyUser> betweens = FixtureFactory.makeBetweens();
+        Betweens<DummySession, DummyUser, EmptyPayload> betweens = FixtureFactory.makeBetweens();
         when(mockBetweenFactory.make(any(), any())).thenReturn(betweens);
 
-        Target<DummySession, DummyUser, DefaultPayload> target = FixtureFactory.makeTarget();
+        Target<DummySession, DummyUser, EmptyPayload> target = FixtureFactory.makeTarget();
 
         Map<Method, Location> actual =  subject.to(target);
 
@@ -57,7 +58,7 @@ public class LocationTranslatorTest {
         assertThat(actual.get(Method.GET).getErrorRouteRunners(), Is.is(notNullValue()));
         assertThat(actual.get(Method.GET).getErrorRouteRunners().size(), Is.is(1));
 
-        RouteRun<DummySession, DummyUser> getRouteRunner = (RouteRun<DummySession, DummyUser>) actual.get(Method.GET).getRouteRunner();
+        HtmlRouteRun<DummySession, DummyUser, EmptyPayload> getRouteRunner = (HtmlRouteRun<DummySession, DummyUser, EmptyPayload>) actual.get(Method.GET).getRouteRunner();
 
         // ordering of before.
         assertThat(getRouteRunner.getRoute().getBefore().get(0), is(betweens.getBefore().get(0)));
@@ -79,7 +80,7 @@ public class LocationTranslatorTest {
         assertThat(actual.get(Method.POST).getErrorRouteRunners(), Is.is(notNullValue()));
         assertThat(actual.get(Method.POST).getErrorRouteRunners().size(), Is.is(1));
 
-        RouteRun<DummySession, DummyUser> postRouteRunner = (RouteRun<DummySession, DummyUser>) actual.get(Method.POST).getRouteRunner();
+        HtmlRouteRun<DummySession, DummyUser, EmptyPayload> postRouteRunner = (HtmlRouteRun<DummySession, DummyUser, EmptyPayload>) actual.get(Method.POST).getRouteRunner();
 
         // ordering of before.
         assertThat(postRouteRunner.getRoute().getBefore().get(0), is(betweens.getBefore().get(0)));

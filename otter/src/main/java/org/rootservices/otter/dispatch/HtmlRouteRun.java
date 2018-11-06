@@ -1,10 +1,7 @@
 package org.rootservices.otter.dispatch;
 
 import org.rootservices.otter.controller.Resource;
-import org.rootservices.otter.controller.entity.DefaultSession;
-import org.rootservices.otter.controller.entity.DefaultUser;
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.*;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Method;
@@ -13,16 +10,17 @@ import org.rootservices.otter.dispatch.translator.AnswerTranslator;
 import org.rootservices.otter.router.entity.io.Answer;
 import org.rootservices.otter.router.entity.io.Ask;
 import org.rootservices.otter.router.exception.HaltException;
+import org.rootservices.otter.translatable.Translatable;
 
 import java.util.List;
 
-public class RouteRun<S extends DefaultSession, U extends DefaultUser> implements RouteRunner {
+public class HtmlRouteRun<S extends DefaultSession, U extends DefaultUser, P extends Translatable> implements RouteRunner {
 
-    private Route<S, U> route;
-    private RequestTranslator<S, U> requestTranslator;
+    private Route<S, U, P> route;
+    private RequestTranslator<S, U, P> requestTranslator;
     private AnswerTranslator<S> answerTranslator;
 
-    public RouteRun(Route<S, U> route, RequestTranslator<S, U> requestTranslator, AnswerTranslator<S> answerTranslator) {
+    public HtmlRouteRun(Route<S, U, P> route, RequestTranslator<S, U, P> requestTranslator, AnswerTranslator<S> answerTranslator) {
         this.route = route;
         this.requestTranslator = requestTranslator;
         this.answerTranslator = answerTranslator;
@@ -30,7 +28,7 @@ public class RouteRun<S extends DefaultSession, U extends DefaultUser> implement
 
     @Override
     public Answer run(Ask ask, Answer answer) throws HaltException {
-        Request<S, U> request = requestTranslator.to(ask);
+        Request<S, U, P> request = requestTranslator.to(ask);
         Response<S> response = answerTranslator.from(answer);
 
         Response<S> runResponse;
@@ -45,8 +43,8 @@ public class RouteRun<S extends DefaultSession, U extends DefaultUser> implement
         return answerTranslator.to(runResponse);
     }
 
-    protected Response<S> executeResourceMethod(Route<S, U> route, Request<S, U> request, Response<S> response) throws HaltException {
-        Resource<S, U> resource = route.getResource();
+    protected Response<S> executeResourceMethod(Route<S, U, P> route, Request<S, U, P> request, Response<S> response) throws HaltException {
+        Resource<S, U, P> resource = route.getResource();
         Response<S> resourceResponse = null;
         Method method = request.getMethod();
 
@@ -85,8 +83,8 @@ public class RouteRun<S extends DefaultSession, U extends DefaultUser> implement
         return resourceResponse;
     }
 
-    protected void executeBetween(List<Between<S, U>> betweens, Method method, Request<S, U> request, Response<S> response) throws HaltException {
-        for(Between<S, U> between: betweens) {
+    protected void executeBetween(List<Between<S, U, P>> betweens, Method method, Request<S, U, P> request, Response<S> response) throws HaltException {
+        for(Between<S, U, P> between: betweens) {
             try {
                 between.process(method, request, response);
             } catch(HaltException e) {
@@ -95,11 +93,11 @@ public class RouteRun<S extends DefaultSession, U extends DefaultUser> implement
         }
     }
 
-    public Route<S, U> getRoute() {
+    public Route<S, U, P> getRoute() {
         return route;
     }
 
-    public RequestTranslator<S, U> getRequestTranslator() {
+    public RequestTranslator<S, U, P> getRequestTranslator() {
         return requestTranslator;
     }
 

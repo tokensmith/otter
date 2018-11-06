@@ -38,8 +38,9 @@ import java.util.Optional;
  *
  * @param <S> Session object, intended to contain user session data.
  * @param <U> User object, intended to be a authenticated user.
+ * @param <P> Payload object, used for rest requests.
  */
-public class DecryptSession<S, U> implements Between<S, U> {
+public class DecryptSession<S, U, P> implements Between<S, U, P> {
     public static final String NOT_A_JWT = "Session cookie was not a JWE: %s";
     public static final String COULD_NOT_GET_HEADER_JWE = "Session cookie did have a header member: %s";
     public static final String COULD_NOT_DESERIALIZE_JWE = "Session cookie could not be de-serialized to JSON: %s";
@@ -70,7 +71,7 @@ public class DecryptSession<S, U> implements Between<S, U> {
     }
 
     @Override
-    public void process(Method method, Request<S, U> request, Response<S> response) throws HaltException {
+    public void process(Method method, Request<S, U, P> request, Response<S> response) throws HaltException {
         Optional<S> session;
         Cookie sessionCookie = request.getCookies().get(sessionCookieName);
 

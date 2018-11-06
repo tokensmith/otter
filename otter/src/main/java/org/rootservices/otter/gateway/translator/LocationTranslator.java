@@ -5,7 +5,7 @@ import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.gateway.entity.ErrorTarget;
-import org.rootservices.otter.gateway.entity.Target;
+import org.rootservices.otter.gateway.entity.target.Target;
 import org.rootservices.otter.router.builder.LocationBuilder;
 import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.Location;
@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class LocationTranslator<S extends DefaultSession, U extends DefaultUser, P extends Translatable> {
-    private BetweenFactory<S, U> betweenFactory;
+    private BetweenFactory<S, U, P> betweenFactory;
 
-    public LocationTranslator(BetweenFactory<S, U> betweenFactory) {
+    public LocationTranslator(BetweenFactory<S, U, P> betweenFactory) {
         this.betweenFactory = betweenFactory;
     }
 
@@ -31,14 +31,14 @@ public class LocationTranslator<S extends DefaultSession, U extends DefaultUser,
 
         for(Method method: from.getMethods()) {
 
-            Betweens<S, U> betweens = betweenFactory.make(method, from.getLabels());
+            Betweens<S, U, P> betweens = betweenFactory.make(method, from.getLabels());
 
             List<MimeType> contentTypes = from.getContentTypes().get(method);
             if (contentTypes == null) {
                 contentTypes = new ArrayList<>();
             }
 
-            Location location = new LocationBuilder<S, U>()
+            Location location = new LocationBuilder<S, U, P>()
                 .path(from.getRegex())
                 .contentTypes(contentTypes)
                 .resource(from.getResource())
@@ -67,8 +67,8 @@ public class LocationTranslator<S extends DefaultSession, U extends DefaultUser,
         return to;
     }
 
-    public Route<S, U> toRoute(ErrorTarget<S, U> from) {
-        return new RouteBuilder<S, U>()
+    public Route<S, U, P> toRoute(ErrorTarget<S, U, P> from) {
+        return new RouteBuilder<S, U, P>()
                 .resource(from.getResource())
                 .before(from.getBefore())
                 .after(from.getAfter())

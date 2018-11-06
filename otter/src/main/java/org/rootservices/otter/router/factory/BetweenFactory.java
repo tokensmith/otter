@@ -11,16 +11,16 @@ import java.util.List;
 import java.util.Optional;
 
 
-public class BetweenFactory<S, U> {
-    private Betweens<S, U> csrfPrepare;
-    private Betweens<S, U> csrfProtect;
-    private Betweens<S, U> sessionRequired;
-    private Betweens<S, U> sessionOptional;
+public class BetweenFactory<S, U, P> {
+    private Betweens<S, U, P> csrfPrepare;
+    private Betweens<S, U, P> csrfProtect;
+    private Betweens<S, U, P> sessionRequired;
+    private Betweens<S, U, P> sessionOptional;
 
-    private Optional<Between<S, U>> authRequired;
-    private Optional<Between<S, U>> authOptional;
+    private Optional<Between<S, U, P>> authRequired;
+    private Optional<Between<S, U, P>> authOptional;
 
-    public BetweenFactory(Betweens<S, U> csrfPrepare, Betweens<S, U> csrfProtect, Betweens<S, U> sessionRequired, Betweens<S, U> sessionOptional, Optional<Between<S, U>> authRequired, Optional<Between<S, U>> authOptional) {
+    public BetweenFactory(Betweens<S, U, P> csrfPrepare, Betweens<S, U, P> csrfProtect, Betweens<S, U, P> sessionRequired, Betweens<S, U, P> sessionOptional, Optional<Between<S, U, P>> authRequired, Optional<Between<S, U, P>> authOptional) {
         this.csrfPrepare = csrfPrepare;
         this.csrfProtect = csrfProtect;
         this.sessionRequired = sessionRequired;
@@ -29,8 +29,8 @@ public class BetweenFactory<S, U> {
         this.authOptional = authOptional;
     }
 
-    public Betweens<S, U> make(Method method, List<Label> labels) {
-        Betweens<S, U> betweens = new Betweens<S, U>(new ArrayList<>(), new ArrayList<>());
+    public Betweens<S, U, P> make(Method method, List<Label> labels) {
+        Betweens<S, U, P> betweens = new Betweens<S, U, P>(new ArrayList<>(), new ArrayList<>());
 
         if (Method.GET.equals(method)) {
             betweens = makeGet(labels);
@@ -47,8 +47,8 @@ public class BetweenFactory<S, U> {
 
     }
 
-    public Betweens<S, U> makeGet(List<Label> labels) {
-        Betweens<S, U> betweens = new Betweens<S, U>(new ArrayList<>(), new ArrayList<>());
+    public Betweens<S, U, P> makeGet(List<Label> labels) {
+        Betweens<S, U, P> betweens = new Betweens<S, U, P>(new ArrayList<>(), new ArrayList<>());
         if(labels.contains(Label.CSRF)) {
             betweens.getBefore().addAll(csrfPrepare.getBefore());
         }
@@ -64,8 +64,8 @@ public class BetweenFactory<S, U> {
         return betweens;
     }
 
-    public Betweens<S, U> makePost(List<Label> labels) {
-        Betweens<S, U> betweens = new Betweens<S, U>(new ArrayList<>(), new ArrayList<>());
+    public Betweens<S, U, P> makePost(List<Label> labels) {
+        Betweens<S, U, P> betweens = new Betweens<S, U, P>(new ArrayList<>(), new ArrayList<>());
         if(labels.contains(Label.CSRF)) {
             betweens.getBefore().addAll(csrfProtect.getBefore());
         }
@@ -81,25 +81,25 @@ public class BetweenFactory<S, U> {
         return betweens;
     }
 
-    public Betweens<S, U> makePut(List<Label> labels) {
-        Betweens<S, U> betweens = new Betweens<S, U>(new ArrayList<>(), new ArrayList<>());
+    public Betweens<S, U, P> makePut(List<Label> labels) {
+        Betweens<S, U, P> betweens = new Betweens<S, U, P>(new ArrayList<>(), new ArrayList<>());
         authentication(labels, betweens);
         return betweens;
     }
 
-    public Betweens<S, U> makePatch(List<Label> labels) {
-        Betweens<S, U> betweens = new Betweens<S, U>(new ArrayList<>(), new ArrayList<>());
+    public Betweens<S, U, P> makePatch(List<Label> labels) {
+        Betweens<S, U, P> betweens = new Betweens<S, U, P>(new ArrayList<>(), new ArrayList<>());
         authentication(labels, betweens);
         return betweens;
     }
 
-    public Betweens<S, U> makeDelete(List<Label> labels) {
-        Betweens<S, U> betweens = new Betweens<S, U>(new ArrayList<>(), new ArrayList<>());
+    public Betweens<S, U, P> makeDelete(List<Label> labels) {
+        Betweens<S, U, P> betweens = new Betweens<S, U, P>(new ArrayList<>(), new ArrayList<>());
         authentication(labels, betweens);
         return betweens;
     }
 
-    protected void authentication(List<Label> labels, Betweens<S, U> betweens) {
+    protected void authentication(List<Label> labels, Betweens<S, U, P> betweens) {
         if (labels.contains(Label.AUTH_OPTIONAL) && authOptional.isPresent()) {
             betweens.getBefore().add(authOptional.get());
         }

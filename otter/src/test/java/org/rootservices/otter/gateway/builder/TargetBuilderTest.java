@@ -7,51 +7,55 @@ import helper.entity.DummyUser;
 import helper.fake.FakeResource;
 import org.junit.Test;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
-import org.rootservices.otter.controller.entity.DefaultPayload;
+import org.rootservices.otter.controller.entity.EmptyPayload;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.gateway.builder.target.TargetBuilder;
 import org.rootservices.otter.gateway.entity.ErrorTarget;
 import org.rootservices.otter.gateway.entity.Label;
-import org.rootservices.otter.gateway.entity.Target;
+import org.rootservices.otter.gateway.entity.target.Target;
 import org.rootservices.otter.router.entity.Method;
 
 
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.*;
 
 public class TargetBuilderTest {
 
-    public TargetBuilder<DummySession, DummyUser, DefaultPayload> subject() {
-        return new TargetBuilder<DummySession, DummyUser, DefaultPayload>();
+    public TargetBuilder<DummySession, DummyUser, EmptyPayload> subject() {
+        return new TargetBuilder<DummySession, DummyUser, EmptyPayload>();
     }
 
     @Test
-    public void buildShouldHaveEmptyLists() {
-        TargetBuilder<DummySession, DummyUser, DefaultPayload> subject = subject();
+    public void buildShouldHaveEmptyListsAndEmptyPayload() {
+        TargetBuilder<DummySession, DummyUser, EmptyPayload> subject = subject();
 
-        Target<DummySession, DummyUser, DefaultPayload> actual = subject.build();
+        Target<DummySession, DummyUser, EmptyPayload> actual = subject.build();
 
         assertThat(actual.getContentTypes().size(), is(0));
         assertThat(actual.getMethods().size(), is(0));
         assertThat(actual.getLabels().size(), is(0));
         assertThat(actual.getBefore().size(), is(0));
         assertThat(actual.getAfter().size(), is(0));
+        assertThat(actual.getPayload(), is(notNullValue()));
+        assertThat(actual.getPayload().isPresent(), is(false));
     }
 
     @Test
     public void buildShouldBeOk() {
-        TargetBuilder<DummySession, DummyUser, DefaultPayload> subject = subject();
+        TargetBuilder<DummySession, DummyUser, EmptyPayload> subject = subject();
 
         FakeResource notFoundResource = new FakeResource();
-        ErrorTarget<DummySession, DummyUser> notFound = new ErrorTargetBuilder<DummySession, DummyUser>()
+        ErrorTarget<DummySession, DummyUser, EmptyPayload> notFound = new ErrorTargetBuilder<DummySession, DummyUser, EmptyPayload>()
                 .resource(notFoundResource)
                 .build();
 
         FakeResource fakeResource = new FakeResource();
         MimeType json = new MimeTypeBuilder().json().build();
 
-        Target<DummySession, DummyUser, DefaultPayload> actual = subject
+        Target<DummySession, DummyUser, EmptyPayload> actual = subject
                 .regex("/foo")
                 .method(Method.GET)
                 .method(Method.POST)
@@ -84,10 +88,10 @@ public class TargetBuilderTest {
 
     @Test
     public void buildWhenMethodContentTypeShouldBeOk() {
-        TargetBuilder<DummySession, DummyUser, DefaultPayload> subject = subject();
+        TargetBuilder<DummySession, DummyUser, EmptyPayload> subject = subject();
 
         FakeResource notFoundResource = new FakeResource();
-        ErrorTarget<DummySession, DummyUser> notFound = new ErrorTargetBuilder<DummySession, DummyUser>()
+        ErrorTarget<DummySession, DummyUser, EmptyPayload> notFound = new ErrorTargetBuilder<DummySession, DummyUser, EmptyPayload>()
                 .resource(notFoundResource)
                 .build();
 
@@ -95,7 +99,7 @@ public class TargetBuilderTest {
         MimeType json = new MimeTypeBuilder().json().build();
         MimeType jwt = new MimeTypeBuilder().jwt().build();
 
-        Target<DummySession, DummyUser, DefaultPayload> actual = subject
+        Target<DummySession, DummyUser, EmptyPayload> actual = subject
                 .regex("/foo")
                 .method(Method.GET)
                 .method(Method.POST)

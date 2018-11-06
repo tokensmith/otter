@@ -4,6 +4,7 @@ import helper.entity.DummySession;
 import helper.entity.DummyUser;
 import helper.fake.FakeResource;
 import org.junit.Test;
+import org.rootservices.otter.controller.entity.EmptyPayload;
 import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Route;
 
@@ -20,7 +21,7 @@ public class RouteBuilderTest {
     public void buildShouldBeOk() {
         FakeResource resource = new FakeResource();
 
-        Route<DummySession, DummyUser> actual = new RouteBuilder<DummySession, DummyUser>()
+        Route<DummySession, DummyUser, EmptyPayload> actual = new RouteBuilder<DummySession, DummyUser, EmptyPayload>()
                 .resource(resource)
                 .build();
 
@@ -34,10 +35,10 @@ public class RouteBuilderTest {
     @Test
     public void buildWhenBetweenShouldAssign() {
         FakeResource resource = new FakeResource();
-        List<Between<DummySession, DummyUser>> before = new ArrayList<>();
-        List<Between<DummySession, DummyUser>> after = new ArrayList<>();
+        List<Between<DummySession, DummyUser, EmptyPayload>> before = new ArrayList<>();
+        List<Between<DummySession, DummyUser, EmptyPayload>> after = new ArrayList<>();
 
-        Route<DummySession, DummyUser> actual = new RouteBuilder<DummySession, DummyUser>()
+        Route<DummySession, DummyUser, EmptyPayload> actual = new RouteBuilder<DummySession, DummyUser, EmptyPayload>()
                 .resource(resource)
                 .before(after)
                 .after(before)

@@ -5,6 +5,7 @@ import helper.entity.DummySession;
 import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
+import org.rootservices.otter.controller.entity.EmptyPayload;
 import org.rootservices.otter.controller.entity.Request;
 import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -15,16 +16,16 @@ import static org.junit.Assert.*;
 
 
 public class ResourceTest {
-    private Resource<DummySession, DummyUser> subject;
+    private Resource<DummySession, DummyUser, EmptyPayload> subject;
 
     @Before
     public void setUp() {
-        subject = new Resource<DummySession, DummyUser>();
+        subject = new Resource<DummySession, DummyUser, EmptyPayload>();
     }
 
     @Test
     public void getShouldNotBeImplemented() {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, EmptyPayload> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         Response<DummySession> actual = subject.get(request, response);
@@ -36,7 +37,7 @@ public class ResourceTest {
 
     @Test
     public void postShouldNotBeImplemented() {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, EmptyPayload> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         Response<DummySession> actual = subject.post(request, response);
@@ -47,7 +48,7 @@ public class ResourceTest {
 
     @Test
     public void putShouldNotBeImplemented() {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, EmptyPayload> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         Response<DummySession> actual = subject.put(request, response);
@@ -58,7 +59,7 @@ public class ResourceTest {
 
     @Test
     public void patchShouldNotBeImplemented() {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, EmptyPayload> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         Response<DummySession> actual = subject.patch(request, response);
@@ -69,7 +70,7 @@ public class ResourceTest {
 
     @Test
     public void deleteShouldNotBeImplemented() {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, EmptyPayload> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         Response<DummySession> actual = subject.delete(request, response);
@@ -80,7 +81,7 @@ public class ResourceTest {
 
     @Test
     public void connectShouldNotBeImplemented() {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, EmptyPayload> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         Response<DummySession> actual = subject.connect(request, response);
@@ -91,7 +92,7 @@ public class ResourceTest {
 
     @Test
     public void optionsShouldNotBeImplemented() {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, EmptyPayload> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         Response<DummySession> actual = subject.options(request, response);
@@ -102,7 +103,7 @@ public class ResourceTest {
 
     @Test
     public void traceShouldNotBeImplemented() {
-        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Request<DummySession, DummyUser, EmptyPayload> request = FixtureFactory.makeRequest();
         Response<DummySession> response = FixtureFactory.makeResponse();
 
         Response<DummySession> actual = subject.trace(request, response);

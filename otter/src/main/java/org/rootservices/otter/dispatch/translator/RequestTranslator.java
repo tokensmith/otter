@@ -5,10 +5,10 @@ import org.rootservices.otter.router.entity.io.Ask;
 
 import java.util.Optional;
 
-public class RequestTranslator<S, U> {
+public class RequestTranslator<S, U, P> {
 
-    public Request<S, U> to(Ask from) {
-        Request<S, U> to = new Request<>();
+    public Request<S, U, P> to(Ask from) {
+        Request<S, U, P> to = new Request<>();
 
         to.setMatcher(from.getMatcher());
         to.setMethod(from.getMethod());
