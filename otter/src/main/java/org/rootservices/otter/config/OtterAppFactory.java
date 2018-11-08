@@ -64,7 +64,7 @@ public class OtterAppFactory {
     }
 
     /**
-     * Make a JsonTranslator used in RestResource.
+     * Make a JsonTranslator used in LegacyRestResource.
      * It must be used exclusively for {@code Class<T> clazz}
      *
      * @param clazz Class to be serialized

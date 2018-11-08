@@ -4,6 +4,8 @@ package org.rootservices.otter.controller;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.otter.controller.entity.*;
+import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.exception.DeserializationException;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.exception.*;
@@ -12,8 +14,8 @@ import org.rootservices.otter.translator.exception.*;
 import java.io.ByteArrayOutputStream;
 import java.util.Optional;
 
-public class RestResource<T, S extends DefaultSession, U extends DefaultUser> extends Resource<S, U> {
-    protected static Logger logger = LogManager.getLogger(RestResource.class);
+public class LegacyRestResource<T, S extends DefaultSession, U extends DefaultUser> extends Resource<S, U> {
+    protected static Logger logger = LogManager.getLogger(LegacyRestResource.class);
 
     protected JsonTranslator<T> translator;
 
@@ -27,10 +29,10 @@ public class RestResource<T, S extends DefaultSession, U extends DefaultUser> ex
     private static final String UNKNOWN_KEY_DESC = "%s was not expected";
 
 
-    public RestResource() {
+    public LegacyRestResource() {
     }
 
-    public RestResource(JsonTranslator<T> translator) {
+    public LegacyRestResource(JsonTranslator<T> translator) {
         this.translator = translator;
     }
 

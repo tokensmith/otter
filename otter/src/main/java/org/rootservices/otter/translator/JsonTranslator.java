@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 
 /**
- * There should be a instance of this class per RestResource.
+ * There should be a instance of this class per LegacyRestResource.
  *
  * @param <T> the type to be marshalled to/from json.
  */

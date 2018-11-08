@@ -5,14 +5,14 @@ import helper.FixtureFactory;
 import helper.entity.DummyPayload;
 import helper.entity.DummySession;
 import helper.entity.DummyUser;
-import helper.fake.FakeRestResource;
+import helper.fake.FakeLegacyRestResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.entity.ErrorPayload;
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.exception.*;
@@ -30,15 +30,15 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 
-public class RestResourceTest {
+public class LegacyRestResourceTest {
     @Mock
     private JsonTranslator<DummyPayload> mockJsonTranslator;
-    private RestResource<DummyPayload, DummySession, DummyUser> subject;
+    private LegacyRestResource<DummyPayload, DummySession, DummyUser> subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new FakeRestResource(mockJsonTranslator);
+        subject = new FakeLegacyRestResource(mockJsonTranslator);
     }
 
     public Optional<byte[]> makeBody() {

@@ -1,8 +1,8 @@
 package org.rootservices.otter.router.entity;
 
 
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.router.exception.HaltException;
 
 /**

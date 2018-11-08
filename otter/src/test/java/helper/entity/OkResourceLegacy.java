@@ -1,16 +1,15 @@
 package helper.entity;
 
 
-import org.rootservices.otter.controller.RestResource;
-import org.rootservices.otter.controller.entity.Cookie;
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.LegacyRestResource;
+import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.translator.JsonTranslator;
 
-public class OkResource extends RestResource<DummyPayload, DummySession, DummyUser> {
+public class OkResourceLegacy extends LegacyRestResource<DummyPayload, DummySession, DummyUser> {
 
-    public OkResource(JsonTranslator<DummyPayload> translator) {
+    public OkResourceLegacy(JsonTranslator<DummyPayload> translator) {
         super(translator);
     }
 

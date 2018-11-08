@@ -2,7 +2,7 @@ package hello.config;
 
 
 
-import hello.controller.api.HelloRestResource;
+import hello.controller.api.HelloLegacyRestResource;
 import hello.model.Hello;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwk.Use;
@@ -16,9 +16,9 @@ public class AppFactory {
         return new OtterAppFactory();
     }
 
-    public HelloRestResource helloRestResource() {
+    public HelloLegacyRestResource helloRestResource() {
         JsonTranslator<Hello> jsonTranslator = otterAppFactory().jsonTranslator(Hello.class);
-        return new HelloRestResource(jsonTranslator);
+        return new HelloLegacyRestResource(jsonTranslator);
     }
 
     /**

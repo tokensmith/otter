@@ -2,7 +2,7 @@ package hello.config;
 
 
 import hello.controller.*;
-import hello.controller.api.HelloRestResource;
+import hello.controller.api.HelloLegacyRestResource;
 import hello.controller.api.between.AuthRestBetween;
 import hello.controller.api.model.ApiSession;
 import hello.controller.api.model.ApiUser;
@@ -85,7 +85,7 @@ public class AppConfig implements Configure {
                 .method(Method.GET)
                 .method(Method.POST)
                 .resource(appFactory.helloRestResource())
-                .regex(HelloRestResource.URL)
+                .regex(HelloLegacyRestResource.URL)
                 .label(Label.AUTH_REQUIRED)
                 .contentType(json)
                 .groupName(API_GROUP)

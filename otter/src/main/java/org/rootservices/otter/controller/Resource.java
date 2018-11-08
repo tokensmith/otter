@@ -1,6 +1,8 @@
 package org.rootservices.otter.controller;
 
 import org.rootservices.otter.controller.entity.*;
+import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.controller.entity.response.Response;
 
 
 public class Resource<S extends DefaultSession, U extends DefaultUser> {

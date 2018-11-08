@@ -4,11 +4,9 @@ package hello.controller;
 import hello.security.TokenSession;
 import hello.security.User;
 import org.rootservices.otter.controller.Resource;
-import org.rootservices.otter.controller.builder.MimeTypeBuilder;
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.mime.MimeType;
 
 import java.util.Optional;
 

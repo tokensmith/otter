@@ -5,7 +5,7 @@ import helper.entity.DummySession;
 import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.otter.controller.entity.Request;
+import org.rootservices.otter.controller.entity.request.Request;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;
 import org.rootservices.otter.router.entity.io.Ask;
 

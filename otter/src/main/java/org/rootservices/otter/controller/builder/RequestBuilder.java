@@ -2,7 +2,7 @@ package org.rootservices.otter.controller.builder;
 
 
 import org.rootservices.otter.controller.entity.Cookie;
-import org.rootservices.otter.controller.entity.Request;
+import org.rootservices.otter.controller.entity.request.Request;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.router.entity.Method;
 

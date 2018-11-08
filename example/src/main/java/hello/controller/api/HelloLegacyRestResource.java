@@ -4,9 +4,9 @@ package hello.controller.api;
 import hello.controller.api.model.ApiSession;
 import hello.controller.api.model.ApiUser;
 import hello.model.Hello;
-import org.rootservices.otter.controller.RestResource;
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.LegacyRestResource;
+import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.exception.ToJsonException;
@@ -14,10 +14,10 @@ import org.rootservices.otter.translator.exception.ToJsonException;
 import java.io.ByteArrayOutputStream;
 import java.util.Optional;
 
-public class HelloRestResource extends RestResource<Hello, ApiSession, ApiUser> {
+public class HelloLegacyRestResource extends LegacyRestResource<Hello, ApiSession, ApiUser> {
     public static String URL = "/rest/hello";
 
-    public HelloRestResource(JsonTranslator<Hello> translator) {
+    public HelloLegacyRestResource(JsonTranslator<Hello> translator) {
         super(translator);
     }
 

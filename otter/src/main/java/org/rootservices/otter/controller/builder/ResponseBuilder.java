@@ -2,7 +2,7 @@ package org.rootservices.otter.controller.builder;
 
 
 import org.rootservices.otter.controller.entity.Cookie;
-import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 
 import java.io.ByteArrayOutputStream;

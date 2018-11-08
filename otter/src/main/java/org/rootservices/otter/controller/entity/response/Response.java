@@ -1,6 +1,9 @@
-package org.rootservices.otter.controller.entity;
+package org.rootservices.otter.controller.entity.response;
 
 
+
+import org.rootservices.otter.controller.entity.Cookie;
+import org.rootservices.otter.controller.entity.StatusCode;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
@@ -9,7 +12,7 @@ import java.util.Optional;
 public class Response<S> {
     private StatusCode statusCode;
     private Map<String, String> headers;
-    private Map<String,Cookie> cookies;
+    private Map<String, Cookie> cookies;
     private Optional<ByteArrayOutputStream> payload;
     private Optional<String> template;
     private Optional<Object> presenter;
