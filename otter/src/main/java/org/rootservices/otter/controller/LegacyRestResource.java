@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 import org.rootservices.otter.controller.entity.*;
 import org.rootservices.otter.controller.entity.request.Request;
 import org.rootservices.otter.controller.entity.response.Response;
-import org.rootservices.otter.controller.exception.DeserializationException;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.exception.*;
 
@@ -116,7 +115,7 @@ public class LegacyRestResource<T, S extends DefaultSession, U extends DefaultUs
         T entity;
 
         try{
-            entity = translator.from(json);
+            entity = translator.fromWithSpecificCause(json);
         } catch (DuplicateKeyException e) {
             String desc = String.format(DUPLICATE_KEY_DESC, e.getKey());
             throw new DeserializationException(DUPLICATE_KEY_MSG, e, desc);

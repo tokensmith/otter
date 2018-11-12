@@ -5,7 +5,7 @@ import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
-import org.rootservices.otter.router.entity.Between;
+import org.rootservices.otter.router.entity.between.Between;
 import org.rootservices.otter.router.factory.BetweenFactory;
 import org.rootservices.otter.security.builder.BetweenBuilder;
 import org.rootservices.otter.security.builder.entity.Betweens;

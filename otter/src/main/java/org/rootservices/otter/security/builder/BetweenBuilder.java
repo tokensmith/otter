@@ -6,7 +6,7 @@ import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.config.OtterAppFactory;
-import org.rootservices.otter.router.entity.Between;
+import org.rootservices.otter.router.entity.between.Between;
 import org.rootservices.otter.security.RandomString;
 import org.rootservices.otter.security.builder.entity.Betweens;
 import org.rootservices.otter.security.exception.SessionCtorException;

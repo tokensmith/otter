@@ -1,6 +1,6 @@
 package org.rootservices.otter.security.builder.entity;
 
-import org.rootservices.otter.router.entity.Between;
+import org.rootservices.otter.router.entity.between.Between;
 
 import java.util.List;
 

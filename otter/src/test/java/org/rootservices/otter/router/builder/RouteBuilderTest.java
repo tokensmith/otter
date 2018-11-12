@@ -4,7 +4,7 @@ import helper.entity.DummySession;
 import helper.entity.DummyUser;
 import helper.fake.FakeResourceLegacy;
 import org.junit.Test;
-import org.rootservices.otter.router.entity.Between;
+import org.rootservices.otter.router.entity.between.Between;
 import org.rootservices.otter.router.entity.Route;
 
 import java.util.ArrayList;

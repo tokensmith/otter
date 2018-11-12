@@ -1,9 +1,7 @@
 package helper;
 
 
-import helper.entity.DummyBetween;
-import helper.entity.DummySession;
-import helper.entity.DummyUser;
+import helper.entity.*;
 import helper.fake.FakeResourceLegacy;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
@@ -20,9 +18,11 @@ import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.builder.ResponseBuilder;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.controller.entity.request.RestRequest;
 import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.controller.entity.response.RestResponse;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.controller.header.HeaderValue;
 import org.rootservices.otter.dispatch.RouteRun;
@@ -41,6 +41,7 @@ import org.rootservices.otter.router.builder.AskBuilder;
 import org.rootservices.otter.router.builder.LocationBuilder;
 import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.*;
+import org.rootservices.otter.router.entity.between.Between;
 import org.rootservices.otter.router.entity.io.Answer;
 import org.rootservices.otter.router.entity.io.Ask;
 import org.rootservices.otter.security.builder.entity.Betweens;
@@ -77,6 +78,13 @@ public class FixtureFactory {
                 .before(new ArrayList<>())
                 .after(new ArrayList<>())
                 .build();
+    }
+
+    public static RestRoute<DummyUser, DummyPayload> makeRestRoute() {
+        OkRestResource okRestResource = new OkRestResource();
+        return new RestRoute<DummyUser, DummyPayload>(
+                okRestResource, new ArrayList<>(), new ArrayList<>()
+        );
     }
 
     public static Location makeLocation(String regex) {
@@ -224,6 +232,14 @@ public class FixtureFactory {
         return request;
     }
 
+    public static RestRequest<DummyUser, DummyPayload> makeRestRequest() {
+        RestRequest<DummyUser, DummyPayload> request = new RestRequest<DummyUser, DummyPayload>();
+        request.setFormData(new HashMap<>());
+        request.setCookies(makeCookies());
+        request.setPayload(Optional.empty());
+        return request;
+    }
+
     public static Map<String, String> makeHeaders() {
         Map<String, String> headers = new HashMap<>();
         headers.put(Header.CACHE_CONTROL.getValue(), HeaderValue.NO_CACHE.getValue());
@@ -241,6 +257,12 @@ public class FixtureFactory {
                 .build();
 
         return response;
+    }
+
+    public static RestResponse<DummyPayload> makeRestResponse() {
+        return new RestResponse<DummyPayload>(
+                StatusCode.OK, new HashMap<>(), new HashMap<>(), Optional.empty()
+        );
     }
 
     public static Map<String, Cookie> makeCookies() {

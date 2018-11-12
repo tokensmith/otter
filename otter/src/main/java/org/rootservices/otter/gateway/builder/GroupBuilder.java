@@ -3,7 +3,7 @@ package org.rootservices.otter.gateway.builder;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.gateway.entity.Group;
-import org.rootservices.otter.router.entity.Between;
+import org.rootservices.otter.router.entity.between.Between;
 
 import java.util.Optional;
 

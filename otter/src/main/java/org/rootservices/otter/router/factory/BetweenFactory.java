@@ -2,7 +2,7 @@ package org.rootservices.otter.router.factory;
 
 
 import org.rootservices.otter.gateway.entity.Label;
-import org.rootservices.otter.router.entity.Between;
+import org.rootservices.otter.router.entity.between.Between;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.security.builder.entity.Betweens;
 

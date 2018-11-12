@@ -25,6 +25,7 @@ public class JsonTranslator<T> {
     private ObjectWriter objectWriter;
     private Class<T> type;
 
+    // For Specific Exceptions.
     private static final String DUPLICATE_NAME = "key";
     private static final Pattern DUPLICATE_KEY_PATTERN = Pattern.compile("Duplicate field \'(?<" + DUPLICATE_NAME + ">\\w+)\'");
     private static final String DUPLICATE_KEY_MSG = "The key '%s' was duplicated";
@@ -33,14 +34,43 @@ public class JsonTranslator<T> {
     private static final String INVALID_PAYLOAD_MSG = "The payload couldn't be parsed";
     private static final String TO_JSON_MSG = "Could not create JSON";
 
+    // For DeserializationException
+    private static final String DUPLICATE_KEY_GENERIC_MSG = "Duplicate Key";
+    private static final String INVALID_VALUE_GENERIC_MSG = "Invalid Value";
+    private static final String UNKNOWN_KEY_GENERIC_MSG = "Unknown Key";
+    private static final String INVALID_PAYLOAD_GENERIC_MSG = "Invalid Payload";
+    private static final String DUPLICATE_KEY_DESC = "%s was repeated";
+    private static final String INVALID_VALUE_DESC = "%s was invalid";
+    private static final String UNKNOWN_KEY_DESC = "%s was not expected";
+
     public JsonTranslator(ObjectReader objectReader, ObjectWriter objectWriter, Class<T> type) {
         this.objectReader = objectReader;
         this.objectWriter = objectWriter;
         this.type = type;
     }
 
+    public T from(byte[] json) throws DeserializationException {
+        T entity;
+
+        try{
+            entity = fromWithSpecificCause(json);
+        } catch (DuplicateKeyException e) {
+            String desc = String.format(DUPLICATE_KEY_DESC, e.getKey());
+            throw new DeserializationException(DUPLICATE_KEY_GENERIC_MSG, e, desc);
+        } catch (InvalidValueException e) {
+            String desc = String.format(INVALID_VALUE_DESC, e.getKey());
+            throw new DeserializationException(INVALID_VALUE_GENERIC_MSG, e, desc);
+        } catch (UnknownKeyException e) {
+            String desc = String.format(UNKNOWN_KEY_DESC, e.getKey());
+            throw new DeserializationException(UNKNOWN_KEY_GENERIC_MSG, e, desc);
+        } catch (InvalidPayloadException e) {
+            throw new DeserializationException(INVALID_PAYLOAD_GENERIC_MSG, e, null);
+        }
+        return entity;
+    }
     /**
-     * Translates json from T.
+     * Translates json from T. If an issue occurs it throws a specific cause about what happened?
+     *
      * @param json json to marshal
      * @return an instance of T
      * @throws InvalidPayloadException unpredicted error occurred
@@ -48,7 +78,7 @@ public class JsonTranslator<T> {
      * @throws UnknownKeyException a key was not expected
      * @throws InvalidValueException key value was incorrect for it's type
      */
-    public T from(byte[] json) throws InvalidPayloadException, DuplicateKeyException, UnknownKeyException, InvalidValueException {
+    public T fromWithSpecificCause(byte[] json) throws InvalidPayloadException, DuplicateKeyException, UnknownKeyException, InvalidValueException {
         T entity = null;
 
         try {

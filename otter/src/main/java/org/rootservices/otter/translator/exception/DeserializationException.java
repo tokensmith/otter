@@ -1,5 +1,4 @@
-package org.rootservices.otter.controller.exception;
-
+package org.rootservices.otter.translator.exception;
 
 public class DeserializationException extends Exception {
     private String description;

@@ -35,6 +35,7 @@ ext {
     jacksonVersion = '2.9.6'
     log4jVersion = '2.11.1'
     jwtVersion = '1.3.1'
+    translatableVersion = '1.0'
     mockitoVersion = '2.21.0'
 }
 
@@ -54,6 +55,7 @@ dependencies {
     compile "org.apache.logging.log4j:log4j-api:${log4jVersion}"
     compile "org.apache.logging.log4j:log4j-core:${log4jVersion}"
     compile "org.rootservices:jwt:${jwtVersion}"
+    compile "org.rootservices:otter-translatable:${translatableVersion}"
     testCompile "junit:junit:4.12"
     testCompile "org.hamcrest:hamcrest-all:1.3"
     testCompile "org.mockito:mockito-core:${mockitoVersion}"
