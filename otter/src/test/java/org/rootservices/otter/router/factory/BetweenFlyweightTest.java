@@ -18,8 +18,8 @@ import java.util.Optional;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
-public class BetweenFactoryTest {
-    private BetweenFactory<DummySession, DummyUser> subject;
+public class BetweenFlyweightTest {
+    private BetweenFlyweight<DummySession, DummyUser> subject;
     private Betweens<DummySession, DummyUser> csrfPrepare;
     private Betweens<DummySession, DummyUser> csrfProtect;
     private Betweens<DummySession, DummyUser> sessionRequired;
@@ -36,7 +36,7 @@ public class BetweenFactoryTest {
         authRequired = Optional.of(new DummyBetween<>());
         authOptional = Optional.of(new DummyBetween<>());
 
-        subject = new BetweenFactory<>(csrfPrepare, csrfProtect, sessionRequired, sessionOptional, authRequired, authOptional);
+        subject = new BetweenFlyweight<>(csrfPrepare, csrfProtect, sessionRequired, sessionOptional, authRequired, authOptional);
     }
 
     @Test

@@ -12,7 +12,7 @@ import org.rootservices.otter.dispatch.RouteRun;
 import org.rootservices.otter.gateway.entity.Target;
 import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Method;
-import org.rootservices.otter.router.factory.BetweenFactory;
+import org.rootservices.otter.router.factory.BetweenFlyweight;
 import org.rootservices.otter.security.builder.entity.Betweens;
 
 import java.util.Map;
@@ -26,19 +26,19 @@ import static org.mockito.Mockito.when;
 public class LocationTranslatorTest {
     private LocationTranslator<DummySession, DummyUser> subject;
     @Mock
-    private BetweenFactory<DummySession, DummyUser> mockBetweenFactory;
+    private BetweenFlyweight<DummySession, DummyUser> mockBetweenFlyweight;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        subject = new LocationTranslator<DummySession, DummyUser>(mockBetweenFactory);
+        subject = new LocationTranslator<DummySession, DummyUser>(mockBetweenFlyweight);
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void toShouldBeOk() {
         Betweens<DummySession, DummyUser> betweens = FixtureFactory.makeBetweens();
-        when(mockBetweenFactory.make(any(), any())).thenReturn(betweens);
+        when(mockBetweenFlyweight.make(any(), any())).thenReturn(betweens);
 
         Target<DummySession, DummyUser> target = FixtureFactory.makeTarget();
 

@@ -11,7 +11,7 @@ import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
-import org.rootservices.otter.router.factory.BetweenFactory;
+import org.rootservices.otter.router.factory.BetweenFlyweight;
 import org.rootservices.otter.security.builder.entity.Betweens;
 
 import java.util.*;
@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class LocationTranslator<S extends DefaultSession, U extends DefaultUser> {
-    private BetweenFactory<S, U> betweenFactory;
+    private BetweenFlyweight<S, U> betweenFlyweight;
 
-    public LocationTranslator(BetweenFactory<S, U> betweenFactory) {
-        this.betweenFactory = betweenFactory;
+    public LocationTranslator(BetweenFlyweight<S, U> betweenFlyweight) {
+        this.betweenFlyweight = betweenFlyweight;
     }
 
     public Map<Method, Location> to(Target<S, U> from) {
@@ -30,7 +30,7 @@ public class LocationTranslator<S extends DefaultSession, U extends DefaultUser>
 
         for(Method method: from.getMethods()) {
 
-            Betweens<S, U> betweens = betweenFactory.make(method, from.getLabels());
+            Betweens<S, U> betweens = betweenFlyweight.make(method, from.getLabels());
 
             List<MimeType> contentTypes = from.getContentTypes().get(method);
             if (contentTypes == null) {

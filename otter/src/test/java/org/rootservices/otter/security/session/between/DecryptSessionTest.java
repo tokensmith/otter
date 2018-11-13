@@ -14,7 +14,7 @@ import org.rootservices.otter.gateway.LocationTranslatorFactory;
 import org.rootservices.otter.gateway.entity.Label;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.router.exception.HaltException;
-import org.rootservices.otter.router.factory.BetweenFactory;
+import org.rootservices.otter.router.factory.BetweenFlyweight;
 import org.rootservices.otter.security.builder.entity.Betweens;
 import org.rootservices.otter.security.exception.SessionCtorException;
 import org.rootservices.otter.security.session.between.exception.InvalidSessionException;
@@ -36,7 +36,7 @@ public class DecryptSessionTest {
         Betweens<DummySession, DummyUser> betweens;
 
         LocationTranslatorFactory locationTranslatorFactory = otterAppFactory.locationTranslatorFactory(shape);
-        BetweenFactory<DummySession, DummyUser> betweenFactory = locationTranslatorFactory.betweenFactory(
+        BetweenFlyweight<DummySession, DummyUser> betweenFlyweight = locationTranslatorFactory.betweenFlyweight(
                 DummySession.class,
                 Optional.empty(),
                 Optional.empty()
@@ -45,11 +45,11 @@ public class DecryptSessionTest {
         if (required) {
             List<Label> labels = new ArrayList<>();
             labels.add(Label.SESSION_REQUIRED);
-            betweens = betweenFactory.make(Method.GET, labels);
+            betweens = betweenFlyweight.make(Method.GET, labels);
         } else {
             List<Label> labels = new ArrayList<>();
             labels.add(Label.SESSION_OPTIONAL);
-            betweens = betweenFactory.make(Method.GET, labels);
+            betweens = betweenFlyweight.make(Method.GET, labels);
         }
         return (DecryptSession<DummySession, DummyUser>) betweens.getBefore().get(0);
     }
