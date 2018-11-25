@@ -30,21 +30,21 @@ import org.rootservices.otter.dispatch.RouteRunner;
 import org.rootservices.otter.dispatch.translator.AnswerTranslator;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;
 import org.rootservices.otter.gateway.builder.ErrorTargetBuilder;
+import org.rootservices.otter.gateway.builder.RestTargetBuilder;
 import org.rootservices.otter.gateway.builder.ShapeBuilder;
 import org.rootservices.otter.gateway.builder.TargetBuilder;
-import org.rootservices.otter.gateway.entity.ErrorTarget;
-import org.rootservices.otter.gateway.entity.Label;
-import org.rootservices.otter.gateway.entity.Shape;
-import org.rootservices.otter.gateway.entity.Target;
+import org.rootservices.otter.gateway.entity.*;
 import org.rootservices.otter.router.builder.AnswerBuilder;
 import org.rootservices.otter.router.builder.AskBuilder;
 import org.rootservices.otter.router.builder.LocationBuilder;
 import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.*;
 import org.rootservices.otter.router.entity.between.Between;
+import org.rootservices.otter.router.entity.between.RestBetween;
 import org.rootservices.otter.router.entity.io.Answer;
 import org.rootservices.otter.router.entity.io.Ask;
 import org.rootservices.otter.security.builder.entity.Betweens;
+import org.rootservices.otter.security.builder.entity.RestBetweens;
 import org.rootservices.otter.security.csrf.CsrfClaims;
 
 import java.time.OffsetDateTime;
@@ -127,6 +127,19 @@ public class FixtureFactory {
         return errorRoutes;
     }
 
+    public static Map<StatusCode, RestRoute<DummyUser, DummyPayload>> makeErrorRestRoutes() {
+        RestRoute<DummyUser, DummyPayload> notFound = FixtureFactory.makeRestRoute();
+        RestRoute<DummyUser, DummyPayload> unSupportedMediaType = FixtureFactory.makeRestRoute();
+        RestRoute<DummyUser, DummyPayload> serverError = FixtureFactory.makeRestRoute();
+
+        Map<StatusCode, RestRoute<DummyUser, DummyPayload>> errorRoutes = new HashMap<>();
+        errorRoutes.put(StatusCode.NOT_FOUND, notFound);
+        errorRoutes.put(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaType);
+        errorRoutes.put(StatusCode.SERVER_ERROR, serverError);
+
+        return errorRoutes;
+    }
+
     public static Map<StatusCode, RouteRunner> makeErrorRouteRunners() {
         Route<DummySession, DummyUser> notFound = FixtureFactory.makeRoute();
         Route<DummySession, DummyUser> unSupportedMediaType = FixtureFactory.makeRoute();
@@ -186,6 +199,43 @@ public class FixtureFactory {
         Between<DummySession, DummyUser> before = new DummyBetween<>();
         Between<DummySession, DummyUser> after = new DummyBetween<>();
         return new Betweens<>(
+                Arrays.asList(before), Arrays.asList(after)
+        );
+    }
+
+    public static RestTarget<DummyUser, DummyPayload> makeRestTarget() {
+
+        OkRestResource okRestResource = new OkRestResource();
+        OkRestResource notFoundResource = new OkRestResource();
+        RestErrorTarget<DummyUser, DummyPayload> notFound = new RestErrorTarget<DummyUser, DummyPayload>(
+                notFoundResource, new ArrayList<>(), new ArrayList<>()
+        );
+
+        MimeType json = new MimeTypeBuilder().json().build();
+
+        RestTargetBuilder<DummyUser, DummyPayload> builder = new RestTargetBuilder<>();
+
+        return builder
+                .regex("/foo")
+                .method(Method.GET)
+                .method(Method.POST)
+                .contentType(json)
+                .restResource(okRestResource)
+                .payload(DummyPayload.class)
+                .before(new DummyRestBetween<>())
+                .before(new DummyRestBetween<>())
+                .after(new DummyRestBetween<>())
+                .after(new DummyRestBetween<>())
+                .label(Label.CSRF)
+                .label(Label.SESSION_REQUIRED)
+                .errorTarget(StatusCode.NOT_FOUND, notFound)
+                .build();
+    }
+
+    public static RestBetweens<DummyUser, DummyPayload> makeRestBetweens() {
+        RestBetween<DummyUser, DummyPayload> before = new DummyRestBetween<>();
+        RestBetween<DummyUser, DummyPayload> after = new DummyRestBetween<>();
+        return new RestBetweens<>(
                 Arrays.asList(before), Arrays.asList(after)
         );
     }
