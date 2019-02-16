@@ -1,7 +1,8 @@
 package org.rootservices.otter.router.entity.between;
 
-import org.rootservices.otter.controller.entity.request.RestRequest;
-import org.rootservices.otter.controller.entity.response.RestResponse;
+
+import org.rootservices.otter.dispatch.entity.RestBtwnRequest;
+import org.rootservices.otter.dispatch.entity.RestBtwnResponse;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.exception.HaltException;
 
@@ -11,8 +12,7 @@ import org.rootservices.otter.router.exception.HaltException;
  * a resource or after a resource executes. Also referred to as a before and a after.
  *
  * @param <U> User object, intended to be a authenticated user.
- * @param <P> Payload object, the entity for the rest request.
  */
-public interface RestBetween<U, P> {
-    void process(Method method, RestRequest<U, P> request, RestResponse<P> response) throws HaltException;
+public interface RestBetween<U> {
+    void process(Method method, RestBtwnRequest<U> request, RestBtwnResponse response) throws HaltException;
 }

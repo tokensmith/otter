@@ -1,16 +1,17 @@
 package org.rootservices.otter.dispatch.translator.rest;
 
+
 import org.rootservices.otter.controller.entity.request.RestRequest;
 import org.rootservices.otter.dispatch.entity.RestBtwnRequest;
 import org.rootservices.otter.router.entity.io.Ask;
 
 import java.util.Optional;
 
-public class RestRequestTranslator<U, P> {
+public class RestBtwnRequestTranslator<U, P> {
 
-    // inbound - when betweens are not present
-    public RestRequest<U, P> to(Ask from) {
-        RestRequest<U, P> to = new RestRequest<U, P>();
+    // inbound
+    public RestBtwnRequest<U> to(Ask from) {
+        RestBtwnRequest<U> to = new RestBtwnRequest<U>();
 
         to.setMatcher(from.getMatcher());
         to.setMethod(from.getMethod());
@@ -23,14 +24,14 @@ public class RestRequestTranslator<U, P> {
         to.setBody(from.getBody());
         to.setIpAddress(from.getIpAddress());
         to.setUser(Optional.empty());
-        to.setPayload(Optional.empty());
+        to.setBody(from.getBody());
 
         return to;
     }
 
-    // inbound - when betweens are present
-    public RestRequest<U, P> to(RestBtwnRequest<U> from, Optional<P> entity) {
-        RestRequest<U, P> to = new RestRequest<U, P>();
+    // outbound
+    public RestBtwnRequest<U> to(RestRequest<U, P> from) {
+        RestBtwnRequest<U> to = new RestBtwnRequest<U>();
 
         to.setMatcher(from.getMatcher());
         to.setMethod(from.getMethod());
@@ -42,9 +43,8 @@ public class RestRequestTranslator<U, P> {
         to.setFormData(from.getFormData());
         to.setBody(from.getBody());
         to.setIpAddress(from.getIpAddress());
-        to.setUser(Optional.empty());
-        to.setPayload(entity);
         to.setUser(from.getUser());
+        to.setBody(from.getBody());
 
         return to;
     }

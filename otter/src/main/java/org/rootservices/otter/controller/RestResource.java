@@ -6,7 +6,7 @@ import org.rootservices.otter.controller.entity.request.RestRequest;
 import org.rootservices.otter.controller.entity.response.RestResponse;
 import org.rootservices.otter.translatable.Translatable;
 
-public class RestResource<U extends DefaultUser, P extends Translatable> {
+public class RestResource<U extends DefaultUser, P> {
     public RestResponse<P> get(RestRequest<U, P> request, RestResponse<P> response) {
         response.setStatusCode(StatusCode.NOT_IMPLEMENTED);
         return response;

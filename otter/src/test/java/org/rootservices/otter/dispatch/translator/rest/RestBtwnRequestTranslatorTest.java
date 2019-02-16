@@ -1,4 +1,4 @@
-package org.rootservices.otter.dispatch.translator;
+package org.rootservices.otter.dispatch.translator.rest;
 
 import helper.FixtureFactory;
 import helper.entity.DummyPayload;
@@ -6,9 +6,10 @@ import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.request.RestRequest;
+import org.rootservices.otter.controller.entity.response.RestResponse;
 import org.rootservices.otter.dispatch.entity.RestBtwnRequest;
 import org.rootservices.otter.dispatch.entity.RestBtwnResponse;
-import org.rootservices.otter.dispatch.translator.rest.RestRequestTranslator;
+import org.rootservices.otter.router.entity.io.Answer;
 import org.rootservices.otter.router.entity.io.Ask;
 
 import java.util.Optional;
@@ -17,19 +18,19 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
 
-public class RestRequestTranslatorTest {
-    private RestRequestTranslator<DummyUser, DummyPayload> subject;
+public class RestBtwnRequestTranslatorTest {
+    private RestBtwnRequestTranslator<DummyUser, DummyPayload> subject;
 
     @Before
     public void setUp() {
-        subject = new RestRequestTranslator<>();
+        subject = new RestBtwnRequestTranslator<DummyUser, DummyPayload>();
     }
 
     @Test
     public void toWhenFromIsAsk() {
         Ask from = FixtureFactory.makeAsk();
 
-        RestRequest<DummyUser, DummyPayload> actual = subject.to(from);
+        RestBtwnRequest<DummyUser> actual = subject.to(from);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMatcher(), is(from.getMatcher()));
@@ -43,17 +44,14 @@ public class RestRequestTranslatorTest {
         assertThat(actual.getBody(), is(from.getBody()));
         assertThat(actual.getIpAddress(), is(from.getIpAddress()));
         assertThat(actual.getUser().isPresent(), is(false));
-        assertThat(actual.getPayload().isPresent(), is(false));
+        assertThat(actual.getBody().isPresent(), is(false));
     }
 
     @Test
-    public void toWhenFromIsBtwnRequest() {
-        RestBtwnRequest<DummyUser> from = FixtureFactory.makeRestBtwnRequest();
-        Optional<DummyUser> user = Optional.of(new DummyUser());
-        from.setUser(user);
+    public void toWhenFromIsRestRequest() {
+        RestRequest<DummyUser, DummyPayload> from = FixtureFactory.makeRestRequest();
 
-        Optional<DummyPayload> payload = Optional.of(new DummyPayload());
-        RestRequest<DummyUser, DummyPayload> actual = subject.to(from, payload);
+        RestBtwnRequest<DummyUser> actual = subject.to(from);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMatcher(), is(from.getMatcher()));
@@ -66,9 +64,7 @@ public class RestRequestTranslatorTest {
         assertThat(actual.getFormData(), is(from.getFormData()));
         assertThat(actual.getBody(), is(from.getBody()));
         assertThat(actual.getIpAddress(), is(from.getIpAddress()));
-        assertThat(actual.getUser().isPresent(), is(true));
-        assertThat(actual.getUser().get(), is(user.get()));
-        assertThat(actual.getPayload().isPresent(), is(true));
-        assertThat(actual.getPayload().get(), is(payload.get()));
+        assertThat(actual.getUser().isPresent(), is(false));
+        assertThat(actual.getBody().isPresent(), is(false));
     }
 }

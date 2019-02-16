@@ -27,6 +27,8 @@ import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.controller.header.HeaderValue;
 import org.rootservices.otter.dispatch.RouteRun;
 import org.rootservices.otter.dispatch.RouteRunner;
+import org.rootservices.otter.dispatch.entity.RestBtwnRequest;
+import org.rootservices.otter.dispatch.entity.RestBtwnResponse;
 import org.rootservices.otter.dispatch.translator.AnswerTranslator;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;
 import org.rootservices.otter.gateway.builder.ErrorTargetBuilder;
@@ -232,9 +234,9 @@ public class FixtureFactory {
                 .build();
     }
 
-    public static RestBetweens<DummyUser, DummyPayload> makeRestBetweens() {
-        RestBetween<DummyUser, DummyPayload> before = new DummyRestBetween<>();
-        RestBetween<DummyUser, DummyPayload> after = new DummyRestBetween<>();
+    public static RestBetweens<DummyUser> makeRestBetweens() {
+        RestBetween<DummyUser> before = new DummyRestBetween<>();
+        RestBetween<DummyUser> after = new DummyRestBetween<>();
         return new RestBetweens<>(
                 Arrays.asList(before), Arrays.asList(after)
         );
@@ -286,7 +288,26 @@ public class FixtureFactory {
         RestRequest<DummyUser, DummyPayload> request = new RestRequest<DummyUser, DummyPayload>();
         request.setFormData(new HashMap<>());
         request.setCookies(makeCookies());
+        request.setBody(Optional.empty());
         request.setPayload(Optional.empty());
+        request.setUser(Optional.empty());
+        return request;
+    }
+
+    public static RestBtwnRequest<DummyUser> makeRestBtwnRequest() {
+        RestBtwnRequest<DummyUser> request =  new RestBtwnRequest<DummyUser>();
+
+        request.setMatcher(Optional.empty());
+        request.setMethod(Method.GET);
+        request.setPathWithParams("");
+        request.setContentType(new MimeTypeBuilder().html().build());
+        request.setHeaders(new HashMap<>());
+        request.setCookies(makeCookies());
+        request.setQueryParams(new HashMap<>());
+        request.setFormData(new HashMap<>());
+        request.setBody(Optional.empty());
+        request.setIpAddress("127.0.0.1");
+
         return request;
     }
 
@@ -311,6 +332,12 @@ public class FixtureFactory {
 
     public static RestResponse<DummyPayload> makeRestResponse() {
         return new RestResponse<DummyPayload>(
+                StatusCode.OK, new HashMap<>(), new HashMap<>(), Optional.empty()
+        );
+    }
+
+    public static RestBtwnResponse makeRestBtwnResponse() {
+        return new RestBtwnResponse(
                 StatusCode.OK, new HashMap<>(), new HashMap<>(), Optional.empty()
         );
     }

@@ -12,22 +12,22 @@ import java.util.List;
 
 
 
-public class RestRouteBuilder<U extends DefaultUser, P extends Translatable> {
+public class RestRouteBuilder<U extends DefaultUser, P> {
     private RestResource<U, P> restResource;
-    private List<RestBetween<U, P>> before = new ArrayList<>();
-    private List<RestBetween<U, P>> after = new ArrayList<>();
+    private List<RestBetween<U>> before = new ArrayList<>();
+    private List<RestBetween<U>> after = new ArrayList<>();
 
     public RestRouteBuilder<U, P> restResource(RestResource<U, P> restResource) {
         this.restResource = restResource;
         return this;
     }
 
-    public RestRouteBuilder<U, P> before(List<RestBetween<U, P>> before) {
+    public RestRouteBuilder<U, P> before(List<RestBetween<U>> before) {
         this.before = before;
         return this;
     }
 
-    public RestRouteBuilder<U, P> after(List<RestBetween<U, P>> after) {
+    public RestRouteBuilder<U, P> after(List<RestBetween<U>> after) {
         this.after = after;
         return this;
     }

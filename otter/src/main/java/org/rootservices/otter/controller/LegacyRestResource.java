@@ -49,7 +49,7 @@ public class LegacyRestResource<T, S extends DefaultSession, U extends DefaultUs
             entity = makeEntity(request.getBody().get());
         } catch (DeserializationException e) {
             logger.debug(e.getMessage(), e);
-            Optional<ByteArrayOutputStream> payload = makeError(e);
+            Optional<byte[]> payload = makeError(e);
             response.setStatusCode(StatusCode.BAD_REQUEST);
             response.setPayload(payload);
             return response;
@@ -66,7 +66,7 @@ public class LegacyRestResource<T, S extends DefaultSession, U extends DefaultUs
             entity = makeEntity(request.getBody().get());
         } catch (DeserializationException e) {
             logger.debug(e.getMessage(), e);
-            Optional<ByteArrayOutputStream> payload = makeError(e);
+            Optional<byte[]> payload = makeError(e);
             response.setStatusCode(StatusCode.BAD_REQUEST);
             response.setPayload(payload);
             return response;
@@ -89,7 +89,7 @@ public class LegacyRestResource<T, S extends DefaultSession, U extends DefaultUs
             entity = makeEntity(request.getBody().get());
         } catch (DeserializationException e) {
             logger.debug(e.getMessage(), e);
-            Optional<ByteArrayOutputStream> payload = makeError(e);
+            Optional<byte[]> payload = makeError(e);
             response.setStatusCode(StatusCode.BAD_REQUEST);
             response.setPayload(payload);
             return response;
@@ -98,12 +98,12 @@ public class LegacyRestResource<T, S extends DefaultSession, U extends DefaultUs
         return patch(request, response, entity);
     }
 
-    protected Optional<ByteArrayOutputStream> makeError(DeserializationException e) {
+    protected Optional<byte[]> makeError(DeserializationException e) {
 
-        Optional<ByteArrayOutputStream> payload = Optional.empty();
+        Optional<byte[]> payload = Optional.empty();
         ErrorPayload errorPayload = new ErrorPayload(e.getMessage(), e.getDescription());
         try {
-            ByteArrayOutputStream out = translator.to(errorPayload);
+            byte[] out = translator.to(errorPayload);
             payload = Optional.of(out);
         } catch (ToJsonException e1) {
             logger.error(e1.getMessage(), e1);

@@ -17,10 +17,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class RestLocationTranslator<U extends DefaultUser, P extends Translatable> {
-    private RestBetweenFlyweight<U, P> restBetweenFlyweight;
+public class RestLocationTranslator<U extends DefaultUser, P> {
+    private RestBetweenFlyweight<U> restBetweenFlyweight;
 
-    public RestLocationTranslator(RestBetweenFlyweight<U, P> restBetweenFlyweight) {
+    public RestLocationTranslator(RestBetweenFlyweight<U> restBetweenFlyweight) {
         this.restBetweenFlyweight = restBetweenFlyweight;
     }
 
@@ -29,7 +29,7 @@ public class RestLocationTranslator<U extends DefaultUser, P extends Translatabl
 
         for(Method method: from.getMethods()) {
 
-            RestBetweens<U, P> betweens = restBetweenFlyweight.make(method, from.getLabels());
+            RestBetweens<U> betweens = restBetweenFlyweight.make(method, from.getLabels());
 
             List<MimeType> contentTypes = from.getContentTypes().get(method);
             if (contentTypes == null) {

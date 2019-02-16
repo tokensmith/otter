@@ -4,44 +4,40 @@ import org.rootservices.otter.controller.entity.response.RestResponse;
 import org.rootservices.otter.dispatch.entity.RestBtwnResponse;
 import org.rootservices.otter.router.entity.io.Answer;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Optional;
 
-public class RestResponseTranslator<P> {
+public class RestBtwnResponseTranslator<P> {
 
-    public Answer from(RestResponse<P> from) {
-        Answer to = new Answer();
-        return from(to, from);
-    }
-
-    public Answer from(Answer to, RestResponse<P> from) {
+    // exceptional state when between throws a HaltException.
+    public Answer from(Answer to, RestBtwnResponse from) {
         to.setStatusCode(from.getStatusCode());
         to.setHeaders(from.getHeaders());
         to.setCookies(from.getCookies());
-        to.setPayload(Optional.empty());
+        to.setPayload(from.getPayload());
 
         return to;
     }
 
-    // inbound - when betweens are not present
-    public RestResponse<P> to(Answer from) {
-        RestResponse<P> to = new RestResponse<>();
+    // inbound
+    public RestBtwnResponse to(Answer from) {
+        RestBtwnResponse to = new RestBtwnResponse();
         to.setStatusCode(from.getStatusCode());
         to.setHeaders(from.getHeaders());
         to.setCookies(from.getCookies());
-        to.setPayload(Optional.empty());
+        to.setPayload(from.getPayload());
 
         return to;
     }
 
-    // outbound - when betweens are present
-    public RestResponse<P> to(RestBtwnResponse from) {
-        RestResponse<P> to = new RestResponse<>();
+    // outbound
+    public RestBtwnResponse to(RestResponse<P> from, Optional<byte[]> fromPayload) {
+        RestBtwnResponse to = new RestBtwnResponse();
         to.setStatusCode(from.getStatusCode());
         to.setHeaders(from.getHeaders());
         to.setCookies(from.getCookies());
-        to.setPayload(Optional.empty());
+        to.setPayload(fromPayload);
 
         return to;
     }
-
 }

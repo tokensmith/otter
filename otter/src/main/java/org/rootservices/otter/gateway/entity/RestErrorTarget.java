@@ -7,12 +7,12 @@ import org.rootservices.otter.translatable.Translatable;
 
 import java.util.List;
 
-public class RestErrorTarget<U extends DefaultUser, P extends Translatable> {
+public class RestErrorTarget<U extends DefaultUser, P> {
     private RestResource<U, P> resource;
-    private List<RestBetween<U, P>> before;
-    private List<RestBetween<U, P>> after;
+    private List<RestBetween<U>> before;
+    private List<RestBetween<U>> after;
 
-    public RestErrorTarget(RestResource<U, P> resource, List<RestBetween<U, P>> before, List<RestBetween<U, P>> after) {
+    public RestErrorTarget(RestResource<U, P> resource, List<RestBetween<U>> before, List<RestBetween<U>> after) {
         this.resource = resource;
         this.before = before;
         this.after = after;
@@ -26,19 +26,19 @@ public class RestErrorTarget<U extends DefaultUser, P extends Translatable> {
         this.resource = resource;
     }
 
-    public List<RestBetween<U, P>> getBefore() {
+    public List<RestBetween<U>> getBefore() {
         return before;
     }
 
-    public void setBefore(List<RestBetween<U, P>> before) {
+    public void setBefore(List<RestBetween<U>> before) {
         this.before = before;
     }
 
-    public List<RestBetween<U, P>> getAfter() {
+    public List<RestBetween<U>> getAfter() {
         return after;
     }
 
-    public void setAfter(List<RestBetween<U, P>> after) {
+    public void setAfter(List<RestBetween<U>> after) {
         this.after = after;
     }
 }

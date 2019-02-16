@@ -12,7 +12,7 @@ public class ResponseBuilder<T> {
     private StatusCode statusCode;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
-    private Optional<ByteArrayOutputStream> payload;
+    private Optional<byte[]> payload;
     private Optional<String> template;
     private Optional<Object> presenter;
 
@@ -28,7 +28,7 @@ public class ResponseBuilder<T> {
         return this;
     }
 
-    public ResponseBuilder<T> payload(Optional<ByteArrayOutputStream> payload) {
+    public ResponseBuilder<T> payload(Optional<byte[]> payload) {
         this.payload = payload;
         return this;
     }

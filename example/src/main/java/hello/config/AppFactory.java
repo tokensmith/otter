@@ -16,7 +16,7 @@ public class AppFactory {
         return new OtterAppFactory();
     }
 
-    public HelloLegacyRestResource helloRestResource() {
+    public HelloLegacyRestResource helloLegacyRestResource() {
         JsonTranslator<Hello> jsonTranslator = otterAppFactory().jsonTranslator(Hello.class);
         return new HelloLegacyRestResource(jsonTranslator);
     }

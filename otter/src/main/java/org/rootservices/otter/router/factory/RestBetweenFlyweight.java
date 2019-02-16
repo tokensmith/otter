@@ -9,17 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class RestBetweenFlyweight<U, P> {
-    private Optional<RestBetween<U, P>> authRequired;
-    private Optional<RestBetween<U, P>> authOptional;
+public class RestBetweenFlyweight<U> {
+    private Optional<RestBetween<U>> authRequired;
+    private Optional<RestBetween<U>> authOptional;
 
-    public RestBetweenFlyweight(Optional<RestBetween<U, P>> authRequired, Optional<RestBetween<U, P>> authOptional) {
+    public RestBetweenFlyweight(Optional<RestBetween<U>> authRequired, Optional<RestBetween<U>> authOptional) {
         this.authRequired = authRequired;
         this.authOptional = authOptional;
     }
 
-    public RestBetweens<U, P> make(Method method, List<Label> labels) {
-        RestBetweens<U, P> betweens = new RestBetweens<U, P>(new ArrayList<>(), new ArrayList<>());
+    public RestBetweens<U> make(Method method, List<Label> labels) {
+        RestBetweens<U> betweens = new RestBetweens<U>(new ArrayList<>(), new ArrayList<>());
 
         if (Method.GET.equals(method)) {
             betweens = makeGet(labels);
@@ -36,37 +36,37 @@ public class RestBetweenFlyweight<U, P> {
 
     }
 
-    public RestBetweens<U, P> makeGet(List<Label> labels) {
-        RestBetweens<U, P> betweens = new RestBetweens<U, P>(new ArrayList<>(), new ArrayList<>());
+    public RestBetweens<U> makeGet(List<Label> labels) {
+        RestBetweens<U> betweens = new RestBetweens<U>(new ArrayList<>(), new ArrayList<>());
         authentication(labels, betweens);
         return betweens;
     }
 
-    public RestBetweens<U, P> makePost(List<Label> labels) {
-        RestBetweens<U, P> betweens = new RestBetweens<U, P>(new ArrayList<>(), new ArrayList<>());
+    public RestBetweens<U> makePost(List<Label> labels) {
+        RestBetweens<U> betweens = new RestBetweens<U>(new ArrayList<>(), new ArrayList<>());
         authentication(labels, betweens);
         return betweens;
     }
 
-    public RestBetweens<U, P> makePut(List<Label> labels) {
-        RestBetweens<U, P> betweens = new RestBetweens<U, P>(new ArrayList<>(), new ArrayList<>());
+    public RestBetweens<U> makePut(List<Label> labels) {
+        RestBetweens<U> betweens = new RestBetweens<U>(new ArrayList<>(), new ArrayList<>());
         authentication(labels, betweens);
         return betweens;
     }
 
-    public RestBetweens<U, P> makePatch(List<Label> labels) {
-        RestBetweens<U, P> betweens = new RestBetweens<U, P>(new ArrayList<>(), new ArrayList<>());
+    public RestBetweens<U> makePatch(List<Label> labels) {
+        RestBetweens<U> betweens = new RestBetweens<U>(new ArrayList<>(), new ArrayList<>());
         authentication(labels, betweens);
         return betweens;
     }
 
-    public RestBetweens<U, P> makeDelete(List<Label> labels) {
-        RestBetweens<U, P> betweens = new RestBetweens<U, P>(new ArrayList<>(), new ArrayList<>());
+    public RestBetweens<U> makeDelete(List<Label> labels) {
+        RestBetweens<U> betweens = new RestBetweens<U>(new ArrayList<>(), new ArrayList<>());
         authentication(labels, betweens);
         return betweens;
     }
     
-    protected void authentication(List<Label> labels, RestBetweens<U, P> betweens) {
+    protected void authentication(List<Label> labels, RestBetweens<U> betweens) {
         if (labels.contains(Label.AUTH_OPTIONAL) && authOptional.isPresent()) {
             betweens.getBefore().add(authOptional.get());
         }

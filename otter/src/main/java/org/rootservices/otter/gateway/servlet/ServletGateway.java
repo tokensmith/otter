@@ -10,6 +10,7 @@ import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
+import org.rootservices.otter.gateway.translator.RestLocationTranslator;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.builder.AnswerBuilder;
 import org.rootservices.otter.router.entity.io.Answer;
@@ -37,8 +38,8 @@ public class ServletGateway extends Gateway {
     private HttpServletResponseMerger httpServletResponseMerger;
     private Integer writeChunkSize;
 
-    public ServletGateway(HttpServletRequestTranslator httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger httpServletResponseMerger, Engine engine, Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators, Integer writeChunkSize) {
-        super(engine, locationTranslators);
+    public ServletGateway(HttpServletRequestTranslator httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger httpServletResponseMerger, Engine engine, Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators, Map<String, RestLocationTranslator<? extends DefaultUser, ?>> restLocationTranslators, Integer writeChunkSize) {
+        super(engine, locationTranslators, restLocationTranslators);
         this.httpServletRequestTranslator = httpServletRequestTranslator;
         this.httpServletRequestMerger = httpServletRequestMerger;
         this.httpServletResponseMerger = httpServletResponseMerger;
@@ -70,7 +71,7 @@ public class ServletGateway extends Gateway {
             httpServletRequestMerger.merge(containerRequest, resourceAnswer);
 
             if (resourceAnswer.getPayload().isPresent()) {
-                gatewayResponse.setPayload(Optional.of(resourceAnswer.getPayload().get().toByteArray()));
+                gatewayResponse.setPayload(Optional.of(resourceAnswer.getPayload().get()));
             } else {
                 gatewayResponse.setPayload(Optional.empty());
             }

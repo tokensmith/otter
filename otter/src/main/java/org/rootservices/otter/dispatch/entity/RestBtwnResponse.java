@@ -1,6 +1,4 @@
-package org.rootservices.otter.controller.entity.response;
-
-
+package org.rootservices.otter.dispatch.entity;
 
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -9,25 +7,20 @@ import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import java.util.Optional;
 
-public class Response<S> {
+public class RestBtwnResponse {
     private StatusCode statusCode;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
     private Optional<byte[]> payload;
-    private Optional<String> template;
-    private Optional<Object> presenter;
-    private Optional<S> session = Optional.empty();
 
-    public Response() {
+    public RestBtwnResponse() {
     }
 
-    public Response(StatusCode statusCode, Map<String, String> headers, Map<String, Cookie> cookies, Optional<byte[]> payload, Optional<String> template, Optional<Object> presenter) {
+    public RestBtwnResponse(StatusCode statusCode, Map<String, String> headers, Map<String, Cookie> cookies, Optional<byte[]> payload) {
         this.statusCode = statusCode;
         this.headers = headers;
         this.cookies = cookies;
         this.payload = payload;
-        this.template = template;
-        this.presenter = presenter;
     }
 
     public StatusCode getStatusCode() {
@@ -60,29 +53,5 @@ public class Response<S> {
 
     public void setPayload(Optional<byte[]> payload) {
         this.payload = payload;
-    }
-
-    public Optional<String> getTemplate() {
-        return template;
-    }
-
-    public void setTemplate(Optional<String> template) {
-        this.template = template;
-    }
-
-    public Optional<Object> getPresenter() {
-        return presenter;
-    }
-
-    public void setPresenter(Optional<Object> presenter) {
-        this.presenter = presenter;
-    }
-
-    public Optional<S> getSession() {
-        return session;
-    }
-
-    public void setSession(Optional<S> session) {
-        this.session = session;
     }
 }

@@ -18,15 +18,15 @@ import java.util.List;
 import java.util.Map;
 
 
-public class RestTargetBuilder<U extends DefaultUser, P extends Translatable> {
-    private List<Method> methods = new ArrayList<>();;
+public class RestTargetBuilder<U extends DefaultUser, P> {
+    private List<Method> methods = new ArrayList<>();
     private String regex;
     private RestResource<U, P> restResource;
     private Class<P> payload;
-    private Map<Method, List<MimeType>> contentTypes = new HashMap<>();;
-    private List<Label> labels = new ArrayList<>();;
-    private List<RestBetween<U, P>> before = new ArrayList<>();;
-    private List<RestBetween<U, P>> after = new ArrayList<>();;
+    private Map<Method, List<MimeType>> contentTypes = new HashMap<>();
+    private List<Label> labels = new ArrayList<>();
+    private List<RestBetween<U>> before = new ArrayList<>();
+    private List<RestBetween<U>> after = new ArrayList<>();
     private Map<StatusCode, RestErrorTarget<U, P>> errorTargets = new HashMap<>();
     private String groupName;
 
@@ -72,12 +72,12 @@ public class RestTargetBuilder<U extends DefaultUser, P extends Translatable> {
         return this;
     }
 
-    public RestTargetBuilder<U, P> before(RestBetween<U, P> before) {
+    public RestTargetBuilder<U, P> before(RestBetween<U> before) {
         this.before.add(before);
         return this;
     }
 
-    public RestTargetBuilder<U, P> after(RestBetween<U, P> after) {
+    public RestTargetBuilder<U, P> after(RestBetween<U> after) {
         this.after.add(after);
         return this;
     }

@@ -110,11 +110,11 @@ Session restrictions.
 
     groups.add(webSiteGroup);
 
-    AuthRestBetween authRestBetween = new AuthRestBetween();
+    AuthRestBetween authLegacyRestBetween = new AuthRestBetween();
     Group<ApiSession, ApiUser> apiGroup = new GroupBuilder<ApiSession, ApiUser>()
             .name(API_GROUP)
             .sessionClazz(ApiSession.class)
-            .authRequired(authRestBetween)
+            .authRequired(authLegacyRestBetween)
             .build();
 
     groups.add(apiGroup);

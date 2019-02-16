@@ -172,9 +172,9 @@ public class JsonTranslatorTest {
         dummy.setLocalDate(LocalDate.of(2017, 05, 20));
         dummy.setIntegerOptional(Optional.empty());
 
-        OutputStream out = subject.to(dummy);
+        byte[] out = subject.to(dummy);
 
         assertThat(out, is(notNullValue()));
-        assertThat(out.toString(), is("{\"integer\":5,\"string\":\"string\",\"local_date\":\"2017-05-20\",\"integer_optional\":null}"));
+        assertThat(new String(out), is("{\"integer\":5,\"string\":\"string\",\"local_date\":\"2017-05-20\",\"integer_optional\":null}"));
     }
 }

@@ -100,14 +100,12 @@ public class JsonTranslator<T> {
         return entity;
     }
 
-    public ByteArrayOutputStream to(Object object) throws ToJsonException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+    public byte[] to(Object object) throws ToJsonException {
+        byte[] out;
 
         try {
-            objectWriter.writeValue(out, object);
+            out = objectWriter.writeValueAsBytes(object);
         } catch (JsonProcessingException e) {
-            throw new ToJsonException(TO_JSON_MSG, e);
-        } catch (IOException e) {
             throw new ToJsonException(TO_JSON_MSG, e);
         }
         return out;

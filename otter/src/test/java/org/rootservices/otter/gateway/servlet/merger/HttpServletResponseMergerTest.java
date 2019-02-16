@@ -113,23 +113,4 @@ public class HttpServletResponseMergerTest {
         verify(mockHttpServletRequestCookieTranslator.to).apply(answer.getCookies().get(cookieName));
         verify(mockContainerResponse).addCookie(mockContainerCookieToCreate);
     }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void mergeWhenPayloadShouldNotWritePayload() throws Exception {
-        HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
-        Cookie[] containerCookies = new Cookie[0];
-        Answer answer = FixtureFactory.makeAnswer();
-
-        Optional<ByteArrayOutputStream> payload = Optional.of(new ByteArrayOutputStream());
-        answer.setPayload(payload);
-
-        ServletOutputStream mockServletOutputStream = mock(ServletOutputStream.class);
-        when(mockContainerResponse.getOutputStream()).thenReturn(mockServletOutputStream);
-
-        subject.merge(mockContainerResponse, containerCookies, answer);
-
-        // indicates json was not set in response.
-        verify(mockServletOutputStream, never()).write(payload.get().toByteArray());
-    }
 }

@@ -12,7 +12,9 @@ import org.rootservices.otter.QueryStringToMap;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.gateway.LocationTranslatorFactory;
+import org.rootservices.otter.gateway.RestLocationTranslatorFactory;
 import org.rootservices.otter.gateway.entity.Group;
+import org.rootservices.otter.gateway.entity.RestGroup;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
@@ -21,6 +23,7 @@ import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestCooki
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestHeaderTranslator;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
+import org.rootservices.otter.gateway.translator.RestLocationTranslator;
 import org.rootservices.otter.router.Dispatcher;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.factory.ErrorRouteRunnerFactory;
@@ -30,6 +33,7 @@ import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 import org.rootservices.otter.server.path.CompiledClassPath;
 import org.rootservices.otter.server.path.WebAppPath;
+import org.rootservices.otter.translatable.Translatable;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.MimeTypeTranslator;
 
@@ -77,9 +81,12 @@ public class OtterAppFactory {
         );
     }
 
-    public ServletGateway servletGateway(Shape shape, List<Group<? extends DefaultSession,? extends DefaultUser>> groups) throws SessionCtorException {
+    public ServletGateway servletGateway(Shape shape, List<Group<? extends DefaultSession,? extends DefaultUser>> groups, List<RestGroup<? extends DefaultUser>> restGroups) throws SessionCtorException {
         LocationTranslatorFactory locationTranslatorFactory = locationTranslatorFactory(shape);
+        RestLocationTranslatorFactory restLocationTranslatorFactory = restLocationTranslatorFactory();
+
         Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators = locationTranslators(locationTranslatorFactory, groups);
+        Map<String, RestLocationTranslator<? extends DefaultUser, ?>> restLocationTranslators = restLocationTranslators(restLocationTranslatorFactory, restGroups);
 
         Integer writeChunkSize = (shape.getWriteChunkSize() != null) ? shape.getWriteChunkSize() : WRITE_CHUNK_SIZE;
 
@@ -89,6 +96,7 @@ public class OtterAppFactory {
                 httpServletResponseMerger(),
                 engine(),
                 locationTranslators,
+                restLocationTranslators,
                 writeChunkSize
         );
     }
@@ -118,6 +126,30 @@ public class OtterAppFactory {
         }
 
         return locationTranslators;
+    }
+
+    public RestLocationTranslatorFactory restLocationTranslatorFactory() {
+        return new RestLocationTranslatorFactory();
+    }
+
+    @SuppressWarnings("unchecked")
+    public <U extends DefaultUser, P> Map<String, RestLocationTranslator<? extends U, ? extends P>> restLocationTranslators(RestLocationTranslatorFactory restLocationTranslatorFactory, List<RestGroup<? extends U>> restGroups) throws SessionCtorException {
+        Map<String, RestLocationTranslator<? extends U, ? extends P>> restLocationTranslators = new HashMap<>();
+
+        for(RestGroup<? extends U> restGroup: restGroups) {
+
+            RestGroup<U> castedGroup = (RestGroup<U>) restGroup;
+            restLocationTranslators.put(
+                    castedGroup.getName(),
+                    restLocationTranslatorFactory.make(
+                            castedGroup.getAuthRequired(),
+                            castedGroup.getAuthOptional()
+                    )
+            );
+        }
+
+
+        return restLocationTranslators;
     }
 
     public ObjectMapper objectMapper() {

@@ -26,7 +26,7 @@ public class HelloLegacyRestResource extends LegacyRestResource<Hello, ApiSessio
         response.setStatusCode(StatusCode.OK);
 
         Hello hello = new Hello("Hello, " + request.getUser().get().getFirstName() + " " + request.getUser().get().getLastName());
-        Optional<ByteArrayOutputStream> payload = Optional.empty();
+        Optional<byte[]> payload = Optional.empty();
 
         try {
             payload = Optional.of(translator.to(hello));
@@ -42,7 +42,7 @@ public class HelloLegacyRestResource extends LegacyRestResource<Hello, ApiSessio
     public Response<ApiSession> post(Request<ApiSession, ApiUser> request, Response<ApiSession> response, Hello entity) {
         response.setStatusCode(StatusCode.CREATED);
 
-        Optional<ByteArrayOutputStream> payload = Optional.empty();
+        Optional<byte[]> payload = Optional.empty();
 
         try {
             payload = Optional.of(translator.to(entity));

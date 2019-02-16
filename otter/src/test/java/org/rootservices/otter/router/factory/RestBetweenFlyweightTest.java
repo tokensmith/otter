@@ -17,16 +17,16 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 public class RestBetweenFlyweightTest {
-    private RestBetweenFlyweight<DummyUser, DummyPayload> subject;
-    private Optional<RestBetween<DummyUser, DummyPayload>> authRequired;
-    private Optional<RestBetween<DummyUser, DummyPayload>> authOptional;
+    private RestBetweenFlyweight<DummyUser> subject;
+    private Optional<RestBetween<DummyUser>> authRequired;
+    private Optional<RestBetween<DummyUser>> authOptional;
 
     @Before
     public void setUp() {
         authRequired = Optional.of(new DummyRestBetween<>());
         authOptional = Optional.of(new DummyRestBetween<>());
 
-        subject = new RestBetweenFlyweight<DummyUser, DummyPayload>(authRequired, authOptional);
+        subject = new RestBetweenFlyweight<DummyUser>(authRequired, authOptional);
     }
 
 
@@ -35,7 +35,7 @@ public class RestBetweenFlyweightTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.AUTH_REQUIRED);
 
-        RestBetweens<DummyUser, DummyPayload> actual = subject.make(Method.GET, labels);
+        RestBetweens<DummyUser> actual = subject.make(Method.GET, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
@@ -47,7 +47,7 @@ public class RestBetweenFlyweightTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.AUTH_OPTIONAL);
 
-        RestBetweens<DummyUser, DummyPayload> actual = subject.make(Method.GET, labels);
+        RestBetweens<DummyUser> actual = subject.make(Method.GET, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
@@ -59,7 +59,7 @@ public class RestBetweenFlyweightTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.AUTH_REQUIRED);
 
-        RestBetweens<DummyUser, DummyPayload> actual = subject.make(Method.POST, labels);
+        RestBetweens<DummyUser> actual = subject.make(Method.POST, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
@@ -71,7 +71,7 @@ public class RestBetweenFlyweightTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.AUTH_OPTIONAL);
 
-        RestBetweens<DummyUser, DummyPayload> actual = subject.make(Method.POST, labels);
+        RestBetweens<DummyUser> actual = subject.make(Method.POST, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
@@ -83,7 +83,7 @@ public class RestBetweenFlyweightTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.AUTH_REQUIRED);
 
-        RestBetweens<DummyUser, DummyPayload> actual = subject.make(Method.PUT, labels);
+        RestBetweens<DummyUser> actual = subject.make(Method.PUT, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
@@ -95,7 +95,7 @@ public class RestBetweenFlyweightTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.AUTH_OPTIONAL);
 
-        RestBetweens<DummyUser, DummyPayload> actual = subject.make(Method.PUT, labels);
+        RestBetweens<DummyUser> actual = subject.make(Method.PUT, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
@@ -107,7 +107,7 @@ public class RestBetweenFlyweightTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.AUTH_REQUIRED);
 
-        RestBetweens<DummyUser, DummyPayload> actual = subject.make(Method.PATCH, labels);
+        RestBetweens<DummyUser> actual = subject.make(Method.PATCH, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
@@ -119,7 +119,7 @@ public class RestBetweenFlyweightTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.AUTH_OPTIONAL);
 
-        RestBetweens<DummyUser, DummyPayload> actual = subject.make(Method.PATCH, labels);
+        RestBetweens<DummyUser> actual = subject.make(Method.PATCH, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
@@ -131,7 +131,7 @@ public class RestBetweenFlyweightTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.AUTH_REQUIRED);
 
-        RestBetweens<DummyUser, DummyPayload> actual = subject.make(Method.DELETE, labels);
+        RestBetweens<DummyUser> actual = subject.make(Method.DELETE, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
@@ -143,7 +143,7 @@ public class RestBetweenFlyweightTest {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.AUTH_OPTIONAL);
 
-        RestBetweens<DummyUser, DummyPayload> actual = subject.make(Method.DELETE, labels);
+        RestBetweens<DummyUser> actual = subject.make(Method.DELETE, labels);
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));

@@ -7,6 +7,8 @@ import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.dispatch.JsonRouteRun;
 import org.rootservices.otter.dispatch.RouteRunner;
+import org.rootservices.otter.dispatch.translator.rest.RestBtwnRequestTranslator;
+import org.rootservices.otter.dispatch.translator.rest.RestBtwnResponseTranslator;
 import org.rootservices.otter.dispatch.translator.rest.RestRequestTranslator;
 import org.rootservices.otter.dispatch.translator.rest.RestResponseTranslator;
 import org.rootservices.otter.router.entity.Location;
@@ -22,18 +24,21 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 
-public class RestLocationBuilder<U extends DefaultUser, P extends Translatable> {
+public class RestLocationBuilder<U extends DefaultUser, P> {
     private Pattern pattern;
     private List<MimeType> contentTypes = new ArrayList<>();
     private RestResource<U, P> restResource;
     private Class<P> payload;
-    private List<RestBetween<U, P>> before = new ArrayList<>();
-    private List<RestBetween<U, P>> after = new ArrayList<>();
+    private List<RestBetween<U>> before = new ArrayList<>();
+    private List<RestBetween<U>> after = new ArrayList<>();
     private Map<StatusCode, RouteRunner> errorRouteRunners = new HashMap<>();
 
     // used when building routeRunner, errorRouteRunners
     private RestRequestTranslator<U, P> restRequestTranslator = new RestRequestTranslator<U, P>();
     private RestResponseTranslator<P> restResponseTranslator = new RestResponseTranslator<P>();
+    private RestBtwnRequestTranslator<U, P> restBtwnRequestTranslator = new RestBtwnRequestTranslator<>();
+    private RestBtwnResponseTranslator<P> restBtwnResponseTranslator = new RestBtwnResponseTranslator<>();
+
     private OtterAppFactory otterAppFactory = new OtterAppFactory();
 
     public RestLocationBuilder<U, P> path(String path) {
@@ -61,12 +66,12 @@ public class RestLocationBuilder<U extends DefaultUser, P extends Translatable> 
         return this;
     }
 
-    public RestLocationBuilder<U, P> before(List<RestBetween<U, P>> before) {
+    public RestLocationBuilder<U, P> before(List<RestBetween<U>> before) {
         this.before = before;
         return this;
     }
 
-    public RestLocationBuilder<U, P> after(List<RestBetween<U, P>> after) {
+    public RestLocationBuilder<U, P> after(List<RestBetween<U>> after) {
         this.after = after;
         return this;
     }
@@ -74,8 +79,13 @@ public class RestLocationBuilder<U extends DefaultUser, P extends Translatable> 
     public RestLocationBuilder<U, P> errorRouteRunners(Map<StatusCode, RestRoute<U, P>> errorRoutes) {
         JsonTranslator<P> jsonTranslator = otterAppFactory.jsonTranslator(payload);
         for (Map.Entry<StatusCode, RestRoute<U, P>> entry : errorRoutes.entrySet()) {
-            RouteRunner errorRouteRunner = new JsonRouteRun<>(
-                    entry.getValue(), restResponseTranslator, restRequestTranslator, jsonTranslator
+            RouteRunner errorRouteRunner = new JsonRouteRun<U, P>(
+                    entry.getValue(),
+                    restResponseTranslator,
+                    restRequestTranslator,
+                    restBtwnRequestTranslator,
+                    restBtwnResponseTranslator,
+                    jsonTranslator
             );
             errorRouteRunners.put(entry.getKey(), errorRouteRunner);
         }
@@ -90,7 +100,12 @@ public class RestLocationBuilder<U extends DefaultUser, P extends Translatable> 
                 .build();
 
         RouteRunner errorRouteRunner = new JsonRouteRun<U, P>(
-                errorRestRoute, restResponseTranslator, restRequestTranslator, jsonTranslator
+                errorRestRoute,
+                restResponseTranslator,
+                restRequestTranslator,
+                restBtwnRequestTranslator,
+                restBtwnResponseTranslator,
+                jsonTranslator
         );
         errorRouteRunners.put(statusCode, errorRouteRunner);
         return this;
@@ -105,7 +120,12 @@ public class RestLocationBuilder<U extends DefaultUser, P extends Translatable> 
 
         JsonTranslator<P> jsonTranslator = otterAppFactory.jsonTranslator(payload);
         RouteRunner routeRunner = new JsonRouteRun<>(
-                restRoute, restResponseTranslator, restRequestTranslator, jsonTranslator
+                restRoute,
+                restResponseTranslator,
+                restRequestTranslator,
+                restBtwnRequestTranslator,
+                restBtwnResponseTranslator,
+                jsonTranslator
         );
 
         return new Location(pattern, contentTypes, routeRunner, errorRouteRunners);

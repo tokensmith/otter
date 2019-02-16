@@ -12,19 +12,19 @@ import org.rootservices.otter.translatable.Translatable;
 import java.util.List;
 import java.util.Map;
 
-public class RestTarget<U extends DefaultUser, P extends Translatable> {
+public class RestTarget<U extends DefaultUser, P> {
     private List<Method> methods;
     private String regex;
     private RestResource<U, P> restResource;
     private Class<P> payload;
     private Map<Method, List<MimeType>> contentTypes;
     private List<Label> labels;
-    private List<RestBetween<U, P>> before;
-    private List<RestBetween<U, P>> after;
+    private List<RestBetween<U>> before;
+    private List<RestBetween<U>> after;
     private Map<StatusCode, RestErrorTarget<U, P>> errorTargets;
     private String groupName;
 
-    public RestTarget(List<Method> methods, String regex, RestResource<U, P> restResource, Class<P> payload, Map<Method, List<MimeType>> contentTypes, List<Label> labels, List<RestBetween<U, P>> before, List<RestBetween<U, P>> after, Map<StatusCode, RestErrorTarget<U, P>> errorTargets, String groupName) {
+    public RestTarget(List<Method> methods, String regex, RestResource<U, P> restResource, Class<P> payload, Map<Method, List<MimeType>> contentTypes, List<Label> labels, List<RestBetween<U>> before, List<RestBetween<U>> after, Map<StatusCode, RestErrorTarget<U, P>> errorTargets, String groupName) {
         this.methods = methods;
         this.regex = regex;
         this.restResource = restResource;
@@ -85,19 +85,19 @@ public class RestTarget<U extends DefaultUser, P extends Translatable> {
         this.labels = labels;
     }
 
-    public List<RestBetween<U, P>> getBefore() {
+    public List<RestBetween<U>> getBefore() {
         return before;
     }
 
-    public void setBefore(List<RestBetween<U, P>> before) {
+    public void setBefore(List<RestBetween<U>> before) {
         this.before = before;
     }
 
-    public List<RestBetween<U, P>> getAfter() {
+    public List<RestBetween<U>> getAfter() {
         return after;
     }
 
-    public void setAfter(List<RestBetween<U, P>> after) {
+    public void setAfter(List<RestBetween<U>> after) {
         this.after = after;
     }
 

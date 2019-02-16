@@ -93,7 +93,7 @@ public class LegacyRestResourceTest {
         DuplicateKeyException e = new DuplicateKeyException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).fromWithSpecificCause(request.getBody().get());
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] out = "{}".getBytes();
         when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.post(request, response);
@@ -117,7 +117,7 @@ public class LegacyRestResourceTest {
         InvalidValueException e = new InvalidValueException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).fromWithSpecificCause(request.getBody().get());
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] out = "{}".getBytes();
         when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.post(request, response);
@@ -141,7 +141,7 @@ public class LegacyRestResourceTest {
         UnknownKeyException e = new UnknownKeyException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).fromWithSpecificCause(request.getBody().get());
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] out = "{}".getBytes();
         when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.post(request, response);
@@ -165,7 +165,7 @@ public class LegacyRestResourceTest {
         InvalidPayloadException e = new InvalidPayloadException("test", null);
         doThrow(e).when(mockJsonTranslator).fromWithSpecificCause(request.getBody().get());
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] out = "{}".getBytes();
         when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.post(request, response);
@@ -234,7 +234,7 @@ public class LegacyRestResourceTest {
         DuplicateKeyException e = new DuplicateKeyException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).fromWithSpecificCause(request.getBody().get());
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] out = "{}".getBytes();
         when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.put(request, response);
@@ -258,7 +258,7 @@ public class LegacyRestResourceTest {
         InvalidValueException e = new InvalidValueException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).fromWithSpecificCause(request.getBody().get());
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] out = "{}".getBytes();
         when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.put(request, response);
@@ -282,7 +282,7 @@ public class LegacyRestResourceTest {
         UnknownKeyException e = new UnknownKeyException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).fromWithSpecificCause(request.getBody().get());
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] out = "{}".getBytes();
         when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.put(request, response);
@@ -306,7 +306,7 @@ public class LegacyRestResourceTest {
         InvalidPayloadException e = new InvalidPayloadException("test", null);
         doThrow(e).when(mockJsonTranslator).fromWithSpecificCause(request.getBody().get());
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] out = "{}".getBytes();
         when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.put(request, response);
@@ -439,7 +439,7 @@ public class LegacyRestResourceTest {
         DuplicateKeyException e = new DuplicateKeyException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).fromWithSpecificCause(request.getBody().get());
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] out = "{}".getBytes();
         when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.patch(request, response);
@@ -463,7 +463,7 @@ public class LegacyRestResourceTest {
         InvalidValueException e = new InvalidValueException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).fromWithSpecificCause(request.getBody().get());
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] out = "{}".getBytes();
         when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.patch(request, response);
@@ -487,7 +487,7 @@ public class LegacyRestResourceTest {
         UnknownKeyException e = new UnknownKeyException("test", null, "key");
         doThrow(e).when(mockJsonTranslator).fromWithSpecificCause(request.getBody().get());
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] out = "{}".getBytes();
         when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response<DummySession> actual = subject.patch(request, response);
@@ -511,7 +511,7 @@ public class LegacyRestResourceTest {
         InvalidPayloadException e = new InvalidPayloadException("test", null);
         doThrow(e).when(mockJsonTranslator).fromWithSpecificCause(request.getBody().get());
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] out = "{}".getBytes();
         when(mockJsonTranslator.to(any(ErrorPayload.class))).thenReturn(out);
 
         Response actual = subject.patch(request, response);

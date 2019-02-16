@@ -43,7 +43,7 @@ public class ResponseBuilderTest {
 
     @Test
     public void bodyShouldBeOk() {
-        Optional<ByteArrayOutputStream> body = Optional.empty();
+        Optional<byte[]> body = Optional.empty();
 
         ResponseBuilder<DummySession> subject = new ResponseBuilder<DummySession>();
         Response actual = subject.payload(body).build();

@@ -16,6 +16,7 @@ import java.util.Optional;
 
 /**
  * Responsible for constructing a LocationTranslator.
+ * This is not in OtterAppFactory due to it's complexity
  */
 public class LocationTranslatorFactory {
     private Shape shape;

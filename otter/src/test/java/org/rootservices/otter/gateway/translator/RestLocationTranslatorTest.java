@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 public class RestLocationTranslatorTest {
     private RestLocationTranslator<DummyUser, DummyPayload> subject;
     @Mock
-    private RestBetweenFlyweight<DummyUser, DummyPayload> mockRestBetweenFlyweight;
+    private RestBetweenFlyweight<DummyUser> mockRestBetweenFlyweight;
 
     @Before
     public void setUp() throws Exception {
@@ -37,7 +37,7 @@ public class RestLocationTranslatorTest {
     @SuppressWarnings("unchecked")
     @Test
     public void toShouldBeOk() {
-        RestBetweens<DummyUser, DummyPayload> betweens = FixtureFactory.makeRestBetweens();
+        RestBetweens<DummyUser> betweens = FixtureFactory.makeRestBetweens();
         when(mockRestBetweenFlyweight.make(any(), any())).thenReturn(betweens);
 
         RestTarget<DummyUser, DummyPayload> target = FixtureFactory.makeRestTarget();

@@ -20,7 +20,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 @Category(ServletContainerTest.class)
-public class HelloRestResourceTest {
+public class HelloLegacyRestResourceTest {
     private static URI BASE_URI;
 
     @BeforeClass
@@ -28,13 +28,9 @@ public class HelloRestResourceTest {
         BASE_URI = IntegrationTestSuite.getServletContainerURI();
     }
 
-    public String getUri() {
-        return BASE_URI.toString() + "rest/v2/hello";
-    }
-
     @Test
     public void getShouldReturn200() throws Exception {
-        String helloURI = getUri();
+        String helloURI = BASE_URI.toString() + "rest/hello";
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(helloURI)
@@ -56,7 +52,7 @@ public class HelloRestResourceTest {
 
     @Test
     public void postShouldReturn201() throws Exception {
-        String helloURI = getUri();
+        String helloURI = BASE_URI.toString() + "rest/hello";
 
         OtterAppFactory appFactory = new OtterAppFactory();
         ObjectMapper om = appFactory.objectMapper();

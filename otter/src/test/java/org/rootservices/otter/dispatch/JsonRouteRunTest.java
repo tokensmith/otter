@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.dispatch.translator.rest.RestBtwnRequestTranslator;
+import org.rootservices.otter.dispatch.translator.rest.RestBtwnResponseTranslator;
 import org.rootservices.otter.dispatch.translator.rest.RestRequestTranslator;
 import org.rootservices.otter.dispatch.translator.rest.RestResponseTranslator;
 import org.rootservices.otter.router.entity.Method;
@@ -33,10 +35,19 @@ public class JsonRouteRunTest {
     public void setUp() {
         RestResponseTranslator<DummyPayload> restResponseTranslator = new RestResponseTranslator<>();
         RestRequestTranslator<DummyUser, DummyPayload> restRequestTranslator = new RestRequestTranslator<>();
+        RestBtwnRequestTranslator<DummyUser, DummyPayload> restBtwnRequestTranslator = new RestBtwnRequestTranslator<>();
+        RestBtwnResponseTranslator<DummyPayload> restBtwnResponseTranslator = new RestBtwnResponseTranslator<>();
         JsonTranslator<DummyPayload> jsonTranslator = otterAppFactory.jsonTranslator(DummyPayload.class);
         RestRoute<DummyUser, DummyPayload> restRoute = FixtureFactory.makeRestRoute();
 
-        subject = new JsonRouteRun<>(restRoute, restResponseTranslator, restRequestTranslator, jsonTranslator);
+        subject = new JsonRouteRun<>(
+                restRoute,
+                restResponseTranslator,
+                restRequestTranslator,
+                restBtwnRequestTranslator,
+                restBtwnResponseTranslator,
+                jsonTranslator
+        );
     }
 
     @Test
@@ -124,8 +135,8 @@ public class JsonRouteRunTest {
         assertThat(answer.getStatusCode(), is(StatusCode.BAD_REQUEST));
         assertThat(answer.getPayload().isPresent(), is(true));
 
-        OutputStream errorPayload = answer.getPayload().get();
-        assertThat(errorPayload.toString(), is("{\"error\":\"Invalid Value\",\"description\":\"integer was invalid\"}"));
+        String errorPayload = new String(answer.getPayload().get());
+        assertThat(errorPayload, is("{\"error\":\"Invalid Value\",\"description\":\"integer was invalid\"}"));
     }
 
     @Test

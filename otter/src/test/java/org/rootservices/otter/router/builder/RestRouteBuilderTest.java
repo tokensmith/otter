@@ -35,8 +35,8 @@ public class RestRouteBuilderTest {
     @Test
     public void buildWhenBetweenShouldAssign() {
         OkRestResource resource = new OkRestResource();
-        List<RestBetween<DummyUser, DummyPayload>> before = new ArrayList<>();
-        List<RestBetween<DummyUser, DummyPayload>> after = new ArrayList<>();
+        List<RestBetween<DummyUser>> before = new ArrayList<>();
+        List<RestBetween<DummyUser>> after = new ArrayList<>();
 
         RestRoute<DummyUser, DummyPayload> actual = new RestRouteBuilder<DummyUser, DummyPayload>()
                 .restResource(resource)
