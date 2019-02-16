@@ -2,10 +2,10 @@ package org.rootservices.otter.security.csrf.between;
 
 
 import org.rootservices.otter.controller.entity.Cookie;
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.router.entity.Between;
+import org.rootservices.otter.router.entity.between.Between;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.exception.CsrfException;
 import org.rootservices.otter.router.exception.HaltException;

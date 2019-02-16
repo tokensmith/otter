@@ -4,7 +4,7 @@ import helper.FixtureFactory;
 import helper.entity.DummySession;
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.router.entity.io.Answer;
 
 import static org.hamcrest.CoreMatchers.is;

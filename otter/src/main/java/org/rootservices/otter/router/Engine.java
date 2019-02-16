@@ -35,12 +35,20 @@ public class Engine {
                 ask.setMatcher(Optional.of(matchedLocation.get().getMatcher()));
                 resourceAnswer = matchedLocation.get().getLocation().getRouteRunner().run(ask, answer);
             } else {
+                // TODO: Error Handling: 404, 415
                 RouteRunner errorRouteRunner = errorRouteRunnerFactory.fromLocation(matchedLocation, errorRouteRunners);
                 resourceAnswer = errorRouteRunner.run(ask, answer);
             }
         } catch (HaltException e) {
             throw e;
-        } catch (Exception e) {
+        }
+        /*
+        TODO: Error Handling: catch, Client Error, Server Error
+        should resources be able to throw these or only RouteRunners?
+        if resources then the exception could go through many layers.
+         */
+        catch (Exception e) {
+            // TODO: Error Handling: 500
             RouteRunner serverErrorRoute = errorRouteRunnerFactory.serverErrorRouteRunner(matchedLocation, errorRouteRunners);
             resourceAnswer = serverErrorRoute.run(ask, answer);
         }

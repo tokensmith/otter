@@ -1,6 +1,7 @@
 package org.rootservices.otter.controller.entity;
 
 import org.junit.Test;
+import org.rootservices.otter.controller.entity.response.Response;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;

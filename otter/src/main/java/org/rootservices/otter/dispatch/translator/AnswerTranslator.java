@@ -1,6 +1,6 @@
 package org.rootservices.otter.dispatch.translator;
 
-import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.router.entity.io.Answer;
 
 import java.util.Optional;

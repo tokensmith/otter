@@ -28,9 +28,13 @@ public class HelloRestResourceTest {
         BASE_URI = IntegrationTestSuite.getServletContainerURI();
     }
 
+    public String getUri() {
+        return BASE_URI.toString() + "rest/v2/hello";
+    }
+
     @Test
     public void getShouldReturn200() throws Exception {
-        String helloURI = BASE_URI.toString() + "rest/hello";
+        String helloURI = getUri();
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(helloURI)
@@ -52,7 +56,7 @@ public class HelloRestResourceTest {
 
     @Test
     public void postShouldReturn201() throws Exception {
-        String helloURI = BASE_URI.toString() + "rest/hello";
+        String helloURI = getUri();
 
         OtterAppFactory appFactory = new OtterAppFactory();
         ObjectMapper om = appFactory.objectMapper();

@@ -1,56 +1,34 @@
 package hello.controller.api;
 
-
-import hello.controller.api.model.ApiSession;
 import hello.controller.api.model.ApiUser;
 import hello.model.Hello;
 import org.rootservices.otter.controller.RestResource;
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.translator.JsonTranslator;
-import org.rootservices.otter.translator.exception.ToJsonException;
+import org.rootservices.otter.controller.entity.request.RestRequest;
+import org.rootservices.otter.controller.entity.response.RestResponse;
 
-import java.io.ByteArrayOutputStream;
+
 import java.util.Optional;
 
-public class HelloRestResource extends RestResource<Hello, ApiSession, ApiUser> {
-    public static String URL = "/rest/hello";
-
-    public HelloRestResource(JsonTranslator<Hello> translator) {
-        super(translator);
-    }
+public class HelloRestResource extends RestResource<ApiUser, Hello> {
+    public static String URL = "/rest/v2/hello";
 
     @Override
-    public Response<ApiSession> get(Request<ApiSession, ApiUser> request, Response<ApiSession> response) {
+    public RestResponse<Hello> get(RestRequest<ApiUser, Hello> request, RestResponse<Hello> response) {
         response.setStatusCode(StatusCode.OK);
 
         Hello hello = new Hello("Hello, " + request.getUser().get().getFirstName() + " " + request.getUser().get().getLastName());
-        Optional<ByteArrayOutputStream> payload = Optional.empty();
 
-        try {
-            payload = Optional.of(translator.to(hello));
-        } catch (ToJsonException e) {
-            response.setStatusCode(StatusCode.SERVER_ERROR);
-        }
-
-        response.setPayload(payload);
+        response.setPayload(Optional.of(hello));
         return response;
     }
 
     @Override
-    public Response<ApiSession> post(Request<ApiSession, ApiUser> request, Response<ApiSession> response, Hello entity) {
+    public RestResponse<Hello> post(RestRequest<ApiUser, Hello> request, RestResponse<Hello> response) {
         response.setStatusCode(StatusCode.CREATED);
 
-        Optional<ByteArrayOutputStream> payload = Optional.empty();
+        response.setPayload(request.getPayload());
 
-        try {
-            payload = Optional.of(translator.to(entity));
-        } catch (ToJsonException e) {
-            response.setStatusCode(StatusCode.SERVER_ERROR);
-        }
-
-        response.setPayload(payload);
         return response;
     }
 }

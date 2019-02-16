@@ -16,6 +16,7 @@ import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
+import org.rootservices.otter.gateway.translator.RestLocationTranslator;
 import org.rootservices.otter.router.Dispatcher;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.entity.Route;
@@ -60,12 +61,15 @@ public class ServletGatewayTest {
         Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators;
         locationTranslators = new HashMap<>();
 
+        Map<String, RestLocationTranslator<? extends DefaultUser, ?>> restLocationTranslators = new HashMap<>();
+
         subject = new ServletGateway(
                 mockHttpServletRequestTranslator,
                 mockHttpServletRequestMerger,
                 mockHttpServletResponseMerger,
                 mockEngine,
                 locationTranslators,
+                restLocationTranslators,
                 OtterAppFactory.WRITE_CHUNK_SIZE
         );
     }

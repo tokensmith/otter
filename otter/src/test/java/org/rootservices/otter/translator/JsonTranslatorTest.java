@@ -4,16 +4,14 @@ import helper.entity.DummyPayload;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.config.OtterAppFactory;
-import org.rootservices.otter.translator.exception.DuplicateKeyException;
-import org.rootservices.otter.translator.exception.InvalidPayloadException;
-import org.rootservices.otter.translator.exception.InvalidValueException;
-import org.rootservices.otter.translator.exception.UnknownKeyException;
+import org.rootservices.otter.translator.exception.*;
 
 
 import java.io.OutputStream;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -29,10 +27,10 @@ public class JsonTranslatorTest {
     }
 
     @Test
-    public void fromShouldBeOk() throws Exception {
+    public void fromWithSpecificCauseShouldBeOk() throws Exception {
         String json="{\"integer\": 5, \"string\": \"foo\", \"local_date\": \"2019-01-01\"}";
 
-        DummyPayload actual = (DummyPayload) subject.from(json.getBytes());
+        DummyPayload actual = (DummyPayload) subject.fromWithSpecificCause(json.getBytes());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getInteger(), is(5));
@@ -41,12 +39,12 @@ public class JsonTranslatorTest {
     }
 
     @Test
-    public void fromShouldThrowDuplicateKeyException() throws Exception {
+    public void fromWithSpecificCauseShouldThrowDuplicateKeyException() throws Exception {
         String json = "{\"integer\": 5, \"integer\": \"4\", \"local_date\": \"2019-01-01\"}";
 
         DuplicateKeyException actual = null;
         try {
-            subject.from(json.getBytes());
+            subject.fromWithSpecificCause(json.getBytes());
         } catch(DuplicateKeyException e) {
             actual = e;
         }
@@ -56,12 +54,12 @@ public class JsonTranslatorTest {
     }
 
     @Test
-    public void fromShouldThrowUnknownKeyException() throws Exception {
+    public void fromWithSpecificCauseShouldThrowUnknownKeyException() throws Exception {
         String json = "{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}";
 
         UnknownKeyException actual = null;
         try {
-            subject.from(json.getBytes());
+            subject.fromWithSpecificCause(json.getBytes());
         } catch(UnknownKeyException e) {
             actual = e;
         }
@@ -71,12 +69,12 @@ public class JsonTranslatorTest {
     }
 
     @Test
-    public void fromShouldThrowInvalidValueException() throws Exception {
+    public void fromWithSpecificCauseShouldThrowInvalidValueException() throws Exception {
         String json = "{\"integer\": \"not a integer\", \"string\": \"foo\", \"local_date\": \"2019-01-01\"}";
 
         InvalidValueException actual = null;
         try {
-            subject.from(json.getBytes());
+            subject.fromWithSpecificCause(json.getBytes());
         } catch(InvalidValueException e) {
             actual = e;
         }
@@ -86,17 +84,83 @@ public class JsonTranslatorTest {
     }
 
     @Test
-    public void fromShouldThrowInvalidPayloadException() throws Exception {
+    public void fromWithSpecificCauseShouldThrowInvalidPayloadException() throws Exception {
         String json = "{";
 
         InvalidPayloadException actual = null;
         try {
-            subject.from(json.getBytes());
+            subject.fromWithSpecificCause(json.getBytes());
         } catch(InvalidPayloadException e) {
             actual = e;
         }
 
         assertThat(actual, is(notNullValue()));
+    }
+
+    @Test
+    public void fromWhenDuplicateShouldThrowDeserializationException() throws Exception {
+        String json = "{\"integer\": 5, \"integer\": \"4\", \"local_date\": \"2019-01-01\"}";
+
+        DeserializationException actual = null;
+        try {
+            subject.from(json.getBytes());
+        } catch(DeserializationException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCause(), is(instanceOf(DuplicateKeyException.class)));
+        DuplicateKeyException actualCause = (DuplicateKeyException) actual.getCause();
+        assertThat(actualCause.getKey(), is("integer"));
+    }
+
+    @Test
+    public void fromWhenUnknownKeyShouldThrowDeserializationException() throws Exception {
+        String json = "{\"integer\": 5, \"unknown_key\": \"4\", \"local_date\": \"2019-01-01\"}";
+
+        DeserializationException actual = null;
+        try {
+            subject.from(json.getBytes());
+        } catch(DeserializationException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCause(), is(instanceOf(UnknownKeyException.class)));
+        UnknownKeyException actualCause = (UnknownKeyException) actual.getCause();
+        assertThat(actualCause.getKey(), is("unknown_key"));
+    }
+
+    @Test
+    public void fromWhenInvalidValueShouldThrowDeserializationException() throws Exception {
+        String json = "{\"integer\": \"not a integer\", \"string\": \"foo\", \"local_date\": \"2019-01-01\"}";
+
+        DeserializationException actual = null;
+        try {
+            subject.from(json.getBytes());
+        } catch(DeserializationException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCause(), is(instanceOf(InvalidValueException.class)));
+        InvalidValueException actualCause = (InvalidValueException) actual.getCause();
+        assertThat(actualCause.getKey(), is("integer"));
+    }
+
+    @Test
+    public void fromWhenInvalidPayloadShouldThrowDeserializationException() throws Exception {
+        String json = "{";
+
+        DeserializationException actual = null;
+        try {
+            subject.from(json.getBytes());
+        } catch(DeserializationException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCause(), is(instanceOf(InvalidPayloadException.class)));
     }
 
 
@@ -108,9 +172,9 @@ public class JsonTranslatorTest {
         dummy.setLocalDate(LocalDate.of(2017, 05, 20));
         dummy.setIntegerOptional(Optional.empty());
 
-        OutputStream out = subject.to(dummy);
+        byte[] out = subject.to(dummy);
 
         assertThat(out, is(notNullValue()));
-        assertThat(out.toString(), is("{\"integer\":5,\"string\":\"string\",\"local_date\":\"2017-05-20\",\"integer_optional\":null}"));
+        assertThat(new String(out), is("{\"integer\":5,\"string\":\"string\",\"local_date\":\"2017-05-20\",\"integer_optional\":null}"));
     }
 }

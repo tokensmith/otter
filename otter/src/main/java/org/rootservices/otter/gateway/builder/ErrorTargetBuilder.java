@@ -4,7 +4,7 @@ import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.gateway.entity.ErrorTarget;
-import org.rootservices.otter.router.entity.Between;
+import org.rootservices.otter.router.entity.between.Between;
 
 
 import java.util.ArrayList;

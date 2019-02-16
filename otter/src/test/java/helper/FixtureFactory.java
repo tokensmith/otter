@@ -1,10 +1,8 @@
 package helper;
 
 
-import helper.entity.DummyBetween;
-import helper.entity.DummySession;
-import helper.entity.DummyUser;
-import helper.fake.FakeResource;
+import helper.entity.*;
+import helper.fake.FakeResourceLegacy;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwk.Use;
@@ -19,31 +17,36 @@ import org.rootservices.jwt.serialization.exception.JwtToJsonException;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.builder.ResponseBuilder;
 import org.rootservices.otter.controller.entity.Cookie;
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.controller.entity.request.RestRequest;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.controller.entity.response.RestResponse;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.controller.header.HeaderValue;
 import org.rootservices.otter.dispatch.RouteRun;
 import org.rootservices.otter.dispatch.RouteRunner;
+import org.rootservices.otter.dispatch.entity.RestBtwnRequest;
+import org.rootservices.otter.dispatch.entity.RestBtwnResponse;
 import org.rootservices.otter.dispatch.translator.AnswerTranslator;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;
 import org.rootservices.otter.gateway.builder.ErrorTargetBuilder;
+import org.rootservices.otter.gateway.builder.RestTargetBuilder;
 import org.rootservices.otter.gateway.builder.ShapeBuilder;
 import org.rootservices.otter.gateway.builder.TargetBuilder;
-import org.rootservices.otter.gateway.entity.ErrorTarget;
-import org.rootservices.otter.gateway.entity.Label;
-import org.rootservices.otter.gateway.entity.Shape;
-import org.rootservices.otter.gateway.entity.Target;
+import org.rootservices.otter.gateway.entity.*;
 import org.rootservices.otter.router.builder.AnswerBuilder;
 import org.rootservices.otter.router.builder.AskBuilder;
 import org.rootservices.otter.router.builder.LocationBuilder;
 import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.*;
+import org.rootservices.otter.router.entity.between.Between;
+import org.rootservices.otter.router.entity.between.RestBetween;
 import org.rootservices.otter.router.entity.io.Answer;
 import org.rootservices.otter.router.entity.io.Ask;
 import org.rootservices.otter.security.builder.entity.Betweens;
+import org.rootservices.otter.security.builder.entity.RestBetweens;
 import org.rootservices.otter.security.csrf.CsrfClaims;
 
 import java.time.OffsetDateTime;
@@ -71,7 +74,7 @@ public class FixtureFactory {
     }
 
     public static Route<DummySession, DummyUser> makeRoute() {
-        FakeResource resource = new FakeResource();
+        FakeResourceLegacy resource = new FakeResourceLegacy();
         return new RouteBuilder<DummySession, DummyUser>()
                 .resource(resource)
                 .before(new ArrayList<>())
@@ -79,8 +82,15 @@ public class FixtureFactory {
                 .build();
     }
 
+    public static RestRoute<DummyUser, DummyPayload> makeRestRoute() {
+        OkRestResource okRestResource = new OkRestResource();
+        return new RestRoute<DummyUser, DummyPayload>(
+                okRestResource, new ArrayList<>(), new ArrayList<>()
+        );
+    }
+
     public static Location makeLocation(String regex) {
-        FakeResource resource = new FakeResource();
+        FakeResourceLegacy resource = new FakeResourceLegacy();
         return new LocationBuilder<DummySession, DummyUser>()
             .path(regex)
             .contentTypes(new ArrayList<MimeType>())
@@ -91,9 +101,9 @@ public class FixtureFactory {
     }
 
     public static Location makeLocationWithErrorRoutes(String regex) {
-        FakeResource resource = new FakeResource();
-        FakeResource unSupportedMediaType = new FakeResource();
-        FakeResource serverError = new FakeResource();
+        FakeResourceLegacy resource = new FakeResourceLegacy();
+        FakeResourceLegacy unSupportedMediaType = new FakeResourceLegacy();
+        FakeResourceLegacy serverError = new FakeResourceLegacy();
 
         return new LocationBuilder<DummySession, DummyUser>()
                 .path(regex)
@@ -112,6 +122,19 @@ public class FixtureFactory {
         Route<DummySession, DummyUser> serverError = FixtureFactory.makeRoute();
 
         Map<StatusCode,Route<DummySession, DummyUser>> errorRoutes = new HashMap<>();
+        errorRoutes.put(StatusCode.NOT_FOUND, notFound);
+        errorRoutes.put(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaType);
+        errorRoutes.put(StatusCode.SERVER_ERROR, serverError);
+
+        return errorRoutes;
+    }
+
+    public static Map<StatusCode, RestRoute<DummyUser, DummyPayload>> makeErrorRestRoutes() {
+        RestRoute<DummyUser, DummyPayload> notFound = FixtureFactory.makeRestRoute();
+        RestRoute<DummyUser, DummyPayload> unSupportedMediaType = FixtureFactory.makeRestRoute();
+        RestRoute<DummyUser, DummyPayload> serverError = FixtureFactory.makeRestRoute();
+
+        Map<StatusCode, RestRoute<DummyUser, DummyPayload>> errorRoutes = new HashMap<>();
         errorRoutes.put(StatusCode.NOT_FOUND, notFound);
         errorRoutes.put(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaType);
         errorRoutes.put(StatusCode.SERVER_ERROR, serverError);
@@ -148,12 +171,12 @@ public class FixtureFactory {
 
     public static Target<DummySession, DummyUser> makeTarget() {
 
-        FakeResource notFoundResource = new FakeResource();
+        FakeResourceLegacy notFoundResource = new FakeResourceLegacy();
         ErrorTarget<DummySession, DummyUser> notFound = new ErrorTargetBuilder<DummySession, DummyUser>()
                 .resource(notFoundResource)
                 .build();
 
-        FakeResource fakeResource = new FakeResource();
+        FakeResourceLegacy fakeResource = new FakeResourceLegacy();
         MimeType json = new MimeTypeBuilder().json().build();
 
         TargetBuilder<DummySession, DummyUser> targetBuilder = new TargetBuilder<DummySession, DummyUser>();
@@ -178,6 +201,43 @@ public class FixtureFactory {
         Between<DummySession, DummyUser> before = new DummyBetween<>();
         Between<DummySession, DummyUser> after = new DummyBetween<>();
         return new Betweens<>(
+                Arrays.asList(before), Arrays.asList(after)
+        );
+    }
+
+    public static RestTarget<DummyUser, DummyPayload> makeRestTarget() {
+
+        OkRestResource okRestResource = new OkRestResource();
+        OkRestResource notFoundResource = new OkRestResource();
+        RestErrorTarget<DummyUser, DummyPayload> notFound = new RestErrorTarget<DummyUser, DummyPayload>(
+                notFoundResource, new ArrayList<>(), new ArrayList<>()
+        );
+
+        MimeType json = new MimeTypeBuilder().json().build();
+
+        RestTargetBuilder<DummyUser, DummyPayload> builder = new RestTargetBuilder<>();
+
+        return builder
+                .regex("/foo")
+                .method(Method.GET)
+                .method(Method.POST)
+                .contentType(json)
+                .restResource(okRestResource)
+                .payload(DummyPayload.class)
+                .before(new DummyRestBetween<>())
+                .before(new DummyRestBetween<>())
+                .after(new DummyRestBetween<>())
+                .after(new DummyRestBetween<>())
+                .label(Label.CSRF)
+                .label(Label.SESSION_REQUIRED)
+                .errorTarget(StatusCode.NOT_FOUND, notFound)
+                .build();
+    }
+
+    public static RestBetweens<DummyUser> makeRestBetweens() {
+        RestBetween<DummyUser> before = new DummyRestBetween<>();
+        RestBetween<DummyUser> after = new DummyRestBetween<>();
+        return new RestBetweens<>(
                 Arrays.asList(before), Arrays.asList(after)
         );
     }
@@ -224,6 +284,33 @@ public class FixtureFactory {
         return request;
     }
 
+    public static RestRequest<DummyUser, DummyPayload> makeRestRequest() {
+        RestRequest<DummyUser, DummyPayload> request = new RestRequest<DummyUser, DummyPayload>();
+        request.setFormData(new HashMap<>());
+        request.setCookies(makeCookies());
+        request.setBody(Optional.empty());
+        request.setPayload(Optional.empty());
+        request.setUser(Optional.empty());
+        return request;
+    }
+
+    public static RestBtwnRequest<DummyUser> makeRestBtwnRequest() {
+        RestBtwnRequest<DummyUser> request =  new RestBtwnRequest<DummyUser>();
+
+        request.setMatcher(Optional.empty());
+        request.setMethod(Method.GET);
+        request.setPathWithParams("");
+        request.setContentType(new MimeTypeBuilder().html().build());
+        request.setHeaders(new HashMap<>());
+        request.setCookies(makeCookies());
+        request.setQueryParams(new HashMap<>());
+        request.setFormData(new HashMap<>());
+        request.setBody(Optional.empty());
+        request.setIpAddress("127.0.0.1");
+
+        return request;
+    }
+
     public static Map<String, String> makeHeaders() {
         Map<String, String> headers = new HashMap<>();
         headers.put(Header.CACHE_CONTROL.getValue(), HeaderValue.NO_CACHE.getValue());
@@ -241,6 +328,18 @@ public class FixtureFactory {
                 .build();
 
         return response;
+    }
+
+    public static RestResponse<DummyPayload> makeRestResponse() {
+        return new RestResponse<DummyPayload>(
+                StatusCode.OK, new HashMap<>(), new HashMap<>(), Optional.empty()
+        );
+    }
+
+    public static RestBtwnResponse makeRestBtwnResponse() {
+        return new RestBtwnResponse(
+                StatusCode.OK, new HashMap<>(), new HashMap<>(), Optional.empty()
+        );
     }
 
     public static Map<String, Cookie> makeCookies() {

@@ -23,6 +23,7 @@ import static org.asynchttpclient.Dsl.asyncHttpClient;
 @Suite.SuiteClasses(value = {
         NotFoundResourceTest.class,
         HelloResourceTest.class,
+        HelloLegacyRestResourceTest.class,
         HelloRestResourceTest.class,
         LoginResourceTest.class,
         LoginSessionResourceTest.class,

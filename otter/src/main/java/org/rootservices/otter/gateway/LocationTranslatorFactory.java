@@ -5,8 +5,8 @@ import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
-import org.rootservices.otter.router.entity.Between;
-import org.rootservices.otter.router.factory.BetweenFactory;
+import org.rootservices.otter.router.entity.between.Between;
+import org.rootservices.otter.router.factory.BetweenFlyweight;
 import org.rootservices.otter.security.builder.BetweenBuilder;
 import org.rootservices.otter.security.builder.entity.Betweens;
 import org.rootservices.otter.security.exception.SessionCtorException;
@@ -16,6 +16,7 @@ import java.util.Optional;
 
 /**
  * Responsible for constructing a LocationTranslator.
+ * This is not in OtterAppFactory due to it's complexity
  */
 public class LocationTranslatorFactory {
     private Shape shape;
@@ -26,14 +27,14 @@ public class LocationTranslatorFactory {
 
     public <S extends DefaultSession, U extends DefaultUser> LocationTranslator<S, U> make(Class<S> sessionClazz, Optional<Between<S,U>> authRequired, Optional<Between<S,U>> authOptional) throws SessionCtorException {
         return new LocationTranslator<S, U>(
-                betweenFactory(sessionClazz, authRequired, authOptional)
+                betweenFlyweight(sessionClazz, authRequired, authOptional)
         );
     }
 
-    public <S, U> BetweenFactory<S, U> betweenFactory(Class<S> sessionClazz, Optional<Between<S,U>> authRequired, Optional<Between<S,U>> authOptional) throws SessionCtorException {
+    public <S, U> BetweenFlyweight<S, U> betweenFlyweight(Class<S> sessionClazz, Optional<Between<S,U>> authRequired, Optional<Between<S,U>> authOptional) throws SessionCtorException {
         OtterAppFactory otterAppFactory = new OtterAppFactory();
 
-        return new BetweenFactory<S, U>(
+        return new BetweenFlyweight<S, U>(
                 csrfPrepare(otterAppFactory),
                 csrfProtect(otterAppFactory),
                 session(otterAppFactory, sessionClazz),

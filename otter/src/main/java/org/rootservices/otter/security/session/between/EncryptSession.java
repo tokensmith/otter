@@ -12,11 +12,11 @@ import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwt.header.Algorithm;
 import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.controller.entity.Cookie;
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.security.session.between.exception.EncryptSessionException;
-import org.rootservices.otter.router.entity.Between;
+import org.rootservices.otter.router.entity.between.Between;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.exception.HaltException;
 

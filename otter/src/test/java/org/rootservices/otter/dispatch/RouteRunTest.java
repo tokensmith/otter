@@ -4,16 +4,11 @@ import helper.FixtureFactory;
 import helper.entity.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
 import org.rootservices.otter.config.OtterAppFactory;
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.request.Request;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.dispatch.translator.AnswerTranslator;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;
-import org.rootservices.otter.router.entity.Between;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.router.entity.io.Answer;
@@ -27,7 +22,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class RouteRunTest {
     private static OtterAppFactory otterAppFactory = new OtterAppFactory();
@@ -37,7 +31,7 @@ public class RouteRunTest {
     public void setUp(){
         Route<DummySession, DummyUser> route = FixtureFactory.makeRoute();
         JsonTranslator<DummyPayload> jsonTranslator = otterAppFactory.jsonTranslator(DummyPayload.class);
-        OkResource okResource = new OkResource(jsonTranslator);
+        OkResourceLegacy okResource = new OkResourceLegacy(jsonTranslator);
         route.setResource(okResource);
 
         RequestTranslator<DummySession, DummyUser> requestTranslator = new RequestTranslator<DummySession, DummyUser>();

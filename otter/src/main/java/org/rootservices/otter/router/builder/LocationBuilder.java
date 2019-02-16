@@ -10,7 +10,7 @@ import org.rootservices.otter.dispatch.RouteRun;
 import org.rootservices.otter.dispatch.RouteRunner;
 import org.rootservices.otter.dispatch.translator.AnswerTranslator;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;
-import org.rootservices.otter.router.entity.Between;
+import org.rootservices.otter.router.entity.between.Between;
 import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Route;
 

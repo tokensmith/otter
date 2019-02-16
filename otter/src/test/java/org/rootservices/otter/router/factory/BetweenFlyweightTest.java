@@ -7,7 +7,7 @@ import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.gateway.entity.Label;
-import org.rootservices.otter.router.entity.Between;
+import org.rootservices.otter.router.entity.between.Between;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.security.builder.entity.Betweens;
 
@@ -15,13 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.*;
 
-public class BetweenFactoryTest {
-    private BetweenFactory<DummySession, DummyUser> subject;
+public class BetweenFlyweightTest {
+    private BetweenFlyweight<DummySession, DummyUser> subject;
     private Betweens<DummySession, DummyUser> csrfPrepare;
     private Betweens<DummySession, DummyUser> csrfProtect;
     private Betweens<DummySession, DummyUser> sessionRequired;
@@ -38,7 +36,7 @@ public class BetweenFactoryTest {
         authRequired = Optional.of(new DummyBetween<>());
         authOptional = Optional.of(new DummyBetween<>());
 
-        subject = new BetweenFactory<>(csrfPrepare, csrfProtect, sessionRequired, sessionOptional, authRequired, authOptional);
+        subject = new BetweenFlyweight<>(csrfPrepare, csrfProtect, sessionRequired, sessionOptional, authRequired, authOptional);
     }
 
     @Test

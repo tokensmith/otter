@@ -9,6 +9,7 @@ import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.entity.Group;
+import org.rootservices.otter.gateway.entity.RestGroup;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
 import org.rootservices.otter.security.exception.SessionCtorException;
@@ -55,9 +56,12 @@ public abstract class OtterEntryServlet extends HttpServlet {
         otterAppFactory = new OtterAppFactory();
         Configure configure = makeConfigure();
         Shape shape = configure.shape();
+
         List<Group<? extends DefaultSession, ? extends DefaultUser>> groups = configure.groups();
+        List<RestGroup<? extends DefaultUser>> restGroups = configure.restGroups();
+
         try {
-            servletGateway = otterAppFactory.servletGateway(shape, groups);
+            servletGateway = otterAppFactory.servletGateway(shape, groups, restGroups);
         } catch (SessionCtorException e) {
             LOGGER.error(e.getMessage(), e);
             throw new ServletException(e);

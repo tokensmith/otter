@@ -40,7 +40,7 @@ public class AnswerBuilderTest {
 
     @Test
     public void bodyShouldBeOk() {
-        Optional<ByteArrayOutputStream> body = Optional.empty();
+        Optional<byte[]> body = Optional.empty();
 
         AnswerBuilder subject = new AnswerBuilder();
         Answer actual = subject.payload(body).build();

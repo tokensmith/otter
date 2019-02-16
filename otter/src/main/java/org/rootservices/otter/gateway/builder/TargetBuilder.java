@@ -8,7 +8,7 @@ import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.gateway.entity.ErrorTarget;
 import org.rootservices.otter.gateway.entity.Target;
 import org.rootservices.otter.gateway.entity.Label;
-import org.rootservices.otter.router.entity.Between;
+import org.rootservices.otter.router.entity.between.Between;
 import org.rootservices.otter.router.entity.Method;
 
 import java.util.ArrayList;

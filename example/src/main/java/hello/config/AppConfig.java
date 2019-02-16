@@ -2,10 +2,13 @@ package hello.config;
 
 
 import hello.controller.*;
+import hello.controller.api.HelloLegacyRestResource;
 import hello.controller.api.HelloRestResource;
+import hello.controller.api.between.AuthLegacyRestBetween;
 import hello.controller.api.between.AuthRestBetween;
 import hello.controller.api.model.ApiSession;
 import hello.controller.api.model.ApiUser;
+import hello.model.Hello;
 import hello.security.TokenSession;
 import hello.security.User;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
@@ -16,13 +19,8 @@ import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
-import org.rootservices.otter.gateway.builder.GroupBuilder;
-import org.rootservices.otter.gateway.builder.ShapeBuilder;
-import org.rootservices.otter.gateway.builder.TargetBuilder;
-import org.rootservices.otter.gateway.entity.Group;
-import org.rootservices.otter.gateway.entity.Label;
-import org.rootservices.otter.gateway.entity.Shape;
-import org.rootservices.otter.gateway.entity.Target;
+import org.rootservices.otter.gateway.builder.*;
+import org.rootservices.otter.gateway.entity.*;
 import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
@@ -34,6 +32,7 @@ import java.util.List;
 
 public class AppConfig implements Configure {
     public static final String API_GROUP = "API";
+    public static final String API_GROUP_V2 = "API_V2";
     public static final String WEB_SITE_GROUP = "WebSite";
     private AppFactory appFactory;
 
@@ -64,34 +63,63 @@ public class AppConfig implements Configure {
 
         groups.add(webSiteGroup);
 
-        AuthRestBetween authRestBetween = new AuthRestBetween();
+        AuthLegacyRestBetween authLegacyRestBetween = new AuthLegacyRestBetween();
         Group<ApiSession, ApiUser> apiGroup = new GroupBuilder<ApiSession, ApiUser>()
                 .name(API_GROUP)
                 .sessionClazz(ApiSession.class)
-                .authRequired(authRestBetween)
+                .authRequired(authLegacyRestBetween)
                 .build();
 
         groups.add(apiGroup);
+
         return groups;
+    }
+
+    @Override
+    public List<RestGroup<? extends DefaultUser>> restGroups() {
+        List<RestGroup<? extends DefaultUser>> restGroups = new ArrayList<>();
+
+        AuthRestBetween authRestBetween = new AuthRestBetween();
+        RestGroup<ApiUser> apiGroupV2 = new RestGroupBuilder<ApiUser>()
+                .name(API_GROUP_V2)
+                .authRequired(authRestBetween)
+                .build();
+
+        restGroups.add(apiGroupV2);
+
+        return restGroups;
     }
 
     @Override
     public void routes(Gateway gateway) {
         errorRoutes(gateway);
 
-        // requires content type.
+        // Legacy Rest - requires content type.
         MimeType json = new MimeTypeBuilder().json().build();
         Target<ApiSession, ApiUser> helloAPI = new TargetBuilder<ApiSession, ApiUser>()
                 .method(Method.GET)
                 .method(Method.POST)
-                .resource(appFactory.helloRestResource())
-                .regex(HelloRestResource.URL)
+                .resource(appFactory.helloLegacyRestResource())
+                .regex(HelloLegacyRestResource.URL)
                 .label(Label.AUTH_REQUIRED)
                 .contentType(json)
                 .groupName(API_GROUP)
                 .build();
 
         gateway.add(helloAPI);
+
+        RestTarget<ApiUser, Hello> helloApiV2 = new RestTargetBuilder<ApiUser, Hello>()
+                .method(Method.GET)
+                .method(Method.POST)
+                .restResource(new HelloRestResource())
+                .regex(HelloRestResource.URL)
+                .label(Label.AUTH_REQUIRED)
+                .contentType(json)
+                .groupName(API_GROUP_V2)
+                .payload(Hello.class)
+                .build();
+
+        gateway.add(helloApiV2);
 
         // does not require content-type
         Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()

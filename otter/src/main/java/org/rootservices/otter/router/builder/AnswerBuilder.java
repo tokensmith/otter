@@ -12,7 +12,7 @@ public class AnswerBuilder {
     private StatusCode statusCode;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
-    private Optional<ByteArrayOutputStream> payload;
+    private Optional<byte[]> payload;
     private Optional<String> template;
     private Optional<Object> presenter;
 
@@ -28,7 +28,7 @@ public class AnswerBuilder {
         return this;
     }
 
-    public AnswerBuilder payload(Optional<ByteArrayOutputStream> payload) {
+    public AnswerBuilder payload(Optional<byte[]> payload) {
         this.payload = payload;
         return this;
     }

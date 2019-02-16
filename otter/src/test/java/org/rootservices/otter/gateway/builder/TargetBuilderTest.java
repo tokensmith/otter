@@ -4,7 +4,7 @@ package org.rootservices.otter.gateway.builder;
 import helper.entity.DummyBetween;
 import helper.entity.DummySession;
 import helper.entity.DummyUser;
-import helper.fake.FakeResource;
+import helper.fake.FakeResourceLegacy;
 import org.junit.Test;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -42,12 +42,12 @@ public class TargetBuilderTest {
     public void buildShouldBeOk() {
         TargetBuilder<DummySession, DummyUser> subject = subject();
 
-        FakeResource notFoundResource = new FakeResource();
+        FakeResourceLegacy notFoundResource = new FakeResourceLegacy();
         ErrorTarget<DummySession, DummyUser> notFound = new ErrorTargetBuilder<DummySession, DummyUser>()
                 .resource(notFoundResource)
                 .build();
 
-        FakeResource fakeResource = new FakeResource();
+        FakeResourceLegacy fakeResource = new FakeResourceLegacy();
         MimeType json = new MimeTypeBuilder().json().build();
 
         Target<DummySession, DummyUser> actual = subject
@@ -85,12 +85,12 @@ public class TargetBuilderTest {
     public void buildWhenMethodContentTypeShouldBeOk() {
         TargetBuilder<DummySession, DummyUser> subject = subject();
 
-        FakeResource notFoundResource = new FakeResource();
+        FakeResourceLegacy notFoundResource = new FakeResourceLegacy();
         ErrorTarget<DummySession, DummyUser> notFound = new ErrorTargetBuilder<DummySession, DummyUser>()
                 .resource(notFoundResource)
                 .build();
 
-        FakeResource fakeResource = new FakeResource();
+        FakeResourceLegacy fakeResource = new FakeResourceLegacy();
         MimeType json = new MimeTypeBuilder().json().build();
         MimeType jwt = new MimeTypeBuilder().jwt().build();
 

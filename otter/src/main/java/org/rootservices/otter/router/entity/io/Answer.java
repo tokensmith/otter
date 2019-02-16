@@ -11,14 +11,14 @@ public class Answer {
     private StatusCode statusCode;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
-    private Optional<ByteArrayOutputStream> payload;
+    private Optional<byte[]> payload;
     private Optional<String> template;
     private Optional<Object> presenter;
 
     public Answer() {
     }
 
-    public Answer(StatusCode statusCode, Map<String, String> headers, Map<String, Cookie> cookies, Optional<ByteArrayOutputStream> payload, Optional<String> template, Optional<Object> presenter) {
+    public Answer(StatusCode statusCode, Map<String, String> headers, Map<String, Cookie> cookies, Optional<byte[]> payload, Optional<String> template, Optional<Object> presenter) {
         this.statusCode = statusCode;
         this.headers = headers;
         this.cookies = cookies;
@@ -51,11 +51,11 @@ public class Answer {
         this.cookies = cookies;
     }
 
-    public Optional<ByteArrayOutputStream> getPayload() {
+    public Optional<byte[]> getPayload() {
         return payload;
     }
 
-    public void setPayload(Optional<ByteArrayOutputStream> payload) {
+    public void setPayload(Optional<byte[]> payload) {
         this.payload = payload;
     }
 
