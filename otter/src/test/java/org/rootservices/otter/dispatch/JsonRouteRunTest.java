@@ -7,10 +7,7 @@ import org.junit.Test;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.request.Request;
-import org.rootservices.otter.dispatch.translator.rest.RestBtwnRequestTranslator;
-import org.rootservices.otter.dispatch.translator.rest.RestBtwnResponseTranslator;
-import org.rootservices.otter.dispatch.translator.rest.RestRequestTranslator;
-import org.rootservices.otter.dispatch.translator.rest.RestResponseTranslator;
+import org.rootservices.otter.dispatch.translator.rest.*;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.RestRoute;
 import org.rootservices.otter.router.entity.io.Answer;
@@ -19,7 +16,8 @@ import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.exception.DeserializationException;
 
-import java.io.OutputStream;
+
+import java.util.HashMap;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -46,7 +44,10 @@ public class JsonRouteRunTest {
                 restRequestTranslator,
                 restBtwnRequestTranslator,
                 restBtwnResponseTranslator,
-                jsonTranslator
+                jsonTranslator,
+                new HashMap<>(),
+                new RestErrorRequestTranslator<>(),
+                new RestErrorResponseTranslator()
         );
     }
 

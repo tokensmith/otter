@@ -1,4 +1,4 @@
-package hello.controller;
+package hello.controller.api.v2;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +20,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 @Category(ServletContainerTest.class)
-public class HelloLegacyRestResourceTest {
+public class HelloRestResourceTest {
     private static URI BASE_URI;
 
     @BeforeClass
@@ -28,9 +28,13 @@ public class HelloLegacyRestResourceTest {
         BASE_URI = IntegrationTestSuite.getServletContainerURI();
     }
 
+    public String getUri() {
+        return BASE_URI.toString() + "rest/v2/hello";
+    }
+
     @Test
     public void getShouldReturn200() throws Exception {
-        String helloURI = BASE_URI.toString() + "rest/hello";
+        String helloURI = getUri();
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(helloURI)
@@ -52,7 +56,7 @@ public class HelloLegacyRestResourceTest {
 
     @Test
     public void postShouldReturn201() throws Exception {
-        String helloURI = BASE_URI.toString() + "rest/hello";
+        String helloURI = getUri();
 
         OtterAppFactory appFactory = new OtterAppFactory();
         ObjectMapper om = appFactory.objectMapper();
@@ -76,7 +80,7 @@ public class HelloLegacyRestResourceTest {
 
     @Test
     public void getWhenWrongContentTypeShouldReturn415() throws Exception {
-        String helloURI = BASE_URI.toString() + "rest/hello";
+        String helloURI = getUri();
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(helloURI)

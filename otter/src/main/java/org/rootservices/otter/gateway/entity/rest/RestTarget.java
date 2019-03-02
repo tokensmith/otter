@@ -1,10 +1,11 @@
-package org.rootservices.otter.gateway.entity;
+package org.rootservices.otter.gateway.entity.rest;
 
 
 import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.gateway.entity.Label;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.between.RestBetween;
 import org.rootservices.otter.translatable.Translatable;
@@ -22,9 +23,10 @@ public class RestTarget<U extends DefaultUser, P> {
     private List<RestBetween<U>> before;
     private List<RestBetween<U>> after;
     private Map<StatusCode, RestErrorTarget<U, P>> errorTargets;
+    private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors;
     private String groupName;
 
-    public RestTarget(List<Method> methods, String regex, RestResource<U, P> restResource, Class<P> payload, Map<Method, List<MimeType>> contentTypes, List<Label> labels, List<RestBetween<U>> before, List<RestBetween<U>> after, Map<StatusCode, RestErrorTarget<U, P>> errorTargets, String groupName) {
+    public RestTarget(List<Method> methods, String regex, RestResource<U, P> restResource, Class<P> payload, Map<Method, List<MimeType>> contentTypes, List<Label> labels, List<RestBetween<U>> before, List<RestBetween<U>> after, Map<StatusCode, RestErrorTarget<U, P>> errorTargets, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, String groupName) {
         this.methods = methods;
         this.regex = regex;
         this.restResource = restResource;
@@ -34,6 +36,7 @@ public class RestTarget<U extends DefaultUser, P> {
         this.before = before;
         this.after = after;
         this.errorTargets = errorTargets;
+        this.restErrors = restErrors;
         this.groupName = groupName;
     }
 
@@ -107,6 +110,14 @@ public class RestTarget<U extends DefaultUser, P> {
 
     public void setErrorTargets(Map<StatusCode, RestErrorTarget<U, P>> errorTargets) {
         this.errorTargets = errorTargets;
+    }
+
+    public Map<StatusCode, RestError<U, ? extends Translatable>> getRestErrors() {
+        return restErrors;
+    }
+
+    public void setRestErrors(Map<StatusCode, RestError<U, ? extends Translatable>> restErrors) {
+        this.restErrors = restErrors;
     }
 
     public String getGroupName() {

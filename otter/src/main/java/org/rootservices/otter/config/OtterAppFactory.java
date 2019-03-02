@@ -14,7 +14,7 @@ import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.gateway.LocationTranslatorFactory;
 import org.rootservices.otter.gateway.RestLocationTranslatorFactory;
 import org.rootservices.otter.gateway.entity.Group;
-import org.rootservices.otter.gateway.entity.RestGroup;
+import org.rootservices.otter.gateway.entity.rest.RestGroup;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
@@ -33,7 +33,6 @@ import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 import org.rootservices.otter.server.path.CompiledClassPath;
 import org.rootservices.otter.server.path.WebAppPath;
-import org.rootservices.otter.translatable.Translatable;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.MimeTypeTranslator;
 
@@ -143,7 +142,8 @@ public class OtterAppFactory {
                     castedGroup.getName(),
                     restLocationTranslatorFactory.make(
                             castedGroup.getAuthRequired(),
-                            castedGroup.getAuthOptional()
+                            castedGroup.getAuthOptional(),
+                            castedGroup.getRestErrors()
                     )
             );
         }

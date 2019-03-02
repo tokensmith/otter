@@ -1,13 +1,15 @@
 package org.rootservices.otter.gateway.builder;
 
 
+import org.rootservices.otter.controller.RestErrorResource;
 import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.gateway.entity.Label;
-import org.rootservices.otter.gateway.entity.RestErrorTarget;
-import org.rootservices.otter.gateway.entity.RestTarget;
+import org.rootservices.otter.gateway.entity.rest.RestError;
+import org.rootservices.otter.gateway.entity.rest.RestErrorTarget;
+import org.rootservices.otter.gateway.entity.rest.RestTarget;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.between.RestBetween;
 import org.rootservices.otter.translatable.Translatable;
@@ -28,6 +30,7 @@ public class RestTargetBuilder<U extends DefaultUser, P> {
     private List<RestBetween<U>> before = new ArrayList<>();
     private List<RestBetween<U>> after = new ArrayList<>();
     private Map<StatusCode, RestErrorTarget<U, P>> errorTargets = new HashMap<>();
+    private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors = new HashMap<>();
     private String groupName;
 
     public RestTargetBuilder<U, P> method(Method method) {
@@ -87,12 +90,18 @@ public class RestTargetBuilder<U extends DefaultUser, P> {
         return this;
     }
 
+    public <E extends Translatable> RestTargetBuilder<U, P> errorRoute(StatusCode statusCode, RestErrorResource<U, E> restErrorResource, Class<E> errorPayload) {
+        RestError<U, E> restError = new RestError<>(errorPayload, restErrorResource);
+        restErrors.put(statusCode, restError);
+        return this;
+    }
+
     public RestTargetBuilder<U, P> groupName(String groupName) {
         this.groupName = groupName;
         return this;
     }
 
     public RestTarget<U, P> build() {
-        return new RestTarget<>(methods, regex, restResource, payload, contentTypes, labels, before, after, errorTargets, groupName);
+        return new RestTarget<>(methods, regex, restResource, payload, contentTypes, labels, before, after, errorTargets, restErrors, groupName);
     }
 }

@@ -110,6 +110,11 @@ public class JsonTranslatorTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getCause(), is(instanceOf(DuplicateKeyException.class)));
+        assertThat(actual.getReason(), is(Reason.DUPLICATE_KEY));
+        assertThat(actual.getKey(), is(notNullValue()));
+        assertThat(actual.getKey().isPresent(), is(true));
+        assertThat(actual.getKey().get(), is("integer"));
+
         DuplicateKeyException actualCause = (DuplicateKeyException) actual.getCause();
         assertThat(actualCause.getKey(), is("integer"));
     }

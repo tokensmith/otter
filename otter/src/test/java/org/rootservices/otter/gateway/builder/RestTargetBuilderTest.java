@@ -6,11 +6,15 @@ import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.gateway.entity.*;
+import org.rootservices.otter.gateway.entity.rest.RestErrorTarget;
+import org.rootservices.otter.gateway.entity.rest.RestGroup;
+import org.rootservices.otter.gateway.entity.rest.RestTarget;
 import org.rootservices.otter.router.entity.Method;
 
 import java.util.ArrayList;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.*;
 
 public class RestTargetBuilderTest {
@@ -30,6 +34,28 @@ public class RestTargetBuilderTest {
         assertThat(actual.getLabels().size(), is(0));
         assertThat(actual.getBefore().size(), is(0));
         assertThat(actual.getAfter().size(), is(0));
+    }
+
+    @Test
+    public void buildShouldHaveRestErrors() {
+
+        ClientErrorRestResource errorRestResource = new ClientErrorRestResource();
+
+        RestTargetBuilder<DummyUser, DummyPayload> subject = subject();
+        RestTarget<DummyUser, DummyPayload> actual = subject
+                .errorRoute(StatusCode.BAD_REQUEST, errorRestResource, DummyErrorPayload.class)
+                .build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getRestErrors(), is(notNullValue()));
+        assertThat(actual.getRestErrors().size(), is(1));
+
+        assertThat(actual.getRestErrors().get(StatusCode.BAD_REQUEST), is(notNullValue()));
+
+        Class<DummyErrorPayload> payload = (Class<DummyErrorPayload>) actual.getRestErrors().get(StatusCode.BAD_REQUEST).getPayload();
+        assertThat(payload, is(notNullValue()));
+
+        assertThat(actual.getRestErrors().get(StatusCode.BAD_REQUEST).getRestErrorResource(), is(errorRestResource));
     }
 
     @Test

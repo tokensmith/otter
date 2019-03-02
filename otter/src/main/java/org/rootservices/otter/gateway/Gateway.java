@@ -8,8 +8,7 @@ import org.rootservices.otter.dispatch.RouteRun;
 import org.rootservices.otter.dispatch.RouteRunner;
 import org.rootservices.otter.dispatch.translator.AnswerTranslator;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;
-import org.rootservices.otter.gateway.entity.Group;
-import org.rootservices.otter.gateway.entity.RestTarget;
+import org.rootservices.otter.gateway.entity.rest.RestTarget;
 import org.rootservices.otter.gateway.entity.Target;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
 import org.rootservices.otter.gateway.translator.RestLocationTranslator;
@@ -17,7 +16,6 @@ import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
-import org.rootservices.otter.translatable.Translatable;
 
 
 import java.util.Map;

@@ -1,4 +1,4 @@
-package org.rootservices.otter.gateway.entity;
+package org.rootservices.otter.gateway.entity.rest;
 
 import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.DefaultUser;

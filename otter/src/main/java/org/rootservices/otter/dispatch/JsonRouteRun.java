@@ -11,10 +11,10 @@ import org.rootservices.otter.controller.entity.request.RestRequest;
 import org.rootservices.otter.controller.entity.response.RestResponse;
 import org.rootservices.otter.dispatch.entity.RestBtwnRequest;
 import org.rootservices.otter.dispatch.entity.RestBtwnResponse;
-import org.rootservices.otter.dispatch.translator.rest.RestBtwnRequestTranslator;
-import org.rootservices.otter.dispatch.translator.rest.RestBtwnResponseTranslator;
-import org.rootservices.otter.dispatch.translator.rest.RestRequestTranslator;
-import org.rootservices.otter.dispatch.translator.rest.RestResponseTranslator;
+import org.rootservices.otter.dispatch.entity.RestErrorRequest;
+import org.rootservices.otter.dispatch.entity.RestErrorResponse;
+import org.rootservices.otter.dispatch.translator.RestErrorHandler;
+import org.rootservices.otter.dispatch.translator.rest.*;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.RestRoute;
 import org.rootservices.otter.router.entity.between.RestBetween;
@@ -24,9 +24,9 @@ import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.exception.*;
 
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
@@ -36,44 +36,69 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
     private RestRequestTranslator<U, P> restRequestTranslator;
     private RestBtwnRequestTranslator<U, P> restBtwnRequestTranslator;
     private RestBtwnResponseTranslator<P> restBtwnResponseTranslator;
-    protected JsonTranslator<P> jsonTranslator;
+    private JsonTranslator<P> jsonTranslator;
 
-    public JsonRouteRun(RestRoute<U, P> restRoute, RestResponseTranslator<P> restResponseTranslator, RestRequestTranslator<U, P> restRequestTranslator, RestBtwnRequestTranslator<U, P> restBtwnRequestTranslator, RestBtwnResponseTranslator<P> restBtwnResponseTranslator, JsonTranslator<P> jsonTranslator) {
+    // error handling dependencies
+    private Map<StatusCode, RestErrorHandler<U>> errorHandlers;
+    private RestErrorRequestTranslator<U> errorRequestTranslator;
+    private RestErrorResponseTranslator errorResponseTranslator;
+
+    // default error messaging.
+    private static final String DUPLICATE_KEY_DESC = "%s was repeated";
+    private static final String INVALID_VALUE_DESC = "%s was invalid";
+    private static final String UNKNOWN_KEY_DESC = "%s was not expected";
+
+    public JsonRouteRun(RestRoute<U, P> restRoute, RestResponseTranslator<P> restResponseTranslator, RestRequestTranslator<U, P> restRequestTranslator, RestBtwnRequestTranslator<U, P> restBtwnRequestTranslator, RestBtwnResponseTranslator<P> restBtwnResponseTranslator, JsonTranslator<P> jsonTranslator, Map<StatusCode, RestErrorHandler<U>> errorHandlers, RestErrorRequestTranslator<U> errorRequestTranslator, RestErrorResponseTranslator errorResponseTranslator) {
         this.restRoute = restRoute;
         this.restResponseTranslator = restResponseTranslator;
         this.restRequestTranslator = restRequestTranslator;
         this.restBtwnRequestTranslator = restBtwnRequestTranslator;
         this.restBtwnResponseTranslator = restBtwnResponseTranslator;
         this.jsonTranslator = jsonTranslator;
+
+        // error handling dependencies
+        this.errorHandlers = errorHandlers;
+        this.errorRequestTranslator = errorRequestTranslator;
+        this.errorResponseTranslator = errorResponseTranslator;
     }
 
     @Override
     public Answer run(Ask ask, Answer answer) throws HaltException {
 
-        RestBtwnRequest<U> btwnRequest = restBtwnRequestTranslator.to(ask);
-        RestBtwnResponse btwnResponse = restBtwnResponseTranslator.to(answer);
-
-        // request entity marshalling.
         Optional<P> entity;
         try {
             entity = makeEntity(ask.getBody());
-        } catch (HaltException e) {
-            // Error Handling: 400, maybe push this to engine by throwing an exception?
-            Optional<byte[]> errorPayload = makeError((DeserializationException) e.getCause());
-            btwnResponse.setStatusCode(StatusCode.BAD_REQUEST);
-
-            answer = restBtwnResponseTranslator.from(answer, btwnResponse);
-            answer.setPayload(errorPayload);
-            throw e;
+        } catch (DeserializationException e) {
+            RestErrorHandler<U> errorHandler = errorHandlers.get(StatusCode.BAD_REQUEST);
+            if (errorHandler != null) {
+                RestErrorRequest<U> errorReq = errorRequestTranslator.to(ask);
+                RestErrorResponse errorResp = errorResponseTranslator.to(answer);
+                answer = errorHandler.run(errorReq, errorResp, e);
+                return answer;
+            } else {
+                Optional<byte[]> errorPayload = makeError((DeserializationException) e);
+                answer.setStatusCode(StatusCode.BAD_REQUEST);
+                answer.setPayload(errorPayload);
+                throw new HaltException(e.getMessage(), e);
+            }
         }
+
+        RestBtwnRequest<U> btwnRequest = restBtwnRequestTranslator.to(ask);
+        RestBtwnResponse btwnResponse = restBtwnResponseTranslator.to(answer);
 
         // send it off to betweens and rest resource
         RestResponse<P> runResponse;
         try {
             runResponse = executeResourceMethod(restRoute, btwnRequest, btwnResponse, entity);
+        } catch (DeserializationException e) {
+            // TODO: error handling - should be a server error.
+            // this was caused by marshalling the entity after processing.
+            throw new HaltException(e.getMessage(), e);
         } catch (HaltException e) {
             // btwnResponse may have been updated in a between. need to merge it with answer.
             answer = restBtwnResponseTranslator.from(answer, btwnResponse);
+
+            // TODO: error handling - should attempt to handle.
             throw e;
         }
 
@@ -85,15 +110,14 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
         return answer;
     }
 
-    protected Optional<P> makeEntity(Optional<byte[]> body) throws HaltException {
+    protected Optional<P> makeEntity(Optional<byte[]> body) throws DeserializationException {
         Optional<P> entity = Optional.empty();
 
         if (body.isPresent()) {
             try {
                 entity = Optional.of(jsonTranslator.from(body.get()));
             } catch (DeserializationException e) {
-                logger.debug(e.getMessage(), e);
-                throw new HaltException(e.getMessage(), e);
+                throw e;
             }
         }
         return entity;
@@ -102,7 +126,18 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
     protected Optional<byte[]> makeError(DeserializationException e) {
 
         Optional<byte[]> payload = Optional.empty();
-        ErrorPayload errorPayload = new ErrorPayload(e.getMessage(), e.getDescription());
+        String description = "Unknown error occurred";
+        if (Reason.DUPLICATE_KEY.equals(e.getReason())) {
+            description = String.format(DUPLICATE_KEY_DESC, e.getKey().get());
+        } else if (Reason.INVALID_VALUE.equals(e.getReason())) {
+            description = String.format(INVALID_VALUE_DESC, e.getKey().get());
+        } else if (Reason.UNKNOWN_KEY.equals(e.getReason())) {
+            description = String.format(UNKNOWN_KEY_DESC, e.getKey().get());
+        } else if (Reason.INVALID_PAYLOAD.equals(e.getReason())) {
+            description = "Payload invalid";
+        }
+
+        ErrorPayload errorPayload = new ErrorPayload(e.getMessage(), description);
         try {
             byte[] out = jsonTranslator.to(errorPayload);
             payload = Optional.of(out);
@@ -112,7 +147,7 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
         return payload;
     }
 
-    protected RestResponse<P> executeResourceMethod(RestRoute<U, P> route, RestBtwnRequest<U> btwnRequest, RestBtwnResponse btwnResponse, Optional<P> entity) throws HaltException {
+    protected RestResponse<P> executeResourceMethod(RestRoute<U, P> route, RestBtwnRequest<U> btwnRequest, RestBtwnResponse btwnResponse, Optional<P> entity) throws HaltException, DeserializationException {
 
         RestResource<U, P> resource = route.getRestResource();
         RestRequest<U, P> requestForResource;
@@ -163,7 +198,14 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
         response = restResponseTranslator.to(btwnResponseForAfter);
 
         if (isPayloadDirty(resourceResponsePayload, btwnResponseForAfter.getPayload())) {
-            Optional<P> responseEntity = makeEntity(btwnResponseForAfter.getPayload());
+            Optional<P> responseEntity = null;
+
+            try {
+                responseEntity = makeEntity(btwnResponseForAfter.getPayload());
+            } catch (DeserializationException e) {
+                throw e;
+            }
+
             response.setPayload(responseEntity);
         } else {
             response.setPayload(resourceResponse.getPayload());

@@ -1,20 +1,23 @@
 package org.rootservices.otter.gateway.translator;
 
 import helper.FixtureFactory;
-import helper.entity.DummyPayload;
-import helper.entity.DummyUser;
+import helper.entity.*;
 import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.dispatch.JsonRouteRun;
-import org.rootservices.otter.gateway.entity.RestTarget;
+import org.rootservices.otter.gateway.entity.rest.RestError;
+import org.rootservices.otter.gateway.entity.rest.RestTarget;
 import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.factory.RestBetweenFlyweight;
 import org.rootservices.otter.security.builder.entity.RestBetweens;
+import org.rootservices.otter.translatable.Translatable;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -31,8 +34,103 @@ public class RestLocationTranslatorTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        subject = new RestLocationTranslator<DummyUser, DummyPayload>(mockRestBetweenFlyweight);
+        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> restErrors = new HashMap<>();
+        restErrors.put(StatusCode.BAD_REQUEST, new RestError<>(DummyErrorPayload.class, new ClientErrorRestResource()));
+
+        subject = new RestLocationTranslator<DummyUser, DummyPayload>(mockRestBetweenFlyweight, restErrors);
     }
+
+    @Test
+    public void mergeRestErrorsPreferRight() {
+        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> left = new HashMap<>();
+        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> right = new HashMap<>();
+
+        ClientErrorRestResource leftClientError = new ClientErrorRestResource();
+        RestError<DummyUser, DummyErrorPayload> leftRestError = new RestError<>(DummyErrorPayload.class, leftClientError);
+
+        left.put(StatusCode.BAD_REQUEST, leftRestError);
+
+        ClientErrorRestResource rightClientError = new ClientErrorRestResource();
+        RestError<DummyUser, DummyErrorPayload> rightRestError = new RestError<>(DummyErrorPayload.class, rightClientError);
+
+        right.put(StatusCode.BAD_REQUEST, rightRestError);
+
+        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> actual = subject.mergeRestErrors(left, right);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.size(), is(1));
+        assertThat(actual.get(StatusCode.BAD_REQUEST), is(rightRestError));
+    }
+
+
+    @Test
+    public void mergeRestErrorsMergesNonMatching() {
+        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> left = new HashMap<>();
+        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> right = new HashMap<>();
+
+        ClientErrorRestResource leftClientError = new ClientErrorRestResource();
+        RestError<DummyUser, DummyErrorPayload> leftRestError = new RestError<>(DummyErrorPayload.class, leftClientError);
+
+        left.put(StatusCode.BAD_REQUEST, leftRestError);
+
+        ServerErrorRestResource rightServerError = new ServerErrorRestResource();
+        RestError<DummyUser, DummyErrorPayload> rightServerRestError = new RestError<>(DummyErrorPayload.class, rightServerError);
+
+        right.put(StatusCode.SERVER_ERROR, rightServerRestError);
+
+        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> actual = subject.mergeRestErrors(left, right);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.size(), is(2));
+        assertThat(actual.get(StatusCode.SERVER_ERROR), is(rightServerRestError));
+        assertThat(actual.get(StatusCode.BAD_REQUEST), is(leftRestError));
+    }
+
+    @Test
+    public void mergeRestErrorsLeftEmpty() {
+        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> left = new HashMap<>();
+        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> right = new HashMap<>();
+
+        ServerErrorRestResource rightServerError = new ServerErrorRestResource();
+        RestError<DummyUser, DummyErrorPayload> rightServerRestError = new RestError<>(DummyErrorPayload.class, rightServerError);
+
+        right.put(StatusCode.SERVER_ERROR, rightServerRestError);
+
+        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> actual = subject.mergeRestErrors(left, right);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.size(), is(1));
+        assertThat(actual.get(StatusCode.SERVER_ERROR), is(rightServerRestError));
+    }
+
+    @Test
+    public void mergeRestErrorsRightEmpty() {
+        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> left = new HashMap<>();
+        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> right = new HashMap<>();
+
+        ClientErrorRestResource leftClientError = new ClientErrorRestResource();
+        RestError<DummyUser, DummyErrorPayload> leftRestError = new RestError<>(DummyErrorPayload.class, leftClientError);
+
+        left.put(StatusCode.BAD_REQUEST, leftRestError);
+
+        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> actual = subject.mergeRestErrors(left, right);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.size(), is(1));
+        assertThat(actual.get(StatusCode.BAD_REQUEST), is(leftRestError));
+    }
+
+    @Test
+    public void mergeRestErrorsLeftAndRightEmpty() {
+        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> left = new HashMap<>();
+        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> right = new HashMap<>();
+
+        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> actual = subject.mergeRestErrors(left, right);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.size(), is(0));
+    }
+
 
     @SuppressWarnings("unchecked")
     @Test

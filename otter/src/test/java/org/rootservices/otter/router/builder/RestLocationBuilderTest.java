@@ -1,18 +1,19 @@
 package org.rootservices.otter.router.builder;
 
 import helper.FixtureFactory;
-import helper.entity.DummyPayload;
-import helper.entity.DummyUser;
-import helper.entity.OkRestResource;
+import helper.entity.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.gateway.entity.rest.RestError;
 import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.RestRoute;
+import org.rootservices.otter.translatable.Translatable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -147,4 +148,29 @@ public class RestLocationBuilderTest {
         assertThat(actual.getErrorRouteRunners().size(), is(3));
     }
 
+    @Test
+    public void errorHandlersShouldBeOk() {
+        String regex = "/foo/(.*)";
+        List<MimeType> contentTypes = new ArrayList<>();
+        OkRestResource resource = new OkRestResource();
+
+        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> errors = new HashMap<>();
+        RestError<DummyUser, ? extends Translatable> restError = new RestError<>(
+                DummyErrorPayload.class, new ClientErrorRestResource()
+        );
+        errors.put(StatusCode.BAD_REQUEST, restError);
+
+        Location actual = subject
+            .payload(DummyPayload.class)
+            .path(regex)
+            .contentTypes(contentTypes)
+            .restResource(resource)
+            .restErrorResources(errors)
+            .build();
+
+        // no interface exposed to ensure it was built accurately.
+        // this is good enough for now
+        assertThat(actual, is(notNullValue()));
+
+    }
 }

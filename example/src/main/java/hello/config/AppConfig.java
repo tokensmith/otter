@@ -2,12 +2,16 @@ package hello.config;
 
 
 import hello.controller.*;
-import hello.controller.api.HelloLegacyRestResource;
-import hello.controller.api.HelloRestResource;
+import hello.controller.api.v1.HelloLegacyRestResource;
+
 import hello.controller.api.between.AuthLegacyRestBetween;
 import hello.controller.api.between.AuthRestBetween;
 import hello.controller.api.model.ApiSession;
 import hello.controller.api.model.ApiUser;
+
+import hello.controller.api.v2.HelloRestResource;
+import hello.controller.api.v3.handler.BadRequestHandler;
+import hello.controller.api.v3.model.BadRequestPayload;
 import hello.model.Hello;
 import hello.security.TokenSession;
 import hello.security.User;
@@ -21,6 +25,8 @@ import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
 import org.rootservices.otter.gateway.builder.*;
 import org.rootservices.otter.gateway.entity.*;
+import org.rootservices.otter.gateway.entity.rest.RestGroup;
+import org.rootservices.otter.gateway.entity.rest.RestTarget;
 import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
@@ -31,8 +37,9 @@ import java.util.List;
 
 
 public class AppConfig implements Configure {
-    public static final String API_GROUP = "API";
+    public static final String API_GROUP = "API_V1";
     public static final String API_GROUP_V2 = "API_V2";
+    public static final String API_GROUP_V3 = "API_V3";
     public static final String WEB_SITE_GROUP = "WebSite";
     private AppFactory appFactory;
 
@@ -80,12 +87,25 @@ public class AppConfig implements Configure {
         List<RestGroup<? extends DefaultUser>> restGroups = new ArrayList<>();
 
         AuthRestBetween authRestBetween = new AuthRestBetween();
+
+        // uses default bad request handling.
         RestGroup<ApiUser> apiGroupV2 = new RestGroupBuilder<ApiUser>()
                 .name(API_GROUP_V2)
                 .authRequired(authRestBetween)
                 .build();
 
         restGroups.add(apiGroupV2);
+
+
+        // has overrides for bad request handling.
+        BadRequestHandler badRequestHandler = new BadRequestHandler();
+        RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
+                .name(API_GROUP_V3)
+                .authRequired(authRestBetween)
+                .errorRoute(StatusCode.BAD_REQUEST, badRequestHandler, BadRequestPayload.class)
+                .build();
+
+        restGroups.add(apiGroupV3);
 
         return restGroups;
     }
@@ -108,6 +128,7 @@ public class AppConfig implements Configure {
 
         gateway.add(helloAPI);
 
+        // resource for v2 api
         RestTarget<ApiUser, Hello> helloApiV2 = new RestTargetBuilder<ApiUser, Hello>()
                 .method(Method.GET)
                 .method(Method.POST)
@@ -120,6 +141,21 @@ public class AppConfig implements Configure {
                 .build();
 
         gateway.add(helloApiV2);
+
+        // resource for v3 api
+        hello.controller.api.v3.HelloRestResource helloRestResourceV3 = new hello.controller.api.v3.HelloRestResource();
+        RestTarget<ApiUser, Hello> helloApiV3 = new RestTargetBuilder<ApiUser, Hello>()
+                .method(Method.GET)
+                .method(Method.POST)
+                .restResource(helloRestResourceV3)
+                .regex(helloRestResourceV3.URL)
+                .label(Label.AUTH_REQUIRED)
+                .contentType(json)
+                .groupName(API_GROUP_V3)
+                .payload(Hello.class)
+                .build();
+
+        gateway.add(helloApiV3);
 
         // does not require content-type
         Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()

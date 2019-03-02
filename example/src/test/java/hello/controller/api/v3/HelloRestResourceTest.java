@@ -1,7 +1,8 @@
-package hello.controller;
+package hello.controller.api.v3;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hello.controller.api.v3.model.BadRequestPayload;
 import hello.model.Hello;
 import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.Response;
@@ -15,8 +16,7 @@ import suite.ServletContainerTest;
 
 import java.net.URI;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 @Category(ServletContainerTest.class)
@@ -29,7 +29,7 @@ public class HelloRestResourceTest {
     }
 
     public String getUri() {
-        return BASE_URI.toString() + "rest/v2/hello";
+        return BASE_URI.toString() + "rest/v3/hello";
     }
 
     @Test
@@ -79,8 +79,31 @@ public class HelloRestResourceTest {
 
 
     @Test
+    public void postWhenBodyEmptyShouldReturn400() throws Exception {
+        String helloURI = getUri();
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .preparePost(helloURI)
+                .addHeader("Content-Type", "application/json; charset=utf-8;")
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(StatusCode.BAD_REQUEST.getCode()));
+
+        OtterAppFactory appFactory = new OtterAppFactory();
+        ObjectMapper om = appFactory.objectMapper();
+        BadRequestPayload actual = om.readValue(response.getResponseBody(), BadRequestPayload.class);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getMessage(), is("bad request"));
+        assertThat(actual.getKey(), is(nullValue()));
+        assertThat(actual.getReason(), is("The payload could not be parsed."));
+    }
+
+    @Test
     public void getWhenWrongContentTypeShouldReturn415() throws Exception {
-        String helloURI = BASE_URI.toString() + "rest/hello";
+        String helloURI = getUri();
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(helloURI)

@@ -1,4 +1,4 @@
-package hello.controller.api;
+package hello.controller.api.v3;
 
 import hello.controller.api.model.ApiUser;
 import hello.model.Hello;
@@ -7,11 +7,10 @@ import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.request.RestRequest;
 import org.rootservices.otter.controller.entity.response.RestResponse;
 
-
 import java.util.Optional;
 
 public class HelloRestResource extends RestResource<ApiUser, Hello> {
-    public static String URL = "/rest/v2/hello";
+    public static String URL = "/rest/v3/hello";
 
     @Override
     public RestResponse<Hello> get(RestRequest<ApiUser, Hello> request, RestResponse<Hello> response) {
