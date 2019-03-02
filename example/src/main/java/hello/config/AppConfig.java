@@ -10,8 +10,12 @@ import hello.controller.api.model.ApiSession;
 import hello.controller.api.model.ApiUser;
 
 import hello.controller.api.v2.HelloRestResource;
+import hello.controller.api.v3.BrokenRestResource;
 import hello.controller.api.v3.handler.BadRequestHandler;
+import hello.controller.api.v3.handler.ServerErrorHandler;
 import hello.controller.api.v3.model.BadRequestPayload;
+import hello.controller.api.v3.model.BrokenPayload;
+import hello.controller.api.v3.model.ServerErrorPayload;
 import hello.model.Hello;
 import hello.security.TokenSession;
 import hello.security.User;
@@ -97,12 +101,14 @@ public class AppConfig implements Configure {
         restGroups.add(apiGroupV2);
 
 
-        // has overrides for bad request handling.
+        // has overrides for error handling.
         BadRequestHandler badRequestHandler = new BadRequestHandler();
+        ServerErrorHandler serverErrorHandler = new ServerErrorHandler();
         RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
                 .name(API_GROUP_V3)
                 .authRequired(authRestBetween)
                 .errorRoute(StatusCode.BAD_REQUEST, badRequestHandler, BadRequestPayload.class)
+                .errorRoute(StatusCode.SERVER_ERROR, serverErrorHandler, ServerErrorPayload.class)
                 .build();
 
         restGroups.add(apiGroupV3);
@@ -156,6 +162,26 @@ public class AppConfig implements Configure {
                 .build();
 
         gateway.add(helloApiV3);
+
+        // this will always throw a runtime exception and force the error handler.
+        BrokenRestResource brokenRestResource = new BrokenRestResource();
+        RestTarget<ApiUser, BrokenPayload> brokenApiV3 = new RestTargetBuilder<ApiUser, BrokenPayload>()
+                .method(Method.GET)
+                .method(Method.POST)
+                .method(Method.PATCH)
+                .method(Method.PUT)
+                .method(Method.DELETE)
+                .restResource(brokenRestResource)
+                .regex(brokenRestResource.URL)
+                .label(Label.AUTH_REQUIRED)
+                .contentType(json)
+                .groupName(API_GROUP_V3)
+                .payload(BrokenPayload.class)
+                .build();
+
+        gateway.add(brokenApiV3);
+
+
 
         // does not require content-type
         Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()

@@ -13,6 +13,9 @@ import org.rootservices.otter.dispatch.entity.RestBtwnRequest;
 import org.rootservices.otter.dispatch.entity.RestBtwnResponse;
 import org.rootservices.otter.dispatch.entity.RestErrorRequest;
 import org.rootservices.otter.dispatch.entity.RestErrorResponse;
+import org.rootservices.otter.dispatch.exception.ClientException;
+import org.rootservices.otter.dispatch.exception.ServerException;
+import org.rootservices.otter.dispatch.exception.WrongTypeException;
 import org.rootservices.otter.dispatch.translator.RestErrorHandler;
 import org.rootservices.otter.dispatch.translator.rest.*;
 import org.rootservices.otter.router.entity.Method;
@@ -65,22 +68,37 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
     @Override
     public Answer run(Ask ask, Answer answer) throws HaltException {
 
+        try {
+            answer = process(ask, answer);
+        } catch (ClientException e) {
+            Optional<Answer> answerFromHandler = handle(StatusCode.BAD_REQUEST, e, ask, answer);
+            if (!answerFromHandler.isPresent()) {
+                // default 400 handling.
+                Optional<byte[]> errorPayload = toDefaultBadRequest(e);
+                answer.setStatusCode(StatusCode.BAD_REQUEST);
+                answer.setPayload(errorPayload);
+                throw new HaltException(e.getMessage(), e);
+            } else {
+                return answerFromHandler.get();
+            }
+        } catch (ServerException | RuntimeException e) {
+            Optional<Answer> answerFromHandler = handle(StatusCode.SERVER_ERROR, e, ask, answer);
+            if ( !answerFromHandler.isPresent() ) {
+                throw new HaltException(e.getMessage(), e);
+            } else {
+                return answerFromHandler.get();
+            }
+        }
+        return answer;
+    }
+
+    public Answer process(Ask ask, Answer answer) throws ClientException, ServerException, HaltException {
+
         Optional<P> entity;
         try {
             entity = makeEntity(ask.getBody());
         } catch (DeserializationException e) {
-            RestErrorHandler<U> errorHandler = errorHandlers.get(StatusCode.BAD_REQUEST);
-            if (errorHandler != null) {
-                RestErrorRequest<U> errorReq = errorRequestTranslator.to(ask);
-                RestErrorResponse errorResp = errorResponseTranslator.to(answer);
-                answer = errorHandler.run(errorReq, errorResp, e);
-                return answer;
-            } else {
-                Optional<byte[]> errorPayload = makeError((DeserializationException) e);
-                answer.setStatusCode(StatusCode.BAD_REQUEST);
-                answer.setPayload(errorPayload);
-                throw new HaltException(e.getMessage(), e);
-            }
+            throw new ClientException("Could not serialize request body", e);
         }
 
         RestBtwnRequest<U> btwnRequest = restBtwnRequestTranslator.to(ask);
@@ -90,15 +108,11 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
         RestResponse<P> runResponse;
         try {
             runResponse = executeResourceMethod(restRoute, btwnRequest, btwnResponse, entity);
-        } catch (DeserializationException e) {
-            // TODO: error handling - should be a server error.
-            // this was caused by marshalling the entity after processing.
-            throw new HaltException(e.getMessage(), e);
+        } catch (WrongTypeException e) {
+            throw new ServerException("", e);
         } catch (HaltException e) {
             // btwnResponse may have been updated in a between. need to merge it with answer.
             answer = restBtwnResponseTranslator.from(answer, btwnResponse);
-
-            // TODO: error handling - should attempt to handle.
             throw e;
         }
 
@@ -123,31 +137,44 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
         return entity;
     }
 
-    protected Optional<byte[]> makeError(DeserializationException e) {
+    protected Optional<Answer> handle(StatusCode statusCode, Throwable cause, Ask ask, Answer answer) {
+        Optional<Answer> answerFromHandler = Optional.empty();
+        RestErrorHandler<U> errorHandler = errorHandlers.get(statusCode);
+        if (errorHandler != null) {
+            RestErrorRequest<U> errorReq = errorRequestTranslator.to(ask);
+            RestErrorResponse errorResp = errorResponseTranslator.to(answer);
+            answerFromHandler = Optional.of(errorHandler.run(errorReq, errorResp, cause));
+        }
 
-        Optional<byte[]> payload = Optional.empty();
+        return answerFromHandler;
+    }
+
+    protected Optional<byte[]> toDefaultBadRequest(ClientException from) {
+        DeserializationException cause = (DeserializationException) from.getCause();
+
+        Optional<byte[]> to = Optional.empty();
         String description = "Unknown error occurred";
-        if (Reason.DUPLICATE_KEY.equals(e.getReason())) {
-            description = String.format(DUPLICATE_KEY_DESC, e.getKey().get());
-        } else if (Reason.INVALID_VALUE.equals(e.getReason())) {
-            description = String.format(INVALID_VALUE_DESC, e.getKey().get());
-        } else if (Reason.UNKNOWN_KEY.equals(e.getReason())) {
-            description = String.format(UNKNOWN_KEY_DESC, e.getKey().get());
-        } else if (Reason.INVALID_PAYLOAD.equals(e.getReason())) {
+        if (Reason.DUPLICATE_KEY.equals(cause.getReason())) {
+            description = String.format(DUPLICATE_KEY_DESC, cause.getKey().get());
+        } else if (Reason.INVALID_VALUE.equals(cause.getReason())) {
+            description = String.format(INVALID_VALUE_DESC, cause.getKey().get());
+        } else if (Reason.UNKNOWN_KEY.equals(cause.getReason())) {
+            description = String.format(UNKNOWN_KEY_DESC, cause.getKey().get());
+        } else if (Reason.INVALID_PAYLOAD.equals(cause.getReason())) {
             description = "Payload invalid";
         }
 
-        ErrorPayload errorPayload = new ErrorPayload(e.getMessage(), description);
+        ErrorPayload errorPayload = new ErrorPayload(cause.getMessage(), description);
         try {
             byte[] out = jsonTranslator.to(errorPayload);
-            payload = Optional.of(out);
+            to = Optional.of(out);
         } catch (ToJsonException e1) {
             logger.error(e1.getMessage(), e1);
         }
-        return payload;
+        return to;
     }
 
-    protected RestResponse<P> executeResourceMethod(RestRoute<U, P> route, RestBtwnRequest<U> btwnRequest, RestBtwnResponse btwnResponse, Optional<P> entity) throws HaltException, DeserializationException {
+    protected RestResponse<P> executeResourceMethod(RestRoute<U, P> route, RestBtwnRequest<U> btwnRequest, RestBtwnResponse btwnResponse, Optional<P> entity) throws HaltException, WrongTypeException {
 
         RestResource<U, P> resource = route.getRestResource();
         RestRequest<U, P> requestForResource;
@@ -198,12 +225,15 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
         response = restResponseTranslator.to(btwnResponseForAfter);
 
         if (isPayloadDirty(resourceResponsePayload, btwnResponseForAfter.getPayload())) {
-            Optional<P> responseEntity = null;
+            Optional<P> responseEntity;
 
             try {
                 responseEntity = makeEntity(btwnResponseForAfter.getPayload());
             } catch (DeserializationException e) {
-                throw e;
+                throw new WrongTypeException(
+                    "Could not marshal payload assigned in after between to the desired type",
+                    e
+                );
             }
 
             response.setPayload(responseEntity);

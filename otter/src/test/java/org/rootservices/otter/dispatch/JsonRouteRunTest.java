@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.dispatch.exception.ClientException;
 import org.rootservices.otter.dispatch.translator.rest.*;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.RestRoute;
@@ -132,7 +133,8 @@ public class JsonRouteRunTest {
         }
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getCause(), is(instanceOf(DeserializationException.class)));
+        assertThat(actual.getCause(), is(instanceOf(ClientException.class)));
+        assertThat(actual.getCause().getCause(), is(instanceOf(DeserializationException.class)));
         assertThat(answer.getStatusCode(), is(StatusCode.BAD_REQUEST));
         assertThat(answer.getPayload().isPresent(), is(true));
 

@@ -4,6 +4,7 @@ package suite;
 import hello.controller.*;
 import hello.controller.api.v1.HelloLegacyRestResourceTest;
 import hello.controller.api.v2.HelloRestResourceTest;
+import hello.controller.api.v3.BrokenRestResourceTest;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 import org.junit.AfterClass;
@@ -25,6 +26,7 @@ import static org.asynchttpclient.Dsl.asyncHttpClient;
         HelloLegacyRestResourceTest.class,
         HelloRestResourceTest.class,
         hello.controller.api.v3.HelloRestResourceTest.class,
+        BrokenRestResourceTest.class,
         NotFoundResourceTest.class,
         HelloResourceTest.class,
         LoginResourceTest.class,
