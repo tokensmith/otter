@@ -29,6 +29,8 @@ import org.rootservices.otter.dispatch.RouteRun;
 import org.rootservices.otter.dispatch.RouteRunner;
 import org.rootservices.otter.dispatch.entity.RestBtwnRequest;
 import org.rootservices.otter.dispatch.entity.RestBtwnResponse;
+import org.rootservices.otter.dispatch.entity.RestErrorRequest;
+import org.rootservices.otter.dispatch.entity.RestErrorResponse;
 import org.rootservices.otter.dispatch.translator.AnswerTranslator;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;
 import org.rootservices.otter.gateway.builder.ErrorTargetBuilder;
@@ -36,6 +38,8 @@ import org.rootservices.otter.gateway.builder.RestTargetBuilder;
 import org.rootservices.otter.gateway.builder.ShapeBuilder;
 import org.rootservices.otter.gateway.builder.TargetBuilder;
 import org.rootservices.otter.gateway.entity.*;
+import org.rootservices.otter.gateway.entity.rest.RestErrorTarget;
+import org.rootservices.otter.gateway.entity.rest.RestTarget;
 import org.rootservices.otter.router.builder.AnswerBuilder;
 import org.rootservices.otter.router.builder.AskBuilder;
 import org.rootservices.otter.router.builder.LocationBuilder;
@@ -151,9 +155,9 @@ public class FixtureFactory {
 
         RequestTranslator<DummySession, DummyUser> requestTranslator = new RequestTranslator<>();
         AnswerTranslator<DummySession> answerTranslator = new AnswerTranslator<>();
-        RouteRunner notFoundRunner = new RouteRun<DummySession, DummyUser>(notFound, requestTranslator, answerTranslator);
-        RouteRunner unSupportedMediaTypeRunner = new RouteRun<DummySession, DummyUser>(unSupportedMediaType, requestTranslator, answerTranslator);
-        RouteRunner serverErrorRunner = new RouteRun<DummySession, DummyUser>(serverError, requestTranslator, answerTranslator);
+        RouteRunner notFoundRunner = new RouteRun<DummySession, DummyUser>(notFound, requestTranslator, answerTranslator, new HashMap<>());
+        RouteRunner unSupportedMediaTypeRunner = new RouteRun<DummySession, DummyUser>(unSupportedMediaType, requestTranslator, answerTranslator, new HashMap<>());
+        RouteRunner serverErrorRunner = new RouteRun<DummySession, DummyUser>(serverError, requestTranslator, answerTranslator, new HashMap<>());
 
         errorRouteRunners.put(StatusCode.NOT_FOUND, notFoundRunner);
         errorRouteRunners.put(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaTypeRunner);
@@ -311,6 +315,10 @@ public class FixtureFactory {
         return request;
     }
 
+    public static RestErrorRequest<DummyUser> makeRestErrorRequest() {
+        return new RestErrorRequest<DummyUser>();
+    }
+
     public static Map<String, String> makeHeaders() {
         Map<String, String> headers = new HashMap<>();
         headers.put(Header.CACHE_CONTROL.getValue(), HeaderValue.NO_CACHE.getValue());
@@ -338,6 +346,12 @@ public class FixtureFactory {
 
     public static RestBtwnResponse makeRestBtwnResponse() {
         return new RestBtwnResponse(
+                StatusCode.OK, new HashMap<>(), new HashMap<>(), Optional.empty()
+        );
+    }
+
+    public static RestErrorResponse makeRestErrorResponse() {
+        return new RestErrorResponse(
                 StatusCode.OK, new HashMap<>(), new HashMap<>(), Optional.empty()
         );
     }

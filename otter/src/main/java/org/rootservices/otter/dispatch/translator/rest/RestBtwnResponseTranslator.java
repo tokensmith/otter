@@ -4,7 +4,6 @@ import org.rootservices.otter.controller.entity.response.RestResponse;
 import org.rootservices.otter.dispatch.entity.RestBtwnResponse;
 import org.rootservices.otter.router.entity.io.Answer;
 
-import java.io.ByteArrayOutputStream;
 import java.util.Optional;
 
 public class RestBtwnResponseTranslator<P> {

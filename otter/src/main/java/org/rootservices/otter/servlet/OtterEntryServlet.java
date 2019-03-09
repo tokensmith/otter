@@ -9,7 +9,7 @@ import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.entity.Group;
-import org.rootservices.otter.gateway.entity.RestGroup;
+import org.rootservices.otter.gateway.entity.rest.RestGroup;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
 import org.rootservices.otter.security.exception.SessionCtorException;
@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -71,7 +70,6 @@ public abstract class OtterEntryServlet extends HttpServlet {
 
         // async i/o read chunk size.
         readChunkSize = (shape.getReadChunkSize() != null) ? shape.getReadChunkSize() : DEFAULT_READ_CHUNK_SIZE;
-
     }
 
     /**

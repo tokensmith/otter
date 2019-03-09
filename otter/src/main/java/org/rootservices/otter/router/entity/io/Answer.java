@@ -12,8 +12,8 @@ public class Answer {
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
     private Optional<byte[]> payload;
-    private Optional<String> template;
-    private Optional<Object> presenter;
+    private Optional<String> template = Optional.empty();
+    private Optional<Object> presenter = Optional.empty();
 
     public Answer() {
     }

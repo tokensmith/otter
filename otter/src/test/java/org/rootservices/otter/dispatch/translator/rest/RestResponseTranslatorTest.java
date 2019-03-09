@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.response.RestResponse;
 import org.rootservices.otter.dispatch.entity.RestBtwnResponse;
+import org.rootservices.otter.dispatch.entity.RestErrorResponse;
 import org.rootservices.otter.router.entity.io.Answer;
 
 
@@ -52,6 +53,20 @@ public class RestResponseTranslatorTest {
     @Test
     public void toWhenFromIsRestBtwnResponse() {
         RestBtwnResponse from = FixtureFactory.makeRestBtwnResponse();
+
+        RestResponse<DummyPayload> actual = subject.to(from);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getStatusCode(), is(from.getStatusCode()));
+        assertThat(actual.getHeaders(), is(from.getHeaders()));
+        assertThat(actual.getCookies(), is(from.getCookies()));
+        assertThat(actual.getHeaders(), is(from.getHeaders()));
+        assertThat(actual.getPayload().isPresent(), is(false));
+    }
+
+    @Test
+    public void toWhenFromIsRestErrorResponse() {
+        RestErrorResponse from = FixtureFactory.makeRestErrorResponse();
 
         RestResponse<DummyPayload> actual = subject.to(from);
 

@@ -2,12 +2,20 @@ package hello.config;
 
 
 import hello.controller.*;
-import hello.controller.api.HelloLegacyRestResource;
-import hello.controller.api.HelloRestResource;
+import hello.controller.api.v1.HelloLegacyRestResource;
+
 import hello.controller.api.between.AuthLegacyRestBetween;
 import hello.controller.api.between.AuthRestBetween;
 import hello.controller.api.model.ApiSession;
 import hello.controller.api.model.ApiUser;
+
+import hello.controller.api.v2.HelloRestResource;
+import hello.controller.api.v3.BrokenRestResource;
+import hello.controller.api.v3.handler.BadRequestHandler;
+import hello.controller.api.v3.handler.ServerErrorHandler;
+import hello.controller.api.v3.model.BadRequestPayload;
+import hello.controller.api.v3.model.BrokenPayload;
+import hello.controller.api.v3.model.ServerErrorPayload;
 import hello.model.Hello;
 import hello.security.TokenSession;
 import hello.security.User;
@@ -21,6 +29,8 @@ import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
 import org.rootservices.otter.gateway.builder.*;
 import org.rootservices.otter.gateway.entity.*;
+import org.rootservices.otter.gateway.entity.rest.RestGroup;
+import org.rootservices.otter.gateway.entity.rest.RestTarget;
 import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
@@ -31,8 +41,9 @@ import java.util.List;
 
 
 public class AppConfig implements Configure {
-    public static final String API_GROUP = "API";
+    public static final String API_GROUP = "API_V1";
     public static final String API_GROUP_V2 = "API_V2";
+    public static final String API_GROUP_V3 = "API_V3";
     public static final String WEB_SITE_GROUP = "WebSite";
     private AppFactory appFactory;
 
@@ -56,9 +67,11 @@ public class AppConfig implements Configure {
     public List<Group<? extends DefaultSession, ? extends DefaultUser>> groups() {
         List<Group<? extends DefaultSession, ? extends DefaultUser>> groups = new ArrayList<>();
 
+        ServerErrorResource serverErrorResource = new ServerErrorResource();
         Group<TokenSession, DefaultUser> webSiteGroup = new GroupBuilder<TokenSession, DefaultUser>()
                 .name(WEB_SITE_GROUP)
                 .sessionClazz(TokenSession.class)
+                .errorResource(StatusCode.SERVER_ERROR, serverErrorResource)
                 .build();
 
         groups.add(webSiteGroup);
@@ -80,12 +93,26 @@ public class AppConfig implements Configure {
         List<RestGroup<? extends DefaultUser>> restGroups = new ArrayList<>();
 
         AuthRestBetween authRestBetween = new AuthRestBetween();
+
+        // uses default bad request handling.
         RestGroup<ApiUser> apiGroupV2 = new RestGroupBuilder<ApiUser>()
                 .name(API_GROUP_V2)
                 .authRequired(authRestBetween)
                 .build();
 
         restGroups.add(apiGroupV2);
+
+        // has overrides for error handling.
+        BadRequestHandler badRequestHandler = new BadRequestHandler();
+        ServerErrorHandler serverErrorHandler = new ServerErrorHandler();
+        RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
+                .name(API_GROUP_V3)
+                .authRequired(authRestBetween)
+                .errorRoute(StatusCode.BAD_REQUEST, badRequestHandler, BadRequestPayload.class)
+                .errorRoute(StatusCode.SERVER_ERROR, serverErrorHandler, ServerErrorPayload.class)
+                .build();
+
+        restGroups.add(apiGroupV3);
 
         return restGroups;
     }
@@ -108,6 +135,7 @@ public class AppConfig implements Configure {
 
         gateway.add(helloAPI);
 
+        // resource for v2 api
         RestTarget<ApiUser, Hello> helloApiV2 = new RestTargetBuilder<ApiUser, Hello>()
                 .method(Method.GET)
                 .method(Method.POST)
@@ -120,6 +148,39 @@ public class AppConfig implements Configure {
                 .build();
 
         gateway.add(helloApiV2);
+
+        // resource for v3 api
+        hello.controller.api.v3.HelloRestResource helloRestResourceV3 = new hello.controller.api.v3.HelloRestResource();
+        RestTarget<ApiUser, Hello> helloApiV3 = new RestTargetBuilder<ApiUser, Hello>()
+                .method(Method.GET)
+                .method(Method.POST)
+                .restResource(helloRestResourceV3)
+                .regex(helloRestResourceV3.URL)
+                .label(Label.AUTH_REQUIRED)
+                .contentType(json)
+                .groupName(API_GROUP_V3)
+                .payload(Hello.class)
+                .build();
+
+        gateway.add(helloApiV3);
+
+        // this will always throw a runtime exception and force the error handler.
+        BrokenRestResource brokenRestResource = new BrokenRestResource();
+        RestTarget<ApiUser, BrokenPayload> brokenApiV3 = new RestTargetBuilder<ApiUser, BrokenPayload>()
+                .method(Method.GET)
+                .method(Method.POST)
+                .method(Method.PATCH)
+                .method(Method.PUT)
+                .method(Method.DELETE)
+                .restResource(brokenRestResource)
+                .regex(brokenRestResource.URL)
+                .label(Label.AUTH_REQUIRED)
+                .contentType(json)
+                .groupName(API_GROUP_V3)
+                .payload(BrokenPayload.class)
+                .build();
+
+        gateway.add(brokenApiV3);
 
         // does not require content-type
         Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
@@ -180,6 +241,17 @@ public class AppConfig implements Configure {
                 .build();
 
         gateway.add(protectedTarget);
+
+        // should be handled by server error resource.
+        Target<TokenSession, User> exceptionTarget = new TargetBuilder<TokenSession, User>()
+                .method(Method.GET)
+                .method(Method.POST)
+                .resource(new RunTimeExceptionResource())
+                .regex(RunTimeExceptionResource.URL)
+                .groupName(WEB_SITE_GROUP)
+                .build();
+
+        gateway.add(exceptionTarget);
     }
 
     public void errorRoutes(Gateway gateway) {
@@ -195,10 +267,6 @@ public class AppConfig implements Configure {
 
         gateway.setErrorRoute(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaTypeRoute);
 
-        Route<TokenSession, User> serverErrorRoute = new RouteBuilder<TokenSession, User>()
-                .resource(new ServerErrorResource())
-                .build();
-
-        gateway.setErrorRoute(StatusCode.SERVER_ERROR, serverErrorRoute);
+        // TODO: server error handling.
     }
 }

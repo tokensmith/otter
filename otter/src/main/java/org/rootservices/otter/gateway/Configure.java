@@ -4,7 +4,7 @@ package org.rootservices.otter.gateway;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.gateway.entity.Group;
-import org.rootservices.otter.gateway.entity.RestGroup;
+import org.rootservices.otter.gateway.entity.rest.RestGroup;
 import org.rootservices.otter.gateway.entity.Shape;
 
 import java.util.List;

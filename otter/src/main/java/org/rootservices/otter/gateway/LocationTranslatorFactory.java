@@ -1,8 +1,10 @@
 package org.rootservices.otter.gateway;
 
 import org.rootservices.otter.config.OtterAppFactory;
+import org.rootservices.otter.controller.ErrorResource;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
+import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
 import org.rootservices.otter.router.entity.between.Between;
@@ -11,6 +13,7 @@ import org.rootservices.otter.security.builder.BetweenBuilder;
 import org.rootservices.otter.security.builder.entity.Betweens;
 import org.rootservices.otter.security.exception.SessionCtorException;
 
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -25,9 +28,10 @@ public class LocationTranslatorFactory {
         this.shape = shape;
     }
 
-    public <S extends DefaultSession, U extends DefaultUser> LocationTranslator<S, U> make(Class<S> sessionClazz, Optional<Between<S,U>> authRequired, Optional<Between<S,U>> authOptional) throws SessionCtorException {
+    public <S extends DefaultSession, U extends DefaultUser> LocationTranslator<S, U> make(Class<S> sessionClazz, Optional<Between<S,U>> authRequired, Optional<Between<S,U>> authOptional, Map<StatusCode, ErrorResource<S, U>> errorResources) throws SessionCtorException {
         return new LocationTranslator<S, U>(
-                betweenFlyweight(sessionClazz, authRequired, authOptional)
+                betweenFlyweight(sessionClazz, authRequired, authOptional),
+                errorResources
         );
     }
 

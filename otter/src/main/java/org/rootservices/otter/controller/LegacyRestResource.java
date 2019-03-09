@@ -101,7 +101,19 @@ public class LegacyRestResource<T, S extends DefaultSession, U extends DefaultUs
     protected Optional<byte[]> makeError(DeserializationException e) {
 
         Optional<byte[]> payload = Optional.empty();
-        ErrorPayload errorPayload = new ErrorPayload(e.getMessage(), e.getDescription());
+
+        String description = "Unknown error occurred";
+        if (Reason.DUPLICATE_KEY.equals(e.getReason())) {
+            description = String.format(DUPLICATE_KEY_DESC, e.getKey().get());
+        } else if (Reason.INVALID_VALUE.equals(e.getReason())) {
+            description = String.format(INVALID_VALUE_DESC, e.getKey().get());
+        } else if (Reason.UNKNOWN_KEY.equals(e.getReason())) {
+            description = String.format(UNKNOWN_KEY_DESC, e.getKey().get());
+        } else if (Reason.INVALID_PAYLOAD.equals(e.getReason())) {
+            description = "Payload invalid";
+        }
+
+        ErrorPayload errorPayload = new ErrorPayload(e.getMessage(), description);
         try {
             byte[] out = translator.to(errorPayload);
             payload = Optional.of(out);
@@ -117,16 +129,13 @@ public class LegacyRestResource<T, S extends DefaultSession, U extends DefaultUs
         try{
             entity = translator.fromWithSpecificCause(json);
         } catch (DuplicateKeyException e) {
-            String desc = String.format(DUPLICATE_KEY_DESC, e.getKey());
-            throw new DeserializationException(DUPLICATE_KEY_MSG, e, desc);
+            throw new DeserializationException(DUPLICATE_KEY_MSG, e.getKey(), Reason.DUPLICATE_KEY, e);
         } catch (InvalidValueException e) {
-            String desc = String.format(INVALID_VALUE_DESC, e.getKey());
-            throw new DeserializationException(INVALID_VALUE_MSG, e, desc);
+            throw new DeserializationException(INVALID_VALUE_MSG, e.getKey(), Reason.INVALID_VALUE, e);
         } catch (UnknownKeyException e) {
-            String desc = String.format(UNKNOWN_KEY_DESC, e.getKey());
-            throw new DeserializationException(UNKNOWN_KEY_MSG, e, desc);
+            throw new DeserializationException(UNKNOWN_KEY_MSG, e.getKey(), Reason.UNKNOWN_KEY, e);
         } catch (InvalidPayloadException e) {
-            throw new DeserializationException(INVALID_PAYLOAD_MSG, e, null);
+            throw new DeserializationException(INVALID_PAYLOAD_MSG, Reason.INVALID_PAYLOAD, e);
         }
         return entity;
 

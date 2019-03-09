@@ -2,7 +2,7 @@ package hello.config;
 
 
 
-import hello.controller.api.HelloLegacyRestResource;
+import hello.controller.api.v1.HelloLegacyRestResource;
 import hello.model.Hello;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwk.Use;

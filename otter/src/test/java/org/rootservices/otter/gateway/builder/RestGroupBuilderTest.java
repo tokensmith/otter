@@ -1,10 +1,11 @@
 package org.rootservices.otter.gateway.builder;
 
 
-import helper.entity.DummyRestBetween;
-import helper.entity.DummyUser;
+import helper.entity.*;
 import org.junit.Test;
-import org.rootservices.otter.gateway.entity.RestGroup;
+import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.gateway.entity.rest.RestError;
+import org.rootservices.otter.gateway.entity.rest.RestGroup;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -25,6 +26,8 @@ public class RestGroupBuilderTest {
         assertThat(actual.getAuthOptional().isPresent(), is(false));
         assertThat(actual.getAuthRequired(), is(notNullValue()));
         assertThat(actual.getAuthRequired().isPresent(), is(false));
+        assertThat(actual.getRestErrors(), is(notNullValue()));
+        assertThat(actual.getRestErrors().size(), is(0));
     }
 
     @Test
@@ -47,5 +50,33 @@ public class RestGroupBuilderTest {
         assertThat(actual.getAuthRequired(), is(notNullValue()));
         assertThat(actual.getAuthRequired().isPresent(), is(true));
         assertThat(actual.getAuthRequired().get(), is(authRequired));
+        assertThat(actual.getRestErrors(), is(notNullValue()));
+        assertThat(actual.getRestErrors().size(), is(0));
+    }
+
+    @Test
+    public void buildShouldHaveRestErrors() {
+
+        ClientErrorRestResource errorRestResource = new ClientErrorRestResource();
+        RestGroup<DummyUser> actual = new RestGroupBuilder<DummyUser>()
+                .name("API")
+                .errorRoute(StatusCode.BAD_REQUEST, errorRestResource, DummyErrorPayload.class)
+                .build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getName(), is("API"));
+        assertThat(actual.getAuthOptional(), is(notNullValue()));
+        assertThat(actual.getAuthOptional().isPresent(), is(false));
+        assertThat(actual.getAuthRequired(), is(notNullValue()));
+        assertThat(actual.getAuthRequired().isPresent(), is(false));
+        assertThat(actual.getRestErrors(), is(notNullValue()));
+        assertThat(actual.getRestErrors().size(), is(1));
+
+        assertThat(actual.getRestErrors().get(StatusCode.BAD_REQUEST), is(notNullValue()));
+
+        Class<DummyErrorPayload> payload = (Class<DummyErrorPayload>) actual.getRestErrors().get(StatusCode.BAD_REQUEST).getPayload();
+        assertThat(payload, is(notNullValue()));
+
+        assertThat(actual.getRestErrors().get(StatusCode.BAD_REQUEST).getRestErrorResource(), is(errorRestResource));
     }
 }

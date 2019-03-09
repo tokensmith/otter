@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.rootservices.otter.translator.exception.*;
 
@@ -39,9 +40,7 @@ public class JsonTranslator<T> {
     private static final String INVALID_VALUE_GENERIC_MSG = "Invalid Value";
     private static final String UNKNOWN_KEY_GENERIC_MSG = "Unknown Key";
     private static final String INVALID_PAYLOAD_GENERIC_MSG = "Invalid Payload";
-    private static final String DUPLICATE_KEY_DESC = "%s was repeated";
-    private static final String INVALID_VALUE_DESC = "%s was invalid";
-    private static final String UNKNOWN_KEY_DESC = "%s was not expected";
+
 
     public JsonTranslator(ObjectReader objectReader, ObjectWriter objectWriter, Class<T> type) {
         this.objectReader = objectReader;
@@ -52,19 +51,17 @@ public class JsonTranslator<T> {
     public T from(byte[] json) throws DeserializationException {
         T entity;
 
+
         try{
             entity = fromWithSpecificCause(json);
         } catch (DuplicateKeyException e) {
-            String desc = String.format(DUPLICATE_KEY_DESC, e.getKey());
-            throw new DeserializationException(DUPLICATE_KEY_GENERIC_MSG, e, desc);
+            throw new DeserializationException(DUPLICATE_KEY_GENERIC_MSG, e.getKey(), Reason.DUPLICATE_KEY, e);
         } catch (InvalidValueException e) {
-            String desc = String.format(INVALID_VALUE_DESC, e.getKey());
-            throw new DeserializationException(INVALID_VALUE_GENERIC_MSG, e, desc);
+            throw new DeserializationException(INVALID_VALUE_GENERIC_MSG, e.getKey(), Reason.INVALID_VALUE, e);
         } catch (UnknownKeyException e) {
-            String desc = String.format(UNKNOWN_KEY_DESC, e.getKey());
-            throw new DeserializationException(UNKNOWN_KEY_GENERIC_MSG, e, desc);
+            throw new DeserializationException(UNKNOWN_KEY_GENERIC_MSG, e.getKey(), Reason.UNKNOWN_KEY, e);
         } catch (InvalidPayloadException e) {
-            throw new DeserializationException(INVALID_PAYLOAD_GENERIC_MSG, e, null);
+            throw new DeserializationException(INVALID_PAYLOAD_GENERIC_MSG, Reason.INVALID_PAYLOAD, e);
         }
         return entity;
     }

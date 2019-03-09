@@ -5,11 +5,10 @@ import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.router.entity.RestRoute;
 import org.rootservices.otter.router.entity.between.RestBetween;
-import org.rootservices.otter.translatable.Translatable;
+
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 
 public class RestRouteBuilder<U extends DefaultUser, P> {
