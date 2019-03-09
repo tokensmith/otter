@@ -18,6 +18,7 @@ import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
 
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -104,7 +105,7 @@ public class Gateway {
         RequestTranslator<S, U> requestTranslator = new RequestTranslator<>();
         AnswerTranslator<S> answerTranslator = new AnswerTranslator<>();
 
-        RouteRunner errorRouteRunner = new RouteRun<S, U>(errorRoute, requestTranslator, answerTranslator);
+        RouteRunner errorRouteRunner = new RouteRun<S, U>(errorRoute, requestTranslator, answerTranslator, new HashMap<>());
         this.engine.getErrorRoutes().put(statusCode, errorRouteRunner);
     }
 

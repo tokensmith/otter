@@ -78,21 +78,17 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
                 answer.setStatusCode(StatusCode.BAD_REQUEST);
                 answer.setPayload(errorPayload);
                 throw new HaltException(e.getMessage(), e);
-            } else {
-                return answerFromHandler.get();
             }
-        } catch (ServerException | RuntimeException e) {
-            Optional<Answer> answerFromHandler = handle(StatusCode.SERVER_ERROR, e, ask, answer);
-            if ( !answerFromHandler.isPresent() ) {
-                throw new HaltException(e.getMessage(), e);
-            } else {
-                return answerFromHandler.get();
-            }
+            answer = answerFromHandler.get();
+        } catch (ServerException e) {
+            answer = handleServerError(e, ask, answer);
+        } catch (Throwable e) {
+            answer = handleServerError(e, ask, answer);
         }
         return answer;
     }
 
-    public Answer process(Ask ask, Answer answer) throws ClientException, ServerException, HaltException {
+    protected Answer process(Ask ask, Answer answer) throws ClientException, ServerException, HaltException {
 
         Optional<P> entity;
         try {
@@ -112,6 +108,7 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
             throw new ServerException("", e);
         } catch (HaltException e) {
             // btwnResponse may have been updated in a between. need to merge it with answer.
+            // TODO: throw client or server exception for handling, or have it indicate which handler
             answer = restBtwnResponseTranslator.from(answer, btwnResponse);
             throw e;
         }
@@ -147,6 +144,14 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
         }
 
         return answerFromHandler;
+    }
+
+    protected Answer handleServerError(Throwable cause, Ask ask, Answer answer) throws HaltException {
+        Optional<Answer> answerFromHandler = handle(StatusCode.SERVER_ERROR, cause, ask, answer);
+        if ( !answerFromHandler.isPresent() ) {
+            throw new HaltException(cause.getMessage(), cause);
+        }
+        return answerFromHandler.get();
     }
 
     protected Optional<byte[]> toDefaultBadRequest(ClientException from) {
@@ -219,6 +224,7 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
         try {
             executeBetween(route.getAfter(), method, btwnRequestForAfter, btwnResponseForAfter);
         } catch (HaltException e) {
+            // TODO: translate to client or server exception for handling.
             throw e;
         }
 

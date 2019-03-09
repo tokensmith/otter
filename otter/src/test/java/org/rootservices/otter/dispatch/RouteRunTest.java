@@ -5,8 +5,11 @@ import helper.entity.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.config.OtterAppFactory;
+import org.rootservices.otter.controller.ErrorResource;
+import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.request.Request;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.dispatch.translator.AnswerTranslator;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;
 import org.rootservices.otter.router.entity.Method;
@@ -16,6 +19,8 @@ import org.rootservices.otter.router.entity.io.Ask;
 import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.translator.JsonTranslator;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -29,17 +34,25 @@ public class RouteRunTest {
 
     @Before
     public void setUp(){
+        OkResource okResource = new OkResource();
+        subject = subject(okResource);
+    }
+
+    public RouteRun<DummySession, DummyUser> subject(Resource<DummySession, DummyUser> resource) {
         Route<DummySession, DummyUser> route = FixtureFactory.makeRoute();
-        JsonTranslator<DummyPayload> jsonTranslator = otterAppFactory.jsonTranslator(DummyPayload.class);
-        OkResourceLegacy okResource = new OkResourceLegacy(jsonTranslator);
-        route.setResource(okResource);
+        route.setResource(resource);
 
         RequestTranslator<DummySession, DummyUser> requestTranslator = new RequestTranslator<DummySession, DummyUser>();
         AnswerTranslator<DummySession> answerTranslator = new AnswerTranslator<DummySession>();
 
-        subject = new RouteRun<DummySession, DummyUser>(
-                route, requestTranslator, answerTranslator
+
+        Map<StatusCode, ErrorResource<DummySession, DummyUser>> errorResources = new HashMap<>();
+        errorResources.put(StatusCode.SERVER_ERROR, new ServerErrorResource());
+
+        RouteRun<DummySession, DummyUser> subject = new RouteRun<>(
+                route, requestTranslator, answerTranslator, errorResources
         );
+        return subject;
     }
 
     @Test
@@ -132,5 +145,22 @@ public class RouteRunTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(answer.getStatusCode(), is(StatusCode.UNAUTHORIZED));
+    }
+
+    @Test
+    public void whenRuntimeExceptionThenShouldHandleAnd500() throws Exception {
+
+        RuntimeExceptionResource resource = new RuntimeExceptionResource();
+        RouteRun<DummySession, DummyUser> subject = subject(resource);
+
+        Ask ask = FixtureFactory.makeAsk();
+        Answer answer = FixtureFactory.makeAnswer();
+
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        request.setMethod(Method.GET);
+
+        Answer actual = subject.run(ask, answer);
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getStatusCode(), is(StatusCode.SERVER_ERROR));
     }
 }

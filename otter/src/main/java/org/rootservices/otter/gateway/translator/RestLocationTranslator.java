@@ -94,7 +94,7 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
         return to;
     }
 
-    public RestRoute<U, P> toRoute(RestErrorTarget<U, P> from) {
+    protected RestRoute<U, P> toRoute(RestErrorTarget<U, P> from) {
         return new RestRouteBuilder<U, P>()
                 .restResource(from.getResource())
                 .before(from.getBefore())

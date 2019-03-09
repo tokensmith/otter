@@ -155,9 +155,9 @@ public class FixtureFactory {
 
         RequestTranslator<DummySession, DummyUser> requestTranslator = new RequestTranslator<>();
         AnswerTranslator<DummySession> answerTranslator = new AnswerTranslator<>();
-        RouteRunner notFoundRunner = new RouteRun<DummySession, DummyUser>(notFound, requestTranslator, answerTranslator);
-        RouteRunner unSupportedMediaTypeRunner = new RouteRun<DummySession, DummyUser>(unSupportedMediaType, requestTranslator, answerTranslator);
-        RouteRunner serverErrorRunner = new RouteRun<DummySession, DummyUser>(serverError, requestTranslator, answerTranslator);
+        RouteRunner notFoundRunner = new RouteRun<DummySession, DummyUser>(notFound, requestTranslator, answerTranslator, new HashMap<>());
+        RouteRunner unSupportedMediaTypeRunner = new RouteRun<DummySession, DummyUser>(unSupportedMediaType, requestTranslator, answerTranslator, new HashMap<>());
+        RouteRunner serverErrorRunner = new RouteRun<DummySession, DummyUser>(serverError, requestTranslator, answerTranslator, new HashMap<>());
 
         errorRouteRunners.put(StatusCode.NOT_FOUND, notFoundRunner);
         errorRouteRunners.put(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaTypeRunner);

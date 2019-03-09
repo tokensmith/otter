@@ -33,6 +33,7 @@ import static org.asynchttpclient.Dsl.asyncHttpClient;
         LoginSessionResourceTest.class,
         LoginSetSessionResourceTest.class,
         ProtectedResourceTest.class,
+        RunTimeExceptionResourceTest.class,
         AssetsTest.class
 })
 public class IntegrationTestSuite {

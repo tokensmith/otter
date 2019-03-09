@@ -1,13 +1,14 @@
 package org.rootservices.otter.gateway.translator;
 
 import helper.FixtureFactory;
-import helper.entity.DummySession;
-import helper.entity.DummyUser;
+import helper.entity.*;
 import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.rootservices.otter.controller.ErrorResource;
+import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.dispatch.RouteRun;
 import org.rootservices.otter.gateway.entity.Target;
 import org.rootservices.otter.router.entity.Location;
@@ -15,6 +16,7 @@ import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.factory.BetweenFlyweight;
 import org.rootservices.otter.security.builder.entity.Betweens;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -27,11 +29,12 @@ public class LocationTranslatorTest {
     private LocationTranslator<DummySession, DummyUser> subject;
     @Mock
     private BetweenFlyweight<DummySession, DummyUser> mockBetweenFlyweight;
+    private Map<StatusCode, ErrorResource<DummySession, DummyUser>> errorResources = new HashMap<>();
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        subject = new LocationTranslator<DummySession, DummyUser>(mockBetweenFlyweight);
+        subject = new LocationTranslator<DummySession, DummyUser>(mockBetweenFlyweight, errorResources);
     }
 
     @SuppressWarnings("unchecked")
@@ -89,5 +92,86 @@ public class LocationTranslatorTest {
         assertThat(postRouteRunner.getRoute().getAfter().get(0), is(betweens.getAfter().get(0)));
         assertThat(postRouteRunner.getRoute().getAfter().get(1), is(target.getAfter().get(0)));
         assertThat(postRouteRunner.getRoute().getAfter().get(2), is(target.getAfter().get(1)));
+    }
+
+    @Test
+    public void mergeErrorResourcesPreferRight() {
+        Map<StatusCode, ErrorResource<DummySession, DummyUser>> left = new HashMap<>();
+        Map<StatusCode, ErrorResource<DummySession, DummyUser>> right = new HashMap<>();
+
+        ClientErrorResource leftClientError = new ClientErrorResource();
+
+        left.put(StatusCode.BAD_REQUEST, leftClientError);
+
+        ClientErrorResource rightClientError = new ClientErrorResource();
+
+        right.put(StatusCode.BAD_REQUEST, rightClientError);
+
+        Map<StatusCode, ErrorResource<DummySession, DummyUser>> actual = subject.mergeErrorResources(left, right);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.size(), is(1));
+        assertThat(actual.get(StatusCode.BAD_REQUEST), is(rightClientError));
+    }
+
+
+    @Test
+    public void mergeErrorResourcesMergesNonMatching() {
+        Map<StatusCode, ErrorResource<DummySession, DummyUser>> left = new HashMap<>();
+        Map<StatusCode, ErrorResource<DummySession, DummyUser>> right = new HashMap<>();
+
+        ClientErrorResource leftClientError = new ClientErrorResource();
+        left.put(StatusCode.BAD_REQUEST, leftClientError);
+
+        ServerErrorResource rightServerError = new ServerErrorResource();
+        right.put(StatusCode.SERVER_ERROR, rightServerError);
+
+        Map<StatusCode, ErrorResource<DummySession, DummyUser>> actual = subject.mergeErrorResources(left, right);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.size(), is(2));
+        assertThat(actual.get(StatusCode.SERVER_ERROR), is(rightServerError));
+        assertThat(actual.get(StatusCode.BAD_REQUEST), is(leftClientError));
+    }
+
+    @Test
+    public void mergeErrorResourcesLeftEmpty() {
+        Map<StatusCode, ErrorResource<DummySession, DummyUser>> left = new HashMap<>();
+        Map<StatusCode, ErrorResource<DummySession, DummyUser>> right = new HashMap<>();
+
+        ServerErrorResource rightServerError = new ServerErrorResource();
+        right.put(StatusCode.SERVER_ERROR, rightServerError);
+
+        Map<StatusCode, ErrorResource<DummySession, DummyUser>> actual = subject.mergeErrorResources(left, right);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.size(), is(1));
+        assertThat(actual.get(StatusCode.SERVER_ERROR), is(rightServerError));
+    }
+
+    @Test
+    public void mergeErrorResourcesRightEmpty() {
+        Map<StatusCode, ErrorResource<DummySession, DummyUser>> left = new HashMap<>();
+        Map<StatusCode, ErrorResource<DummySession, DummyUser>> right = new HashMap<>();
+
+        ClientErrorResource leftClientError = new ClientErrorResource();
+        left.put(StatusCode.BAD_REQUEST, leftClientError);
+
+        Map<StatusCode, ErrorResource<DummySession, DummyUser>> actual = subject.mergeErrorResources(left, right);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.size(), is(1));
+        assertThat(actual.get(StatusCode.BAD_REQUEST), is(leftClientError));
+    }
+
+    @Test
+    public void mergeErrorResourcesLeftAndRightEmpty() {
+        Map<StatusCode, ErrorResource<DummySession, DummyUser>> left = new HashMap<>();
+        Map<StatusCode, ErrorResource<DummySession, DummyUser>> right = new HashMap<>();
+
+        Map<StatusCode, ErrorResource<DummySession, DummyUser>> actual = subject.mergeErrorResources(left, right);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.size(), is(0));
     }
 }

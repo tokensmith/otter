@@ -67,9 +67,11 @@ public class AppConfig implements Configure {
     public List<Group<? extends DefaultSession, ? extends DefaultUser>> groups() {
         List<Group<? extends DefaultSession, ? extends DefaultUser>> groups = new ArrayList<>();
 
+        ServerErrorResource serverErrorResource = new ServerErrorResource();
         Group<TokenSession, DefaultUser> webSiteGroup = new GroupBuilder<TokenSession, DefaultUser>()
                 .name(WEB_SITE_GROUP)
                 .sessionClazz(TokenSession.class)
+                .errorResource(StatusCode.SERVER_ERROR, serverErrorResource)
                 .build();
 
         groups.add(webSiteGroup);
@@ -99,7 +101,6 @@ public class AppConfig implements Configure {
                 .build();
 
         restGroups.add(apiGroupV2);
-
 
         // has overrides for error handling.
         BadRequestHandler badRequestHandler = new BadRequestHandler();
@@ -181,8 +182,6 @@ public class AppConfig implements Configure {
 
         gateway.add(brokenApiV3);
 
-
-
         // does not require content-type
         Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
             .method(Method.GET)
@@ -242,6 +241,17 @@ public class AppConfig implements Configure {
                 .build();
 
         gateway.add(protectedTarget);
+
+        // should be handled by server error resource.
+        Target<TokenSession, User> exceptionTarget = new TargetBuilder<TokenSession, User>()
+                .method(Method.GET)
+                .method(Method.POST)
+                .resource(new RunTimeExceptionResource())
+                .regex(RunTimeExceptionResource.URL)
+                .groupName(WEB_SITE_GROUP)
+                .build();
+
+        gateway.add(exceptionTarget);
     }
 
     public void errorRoutes(Gateway gateway) {
@@ -257,10 +267,6 @@ public class AppConfig implements Configure {
 
         gateway.setErrorRoute(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaTypeRoute);
 
-        Route<TokenSession, User> serverErrorRoute = new RouteBuilder<TokenSession, User>()
-                .resource(new ServerErrorResource())
-                .build();
-
-        gateway.setErrorRoute(StatusCode.SERVER_ERROR, serverErrorRoute);
+        // TODO: server error handling.
     }
 }

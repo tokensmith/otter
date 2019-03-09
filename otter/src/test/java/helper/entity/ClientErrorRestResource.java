@@ -11,12 +11,13 @@ import java.util.Optional;
 
 public class ClientErrorRestResource extends RestErrorResource<DummyUser, DummyErrorPayload> {
 
-    public Optional<DummyErrorPayload> errorPayload(Throwable cause) {
+    @Override
+    public Optional<DummyErrorPayload> to(Throwable from) {
         String error = "unknown error";
         String desc = "unknown error";
 
-        if (cause instanceof DeserializationException) {
-            DeserializationException castedCause = (DeserializationException) cause;
+        if (from instanceof DeserializationException) {
+            DeserializationException castedCause = (DeserializationException) from;
             if (Reason.INVALID_PAYLOAD.equals(castedCause.getReason())) {
                 error = "invalid payload";
                 desc = "the payload could not be parsed";
@@ -36,93 +37,9 @@ public class ClientErrorRestResource extends RestErrorResource<DummyUser, DummyE
         }
         return Optional.of(new DummyErrorPayload(error, desc));
     }
-    @Override
-    public RestResponse<DummyErrorPayload> get(RestErrorRequest<DummyUser> request, RestResponse<DummyErrorPayload> response, Throwable cause) {
-        response.setStatusCode(StatusCode.BAD_REQUEST);
-
-        Optional<DummyErrorPayload> payload = errorPayload(cause);
-        response.setPayload(payload);
-
-        return response;
-    }
 
     @Override
-    public RestResponse<DummyErrorPayload> post(RestErrorRequest<DummyUser> request, RestResponse<DummyErrorPayload> response, Throwable cause) {
-        response.setStatusCode(StatusCode.BAD_REQUEST);
-
-        Optional<DummyErrorPayload> payload = errorPayload(cause);
-        response.setPayload(payload);
-
-        return response;
-    }
-
-    @Override
-    public RestResponse<DummyErrorPayload> put(RestErrorRequest<DummyUser> request, RestResponse<DummyErrorPayload> response, Throwable cause) {
-        response.setStatusCode(StatusCode.BAD_REQUEST);
-
-        Optional<DummyErrorPayload> payload = errorPayload(cause);
-        response.setPayload(payload);
-
-        return response;
-    }
-
-    @Override
-    public RestResponse<DummyErrorPayload> delete(RestErrorRequest<DummyUser> request, RestResponse<DummyErrorPayload> response, Throwable cause) {
-        response.setStatusCode(StatusCode.BAD_REQUEST);
-
-        Optional<DummyErrorPayload> payload = errorPayload(cause);
-        response.setPayload(payload);
-
-        return response;
-    }
-
-    @Override
-    public RestResponse<DummyErrorPayload> connect(RestErrorRequest<DummyUser> request, RestResponse<DummyErrorPayload> response, Throwable cause) {
-        response.setStatusCode(StatusCode.BAD_REQUEST);
-
-        Optional<DummyErrorPayload> payload = errorPayload(cause);
-        response.setPayload(payload);
-
-        return response;
-    }
-
-    @Override
-    public RestResponse<DummyErrorPayload> options(RestErrorRequest<DummyUser> request, RestResponse<DummyErrorPayload> response, Throwable cause) {
-        response.setStatusCode(StatusCode.BAD_REQUEST);
-
-        Optional<DummyErrorPayload> payload = errorPayload(cause);
-        response.setPayload(payload);
-
-        return response;
-    }
-
-    @Override
-    public RestResponse<DummyErrorPayload> trace(RestErrorRequest<DummyUser> request, RestResponse<DummyErrorPayload> response, Throwable cause) {
-        response.setStatusCode(StatusCode.BAD_REQUEST);
-
-        Optional<DummyErrorPayload> payload = errorPayload(cause);
-        response.setPayload(payload);
-
-        return response;
-    }
-
-    @Override
-    public RestResponse<DummyErrorPayload> patch(RestErrorRequest<DummyUser> request, RestResponse<DummyErrorPayload> response, Throwable cause) {
-        response.setStatusCode(StatusCode.BAD_REQUEST);
-
-        Optional<DummyErrorPayload> payload = errorPayload(cause);
-        response.setPayload(payload);
-
-        return response;
-    }
-
-    @Override
-    public RestResponse<DummyErrorPayload> head(RestErrorRequest<DummyUser> request, RestResponse<DummyErrorPayload> response, Throwable cause) {
-        response.setStatusCode(StatusCode.BAD_REQUEST);
-
-        Optional<DummyErrorPayload> payload = errorPayload(cause);
-        response.setPayload(payload);
-
-        return response;
+    public StatusCode statusCode() {
+        return StatusCode.BAD_REQUEST;
     }
 }

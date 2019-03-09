@@ -1,6 +1,7 @@
 package org.rootservices.otter.router.builder;
 
 
+import org.rootservices.otter.controller.ErrorResource;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
@@ -28,6 +29,7 @@ public class LocationBuilder<S extends DefaultSession, U extends DefaultUser> {
     private List<Between<S, U>> before = new ArrayList<>();
     private List<Between<S, U>> after = new ArrayList<>();
     private Map<StatusCode, RouteRunner> errorRouteRunners = new HashMap<>();
+    private Map<StatusCode, ErrorResource<S, U>> errorResources = new HashMap<>();
 
     // used when building routeRunner, errorRouteRunners
     private RequestTranslator<S, U> requestTranslator = new RequestTranslator<>();
@@ -63,15 +65,17 @@ public class LocationBuilder<S extends DefaultSession, U extends DefaultUser> {
         return this;
     }
 
+    // TODO: 114, 115
     public LocationBuilder<S, U> errorRouteRunners(Map<StatusCode, Route<S, U>> errorRoutes) {
 
         for (Map.Entry<StatusCode, Route<S, U>> entry : errorRoutes.entrySet()) {
-            RouteRunner errorRouteRunner = new RouteRun<S, U>(entry.getValue(), requestTranslator, answerTranslator);
+            RouteRunner errorRouteRunner = new RouteRun<S, U>(entry.getValue(), requestTranslator, answerTranslator, errorResources);
             errorRouteRunners.put(entry.getKey(), errorRouteRunner);
         }
         return this;
     }
 
+    // TODO: 114, 115
     public LocationBuilder<S, U> errorRouteRunner(StatusCode statusCode, Resource<S, U> resource) {
         Route<S, U> errorRoute = new RouteBuilder<S, U>()
                 .resource(resource)
@@ -79,8 +83,13 @@ public class LocationBuilder<S extends DefaultSession, U extends DefaultUser> {
                 .after(new ArrayList<>())
                 .build();
 
-        RouteRunner errorRouteRunner = new RouteRun<S, U>(errorRoute, requestTranslator, answerTranslator);
+        RouteRunner errorRouteRunner = new RouteRun<S, U>(errorRoute, requestTranslator, answerTranslator, errorResources);
         this.errorRouteRunners.put(statusCode, errorRouteRunner);
+        return this;
+    }
+
+    public LocationBuilder<S, U> errorResources(Map<StatusCode, ErrorResource<S, U>> errorResources) {
+        this.errorResources = errorResources;
         return this;
     }
 
@@ -92,7 +101,7 @@ public class LocationBuilder<S extends DefaultSession, U extends DefaultUser> {
                 .build();
 
 
-        RouteRunner routeRunner = new RouteRun<S, U>(route, requestTranslator, answerTranslator);
+        RouteRunner routeRunner = new RouteRun<S, U>(route, requestTranslator, answerTranslator, errorResources);
         return new Location(pattern, contentTypes, routeRunner, errorRouteRunners);
     }
 }

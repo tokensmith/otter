@@ -119,7 +119,8 @@ public class OtterAppFactory {
                     locationTranslatorFactory.make(
                             castedGroup.getSessionClazz(),
                             castedGroup.getAuthRequired(),
-                            castedGroup.getAuthOptional()
+                            castedGroup.getAuthOptional(),
+                            castedGroup.getErrorResources()
                     )
             );
         }

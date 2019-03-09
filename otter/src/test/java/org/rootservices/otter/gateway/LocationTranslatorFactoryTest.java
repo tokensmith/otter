@@ -5,9 +5,13 @@ import helper.entity.DummySession;
 import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
+import org.rootservices.otter.controller.ErrorResource;
+import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -25,7 +29,8 @@ public class LocationTranslatorFactoryTest {
 
     @Test
     public void shouldMakeLocationTranslator() throws Exception {
-        LocationTranslator<DummySession, DummyUser> actual = subject.make(DummySession.class, Optional.empty(), Optional.empty());
+        Map<StatusCode, ErrorResource<DummySession, DummyUser>> errorResources = new HashMap<>();
+        LocationTranslator<DummySession, DummyUser> actual = subject.make(DummySession.class, Optional.empty(), Optional.empty(), errorResources);
 
         assertThat(actual, is(notNullValue()));
     }

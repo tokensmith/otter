@@ -14,45 +14,7 @@ import java.util.Optional;
 public class BadRequestHandler extends RestErrorResource<ApiUser, BadRequestPayload> {
 
     @Override
-    public RestResponse<BadRequestPayload> get(RestErrorRequest<ApiUser> request, RestResponse<BadRequestPayload> response, Throwable cause) {
-        BadRequestPayload payload = to(cause);
-        response.setPayload(Optional.of(payload));
-        response.setStatusCode(StatusCode.BAD_REQUEST);
-        return response;
-    }
-
-    @Override
-    public RestResponse<BadRequestPayload> post(RestErrorRequest<ApiUser> request, RestResponse<BadRequestPayload> response, Throwable cause) {
-        BadRequestPayload payload = to(cause);
-        response.setPayload(Optional.of(payload));
-        response.setStatusCode(StatusCode.BAD_REQUEST);
-        return response;
-    }
-
-    @Override
-    public RestResponse<BadRequestPayload> put(RestErrorRequest<ApiUser> request, RestResponse<BadRequestPayload> response, Throwable cause) {
-        BadRequestPayload payload = to(cause);
-        response.setPayload(Optional.of(payload));
-        response.setStatusCode(StatusCode.BAD_REQUEST);
-        return response;
-    }
-
-    @Override
-    public RestResponse<BadRequestPayload> delete(RestErrorRequest<ApiUser> request, RestResponse<BadRequestPayload> response, Throwable cause) {
-        BadRequestPayload payload = to(cause);
-        response.setPayload(Optional.of(payload));
-        response.setStatusCode(StatusCode.BAD_REQUEST);
-        return response;
-    }
-
-    @Override
-    public RestResponse<BadRequestPayload> patch(RestErrorRequest<ApiUser> request, RestResponse<BadRequestPayload> response, Throwable cause) {BadRequestPayload payload = to(cause);
-        response.setPayload(Optional.of(payload));
-        response.setStatusCode(StatusCode.BAD_REQUEST);
-        return response;
-    }
-
-    protected BadRequestPayload to(Throwable from) {
+    public Optional<BadRequestPayload> to(Throwable from) {
         BadRequestPayload to = new BadRequestPayload();
         to.setMessage("bad request");
 
@@ -75,6 +37,11 @@ public class BadRequestHandler extends RestErrorResource<ApiUser, BadRequestPayl
             }
         }
 
-        return to;
+        return Optional.of(to);
+    }
+
+    @Override
+    public StatusCode statusCode() {
+        return StatusCode.BAD_REQUEST;
     }
 }
