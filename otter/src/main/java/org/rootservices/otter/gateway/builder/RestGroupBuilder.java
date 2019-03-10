@@ -35,7 +35,7 @@ public class RestGroupBuilder<U extends DefaultUser> {
         return this;
     }
 
-    public <P extends Translatable> RestGroupBuilder<U> errorRoute(StatusCode statusCode, RestErrorResource<U, P> restErrorResource, Class<P> errorPayload) {
+    public <P extends Translatable> RestGroupBuilder<U> onError(StatusCode statusCode, RestErrorResource<U, P> restErrorResource, Class<P> errorPayload) {
         RestError<U, P> restError = new RestError<>(errorPayload, restErrorResource);
         restErrors.put(statusCode, restError);
         return this;

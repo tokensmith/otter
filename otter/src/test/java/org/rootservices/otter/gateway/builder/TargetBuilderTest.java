@@ -148,7 +148,7 @@ public class TargetBuilderTest {
                 .label(Label.CSRF)
                 .label(Label.SESSION_REQUIRED)
                 .errorTarget(StatusCode.NOT_FOUND, notFound)
-                .errorResource(StatusCode.SERVER_ERROR, serverErrorResource)
+                .onError(StatusCode.SERVER_ERROR, serverErrorResource)
                 .build();
 
         assertThat(actual.getRegex(), is("/foo"));

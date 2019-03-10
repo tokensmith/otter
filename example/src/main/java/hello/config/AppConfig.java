@@ -71,7 +71,7 @@ public class AppConfig implements Configure {
         Group<TokenSession, DefaultUser> webSiteGroup = new GroupBuilder<TokenSession, DefaultUser>()
                 .name(WEB_SITE_GROUP)
                 .sessionClazz(TokenSession.class)
-                .errorResource(StatusCode.SERVER_ERROR, serverErrorResource)
+                .onError(StatusCode.SERVER_ERROR, serverErrorResource)
                 .build();
 
         groups.add(webSiteGroup);
@@ -108,8 +108,8 @@ public class AppConfig implements Configure {
         RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
                 .name(API_GROUP_V3)
                 .authRequired(authRestBetween)
-                .errorRoute(StatusCode.BAD_REQUEST, badRequestHandler, BadRequestPayload.class)
-                .errorRoute(StatusCode.SERVER_ERROR, serverErrorHandler, ServerErrorPayload.class)
+                .onError(StatusCode.BAD_REQUEST, badRequestHandler, BadRequestPayload.class)
+                .onError(StatusCode.SERVER_ERROR, serverErrorHandler, ServerErrorPayload.class)
                 .build();
 
         restGroups.add(apiGroupV3);

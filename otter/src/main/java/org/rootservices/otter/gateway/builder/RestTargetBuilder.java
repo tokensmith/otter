@@ -85,12 +85,13 @@ public class RestTargetBuilder<U extends DefaultUser, P> {
         return this;
     }
 
+    // legacy error handling.
     public RestTargetBuilder<U, P> errorTarget(StatusCode statusCode, RestErrorTarget<U, P> errorTarget) {
         this.errorTargets.put(statusCode, errorTarget);
         return this;
     }
 
-    public <E extends Translatable> RestTargetBuilder<U, P> errorRoute(StatusCode statusCode, RestErrorResource<U, E> restErrorResource, Class<E> errorPayload) {
+    public <E extends Translatable> RestTargetBuilder<U, P> onError(StatusCode statusCode, RestErrorResource<U, E> restErrorResource, Class<E> errorPayload) {
         RestError<U, E> restError = new RestError<>(errorPayload, restErrorResource);
         restErrors.put(statusCode, restError);
         return this;
