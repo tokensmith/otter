@@ -4,7 +4,6 @@ package org.rootservices.otter.gateway.builder;
 import helper.entity.*;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.gateway.entity.rest.RestError;
 import org.rootservices.otter.gateway.entity.rest.RestGroup;
 
 import static org.hamcrest.Matchers.is;
@@ -60,7 +59,7 @@ public class RestGroupBuilderTest {
         ClientErrorRestResource errorRestResource = new ClientErrorRestResource();
         RestGroup<DummyUser> actual = new RestGroupBuilder<DummyUser>()
                 .name("API")
-                .errorRoute(StatusCode.BAD_REQUEST, errorRestResource, DummyErrorPayload.class)
+                .onError(StatusCode.BAD_REQUEST, errorRestResource, DummyErrorPayload.class)
                 .build();
 
         assertThat(actual, is(notNullValue()));

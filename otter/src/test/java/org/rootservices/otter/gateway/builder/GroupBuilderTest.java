@@ -73,7 +73,7 @@ public class GroupBuilderTest {
                 .sessionClazz(DummySession.class)
                 .authRequired(authRequired)
                 .authOptional(authOptional)
-                .errorResource(StatusCode.SERVER_ERROR, serverErrorResource)
+                .onError(StatusCode.SERVER_ERROR, serverErrorResource)
                 .build();
 
         assertThat(actual, is(notNullValue()));

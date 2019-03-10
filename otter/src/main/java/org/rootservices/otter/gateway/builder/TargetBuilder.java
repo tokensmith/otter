@@ -25,6 +25,7 @@ public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
     private List<Label> labels = new ArrayList<>();
     private List<Between<S, U>> before = new ArrayList<>();
     private List<Between<S, U>> after = new ArrayList<>();
+    // legacy error handling.
     private Map<StatusCode, ErrorTarget<S, U>> errorTargets = new HashMap<>();
     private Map<StatusCode, ErrorResource<S, U>> errorResources = new HashMap<>();
     private String groupName;
@@ -76,12 +77,13 @@ public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
         return this;
     }
 
+    // legacy error handling.
     public TargetBuilder<S, U> errorTarget(StatusCode statusCode, ErrorTarget<S, U> errorTarget) {
         this.errorTargets.put(statusCode, errorTarget);
         return this;
     }
 
-    public TargetBuilder<S, U> errorResource(StatusCode statusCode, ErrorResource<S, U> errorResource) {
+    public TargetBuilder<S, U> onError(StatusCode statusCode, ErrorResource<S, U> errorResource) {
         this.errorResources.put(statusCode, errorResource);
         return this;
     }

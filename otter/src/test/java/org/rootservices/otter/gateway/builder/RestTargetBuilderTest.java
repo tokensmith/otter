@@ -7,7 +7,6 @@ import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.gateway.entity.*;
 import org.rootservices.otter.gateway.entity.rest.RestErrorTarget;
-import org.rootservices.otter.gateway.entity.rest.RestGroup;
 import org.rootservices.otter.gateway.entity.rest.RestTarget;
 import org.rootservices.otter.router.entity.Method;
 
@@ -43,7 +42,7 @@ public class RestTargetBuilderTest {
 
         RestTargetBuilder<DummyUser, DummyPayload> subject = subject();
         RestTarget<DummyUser, DummyPayload> actual = subject
-                .errorRoute(StatusCode.BAD_REQUEST, errorRestResource, DummyErrorPayload.class)
+                .onError(StatusCode.BAD_REQUEST, errorRestResource, DummyErrorPayload.class)
                 .build();
 
         assertThat(actual, is(notNullValue()));

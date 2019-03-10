@@ -39,7 +39,7 @@ public class GroupBuilder<S extends DefaultSession, U extends DefaultUser> {
         return this;
     }
 
-    public GroupBuilder<S, U> errorResource(StatusCode statusCode, ErrorResource<S, U> errorResource) {
+    public GroupBuilder<S, U> onError(StatusCode statusCode, ErrorResource<S, U> errorResource) {
         this.errorResources.put(statusCode, errorResource);
         return this;
     }
