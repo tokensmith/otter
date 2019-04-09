@@ -27,6 +27,7 @@ public class RestGroupBuilderTest {
         assertThat(actual.getAuthRequired().isPresent(), is(false));
         assertThat(actual.getRestErrors(), is(notNullValue()));
         assertThat(actual.getRestErrors().size(), is(0));
+        assertThat(actual.getDispatchErrors().size(), is(0));
     }
 
     @Test
@@ -51,6 +52,7 @@ public class RestGroupBuilderTest {
         assertThat(actual.getAuthRequired().get(), is(authRequired));
         assertThat(actual.getRestErrors(), is(notNullValue()));
         assertThat(actual.getRestErrors().size(), is(0));
+        assertThat(actual.getDispatchErrors().size(), is(0));
     }
 
     @Test
@@ -70,6 +72,7 @@ public class RestGroupBuilderTest {
         assertThat(actual.getAuthRequired().isPresent(), is(false));
         assertThat(actual.getRestErrors(), is(notNullValue()));
         assertThat(actual.getRestErrors().size(), is(1));
+        assertThat(actual.getDispatchErrors().size(), is(0));
 
         assertThat(actual.getRestErrors().get(StatusCode.BAD_REQUEST), is(notNullValue()));
 
@@ -77,5 +80,33 @@ public class RestGroupBuilderTest {
         assertThat(payload, is(notNullValue()));
 
         assertThat(actual.getRestErrors().get(StatusCode.BAD_REQUEST).getRestErrorResource(), is(errorRestResource));
+    }
+
+    @Test
+    public void buildShouldHaveDispatchErrors() {
+
+        MediaTypeRestResource mediaTypeRestResource = new MediaTypeRestResource();
+
+        RestGroup<DummyUser> actual = new RestGroupBuilder<DummyUser>()
+                .name("API")
+                .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaTypeRestResource, ClientErrorPayload.class)
+                .build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getName(), is("API"));
+        assertThat(actual.getAuthOptional(), is(notNullValue()));
+        assertThat(actual.getAuthOptional().isPresent(), is(false));
+        assertThat(actual.getAuthRequired(), is(notNullValue()));
+        assertThat(actual.getAuthRequired().isPresent(), is(false));
+        assertThat(actual.getRestErrors(), is(notNullValue()));
+        assertThat(actual.getRestErrors().size(), is(0));
+        assertThat(actual.getDispatchErrors().size(), is(1));
+
+        assertThat(actual.getDispatchErrors().get(StatusCode.UNSUPPORTED_MEDIA_TYPE), is(notNullValue()));
+
+        Class<ClientErrorPayload> payload = (Class<ClientErrorPayload>) actual.getDispatchErrors().get(StatusCode.UNSUPPORTED_MEDIA_TYPE).getPayload();
+        assertThat(payload, is(notNullValue()));
+
+        assertThat(actual.getDispatchErrors().get(StatusCode.UNSUPPORTED_MEDIA_TYPE).getRestDispatchErrorResource(), is(mediaTypeRestResource));
     }
 }

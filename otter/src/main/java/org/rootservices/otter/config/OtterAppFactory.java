@@ -84,11 +84,15 @@ public class OtterAppFactory {
         LocationTranslatorFactory locationTranslatorFactory = locationTranslatorFactory(shape);
         RestLocationTranslatorFactory restLocationTranslatorFactory = restLocationTranslatorFactory();
 
+        // 113: Need to inject dispatch resources.. 415
         Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators = locationTranslators(locationTranslatorFactory, groups);
+
+        // 113: Need to inject dispatch resources.. 415
         Map<String, RestLocationTranslator<? extends DefaultUser, ?>> restLocationTranslators = restLocationTranslators(restLocationTranslatorFactory, restGroups);
 
         Integer writeChunkSize = (shape.getWriteChunkSize() != null) ? shape.getWriteChunkSize() : WRITE_CHUNK_SIZE;
 
+        // 113: Need to inject 404s
         return new ServletGateway(
                 httpServletRequestTranslator(),
                 httpServletRequestMerger(),

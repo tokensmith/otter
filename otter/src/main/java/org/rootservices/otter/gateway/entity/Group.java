@@ -1,6 +1,7 @@
 package org.rootservices.otter.gateway.entity;
 
 import org.rootservices.otter.controller.ErrorResource;
+import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -16,13 +17,15 @@ public class Group<S extends DefaultSession, U extends DefaultUser> {
     private Optional<Between<S, U>> authRequired;
     private Optional<Between<S, U>> authOptional;
     private Map<StatusCode, ErrorResource<S, U>> errorResources;
+    private Map<StatusCode, Resource<S, U>> dispatchErrorResources;
 
-    public Group(String name, Class<S> sessionClazz, Optional<Between<S, U>> authRequired, Optional<Between<S, U>> authOptional, Map<StatusCode, ErrorResource<S, U>> errorResources) {
+    public Group(String name, Class<S> sessionClazz, Optional<Between<S, U>> authRequired, Optional<Between<S, U>> authOptional, Map<StatusCode, ErrorResource<S, U>> errorResources, Map<StatusCode, Resource<S, U>> dispatchErrorResources) {
         this.name = name;
         this.sessionClazz = sessionClazz;
         this.authRequired = authRequired;
         this.authOptional = authOptional;
         this.errorResources = errorResources;
+        this.dispatchErrorResources = dispatchErrorResources;
     }
 
     public String getName() {
@@ -63,5 +66,13 @@ public class Group<S extends DefaultSession, U extends DefaultUser> {
 
     public void setErrorResources(Map<StatusCode, ErrorResource<S, U>> errorResources) {
         this.errorResources = errorResources;
+    }
+
+    public Map<StatusCode, Resource<S, U>> getDispatchErrorResources() {
+        return dispatchErrorResources;
+    }
+
+    public void setDispatchErrorResources(Map<StatusCode, Resource<S, U>> dispatchErrorResources) {
+        this.dispatchErrorResources = dispatchErrorResources;
     }
 }

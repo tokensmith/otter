@@ -1,12 +1,12 @@
 package org.rootservices.otter.gateway.entity.rest;
 
 
-import org.rootservices.otter.controller.RestErrorResource;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.router.entity.between.RestBetween;
 import org.rootservices.otter.translatable.Translatable;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -18,12 +18,15 @@ public class RestGroup<U extends DefaultUser> {
     // for route run to handle errors.
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors;
 
+    // dispatch errors: 404, 415
+    private Map<StatusCode, RestDispatchError<U, ? extends Translatable>> dispatchErrors = new HashMap<>();
 
-    public RestGroup(String name, Optional<RestBetween<U>> authRequired, Optional<RestBetween<U>> authOptional, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors) {
+    public RestGroup(String name, Optional<RestBetween<U>> authRequired, Optional<RestBetween<U>> authOptional, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestDispatchError<U, ? extends Translatable>> dispatchErrors) {
         this.name = name;
         this.authRequired = authRequired;
         this.authOptional = authOptional;
         this.restErrors = restErrors;
+        this.dispatchErrors = dispatchErrors;
     }
 
     public String getName() {
@@ -56,5 +59,13 @@ public class RestGroup<U extends DefaultUser> {
 
     public void setRestErrors(Map<StatusCode, RestError<U, ? extends Translatable>> restErrors) {
         this.restErrors = restErrors;
+    }
+
+    public Map<StatusCode, RestDispatchError<U, ? extends Translatable>> getDispatchErrors() {
+        return dispatchErrors;
+    }
+
+    public void setDispatchErrors(Map<StatusCode, RestDispatchError<U, ? extends Translatable>> dispatchErrors) {
+        this.dispatchErrors = dispatchErrors;
     }
 }

@@ -89,4 +89,6 @@ public class GroupBuilderTest {
         assertThat(actual.getErrorResources().size(), is(1));
         assertThat(actual.getErrorResources().get(StatusCode.SERVER_ERROR), is(serverErrorResource));
     }
+
+
 }

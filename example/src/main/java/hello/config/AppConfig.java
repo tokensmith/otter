@@ -67,11 +67,15 @@ public class AppConfig implements Configure {
     public List<Group<? extends DefaultSession, ? extends DefaultUser>> groups() {
         List<Group<? extends DefaultSession, ? extends DefaultUser>> groups = new ArrayList<>();
 
+        // not found builder.
+        // invalid media
+
         ServerErrorResource serverErrorResource = new ServerErrorResource();
         Group<TokenSession, DefaultUser> webSiteGroup = new GroupBuilder<TokenSession, DefaultUser>()
                 .name(WEB_SITE_GROUP)
                 .sessionClazz(TokenSession.class)
                 .onError(StatusCode.SERVER_ERROR, serverErrorResource)
+
                 .build();
 
         groups.add(webSiteGroup);
