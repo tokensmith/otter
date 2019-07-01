@@ -2,8 +2,6 @@ package hello.server;
 
 
 import hello.controller.HelloResource;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.server.container.ServletContainer;
 import org.rootservices.otter.server.container.ServletContainerFactory;
@@ -13,9 +11,13 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 
 public class HelloServer {
-    private static final Logger logger = LogManager.getLogger(HelloServer.class);
+    private static final Logger logger = LoggerFactory.getLogger(HelloServer.class);
     public static String DOCUMENT_ROOT = "/";
     public static int PORT = 8080;
     private static String REQUEST_LOG = "logs/jetty/jetty-test-yyyy_mm_dd.request.log";

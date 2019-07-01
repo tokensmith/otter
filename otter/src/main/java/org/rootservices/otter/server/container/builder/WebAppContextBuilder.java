@@ -2,7 +2,6 @@ package org.rootservices.otter.server.container.builder;
 
 
 import org.apache.tomcat.util.descriptor.web.ErrorPage;
-import org.eclipse.jetty.server.session.Session;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
