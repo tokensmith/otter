@@ -1,8 +1,8 @@
 package helper.entity;
 
 
-import hello.security.TokenSession;
-import hello.security.User;
+import org.rootservices.hello.security.TokenSession;
+import org.rootservices.hello.security.User;
 import org.rootservices.otter.controller.LegacyRestResource;
 import org.rootservices.otter.translator.JsonTranslator;
 

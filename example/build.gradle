@@ -22,7 +22,7 @@ repositories {
 
 ext {
     log4jVersion = '2.12.0'
-    mainClass = 'hello.server.HelloServer'
+    mainClass = 'org.rootservices.hello.server.HelloServer'
     pathToJavaMain = "$buildDir/classes/java/main/"
     mainClassAsFilePath = "org/rootservices/hello/server/HelloServer.class"
     absolutePathToMain = "${pathToJavaMain}${mainClassAsFilePath}"
@@ -44,7 +44,7 @@ dependencies {
 
 task fatJar(type: Jar) {
     manifest {
-        attributes 'Implementation-Title': 'hello-world', 'Implementation-Version': version, 'Main-Class': 'org.rootservices.hello.server.HelloServer'
+        attributes 'Implementation-Title': 'org.rootservices.hello-world', 'Implementation-Version': version, 'Main-Class': 'org.rootservices.org.rootservices.hello.server.HelloServer'
     }
     baseName = project.name + '-all'
     from {

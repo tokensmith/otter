@@ -19,11 +19,11 @@ A resource is what handles a request. There are two types of resources that Otte
 - [RestResource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/controller/RestResource.java)
 
 A **Resource** is designed to handle any content type. It's typically used to render `text/html`. Have a look at 
-[HelloResource](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/controller/HelloResource.java)
+[HelloResource](https://github.com/RootServices/otter/blob/development/example/src/main/java/org/rootservices/hello/controller/HelloResource.java)
  as an example. 
 
 A **RestResource** is designed to handle `application/json`. Have a look at 
-[HelloRestResource](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/controller/HelloRestResource.java)
+[HelloRestResource](https://github.com/RootServices/otter/blob/development/example/src/main/java/org/rootservices/hello/controller/HelloRestResource.java)
 as an example.
  
 Implementing a resource is rather straight forward.
@@ -47,7 +47,7 @@ An application may have many `Session` implementations.
 
 It must have a copy constructor and a equals method. If either of those are not there Otter will not start up.
  
-See [TokenSession](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/security/TokenSession.java) 
+See [TokenSession](https://github.com/RootServices/otter/blob/development/example/src/main/java/org/rootservices/hello/security/TokenSession.java)
 as an example.
 
 ### User
@@ -68,7 +68,7 @@ A `Between` is a rule that may be executed before a request reaches a resource o
 Otter needs to be configured for CSRF, Session, and Targets. To configure Otter implement the [Configure](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/Configure.java)
 interface. 
 
-An example can be found in [here](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/config/AppConfig.java).
+An example can be found in [here](https://github.com/RootServices/otter/blob/development/example/src/main/java/org/rootservices/hello/config/AppConfig.java).
 
 ##### `shape()`
 The implementation of `shape()` must return an instance of `Shape`. Otter uses it to construct `between` instances for
@@ -127,14 +127,14 @@ that will be handled by the `HelloResorce`.
  
 ```java
     // get request.
-    Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
+    Target<TokenSession, User> org.rootservices.hello = new TargetBuilder<TokenSession, User>()
             .method(Method.GET)
             .resource(new HelloResource())
             .regex(HelloResource.URL)
             .groupName(WEB_SITE_GROUP)
             .build();
 
-    gateway.add(hello);
+    gateway.add(org.rootservices.hello);
 ```
 
 ###### Not Found
@@ -194,7 +194,7 @@ When an unexpected error occurs then otter will execute a server error route. Co
 
 ### Embedded Container
 
-Otter runs in a Jetty powered [embedded servlet container](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/server/HelloServer.java).
+Otter runs in a Jetty powered [embedded servlet container](https://github.com/RootServices/otter/blob/development/example/src/main/java/org/rootservices/hello/server/HelloServer.java).
 The port, document root, and the request log are all configurable. The [servlet container factory](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/server/container/ServletContainerFactory.java) 
 is how the container is configured to run Otter.
 
@@ -221,7 +221,7 @@ and the implementation must be annotated with following  `@WebSerlvet` annotatio
 Extending the [entry servlet](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/servlet/OtterEntryServlet.java) 
 is required.
 
-An example can be found in [here](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/config/AppEntryServlet.java)
+An example can be found in [here](https://github.com/RootServices/otter/blob/development/example/src/main/java/org/rootservices/hello/config/AppEntryServlet.java)
 Which passes `TokenSession` as the `Session`. 
 
 ##### Override `makeConfigure()`
@@ -246,7 +246,7 @@ Here is an example of how to protect a login page:
     gateway.add(login);
 ```
 
-Set the csrf challenge token value on the [login presenter](https://github.com/RootServices/otter/blob/development/example/src/main/java/hello/controller/presenter/LoginPresenter.java#L18).
+Set the csrf challenge token value on the [login presenter](https://github.com/RootServices/otter/blob/development/example/src/main/java/org/rootservices/hello/controller/presenter/LoginPresenter.java#L18).
 ```java
     LoginPresenter presenter = new LoginPresenter("", request.getCsrfChallenge().get());
 ```

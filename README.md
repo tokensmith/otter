@@ -7,7 +7,7 @@ Otter is a micro web framework that sits on top of the servlet api 4.0
 - [Introduction](/docs/Introduction.md)
 
 ## Example Application
-If you want to get started quickly head over to the [hello world](/example) 
+If you want to get started quickly head over to the [org.rootservices.hello world](/example)
 example application.
 
 ## Dependency coordinates
