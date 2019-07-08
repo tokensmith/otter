@@ -5,7 +5,7 @@ description = """an example project that uses otter"""
 apply plugin: 'java'
 apply plugin: 'war'
 
-sourceCompatibility = 9
+sourceCompatibility = 12
 
 buildscript {
     repositories {
@@ -21,6 +21,7 @@ repositories {
 }
 
 ext {
+    log4jVersion = '2.12.0'
     mainClass = 'org.rootservices.hello.server.HelloServer'
     pathToJavaMain = "$buildDir/classes/java/main/"
     mainClassAsFilePath = "org/rootservices/hello/server/HelloServer.class"
@@ -32,10 +33,10 @@ dependencies {
     compile project (':otter')
 
     // logging
-    compile "org.slf4j:slf4j-simple:1.7.25"
-    compile group: 'org.apache.logging.log4j', name: 'log4j-1.2-api', version:'2.7'
-    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version:'2.7'
-    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version:'2.7'
+    compile "org.slf4j:slf4j-simple:1.7.26"
+    compile "org.apache.logging.log4j:log4j-1.2-api:${log4jVersion}"
+    compile "org.apache.logging.log4j:log4j-api:${log4jVersion}"
+    compile "org.apache.logging.log4j:log4j-core:${log4jVersion}"
 
     testCompile 'junit:junit:4.12'
     testCompile "org.asynchttpclient:async-http-client:2.4.4"
@@ -43,7 +44,7 @@ dependencies {
 
 task fatJar(type: Jar) {
     manifest {
-        attributes 'Implementation-Title': 'hello-world', 'Implementation-Version': version, 'Main-Class': 'org.rootservices.hello.server.HelloServer'
+        attributes 'Implementation-Title': 'org.rootservices.hello-world', 'Implementation-Version': version, 'Main-Class': 'org.rootservices.org.rootservices.hello.server.HelloServer'
     }
     baseName = project.name + '-all'
     from {
