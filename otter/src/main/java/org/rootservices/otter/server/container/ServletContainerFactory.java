@@ -1,7 +1,5 @@
 package org.rootservices.otter.server.container;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.util.resource.PathResource;
@@ -22,6 +20,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.EnumSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Created by tommackenzie on 4/3/16.
@@ -30,7 +31,7 @@ import java.util.EnumSet;
  * System.setProperty("org.eclipse.jetty.LEVEL","INFO");
  */
 public class ServletContainerFactory {
-    protected static Logger logger = LogManager.getLogger(ServletContainerFactory.class);
+    protected static Logger logger = LoggerFactory.getLogger(ServletContainerFactory.class);
     private static String DIR_ALLOWED_KEY = "org.eclipse.jetty.servlet.Default.dirAllowed";
     private static String INCLUDE_JAR_PATTERN = "org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern";
     private static String JARS_TO_INCLUDE = ".*/[^/]*servlet-api-[^/]*\\.jar$|.*/javax.servlet.jsp.jstl-.*\\.jar$|.*/[^/]*taglibs.*\\.jar$";
@@ -105,7 +106,7 @@ public class ServletContainerFactory {
         jetty.setConnectors( new Connector[] { serverConnector } );
 
         // request logs
-        NCSARequestLog log = makeRequestLog(requestLog);
+        CustomRequestLog log = makeRequestLog(requestLog);
 
         jetty.setRequestLog(log);
 
@@ -127,7 +128,7 @@ public class ServletContainerFactory {
         jetty.setConnectors( new Connector[] { serverConnector } );
 
         // request logs
-        NCSARequestLog log = makeRequestLog(requestLog);
+        CustomRequestLog log = makeRequestLog(requestLog);
 
         jetty.setRequestLog(log);
 
@@ -209,14 +210,8 @@ public class ServletContainerFactory {
         return serverConnector;
     }
 
-    protected NCSARequestLog makeRequestLog(String logFile) {
-        NCSARequestLog requestLog = new NCSARequestLog(logFile);
-        requestLog.setAppend(true);
-        requestLog.setExtended(false);
-        requestLog.setLogTimeZone("GMT");
-        requestLog.setLogLatency(true);
-        requestLog.setRetainDays(90);
-
+    protected CustomRequestLog makeRequestLog(String logFile) {
+        CustomRequestLog requestLog = new CustomRequestLog(logFile);
         return requestLog;
     }
 }

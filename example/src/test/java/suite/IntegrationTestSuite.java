@@ -1,10 +1,10 @@
 package suite;
 
 
-import hello.controller.*;
-import hello.controller.api.v1.HelloLegacyRestResourceTest;
-import hello.controller.api.v2.HelloRestResourceTest;
-import hello.controller.api.v3.BrokenRestResourceTest;
+import org.rootservices.hello.controller.*;
+import org.rootservices.hello.controller.api.v1.HelloLegacyRestResourceTest;
+import org.rootservices.hello.controller.api.v2.HelloRestResourceTest;
+import org.rootservices.hello.controller.api.v3.BrokenRestResourceTest;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 import org.junit.AfterClass;
@@ -25,7 +25,7 @@ import static org.asynchttpclient.Dsl.asyncHttpClient;
 @Suite.SuiteClasses(value = {
         HelloLegacyRestResourceTest.class,
         HelloRestResourceTest.class,
-        hello.controller.api.v3.HelloRestResourceTest.class,
+        org.rootservices.hello.controller.api.v3.HelloRestResourceTest.class,
         BrokenRestResourceTest.class,
         NotFoundResourceTest.class,
         HelloResourceTest.class,
