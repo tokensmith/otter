@@ -49,8 +49,8 @@ public class BrokenRestResourceTest {
 
         assertThat(response.getStatusCode(), is(StatusCode.SERVER_ERROR.getCode()));
 
-        // ServerErrorPayload payload = to(response.getResponseBodyAsBytes());
-        // assertThat(payload.getMessage(), is("An internal server error occurred."));
+        ServerErrorPayload payload = to(response.getResponseBodyAsBytes());
+        assertThat(payload.getMessage(), is("An internal server error occurred."));
     }
 
     @Test
