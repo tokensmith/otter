@@ -12,9 +12,10 @@ public class RestResponseError<U, P> {
     private RestResponse<P> resourceResponse;
     private RestResponse<P> response;
     private Throwable cause;
+    private ErrorType errorType;
 
 
-    public RestResponseError(RestBtwnRequest<U> btwnRequest, RestBtwnResponse btwnResponse, RestRequest<U, P> requestForResource, RestResponse<P> responseForResource, RestResponse<P> resourceResponse, RestResponse<P> response, Throwable cause) {
+    public RestResponseError(RestBtwnRequest<U> btwnRequest, RestBtwnResponse btwnResponse, RestRequest<U, P> requestForResource, RestResponse<P> responseForResource, RestResponse<P> resourceResponse, RestResponse<P> response, Throwable cause, ErrorType errorType) {
         this.btwnRequest = btwnRequest;
         this.btwnResponse = btwnResponse;
         this.requestForResource = requestForResource;
@@ -22,6 +23,7 @@ public class RestResponseError<U, P> {
         this.resourceResponse = resourceResponse;
         this.response = response;
         this.cause = cause;
+        this.errorType = errorType;
     }
 
     public RestBtwnRequest<U> getBtwnRequest() {
@@ -78,5 +80,17 @@ public class RestResponseError<U, P> {
 
     public void setCause(Throwable cause) {
         this.cause = cause;
+    }
+
+    public ErrorType getErrorType() {
+        return errorType;
+    }
+
+    public void setErrorType(ErrorType errorType) {
+        this.errorType = errorType;
+    }
+
+    public enum ErrorType {
+        HALT, CLIENT, BAD_REQUEST, SERVER
     }
 }

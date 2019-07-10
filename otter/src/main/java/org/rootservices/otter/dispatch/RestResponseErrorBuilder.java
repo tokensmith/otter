@@ -15,6 +15,7 @@ public class RestResponseErrorBuilder<U, P> {
     private RestResponse<P> resourceResponse;
     private RestResponse<P> response;
     private Throwable cause;
+    private RestResponseError.ErrorType errorType;
 
     public RestResponseErrorBuilder<U, P> btwnRequest(RestBtwnRequest<U> btwnRequest) {
         this.btwnRequest = btwnRequest;
@@ -51,9 +52,14 @@ public class RestResponseErrorBuilder<U, P> {
         return this;
     }
 
+    public RestResponseErrorBuilder<U, P> errorType(RestResponseError.ErrorType errorType) {
+        this.errorType = errorType;
+        return this;
+    }
+
     public RestResponseError<U, P> build() {
         return new RestResponseError<U, P>(
-            btwnRequest, btwnResponse, requestForResource, responseForResource, resourceResponse, response, cause
+            btwnRequest, btwnResponse, requestForResource, responseForResource, resourceResponse, response, cause, errorType
         );
     }
 }
