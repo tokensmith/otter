@@ -9,13 +9,9 @@ import org.rootservices.otter.controller.entity.ErrorPayload;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.request.RestRequest;
 import org.rootservices.otter.controller.entity.response.RestResponse;
-import org.rootservices.otter.dispatch.entity.RestBtwnRequest;
-import org.rootservices.otter.dispatch.entity.RestBtwnResponse;
-import org.rootservices.otter.dispatch.entity.RestErrorRequest;
-import org.rootservices.otter.dispatch.entity.RestErrorResponse;
+import org.rootservices.otter.dispatch.entity.*;
 import org.rootservices.otter.dispatch.exception.ClientException;
 import org.rootservices.otter.dispatch.exception.ServerException;
-import org.rootservices.otter.dispatch.exception.WrongTypeException;
 import org.rootservices.otter.dispatch.translator.RestErrorHandler;
 import org.rootservices.otter.dispatch.translator.rest.*;
 import org.rootservices.otter.router.entity.Method;
@@ -70,53 +66,40 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
 
         try {
             answer = process(ask, answer);
-        } catch (ClientException e) {
-            Optional<Answer> answerFromHandler = handle(StatusCode.BAD_REQUEST, e, ask, answer);
-            if (!answerFromHandler.isPresent()) {
-                // default 400 handling.
-                Optional<byte[]> errorPayload = toDefaultBadRequest(e);
-                answer.setStatusCode(StatusCode.BAD_REQUEST);
-                answer.setPayload(errorPayload);
-                throw new HaltException(e.getMessage(), e);
-            }
-            answer = answerFromHandler.get();
-        } catch (ServerException e) {
-            answer = handleServerError(e, ask, answer);
-        } catch (Throwable e) {
-            answer = handleServerError(e, ask, answer);
+        } catch(HaltException e) {
+            throw e;
         }
         return answer;
     }
 
-    protected Answer process(Ask ask, Answer answer) throws ClientException, ServerException, HaltException {
+    protected Answer process(Ask ask, Answer answer) throws HaltException {
 
         Optional<P> entity;
         try {
             entity = makeEntity(ask.getBody());
         } catch (DeserializationException e) {
-            throw new ClientException("Could not serialize request body", e);
+            // 113: may want to consider an alternative to prevent duplicate returns in this method.
+            ClientException clientException = new ClientException("Could not serialize request body", e);
+            RestResponseError<U, P> error = new RestResponseErrorBuilder<U, P>()
+                    .cause(clientException)
+                    .errorType(RestResponseError.ErrorType.BAD_REQUEST)
+                    .build();
+            return handleErrors(error, ask, answer);
         }
 
         RestBtwnRequest<U> btwnRequest = restBtwnRequestTranslator.to(ask);
         RestBtwnResponse btwnResponse = restBtwnResponseTranslator.to(answer);
 
-        // send it off to betweens and rest resource
-        RestResponse<P> runResponse;
-        try {
-            runResponse = executeResourceMethod(restRoute, btwnRequest, btwnResponse, entity);
-        } catch (WrongTypeException e) {
-            throw new ServerException("", e);
-        } catch (HaltException e) {
-            // btwnResponse may have been updated in a between. need to merge it with answer.
-            // TODO: throw client or server exception for handling, or have it indicate which handler
-            answer = restBtwnResponseTranslator.from(answer, btwnResponse);
-            throw e;
-        }
+        RestReponseEither<U, P> runResponseEither = executeResourceMethod(restRoute, btwnRequest, btwnResponse, entity);
 
-        // response entity marshalling
-        answer = restResponseTranslator.from(answer, runResponse);
-        Optional<byte[]> out = payloadToBytes(runResponse.getPayload());
-        answer.setPayload(out);
+        if (runResponseEither.getRight().isPresent()) {
+            answer = handleErrors(runResponseEither.getRight().get(), ask, answer);
+        } else {
+            // response entity marshalling
+            answer = restResponseTranslator.from(answer, runResponseEither.getLeft().get());
+            Optional<byte[]> out = payloadToBytes(runResponseEither.getLeft().get().getPayload());
+            answer.setPayload(out);
+        }
 
         return answer;
     }
@@ -133,6 +116,32 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
         }
         return entity;
     }
+
+    protected Answer handleErrors(RestResponseError<U, P> error, Ask ask, Answer answer) throws HaltException {
+
+        RestResponseError.ErrorType errorType = error.getErrorType();
+        if (RestResponseError.ErrorType.HALT.equals(errorType)) {
+            answer = restBtwnResponseTranslator.from(answer, error.getBtwnResponse());
+            throw (HaltException) error.getCause();
+        } else if (RestResponseError.ErrorType.BAD_REQUEST.equals(errorType)) {
+            Optional<Answer> answerFromHandler = handle(StatusCode.BAD_REQUEST, error.getCause(), ask, answer);
+
+            // 113: a default 400 should be there. it would make it simpler
+            if (!answerFromHandler.isPresent()) {
+
+                Optional<byte[]> errorPayload = toDefaultBadRequest((ClientException) error.getCause());
+                answer.setStatusCode(StatusCode.BAD_REQUEST);
+                answer.setPayload(errorPayload);
+                throw new HaltException(error.getCause().getMessage(), error.getCause());
+            }
+            answer = answerFromHandler.get();
+        } else if (RestResponseError.ErrorType.SERVER.equals(errorType)) {
+            answer = handleServerError(error.getCause(), ask, answer);
+        }
+
+        return answer;
+    }
+
 
     protected Optional<Answer> handle(StatusCode statusCode, Throwable cause, Ask ask, Answer answer) {
         Optional<Answer> answerFromHandler = Optional.empty();
@@ -179,75 +188,120 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
         return to;
     }
 
-    protected RestResponse<P> executeResourceMethod(RestRoute<U, P> route, RestBtwnRequest<U> btwnRequest, RestBtwnResponse btwnResponse, Optional<P> entity) throws HaltException, WrongTypeException {
+    /**
+     * This method executes a route's before betweens, resource method, and the after betweens. If any exceptions occur
+     * it will populate the right ivar of the RestReponseEither that is returned. An Either is used for the response
+     * type in order to handle exceptions. The handlers should have access to the various request and response objects
+     * which are parameterized types. Exceptions cannot have generic typed parameters.
+     *
+     * @param route the route to execute.
+     * @param btwnRequest the request to pass before betweens.
+     * @param btwnResponse the response to pass to before betweens.
+     * @param entity the payload of the request.
+     * @return A RestReponseEither, if left is present then it executed correctly. If right is present then an
+     * error occurred and it should be handled.
+     */
+    protected RestReponseEither<U, P> executeResourceMethod(RestRoute<U, P> route, RestBtwnRequest<U> btwnRequest, RestBtwnResponse btwnResponse, Optional<P> entity) {
 
-        RestResource<U, P> resource = route.getRestResource();
-        RestRequest<U, P> requestForResource;
-        RestResponse<P> responseForResource;
-        Method method = btwnRequest.getMethod();
+        RestReponseEither<U, P> responseEither = new RestReponseEither<>();
+        RestResponseErrorBuilder<U, P> errorBuilder = new RestResponseErrorBuilder<>();
+
+        RestRequest<U, P> requestForResource = null;
+        RestResponse<P> responseForResource = null;
         RestResponse<P> resourceResponse = null;
-        RestResponse<P> response;
+        RestResponse<P> response = null;
 
         try {
+            RestResource<U, P> resource = route.getRestResource();
+            Method method = btwnRequest.getMethod();
+
             executeBetween(route.getBefore(), method, btwnRequest, btwnResponse);
+
+            requestForResource = restRequestTranslator.to(btwnRequest, entity);
+            responseForResource = restResponseTranslator.to(btwnResponse);
+
+            resourceResponse = execute(method, resource, requestForResource, responseForResource);
+
+            RestBtwnRequest<U> btwnRequestForAfter = restBtwnRequestTranslator.to(requestForResource);
+            Optional<byte[]> resourceResponsePayload = payloadToBytes(resourceResponse.getPayload());
+            RestBtwnResponse btwnResponseForAfter = restBtwnResponseTranslator.to(resourceResponse, resourceResponsePayload);
+
+            executeBetween(route.getAfter(), method, btwnRequestForAfter, btwnResponseForAfter);
+
+            // in case a after between modified the response.
+            response = restResponseTranslator.to(btwnResponseForAfter);
+
+            // sets the response payload. Decides which payload to use in case a after between modified the payload.
+            setResponsePayload(resourceResponsePayload, btwnResponseForAfter.getPayload(), resourceResponse, response);
+
         } catch (HaltException e) {
-            throw e;
+            errorBuilder = errorBuilder
+                .cause(e)
+                .errorType(RestResponseError.ErrorType.HALT);
+        } catch (DeserializationException e) {
+            // 113: keeping the old interface here for server exceptions.
+            ServerException cause = new ServerException("", e);
+            errorBuilder = errorBuilder
+                .cause(cause)
+                .errorType(RestResponseError.ErrorType.SERVER);
+        } catch (Throwable e) {
+            // 113: keeping the old interface here for server exceptions.
+            ServerException cause = new ServerException("", e);
+            errorBuilder = errorBuilder
+                .cause(cause)
+                .errorType(RestResponseError.ErrorType.SERVER);;
         }
-        requestForResource = restRequestTranslator.to(btwnRequest, entity);
-        responseForResource = restResponseTranslator.to(btwnResponse);
+
+        RestResponseError<U, P> error = errorBuilder
+                .btwnRequest(btwnRequest)
+                .btwnResponse(btwnResponse)
+                .requestForResource(requestForResource)
+                .responseForResource(responseForResource)
+                .resourceResponse(resourceResponse)
+                .response(response)
+                .build();
+
+        responseEither.setRight(error.getCause() == null ? Optional.empty() : Optional.of(error));
+        responseEither.setLeft(error.getCause() == null ? Optional.of(response) : Optional.empty());
+
+        return responseEither;
+    }
+
+    protected RestResponse<P> execute(Method method, RestResource<U, P> resource, RestRequest<U, P> request, RestResponse<P> response) {
+
+        RestResponse<P> resourceResponse = null;
 
         if (method == Method.GET) {
-            resourceResponse = resource.get(requestForResource, responseForResource);
+            resourceResponse = resource.get(request, response);
         } else if (method == Method.POST) {
-            resourceResponse = resource.post(requestForResource, responseForResource);
+            resourceResponse = resource.post(request, response);
         } else if (method == Method.PUT) {
-            resourceResponse = resource.put(requestForResource, responseForResource);
+            resourceResponse = resource.put(request, response);
         } else if (method == Method.PATCH) {
-            resourceResponse = resource.patch(requestForResource, responseForResource);
+            resourceResponse = resource.patch(request, response);
         } else if (method == Method.DELETE) {
-            resourceResponse = resource.delete(requestForResource, responseForResource);
+            resourceResponse = resource.delete(request, response);
         } else if (method == Method.CONNECT) {
-            resourceResponse = resource.connect(requestForResource, responseForResource);
+            resourceResponse = resource.connect(request, response);
         } else if (method == Method.OPTIONS) {
-            resourceResponse = resource.options(requestForResource, responseForResource);
+            resourceResponse = resource.options(request, response);
         } else if (method == Method.TRACE) {
-            resourceResponse = resource.trace(requestForResource, responseForResource);
+            resourceResponse = resource.trace(request, response);
         } else if (method == Method.HEAD) {
-            resourceResponse = resource.head(requestForResource, responseForResource);
+            resourceResponse = resource.head(request, response);
         }
+        return resourceResponse;
+    }
 
-        RestBtwnRequest<U> btwnRequestForAfter = restBtwnRequestTranslator.to(requestForResource);
-
-        Optional<byte[]> resourceResponsePayload = payloadToBytes(resourceResponse.getPayload());
-        RestBtwnResponse btwnResponseForAfter = restBtwnResponseTranslator.to(resourceResponse, resourceResponsePayload);
-
-        try {
-            executeBetween(route.getAfter(), method, btwnRequestForAfter, btwnResponseForAfter);
-        } catch (HaltException e) {
-            // TODO: translate to client or server exception for handling.
-            throw e;
-        }
-
-        response = restResponseTranslator.to(btwnResponseForAfter);
-
-        if (isPayloadDirty(resourceResponsePayload, btwnResponseForAfter.getPayload())) {
+    protected void setResponsePayload(Optional<byte[]> payload, Optional<byte[]> afterPayload, RestResponse<P> resourceResponse, RestResponse<P> response) throws DeserializationException {
+        // if a after between modified the response payload then it needs to re-hydrate.
+        if (isPayloadDirty(payload, afterPayload)) {
             Optional<P> responseEntity;
-
-            try {
-                responseEntity = makeEntity(btwnResponseForAfter.getPayload());
-            } catch (DeserializationException e) {
-                throw new WrongTypeException(
-                    "Could not marshal payload assigned in after between to the desired type",
-                    e
-                );
-            }
-
+            responseEntity = makeEntity(afterPayload);
             response.setPayload(responseEntity);
         } else {
             response.setPayload(resourceResponse.getPayload());
         }
-
-        return response;
     }
 
     protected boolean isPayloadDirty(Optional<byte[]> resourcePayload, Optional<byte[]> btwnPayload)  {
