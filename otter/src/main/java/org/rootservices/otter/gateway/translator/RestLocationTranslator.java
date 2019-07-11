@@ -46,6 +46,7 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
             // merge group reset errors with the location's rest errors.
             Map<StatusCode, RestError<U, ? extends Translatable>> mergedRestErrors = new HashMap<>(restErrors);
 
+            // 113: add default 400 handler.
             Location location = new RestLocationBuilder<U, P>()
                     .path(from.getRegex())
                     .contentTypes(contentTypes)

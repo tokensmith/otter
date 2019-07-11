@@ -7,6 +7,9 @@ import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.request.Request;
 import org.rootservices.otter.controller.entity.response.Response;
+import org.rootservices.otter.dispatch.builder.ResponseErrorBuilder;
+import org.rootservices.otter.dispatch.entity.either.ResponseEither;
+import org.rootservices.otter.dispatch.entity.either.ResponseError;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;
 import org.rootservices.otter.router.entity.between.Between;
 import org.rootservices.otter.router.entity.Method;
@@ -41,14 +44,8 @@ public class RouteRun<S extends DefaultSession, U extends DefaultUser> implement
             answer = process(ask, answer);
         } catch(HaltException e) {
             throw e;
-        } catch (Throwable e) {
-            Optional<Answer> answerFromErrorResource = handle(StatusCode.SERVER_ERROR, e, ask, answer);
-            if (! answerFromErrorResource.isPresent()) {
-                // could not handle, no matching error resource.
-                throw new HaltException(e.getMessage(), e);
-            }
-            answer = answerFromErrorResource.get();
         }
+
         return answer;
     }
 
@@ -56,17 +53,33 @@ public class RouteRun<S extends DefaultSession, U extends DefaultUser> implement
         Request<S, U> request = requestTranslator.to(ask);
         Response<S> response = answerTranslator.from(answer);
 
-        Response<S> runResponse;
-        try {
-            runResponse = executeResourceMethod(route, request, response);
-        } catch (HaltException e) {
-            // response may have been updated in a between
-            answer = answerTranslator.to(answer, response);
-            throw e;
+
+        ResponseEither<S, U> runResponseEither = executeResourceMethod(route, request, response);
+
+        if (runResponseEither.getRight().isPresent()) {
+            answer = handleErrors(runResponseEither.getRight().get(), ask, answer);
+        } else {
+            answer = answerTranslator.to(runResponseEither.getLeft().get());
         }
 
-        return answerTranslator.to(runResponse);
+        return answer;
     }
+
+    protected Answer handleErrors(ResponseError<S, U> error, Ask ask, Answer answer) throws HaltException {
+        ResponseError.ErrorType errorType = error.getErrorType();
+        if (ResponseError.ErrorType.HALT.equals(errorType)) {
+            answer = answerTranslator.to(answer, error.getResponse());
+            throw (HaltException) error.getCause();
+        } else if (ResponseError.ErrorType.SERVER.equals(errorType)) {
+            Optional<Answer> answerFromErrorResource = handle(StatusCode.SERVER_ERROR, error.getCause(), ask, answer);
+            if (! answerFromErrorResource.isPresent()) {
+                // could not handle, no matching error resource.
+                throw new HaltException(error.getCause().getMessage(), error.getCause());
+            }
+            answer = answerFromErrorResource.get();
+        }
+        return answer;
+    };
 
     protected Optional<Answer> handle(StatusCode statusCode, Throwable cause, Ask ask, Answer answer) {
         Optional<Answer> answerFromErrorResource = Optional.empty();
@@ -104,16 +117,53 @@ public class RouteRun<S extends DefaultSession, U extends DefaultUser> implement
         return answerFromErrorResource;
     }
 
-    protected Response<S> executeResourceMethod(Route<S, U> route, Request<S, U> request, Response<S> response) throws HaltException {
+    /**
+     * This executes a route's before betweens, resource method, and the after betweens. If any exceptions occur
+     * it will populate the right ivar of the RestReponseEither that is returned. An Either is used for the response
+     * type in order to handle exceptions. The handlers should have access to the various request and response objects
+     * which are parameterized types. Exceptions cannot have generic typed parameters.
+     *
+     * @param route the route to execute.
+     * @param request the request to process.
+     * @param response the response to process.
+     * @return A ReponseEither, if left is present then it executed correctly. If right is present then an
+     * error occurred and it should be handled.
+     */
+    protected ResponseEither<S, U> executeResourceMethod(Route<S, U> route, Request<S, U> request, Response<S> response) {
+        ResponseEither<S, U> responseEither = new ResponseEither<>();
+        ResponseErrorBuilder<S, U> errorBuilder = new ResponseErrorBuilder<>();
         Resource<S, U> resource = route.getResource();
         Response<S> resourceResponse = null;
         Method method = request.getMethod();
 
         try {
             executeBetween(route.getBefore(), method, request, response);
+            resourceResponse = execute(method, resource, request, response);
+            executeBetween(route.getAfter(), method, request, resourceResponse);
         } catch (HaltException e) {
-            throw e;
+            errorBuilder = errorBuilder
+                .cause(e)
+                .errorType(ResponseError.ErrorType.HALT);
+        } catch (Throwable e) {
+            errorBuilder = errorBuilder
+                .cause(e)
+                .errorType(ResponseError.ErrorType.SERVER);
         }
+
+        ResponseError<S, U> error = errorBuilder
+            .request(request)
+            .response(response)
+            .build();
+
+        responseEither.setRight(error.getCause() == null ? Optional.empty() : Optional.of(error));
+        responseEither.setLeft(error.getCause() == null ? Optional.of(response) : Optional.empty());
+
+        return responseEither;
+    }
+
+    protected Response<S> execute(Method method, Resource<S, U> resource, Request<S, U> request, Response<S> response) {
+
+        Response<S> resourceResponse = null;
 
         if (method == Method.GET) {
             resourceResponse = resource.get(request, response);
@@ -134,13 +184,6 @@ public class RouteRun<S extends DefaultSession, U extends DefaultUser> implement
         } else if (method == Method.HEAD) {
             resourceResponse = resource.head(request, response);
         }
-
-        try {
-            executeBetween(route.getAfter(), method, request, resourceResponse);
-        } catch (HaltException e) {
-            throw e;
-        }
-
         return resourceResponse;
     }
 

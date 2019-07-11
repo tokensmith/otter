@@ -37,9 +37,14 @@ Then handle the error (500)
         RestBtwnResponse btwnResponse
         RestRequest<U, P> request
         RestResponse<P> response
-    It would need to be an either.
-    
-         
+    It would need to be an either.    
 
 
 ##### Can ErrorTarget and RestErrorTarget be retrofitted to account for this feature?
+
+## Tasks
+
+##### refactor RouteRun.executeResourceMethod to return an Either.
+##### Add default 400 to RestLocationTranslator
+##### Remove default 400 code in JsonRouteRun
+##### Attempt to use a common interface for error handling.

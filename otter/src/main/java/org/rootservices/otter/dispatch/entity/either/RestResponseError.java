@@ -1,7 +1,9 @@
-package org.rootservices.otter.dispatch.entity;
+package org.rootservices.otter.dispatch.entity.either;
 
 import org.rootservices.otter.controller.entity.request.RestRequest;
 import org.rootservices.otter.controller.entity.response.RestResponse;
+import org.rootservices.otter.dispatch.entity.RestBtwnRequest;
+import org.rootservices.otter.dispatch.entity.RestBtwnResponse;
 
 
 public class RestResponseError<U, P> {
