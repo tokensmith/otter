@@ -1,4 +1,4 @@
-package org.rootservices.otter.dispatch.entity;
+package org.rootservices.otter.dispatch.entity.either;
 
 import org.rootservices.otter.controller.entity.response.RestResponse;
 

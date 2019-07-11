@@ -1,10 +1,10 @@
-package org.rootservices.otter.dispatch;
+package org.rootservices.otter.dispatch.builder;
 
 import org.rootservices.otter.controller.entity.request.RestRequest;
 import org.rootservices.otter.controller.entity.response.RestResponse;
 import org.rootservices.otter.dispatch.entity.RestBtwnRequest;
 import org.rootservices.otter.dispatch.entity.RestBtwnResponse;
-import org.rootservices.otter.dispatch.entity.RestResponseError;
+import org.rootservices.otter.dispatch.entity.either.RestResponseError;
 
 public class RestResponseErrorBuilder<U, P> {
 

@@ -42,6 +42,7 @@ public class LocationTranslator<S extends DefaultSession, U extends DefaultUser>
                 contentTypes = new ArrayList<>();
             }
 
+            // 113: add a default 400 handler.
             Location location = new LocationBuilder<S, U>()
                 .path(from.getRegex())
                 .contentTypes(contentTypes)

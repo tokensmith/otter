@@ -9,7 +9,10 @@ import org.rootservices.otter.controller.entity.ErrorPayload;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.request.RestRequest;
 import org.rootservices.otter.controller.entity.response.RestResponse;
+import org.rootservices.otter.dispatch.builder.RestResponseErrorBuilder;
 import org.rootservices.otter.dispatch.entity.*;
+import org.rootservices.otter.dispatch.entity.either.RestReponseEither;
+import org.rootservices.otter.dispatch.entity.either.RestResponseError;
 import org.rootservices.otter.dispatch.exception.ClientException;
 import org.rootservices.otter.dispatch.exception.ServerException;
 import org.rootservices.otter.dispatch.translator.RestErrorHandler;
@@ -189,7 +192,7 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
     }
 
     /**
-     * This method executes a route's before betweens, resource method, and the after betweens. If any exceptions occur
+     * This executes a route's before betweens, resource method, and the after betweens. If any exceptions occur
      * it will populate the right ivar of the RestReponseEither that is returned. An Either is used for the response
      * type in order to handle exceptions. The handlers should have access to the various request and response objects
      * which are parameterized types. Exceptions cannot have generic typed parameters.
