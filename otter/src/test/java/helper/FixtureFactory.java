@@ -252,8 +252,12 @@ public class FixtureFactory {
     }
 
     public static Ask makeAsk() {
+        List<MimeType> contentTypes = new ArrayList<>();
+        contentTypes.add(new MimeTypeBuilder().html().build());
+
         Ask ask = new AskBuilder()
             .matcher(Optional.empty())
+            .possibleContentTypes(contentTypes)
             .method(Method.GET)
             .pathWithParams("")
             .contentType(new MimeTypeBuilder().html().build())
@@ -301,10 +305,14 @@ public class FixtureFactory {
     public static RestBtwnRequest<DummyUser> makeRestBtwnRequest() {
         RestBtwnRequest<DummyUser> request =  new RestBtwnRequest<DummyUser>();
 
+        List<MimeType> contentTypes = new ArrayList<>();
+        contentTypes.add(new MimeTypeBuilder().json().build());
+
         request.setMatcher(Optional.empty());
+        request.setPossibleContentTypes(contentTypes);
         request.setMethod(Method.GET);
         request.setPathWithParams("");
-        request.setContentType(new MimeTypeBuilder().html().build());
+        request.setContentType(new MimeTypeBuilder().json().build());
         request.setHeaders(new HashMap<>());
         request.setCookies(makeCookies());
         request.setQueryParams(new HashMap<>());

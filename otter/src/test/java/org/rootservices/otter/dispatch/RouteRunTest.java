@@ -5,11 +5,9 @@ import helper.entity.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.config.OtterAppFactory;
-import org.rootservices.otter.controller.ErrorResource;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.request.Request;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.dispatch.translator.AnswerTranslator;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;
 import org.rootservices.otter.router.entity.Method;
@@ -17,7 +15,6 @@ import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.router.entity.io.Answer;
 import org.rootservices.otter.router.entity.io.Ask;
 import org.rootservices.otter.router.exception.HaltException;
-import org.rootservices.otter.translator.JsonTranslator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +43,7 @@ public class RouteRunTest {
         AnswerTranslator<DummySession> answerTranslator = new AnswerTranslator<DummySession>();
 
 
-        Map<StatusCode, ErrorResource<DummySession, DummyUser>> errorResources = new HashMap<>();
+        Map<StatusCode, Resource<DummySession, DummyUser>> errorResources = new HashMap<>();
         errorResources.put(StatusCode.SERVER_ERROR, new ServerErrorResource());
 
         RouteRun<DummySession, DummyUser> subject = new RouteRun<>(

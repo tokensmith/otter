@@ -54,7 +54,7 @@ public class RestTargetBuilderTest {
         Class<DummyErrorPayload> payload = (Class<DummyErrorPayload>) actual.getRestErrors().get(StatusCode.BAD_REQUEST).getPayload();
         assertThat(payload, is(notNullValue()));
 
-        assertThat(actual.getRestErrors().get(StatusCode.BAD_REQUEST).getRestErrorResource(), is(errorRestResource));
+        assertThat(actual.getRestErrors().get(StatusCode.BAD_REQUEST).getRestResource(), is(errorRestResource));
     }
 
     @Test

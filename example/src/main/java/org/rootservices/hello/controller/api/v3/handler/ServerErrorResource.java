@@ -2,13 +2,15 @@ package org.rootservices.hello.controller.api.v3.handler;
 
 import org.rootservices.hello.controller.api.model.ApiUser;
 import org.rootservices.hello.controller.api.v3.model.ServerErrorPayload;
-import org.rootservices.otter.controller.RestErrorResource;
+import org.rootservices.otter.controller.error.RestErrorResource;
 import org.rootservices.otter.controller.entity.StatusCode;
 
 
 import java.util.Optional;
 
-public class ServerErrorHandler extends RestErrorResource<ApiUser, ServerErrorPayload> {
+
+// 113: move this to otter as a default.
+public class ServerErrorResource extends RestErrorResource<ApiUser, ServerErrorPayload> {
 
     @Override
     public Optional<ServerErrorPayload> to(Throwable cause) {

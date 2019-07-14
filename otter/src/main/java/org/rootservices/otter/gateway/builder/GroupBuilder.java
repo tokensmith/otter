@@ -1,6 +1,6 @@
 package org.rootservices.otter.gateway.builder;
 
-import org.rootservices.otter.controller.ErrorResource;
+import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -17,7 +17,7 @@ public class GroupBuilder<S extends DefaultSession, U extends DefaultUser> {
     private Class<S> sessionClazz;
     private Between<S, U> authRequired;
     private Between<S, U> authOptional;
-    private Map<StatusCode, ErrorResource<S, U>> errorResources = new HashMap<>();
+    private Map<StatusCode, Resource<S, U>> errorResources = new HashMap<>();
 
     public GroupBuilder<S, U> name(String name) {
         this.name = name;
@@ -39,7 +39,7 @@ public class GroupBuilder<S extends DefaultSession, U extends DefaultUser> {
         return this;
     }
 
-    public GroupBuilder<S, U> onError(StatusCode statusCode, ErrorResource<S, U> errorResource) {
+    public GroupBuilder<S, U> onError(StatusCode statusCode, Resource<S, U> errorResource) {
         this.errorResources.put(statusCode, errorResource);
         return this;
     }

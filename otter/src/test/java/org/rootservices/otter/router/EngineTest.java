@@ -20,11 +20,13 @@ import org.rootservices.otter.router.entity.io.Ask;
 import org.rootservices.otter.router.factory.ErrorRouteRunnerFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.doThrow;
@@ -45,23 +47,31 @@ public class EngineTest {
         subject = new Engine(mockDispatcher, mockErrorRouteRunnerFactory);
     }
 
+    public Ask askForEngineTests(Method method, String url, MimeType mimeType) {
+        Ask ask = FixtureFactory.makeAsk();
+        ask.setMethod(method);
+        ask.setPathWithParams(url);
+        ask.setContentType(mimeType);
+        ask.setPossibleContentTypes(new ArrayList<>()); // empty list to make sure it gets assigned.
+        return ask;
+    }
+
     public void routeWhenMethodIsXShouldMatch(Method method) throws Exception {
         String url = "foo";
         Optional<MatchedLocation> match = FixtureFactory.makeMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
-        Ask ask = FixtureFactory.makeAsk();
-        ask.setMethod(method);
-        ask.setPathWithParams(url);
-        ask.setContentType(json);
-
+        Ask ask = askForEngineTests(method, url, json);
         Answer answer = FixtureFactory.makeAnswer();
 
         RouteRunner mockRouteRunner = mock(RouteRunner.class);
         when(mockRouteRunner.run(ask, answer)).thenReturn(answer);
 
+        List<MimeType> contentTypes = new ArrayList<>();
+        contentTypes.add(json);
+
         Location location = new LocationBuilder<DummySession, DummyUser>()
-                .contentTypes(new ArrayList<MimeType>())
+                .contentTypes(contentTypes)
                 .build();
 
         // TODO: 99: should this be in the builder?
@@ -75,6 +85,11 @@ public class EngineTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual, is(answer));
+
+        // these should have been assigned.
+        assertThat(ask.getPossibleContentTypes().size(), is(1));
+        assertThat(ask.getPossibleContentTypes(), is(contentTypes));
+        assertThat(ask.getMatcher(), is(notNullValue()));
     }
 
     @Test
@@ -124,10 +139,7 @@ public class EngineTest {
         Optional<MatchedLocation> match = Optional.empty();
 
         MimeType json = new MimeTypeBuilder().json().build();
-        Ask ask = FixtureFactory.makeAsk();
-        ask.setMethod(method);
-        ask.setPathWithParams(url);
-        ask.setContentType(json);
+        Ask ask = askForEngineTests(method, url, json);
 
         Answer answer = FixtureFactory.makeAnswer();
 
@@ -143,5 +155,9 @@ public class EngineTest {
         Answer actual = subject.route(ask, answer);
 
         assertThat(actual, is(answer));
+
+        // these should not have values since there was no match.
+        assertThat(ask.getPossibleContentTypes().size(), is(0));
+        assertThat(ask.getMatcher().isPresent(), is(false));
     }
 }

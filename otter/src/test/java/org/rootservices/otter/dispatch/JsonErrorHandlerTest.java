@@ -37,9 +37,10 @@ public class JsonErrorHandlerTest {
         JsonTranslator<DummyErrorPayload> jsonTranslator = otterAppFactory.jsonTranslator(DummyErrorPayload.class);
 
         ClientErrorRestResource errorRestResource = new ClientErrorRestResource();
-        subject = new JsonErrorHandler<DummyUser, DummyErrorPayload>(
+        subject = new JsonErrorHandler<>(
                 jsonTranslator,
                 errorRestResource,
+                new RestRequestTranslator<>(),
                 new RestResponseTranslator<>()
 
         );

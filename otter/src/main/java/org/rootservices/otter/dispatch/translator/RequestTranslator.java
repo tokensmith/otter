@@ -11,6 +11,7 @@ public class RequestTranslator<S, U> {
         Request<S, U> to = new Request<>();
 
         to.setMatcher(from.getMatcher());
+        to.setPossibleContentTypes(from.getPossibleContentTypes());
         to.setMethod(from.getMethod());
         to.setPathWithParams(from.getPathWithParams());
         to.setContentType(from.getContentType());

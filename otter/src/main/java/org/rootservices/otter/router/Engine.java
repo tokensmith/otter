@@ -10,9 +10,7 @@ import org.rootservices.otter.router.entity.io.Ask;
 import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.router.factory.ErrorRouteRunnerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class Engine {
     private Dispatcher dispatcher;
@@ -30,12 +28,19 @@ public class Engine {
                 ask.getMethod(), ask.getPathWithParams()
         );
 
+        if (matchedLocation.isPresent()) {
+            ask.setMatcher(Optional.of(matchedLocation.get().getMatcher()));
+            ask.setPossibleContentTypes(matchedLocation.get().getLocation().getContentTypes());
+        } else {
+            ask.setMatcher(Optional.empty());
+            ask.setPossibleContentTypes(new ArrayList<>());
+        }
+
         try {
             if (matches(matchedLocation, ask.getContentType())) {
-                ask.setMatcher(Optional.of(matchedLocation.get().getMatcher()));
                 resourceAnswer = matchedLocation.get().getLocation().getRouteRunner().run(ask, answer);
             } else {
-                // TODO: Error Handling: 404, 415
+                // 113: 404, 414
                 RouteRunner errorRouteRunner = errorRouteRunnerFactory.fromLocation(matchedLocation, errorRouteRunners);
                 resourceAnswer = errorRouteRunner.run(ask, answer);
             }
@@ -60,6 +65,11 @@ public class Engine {
         return matchedLocation.isPresent()
                 && ((matchedLocation.get().getLocation().getContentTypes().size() == 0)
                 || (matchedLocation.get().getLocation().getContentTypes().size() > 0 && matchedLocation.get().getLocation().getContentTypes().contains(contentType)));
+    }
+
+    protected Boolean unsupportedMediaType(Optional<MatchedLocation> matchedLocation, MimeType contentType) {
+        return matchedLocation.isPresent()
+         && (matchedLocation.get().getLocation().getContentTypes().contains(contentType));
     }
 
 

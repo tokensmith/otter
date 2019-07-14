@@ -1,6 +1,5 @@
 package org.rootservices.otter.gateway;
 
-import org.rootservices.otter.controller.RestErrorResource;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.gateway.entity.rest.RestError;
@@ -18,10 +17,11 @@ import java.util.Optional;
  */
 public class RestLocationTranslatorFactory {
 
-    public <U extends DefaultUser, P> RestLocationTranslator<U, P> make(Optional<RestBetween<U>> authRequired, Optional<RestBetween<U>> authOptional, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors) {
+    public <U extends DefaultUser, P> RestLocationTranslator<U, P> make(Optional<RestBetween<U>> authRequired, Optional<RestBetween<U>> authOptional, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors) {
         return new RestLocationTranslator<U, P>(
                 restBetweenFlyweight(authRequired, authOptional),
-                restErrors
+                restErrors,
+                defaultErrors
         );
     }
 

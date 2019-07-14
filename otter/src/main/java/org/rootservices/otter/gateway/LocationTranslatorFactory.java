@@ -1,7 +1,7 @@
 package org.rootservices.otter.gateway;
 
 import org.rootservices.otter.config.OtterAppFactory;
-import org.rootservices.otter.controller.ErrorResource;
+import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -28,7 +28,7 @@ public class LocationTranslatorFactory {
         this.shape = shape;
     }
 
-    public <S extends DefaultSession, U extends DefaultUser> LocationTranslator<S, U> make(Class<S> sessionClazz, Optional<Between<S,U>> authRequired, Optional<Between<S,U>> authOptional, Map<StatusCode, ErrorResource<S, U>> errorResources) throws SessionCtorException {
+    public <S extends DefaultSession, U extends DefaultUser> LocationTranslator<S, U> make(Class<S> sessionClazz, Optional<Between<S,U>> authRequired, Optional<Between<S,U>> authOptional, Map<StatusCode, Resource<S, U>> errorResources) throws SessionCtorException {
         return new LocationTranslator<S, U>(
                 betweenFlyweight(sessionClazz, authRequired, authOptional),
                 errorResources

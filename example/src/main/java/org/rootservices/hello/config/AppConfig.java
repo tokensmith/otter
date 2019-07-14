@@ -11,8 +11,8 @@ import org.rootservices.hello.controller.api.model.ApiUser;
 
 import org.rootservices.hello.controller.api.v2.HelloRestResource;
 import org.rootservices.hello.controller.api.v3.BrokenRestResource;
-import org.rootservices.hello.controller.api.v3.handler.BadRequestHandler;
-import org.rootservices.hello.controller.api.v3.handler.ServerErrorHandler;
+import org.rootservices.hello.controller.api.v3.handler.BadRequestResource;
+import org.rootservices.hello.controller.api.v3.handler.ServerErrorResource;
 import org.rootservices.hello.controller.api.v3.model.BadRequestPayload;
 import org.rootservices.hello.controller.api.v3.model.BrokenPayload;
 import org.rootservices.hello.controller.api.v3.model.ServerErrorPayload;
@@ -67,7 +67,7 @@ public class AppConfig implements Configure {
     public List<Group<? extends DefaultSession, ? extends DefaultUser>> groups() {
         List<Group<? extends DefaultSession, ? extends DefaultUser>> groups = new ArrayList<>();
 
-        ServerErrorResource serverErrorResource = new ServerErrorResource();
+        org.rootservices.hello.controller.ServerErrorResource serverErrorResource = new org.rootservices.hello.controller.ServerErrorResource();
         Group<TokenSession, DefaultUser> webSiteGroup = new GroupBuilder<TokenSession, DefaultUser>()
                 .name(WEB_SITE_GROUP)
                 .sessionClazz(TokenSession.class)
@@ -103,13 +103,13 @@ public class AppConfig implements Configure {
         restGroups.add(apiGroupV2);
 
         // has overrides for error handling.
-        BadRequestHandler badRequestHandler = new BadRequestHandler();
-        ServerErrorHandler serverErrorHandler = new ServerErrorHandler();
+        BadRequestResource badRequestResource = new BadRequestResource();
+        ServerErrorResource serverErrorResource = new ServerErrorResource();
         RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
                 .name(API_GROUP_V3)
                 .authRequired(authRestBetween)
-                .onError(StatusCode.BAD_REQUEST, badRequestHandler, BadRequestPayload.class)
-                .onError(StatusCode.SERVER_ERROR, serverErrorHandler, ServerErrorPayload.class)
+                .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
+                .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
                 .build();
 
         restGroups.add(apiGroupV3);

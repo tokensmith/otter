@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 
 public class RestRequest<U, P> {
     private Optional<Matcher> matcher;
+    private List<MimeType> possibleContentTypes;
     private Method method;
     private String pathWithParams;
     private MimeType contentType;
@@ -22,6 +23,7 @@ public class RestRequest<U, P> {
     private String ipAddress;
     private Optional<U> user;
     private Optional<P> payload;
+    private Optional<Throwable> cause;
 
     public RestRequest() {}
 
@@ -45,6 +47,14 @@ public class RestRequest<U, P> {
 
     public void setMatcher(Optional<Matcher> matcher) {
         this.matcher = matcher;
+    }
+
+    public List<MimeType> getPossibleContentTypes() {
+        return possibleContentTypes;
+    }
+
+    public void setPossibleContentTypes(List<MimeType> possibleContentTypes) {
+        this.possibleContentTypes = possibleContentTypes;
     }
 
     public Method getMethod() {
@@ -133,6 +143,14 @@ public class RestRequest<U, P> {
 
     public void setPayload(Optional<P> payload) {
         this.payload = payload;
+    }
+
+    public Optional<Throwable> getCause() {
+        return cause;
+    }
+
+    public void setCause(Optional<Throwable> cause) {
+        this.cause = cause;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package helper.entity;
 
-import org.rootservices.otter.controller.ErrorResource;
+import org.rootservices.otter.controller.Resource;
 
-public class ClientErrorResource extends ErrorResource<DummySession, DummyUser> {
+public class ClientErrorResource extends Resource<DummySession, DummyUser> {
 }

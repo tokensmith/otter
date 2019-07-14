@@ -1,7 +1,6 @@
 package org.rootservices.otter.gateway.entity.rest;
 
 
-import org.rootservices.otter.controller.RestErrorResource;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.router.entity.between.RestBetween;

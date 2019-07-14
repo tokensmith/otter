@@ -1,7 +1,7 @@
 package org.rootservices.otter.gateway.translator;
 
 
-import org.rootservices.otter.controller.ErrorResource;
+import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -23,9 +23,9 @@ import java.util.stream.Stream;
 
 public class LocationTranslator<S extends DefaultSession, U extends DefaultUser> {
     private BetweenFlyweight<S, U> betweenFlyweight;
-    private Map<StatusCode, ErrorResource<S, U>> errorResources;
+    private Map<StatusCode, Resource<S, U>> errorResources;
 
-    public LocationTranslator(BetweenFlyweight<S, U> betweenFlyweight, Map<StatusCode, ErrorResource<S, U>> errorResources) {
+    public LocationTranslator(BetweenFlyweight<S, U> betweenFlyweight, Map<StatusCode, Resource<S, U>> errorResources) {
         this.betweenFlyweight = betweenFlyweight;
         this.errorResources = errorResources;
     }
@@ -42,7 +42,8 @@ public class LocationTranslator<S extends DefaultSession, U extends DefaultUser>
                 contentTypes = new ArrayList<>();
             }
 
-            // 113: add a default 400 handler.
+            // 113: need to add unsupported media type.
+
             Location location = new LocationBuilder<S, U>()
                 .path(from.getRegex())
                 .contentTypes(contentTypes)
@@ -57,6 +58,7 @@ public class LocationTranslator<S extends DefaultSession, U extends DefaultUser>
                             .flatMap(Collection::stream)
                             .collect(Collectors.toList())
                 )
+                // these are used in ErrorRouteRunnerFactory via Engine.
                 .errorRouteRunners(
                     from.getErrorTargets()
                             .entrySet().stream()
@@ -65,6 +67,7 @@ public class LocationTranslator<S extends DefaultSession, U extends DefaultUser>
                                     e -> toRoute(e.getValue())
                             ))
                 )
+                // these are used in RouteRun
                 .errorResources(
                         this.mergeErrorResources(errorResources, from.getErrorResources())
                 )
@@ -75,9 +78,9 @@ public class LocationTranslator<S extends DefaultSession, U extends DefaultUser>
         return to;
     }
 
-    protected Map<StatusCode, ErrorResource<S, U>> mergeErrorResources(Map<StatusCode, ErrorResource<S, U>> left, Map<StatusCode, ErrorResource<S, U>> right) {
+    protected Map<StatusCode, Resource<S, U>> mergeErrorResources(Map<StatusCode, Resource<S, U>> left, Map<StatusCode, Resource<S, U>> right) {
 
-        Map<StatusCode, ErrorResource<S, U>> to = Stream.of(left, right)
+        Map<StatusCode, Resource<S, U>> to = Stream.of(left, right)
                 .flatMap(map -> map.entrySet().stream())
                 .collect(
                         Collectors.toMap(

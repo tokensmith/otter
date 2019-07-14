@@ -2,14 +2,16 @@ package org.rootservices.hello.controller.api.v3.handler;
 
 import org.rootservices.hello.controller.api.model.ApiUser;
 import org.rootservices.hello.controller.api.v3.model.BadRequestPayload;
-import org.rootservices.otter.controller.RestErrorResource;
+import org.rootservices.otter.controller.error.RestErrorResource;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.translator.exception.DeserializationException;
 import org.rootservices.otter.translator.exception.Reason;
 
 import java.util.Optional;
 
-public class BadRequestHandler extends RestErrorResource<ApiUser, BadRequestPayload> {
+
+// 113: move this to otter as a default, can it use the ClientError too as the payload?
+public class BadRequestResource extends RestErrorResource<ApiUser, BadRequestPayload> {
 
     @Override
     public Optional<BadRequestPayload> to(Throwable from) {

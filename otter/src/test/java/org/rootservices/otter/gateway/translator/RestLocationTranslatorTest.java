@@ -37,7 +37,9 @@ public class RestLocationTranslatorTest {
         Map<StatusCode, RestError<DummyUser, ? extends Translatable>> restErrors = new HashMap<>();
         restErrors.put(StatusCode.BAD_REQUEST, new RestError<>(DummyErrorPayload.class, new ClientErrorRestResource()));
 
-        subject = new RestLocationTranslator<DummyUser, DummyPayload>(mockRestBetweenFlyweight, restErrors);
+        // 113: need to add defaults here.
+        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> defaultErrors = new HashMap<>();
+        subject = new RestLocationTranslator<DummyUser, DummyPayload>(mockRestBetweenFlyweight, restErrors, defaultErrors);
     }
 
     @Test
