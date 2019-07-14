@@ -12,6 +12,7 @@ public class RestErrorRequestTranslator<U> {
         RestErrorRequest<U> to = new RestErrorRequest<U>();
 
         to.setMatcher(from.getMatcher());
+        to.setPossibleContentTypes(from.getPossibleContentTypes());
         to.setMethod(from.getMethod());
         to.setPathWithParams(from.getPathWithParams());
         to.setContentType(from.getContentType());
@@ -31,6 +32,7 @@ public class RestErrorRequestTranslator<U> {
         RestErrorRequest<U> to = new RestErrorRequest<U>();
 
         to.setMatcher(from.getMatcher());
+        to.setPossibleContentTypes(from.getPossibleContentTypes());
         to.setMethod(from.getMethod());
         to.setPathWithParams(from.getPathWithParams());
         to.setContentType(from.getContentType());

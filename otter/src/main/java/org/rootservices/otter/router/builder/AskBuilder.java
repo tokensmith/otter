@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 
 public class AskBuilder {
     private Optional<Matcher> matcher;
+    private List<MimeType> possibleContentTypes;
     private Method method;
     private String pathWithParams;
     private MimeType contentType;
@@ -26,6 +27,11 @@ public class AskBuilder {
 
     public AskBuilder matcher(Optional<Matcher> matcher) {
         this.matcher = matcher;
+        return this;
+    }
+
+    public AskBuilder possibleContentTypes(List<MimeType> possibleContentTypes) {
+        this.possibleContentTypes = possibleContentTypes;
         return this;
     }
 
@@ -80,6 +86,6 @@ public class AskBuilder {
     }
 
     public Ask build() {
-        return new Ask(this.matcher, this.method, this.pathWithParams, this.contentType, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge, this.ipAddress);
+        return new Ask(this.matcher, this.possibleContentTypes, this.method, this.pathWithParams, this.contentType, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge, this.ipAddress);
     }
 }

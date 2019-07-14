@@ -25,10 +25,14 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
 
     // for route run to handle errors.
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors;
+    // defaults if not provided, 400, 415
+    private Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors;
 
-    public RestLocationTranslator(RestBetweenFlyweight<U> restBetweenFlyweight, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors) {
+    // 113: left off here need to add default bad request and unsupported media type resource.
+    public RestLocationTranslator(RestBetweenFlyweight<U> restBetweenFlyweight, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors) {
         this.restBetweenFlyweight = restBetweenFlyweight;
         this.restErrors = restErrors;
+        this.defaultErrors = defaultErrors;
     }
 
     public Map<Method, Location> to(RestTarget<U, P> from) {
@@ -43,10 +47,9 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
                 contentTypes = new ArrayList<>();
             }
 
-            // merge group reset errors with the location's rest errors.
-            Map<StatusCode, RestError<U, ? extends Translatable>> mergedRestErrors = new HashMap<>(restErrors);
+            Map<StatusCode, RestError<U, ? extends Translatable>> mergedRestErrors = mergeRestErrors(restErrors, from.getRestErrors());
+            mergedRestErrors = mergeRestErrors(defaultErrors, mergedRestErrors);
 
-            // 113: add default 400 handler.
             Location location = new RestLocationBuilder<U, P>()
                     .path(from.getRegex())
                     .contentTypes(contentTypes)
@@ -62,6 +65,7 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
                                     .flatMap(Collection::stream)
                                     .collect(Collectors.toList())
                     )
+                    // these are used in ErrorRouteRunnerFactory via Engine.
                     .errorRouteRunners(
                             from.getErrorTargets()
                                     .entrySet().stream()
@@ -70,16 +74,25 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
                                             e -> toRoute(e.getValue())
                                     ))
                     )
-                    .restErrorResources(
-                        this.mergeRestErrors(restErrors, from.getRestErrors())
-                    )
+                    // these are used in JsonRouteRun
+                    .restErrorResources(mergedRestErrors)
                     .build();
+
+
+
 
             to.put(method, location);
         }
         return to;
     }
 
+    /**
+     * Merges two maps of rest errors with the preference to the right when a collision occurs.
+     *
+     * @param left a map of rest errors
+     * @param right a map of rest errors
+     * @return a merged map of rest errors.
+     */
     protected Map<StatusCode, RestError<U, ? extends Translatable>> mergeRestErrors(Map<StatusCode, RestError<U, ? extends Translatable>> left, Map<StatusCode, RestError<U, ? extends Translatable>> right) {
 
         Map<StatusCode, RestError<U, ? extends Translatable>> to = Stream.of(left, right)

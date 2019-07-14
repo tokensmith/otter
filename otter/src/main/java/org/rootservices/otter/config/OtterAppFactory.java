@@ -9,11 +9,17 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.otter.QueryStringToMap;
+import org.rootservices.otter.controller.RestResource;
+import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
+import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.error.BadRequestResource;
+import org.rootservices.otter.controller.error.MediaTypeResource;
 import org.rootservices.otter.gateway.LocationTranslatorFactory;
 import org.rootservices.otter.gateway.RestLocationTranslatorFactory;
 import org.rootservices.otter.gateway.entity.Group;
+import org.rootservices.otter.gateway.entity.rest.RestError;
 import org.rootservices.otter.gateway.entity.rest.RestGroup;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
@@ -33,6 +39,7 @@ import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 import org.rootservices.otter.server.path.CompiledClassPath;
 import org.rootservices.otter.server.path.WebAppPath;
+import org.rootservices.otter.translatable.Translatable;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.MimeTypeTranslator;
 
@@ -144,13 +151,27 @@ public class OtterAppFactory {
                     restLocationTranslatorFactory.make(
                             castedGroup.getAuthRequired(),
                             castedGroup.getAuthOptional(),
-                            castedGroup.getRestErrors()
+                            castedGroup.getRestErrors(),
+                            new HashMap<>()
                     )
             );
         }
 
-
         return restLocationTranslators;
+    }
+
+
+    public <U extends DefaultUser, P extends Translatable> Map<StatusCode, RestError<U, P>> defaultErrors() {
+
+        Map<StatusCode, RestError<U, P>> defaultErrors = new HashMap<>();
+
+        // 113: sort out needing to cast.
+        RestError<U, P> badRequest = new RestError<U, P>((Class<P>)ClientError.class, (RestResource<U, P>)new BadRequestResource<U>());
+        RestError<U, P> mediaType = new RestError<U, P>((Class<P>)ClientError.class, (RestResource<U, P>)new MediaTypeResource<U>());
+        defaultErrors.put(StatusCode.BAD_REQUEST, badRequest);
+        defaultErrors.put(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaType);
+
+        return defaultErrors;
     }
 
     public ObjectMapper objectMapper() {

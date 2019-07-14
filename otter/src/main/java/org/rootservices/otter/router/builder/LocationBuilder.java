@@ -1,7 +1,6 @@
 package org.rootservices.otter.router.builder;
 
 
-import org.rootservices.otter.controller.ErrorResource;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
@@ -29,7 +28,7 @@ public class LocationBuilder<S extends DefaultSession, U extends DefaultUser> {
     private List<Between<S, U>> before = new ArrayList<>();
     private List<Between<S, U>> after = new ArrayList<>();
     private Map<StatusCode, RouteRunner> errorRouteRunners = new HashMap<>();
-    private Map<StatusCode, ErrorResource<S, U>> errorResources = new HashMap<>();
+    private Map<StatusCode, Resource<S, U>> errorResources = new HashMap<>();
 
     // used when building routeRunner, errorRouteRunners
     private RequestTranslator<S, U> requestTranslator = new RequestTranslator<>();
@@ -88,7 +87,7 @@ public class LocationBuilder<S extends DefaultSession, U extends DefaultUser> {
         return this;
     }
 
-    public LocationBuilder<S, U> errorResources(Map<StatusCode, ErrorResource<S, U>> errorResources) {
+    public LocationBuilder<S, U> errorResources(Map<StatusCode, Resource<S, U>> errorResources) {
         this.errorResources = errorResources;
         return this;
     }

@@ -10,7 +10,11 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 
 public class Ask {
+    // these are assigned in Engine when a match is found.
     private Optional<Matcher> matcher;
+    private List<MimeType> possibleContentTypes;
+
+    // these are assigned in Gateway.
     private Method method;
     private String pathWithParams;
     private MimeType contentType;
@@ -25,8 +29,9 @@ public class Ask {
     public Ask() {
     }
 
-    public Ask(Optional<Matcher> matcher, Method method, String pathWithParams, MimeType contentType, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<byte[]> body, Optional<String> csrfChallenge, String ipAddress) {
+    public Ask(Optional<Matcher> matcher, List<MimeType> possibleContentTypes, Method method, String pathWithParams, MimeType contentType, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<byte[]> body, Optional<String> csrfChallenge, String ipAddress) {
         this.matcher = matcher;
+        this.possibleContentTypes = possibleContentTypes;
         this.method = method;
         this.pathWithParams = pathWithParams;
         this.contentType = contentType;
@@ -125,5 +130,13 @@ public class Ask {
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
+    }
+
+    public List<MimeType> getPossibleContentTypes() {
+        return possibleContentTypes;
+    }
+
+    public void setPossibleContentTypes(List<MimeType> possibleContentTypes) {
+        this.possibleContentTypes = possibleContentTypes;
     }
 }

@@ -18,8 +18,8 @@ import java.util.regex.Matcher;
  * @param <U> User object, intended to be a authenticated user.
  */
 public class Request<S, U> {
-    // TODO: this won't be optional once Ask is integrated.
     private Optional<Matcher> matcher;
+    private List<MimeType> possibleContentTypes;
     private Method method;
     private String pathWithParams;
     private MimeType contentType;
@@ -32,6 +32,7 @@ public class Request<S, U> {
     private String ipAddress;
     private Optional<S> session = Optional.empty();
     private Optional<U> user;
+    private Optional<Throwable> cause;
 
     public Request() {}
 
@@ -151,6 +152,22 @@ public class Request<S, U> {
 
     public void setSession(Optional<S> session) {
         this.session = session;
+    }
+
+    public Optional<Throwable> getCause() {
+        return cause;
+    }
+
+    public void setCause(Optional<Throwable> cause) {
+        this.cause = cause;
+    }
+
+    public List<MimeType> getPossibleContentTypes() {
+        return possibleContentTypes;
+    }
+
+    public void setPossibleContentTypes(List<MimeType> possibleContentTypes) {
+        this.possibleContentTypes = possibleContentTypes;
     }
 
     @Override

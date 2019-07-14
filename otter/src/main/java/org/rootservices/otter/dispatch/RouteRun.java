@@ -1,6 +1,5 @@
 package org.rootservices.otter.dispatch;
 
-import org.rootservices.otter.controller.ErrorResource;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
@@ -29,9 +28,9 @@ public class RouteRun<S extends DefaultSession, U extends DefaultUser> implement
     private Route<S, U> route;
     private RequestTranslator<S, U> requestTranslator;
     private AnswerTranslator<S> answerTranslator;
-    private Map<StatusCode, ErrorResource<S, U>> errorResources;
+    private Map<StatusCode, Resource<S, U>> errorResources;
 
-    public RouteRun(Route<S, U> route, RequestTranslator<S, U> requestTranslator, AnswerTranslator<S> answerTranslator, Map<StatusCode, ErrorResource<S, U>> errorResources) {
+    public RouteRun(Route<S, U> route, RequestTranslator<S, U> requestTranslator, AnswerTranslator<S> answerTranslator, Map<StatusCode, Resource<S, U>> errorResources) {
         this.route = route;
         this.requestTranslator = requestTranslator;
         this.answerTranslator = answerTranslator;
@@ -83,7 +82,7 @@ public class RouteRun<S extends DefaultSession, U extends DefaultUser> implement
 
     protected Optional<Answer> handle(StatusCode statusCode, Throwable cause, Ask ask, Answer answer) {
         Optional<Answer> answerFromErrorResource = Optional.empty();
-        ErrorResource<S, U> errorResource = errorResources.get(statusCode);
+        Resource<S, U> errorResource = errorResources.get(statusCode);
 
         if (errorResource != null) {
             Request<S, U> request = requestTranslator.to(ask);
@@ -92,23 +91,23 @@ public class RouteRun<S extends DefaultSession, U extends DefaultUser> implement
 
             Response<S> responseFromErrorResource = null;
             if (method == Method.GET) {
-                responseFromErrorResource = errorResource.get(request, response, cause);
+                responseFromErrorResource = errorResource.get(request, response);
             } else if (method == Method.POST) {
-                responseFromErrorResource = errorResource.post(request, response, cause);
+                responseFromErrorResource = errorResource.post(request, response);
             } else if (method == Method.PUT) {
-                responseFromErrorResource = errorResource.put(request, response, cause);
+                responseFromErrorResource = errorResource.put(request, response);
             } else if (method == Method.PATCH) {
-                responseFromErrorResource = errorResource.patch(request, response, cause);
+                responseFromErrorResource = errorResource.patch(request, response);
             } else if (method == Method.DELETE) {
-                responseFromErrorResource = errorResource.delete(request, response, cause);
+                responseFromErrorResource = errorResource.delete(request, response);
             } else if (method == Method.CONNECT) {
-                responseFromErrorResource = errorResource.connect(request, response, cause);
+                responseFromErrorResource = errorResource.connect(request, response);
             } else if (method == Method.OPTIONS) {
-                responseFromErrorResource = errorResource.options(request, response, cause);
+                responseFromErrorResource = errorResource.options(request, response);
             } else if (method == Method.TRACE) {
-                responseFromErrorResource = errorResource.trace(request, response, cause);
+                responseFromErrorResource = errorResource.trace(request, response);
             } else if (method == Method.HEAD) {
-                responseFromErrorResource = errorResource.head(request, response, cause);
+                responseFromErrorResource = errorResource.head(request, response);
             }
 
             answerFromErrorResource = Optional.of(answerTranslator.to(answer, responseFromErrorResource));
@@ -133,7 +132,7 @@ public class RouteRun<S extends DefaultSession, U extends DefaultUser> implement
         ResponseEither<S, U> responseEither = new ResponseEither<>();
         ResponseErrorBuilder<S, U> errorBuilder = new ResponseErrorBuilder<>();
         Resource<S, U> resource = route.getResource();
-        Response<S> resourceResponse = null;
+        Response<S> resourceResponse;
         Method method = request.getMethod();
 
         try {

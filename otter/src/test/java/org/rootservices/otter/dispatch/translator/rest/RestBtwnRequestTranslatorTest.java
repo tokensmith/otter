@@ -34,6 +34,7 @@ public class RestBtwnRequestTranslatorTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMatcher(), is(from.getMatcher()));
+        assertThat(actual.getPossibleContentTypes(), is(from.getPossibleContentTypes()));
         assertThat(actual.getMethod(), is(from.getMethod()));
         assertThat(actual.getPathWithParams(), is(from.getPathWithParams()));
         assertThat(actual.getContentType(), is(from.getContentType()));
@@ -55,6 +56,7 @@ public class RestBtwnRequestTranslatorTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMatcher(), is(from.getMatcher()));
+        assertThat(actual.getPossibleContentTypes(), is(from.getPossibleContentTypes()));
         assertThat(actual.getMethod(), is(from.getMethod()));
         assertThat(actual.getPathWithParams(), is(from.getPathWithParams()));
         assertThat(actual.getContentType(), is(from.getContentType()));

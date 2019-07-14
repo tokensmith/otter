@@ -1,9 +1,7 @@
 package helper.entity;
 
-import org.rootservices.otter.controller.RestErrorResource;
+import org.rootservices.otter.controller.error.RestErrorResource;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.response.RestResponse;
-import org.rootservices.otter.dispatch.entity.RestErrorRequest;
 import org.rootservices.otter.translator.exception.DeserializationException;
 import org.rootservices.otter.translator.exception.Reason;
 

@@ -1,6 +1,6 @@
 package org.rootservices.otter.gateway.builder;
 
-import org.rootservices.otter.controller.RestErrorResource;
+import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.gateway.entity.rest.RestError;
@@ -35,8 +35,8 @@ public class RestGroupBuilder<U extends DefaultUser> {
         return this;
     }
 
-    public <P extends Translatable> RestGroupBuilder<U> onError(StatusCode statusCode, RestErrorResource<U, P> restErrorResource, Class<P> errorPayload) {
-        RestError<U, P> restError = new RestError<>(errorPayload, restErrorResource);
+    public <P extends Translatable> RestGroupBuilder<U> onError(StatusCode statusCode, RestResource<U, P> restResource, Class<P> errorPayload) {
+        RestError<U, P> restError = new RestError<>(errorPayload, restResource);
         restErrors.put(statusCode, restError);
         return this;
     }

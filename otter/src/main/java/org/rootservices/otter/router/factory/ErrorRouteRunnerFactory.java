@@ -11,8 +11,7 @@ public class ErrorRouteRunnerFactory {
 
     public RouteRunner fromLocation(Optional<MatchedLocation> matchedLocation, Map<StatusCode, RouteRunner> errorRouteRunners) {
         if (matchedLocation.isPresent() && matchedLocation.get().getLocation().getErrorRouteRunners().get(StatusCode.UNSUPPORTED_MEDIA_TYPE) != null) {
-            // TODO: 99 remove cast when matchedLocation is no longer parameterized.
-            return (RouteRunner) matchedLocation.get().getLocation().getErrorRouteRunners().get(StatusCode.UNSUPPORTED_MEDIA_TYPE);
+            return matchedLocation.get().getLocation().getErrorRouteRunners().get(StatusCode.UNSUPPORTED_MEDIA_TYPE);
         } else if (matchedLocation.isPresent()) {
             return errorRouteRunners.get(StatusCode.UNSUPPORTED_MEDIA_TYPE);
         } else {

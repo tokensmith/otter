@@ -14,6 +14,7 @@ public class RestBtwnRequestTranslator<U, P> {
         RestBtwnRequest<U> to = new RestBtwnRequest<U>();
 
         to.setMatcher(from.getMatcher());
+        to.setPossibleContentTypes(from.getPossibleContentTypes());
         to.setMethod(from.getMethod());
         to.setPathWithParams(from.getPathWithParams());
         to.setContentType(from.getContentType());
@@ -34,6 +35,7 @@ public class RestBtwnRequestTranslator<U, P> {
         RestBtwnRequest<U> to = new RestBtwnRequest<U>();
 
         to.setMatcher(from.getMatcher());
+        to.setPossibleContentTypes(from.getPossibleContentTypes());
         to.setMethod(from.getMethod());
         to.setPathWithParams(from.getPathWithParams());
         to.setContentType(from.getContentType());

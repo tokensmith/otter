@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 
 public class RestBtwnRequest<U> {
     private Optional<Matcher> matcher;
+    private List<MimeType> possibleContentTypes;
     private Method method;
     private String pathWithParams;
     private MimeType contentType;
@@ -24,25 +25,20 @@ public class RestBtwnRequest<U> {
 
     public RestBtwnRequest() {}
 
-    public RestBtwnRequest(Optional<Matcher> matcher, Method method, String pathWithParams, MimeType contentType, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<byte[]> body, String ipAddress) {
-        this.matcher = matcher;
-        this.method = method;
-        this.pathWithParams = pathWithParams;
-        this.contentType = contentType;
-        this.headers = headers;
-        this.cookies = cookies;
-        this.queryParams = queryParams;
-        this.formData = formData;
-        this.body = body;
-        this.ipAddress = ipAddress;
-    }
-
     public Optional<Matcher> getMatcher() {
         return matcher;
     }
 
     public void setMatcher(Optional<Matcher> matcher) {
         this.matcher = matcher;
+    }
+
+    public List<MimeType> getPossibleContentTypes() {
+        return possibleContentTypes;
+    }
+
+    public void setPossibleContentTypes(List<MimeType> possibleContentTypes) {
+        this.possibleContentTypes = possibleContentTypes;
     }
 
     public Method getMethod() {

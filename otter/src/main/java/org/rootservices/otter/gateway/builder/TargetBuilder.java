@@ -1,6 +1,5 @@
 package org.rootservices.otter.gateway.builder;
 
-import org.rootservices.otter.controller.ErrorResource;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
@@ -27,7 +26,7 @@ public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
     private List<Between<S, U>> after = new ArrayList<>();
     // legacy error handling.
     private Map<StatusCode, ErrorTarget<S, U>> errorTargets = new HashMap<>();
-    private Map<StatusCode, ErrorResource<S, U>> errorResources = new HashMap<>();
+    private Map<StatusCode, Resource<S, U>> errorResources = new HashMap<>();
     private String groupName;
 
     public TargetBuilder<S, U> method(Method method) {
@@ -83,7 +82,7 @@ public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
         return this;
     }
 
-    public TargetBuilder<S, U> onError(StatusCode statusCode, ErrorResource<S, U> errorResource) {
+    public TargetBuilder<S, U> onError(StatusCode statusCode, Resource<S, U> errorResource) {
         this.errorResources.put(statusCode, errorResource);
         return this;
     }

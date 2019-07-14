@@ -1,7 +1,6 @@
 package org.rootservices.otter.router.builder;
 
 import org.rootservices.otter.config.OtterAppFactory;
-import org.rootservices.otter.controller.RestErrorResource;
 import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -134,8 +133,9 @@ public class RestLocationBuilder<U extends DefaultUser, P> {
 
             RestErrorHandler<U> errorHandler = new JsonErrorHandler<U, E>(
                     jsonTranslator,
-                    castedRestErrorValue.getRestErrorResource(),
-                    new RestResponseTranslator<E>()
+                    castedRestErrorValue.getRestResource(),
+                    new RestRequestTranslator<>(),
+                    new RestResponseTranslator<>()
             );
 
             errorHandlers.put(restError.getKey(), errorHandler);

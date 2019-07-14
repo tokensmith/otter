@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.request.RestRequest;
 import org.rootservices.otter.dispatch.entity.RestBtwnRequest;
-import org.rootservices.otter.dispatch.entity.RestBtwnResponse;
 import org.rootservices.otter.dispatch.translator.rest.RestRequestTranslator;
 import org.rootservices.otter.router.entity.io.Ask;
 
@@ -33,6 +32,7 @@ public class RestRequestTranslatorTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMatcher(), is(from.getMatcher()));
+        assertThat(actual.getPossibleContentTypes(), is(from.getPossibleContentTypes()));
         assertThat(actual.getMethod(), is(from.getMethod()));
         assertThat(actual.getPathWithParams(), is(from.getPathWithParams()));
         assertThat(actual.getContentType(), is(from.getContentType()));
@@ -44,6 +44,7 @@ public class RestRequestTranslatorTest {
         assertThat(actual.getIpAddress(), is(from.getIpAddress()));
         assertThat(actual.getUser().isPresent(), is(false));
         assertThat(actual.getPayload().isPresent(), is(false));
+        assertThat(actual.getCause().isPresent(), is(false));
     }
 
     @Test
@@ -57,6 +58,7 @@ public class RestRequestTranslatorTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMatcher(), is(from.getMatcher()));
+        assertThat(actual.getPossibleContentTypes(), is(from.getPossibleContentTypes()));
         assertThat(actual.getMethod(), is(from.getMethod()));
         assertThat(actual.getPathWithParams(), is(from.getPathWithParams()));
         assertThat(actual.getContentType(), is(from.getContentType()));
@@ -70,5 +72,6 @@ public class RestRequestTranslatorTest {
         assertThat(actual.getUser().get(), is(user.get()));
         assertThat(actual.getPayload().isPresent(), is(true));
         assertThat(actual.getPayload().get(), is(payload.get()));
+        assertThat(actual.getCause().isPresent(), is(false));
     }
 }

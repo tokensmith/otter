@@ -1,6 +1,7 @@
 package org.rootservices.otter.controller.entity;
 
 
+// 113: once default 400 is there, then delete this.
 public class ErrorPayload {
     private String error;
     private String description;

@@ -1,6 +1,6 @@
 package helper.entity;
 
-import org.rootservices.otter.controller.RestErrorResource;
+import org.rootservices.otter.controller.error.RestErrorResource;
 import org.rootservices.otter.controller.entity.StatusCode;
 
 import java.util.Optional;

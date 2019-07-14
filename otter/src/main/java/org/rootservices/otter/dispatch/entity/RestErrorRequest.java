@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 
 public class RestErrorRequest<U> {
     private Optional<Matcher> matcher;
+    private List<MimeType> possibleContentTypes;
     private Method method;
     private String pathWithParams;
     private MimeType contentType;
@@ -28,6 +29,14 @@ public class RestErrorRequest<U> {
 
     public void setMatcher(Optional<Matcher> matcher) {
         this.matcher = matcher;
+    }
+
+    public List<MimeType> getPossibleContentTypes() {
+        return possibleContentTypes;
+    }
+
+    public void setPossibleContentTypes(List<MimeType> possibleContentTypes) {
+        this.possibleContentTypes = possibleContentTypes;
     }
 
     public Method getMethod() {

@@ -1,6 +1,5 @@
 package org.rootservices.otter.gateway.entity;
 
-import org.rootservices.otter.controller.ErrorResource;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
@@ -22,10 +21,10 @@ public class Target<S extends DefaultSession, U extends DefaultUser> {
     private List<Between<S, U>> before;
     private List<Between<S, U>> after;
     private Map<StatusCode, ErrorTarget<S, U>> errorTargets;
-    private Map<StatusCode, ErrorResource<S, U>> errorResources;
+    private Map<StatusCode, Resource<S, U>> errorResources;
     private String groupName;
 
-    public Target(List<Method> methods, String regex, Resource<S, U> resource, Map<Method, List<MimeType>> contentTypes, List<Label> labels, List<Between<S, U>> before, List<Between<S, U>> after, Map<StatusCode, ErrorTarget<S, U>> errorTargets, Map<StatusCode, ErrorResource<S, U>> errorResources, String groupName) {
+    public Target(List<Method> methods, String regex, Resource<S, U> resource, Map<Method, List<MimeType>> contentTypes, List<Label> labels, List<Between<S, U>> before, List<Between<S, U>> after, Map<StatusCode, ErrorTarget<S, U>> errorTargets, Map<StatusCode, Resource<S, U>> errorResources, String groupName) {
         this.methods = methods;
         this.regex = regex;
         this.resource = resource;
@@ -74,7 +73,7 @@ public class Target<S extends DefaultSession, U extends DefaultUser> {
         this.errorTargets = errorTargets;
     }
 
-    public Map<StatusCode, ErrorResource<S, U>> getErrorResources() {
+    public Map<StatusCode, Resource<S, U>> getErrorResources() {
         return errorResources;
     }
 
