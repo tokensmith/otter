@@ -7,6 +7,8 @@ import org.rootservices.otter.translatable.Translatable;
 
 import java.util.List;
 
+// 113: do we need this? should be able to just use, RestError.
+// this might need the type of the payload.
 public class RestErrorTarget<U extends DefaultUser, P> {
     private RestResource<U, P> resource;
     private List<RestBetween<U>> before;

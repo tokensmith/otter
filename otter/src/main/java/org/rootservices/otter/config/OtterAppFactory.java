@@ -20,6 +20,7 @@ import org.rootservices.otter.gateway.LocationTranslatorFactory;
 import org.rootservices.otter.gateway.RestLocationTranslatorFactory;
 import org.rootservices.otter.gateway.entity.Group;
 import org.rootservices.otter.gateway.entity.rest.RestError;
+import org.rootservices.otter.gateway.entity.rest.RestErrorTarget;
 import org.rootservices.otter.gateway.entity.rest.RestGroup;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
@@ -145,6 +146,7 @@ public class OtterAppFactory {
 
         for(RestGroup<? extends U> restGroup: restGroups) {
 
+            // 113: need default error targets too.
             RestGroup<U> castedGroup = (RestGroup<U>) restGroup;
             restLocationTranslators.put(
                     castedGroup.getName(),
@@ -152,7 +154,7 @@ public class OtterAppFactory {
                             castedGroup.getAuthRequired(),
                             castedGroup.getAuthOptional(),
                             castedGroup.getRestErrors(),
-                            new HashMap<>()
+                            defaultErrors()
                     )
             );
         }
@@ -160,16 +162,14 @@ public class OtterAppFactory {
         return restLocationTranslators;
     }
 
+    @SuppressWarnings("unchecked")
+    public <U extends DefaultUser, P extends Translatable> Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors() {
 
-    public <U extends DefaultUser, P extends Translatable> Map<StatusCode, RestError<U, P>> defaultErrors() {
+        Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors = new HashMap<>();
 
-        Map<StatusCode, RestError<U, P>> defaultErrors = new HashMap<>();
-
-        // 113: sort out needing to cast.
+        // TODO: sort out needing to cast.
         RestError<U, P> badRequest = new RestError<U, P>((Class<P>)ClientError.class, (RestResource<U, P>)new BadRequestResource<U>());
-        RestError<U, P> mediaType = new RestError<U, P>((Class<P>)ClientError.class, (RestResource<U, P>)new MediaTypeResource<U>());
         defaultErrors.put(StatusCode.BAD_REQUEST, badRequest);
-        defaultErrors.put(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaType);
 
         return defaultErrors;
     }

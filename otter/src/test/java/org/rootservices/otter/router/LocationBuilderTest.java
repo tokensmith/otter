@@ -3,7 +3,7 @@ package org.rootservices.otter.router;
 import helper.FixtureFactory;
 import helper.entity.DummySession;
 import helper.entity.DummyUser;
-import helper.fake.FakeResourceLegacy;
+import helper.fake.FakeResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
@@ -43,7 +43,7 @@ public class LocationBuilderTest {
 
     @Test
     public void resourceShouldBeOK() {
-        FakeResourceLegacy resource = new FakeResourceLegacy();
+        FakeResource resource = new FakeResource();
 
         Location actual = subject.resource(resource).build();
 
@@ -59,7 +59,7 @@ public class LocationBuilderTest {
     public void pathAndResourceAndContentTypesShouldBeOK() {
         String regex = "/foo/(.*)";
         List<MimeType> contentTypes = new ArrayList<>();
-        FakeResourceLegacy resource = new FakeResourceLegacy();
+        FakeResource resource = new FakeResource();
 
         Location actual = subject.path(regex)
                 .contentTypes(contentTypes)
@@ -81,7 +81,7 @@ public class LocationBuilderTest {
     public void pathAndResourceAndContentTypeShouldBeOK() {
         String regex = "/foo/(.*)";
         MimeType json = new MimeTypeBuilder().json().build();
-        FakeResourceLegacy resource = new FakeResourceLegacy();
+        FakeResource resource = new FakeResource();
 
         Location actual = subject.path(regex)
                 .contentType(json)
@@ -103,9 +103,9 @@ public class LocationBuilderTest {
     public void errorRouteRunnerShouldBeOk() {
         String regex = "/foo/(.*)";
         List<MimeType> contentTypes = new ArrayList<>();
-        FakeResourceLegacy resource = new FakeResourceLegacy();
+        FakeResource resource = new FakeResource();
 
-        FakeResourceLegacy errorResource = new FakeResourceLegacy();
+        FakeResource errorResource = new FakeResource();
 
         Location actual = subject.path(regex)
                 .contentTypes(contentTypes)
@@ -121,7 +121,7 @@ public class LocationBuilderTest {
     public void errorRouteRunnersShouldBeOk() {
         String regex = "/foo/(.*)";
         List<MimeType> contentTypes = new ArrayList<>();
-        FakeResourceLegacy resource = new FakeResourceLegacy();
+        FakeResource resource = new FakeResource();
 
         Map<StatusCode, Route<DummySession, DummyUser>> errorRoutes = FixtureFactory.makeErrorRoutes();
 

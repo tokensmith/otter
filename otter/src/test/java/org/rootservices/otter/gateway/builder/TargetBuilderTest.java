@@ -5,7 +5,7 @@ import helper.entity.DummyBetween;
 import helper.entity.DummySession;
 import helper.entity.DummyUser;
 import helper.entity.ServerErrorResource;
-import helper.fake.FakeResourceLegacy;
+import helper.fake.FakeResource;
 import org.junit.Test;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -44,12 +44,12 @@ public class TargetBuilderTest {
     public void buildShouldBeOk() {
         TargetBuilder<DummySession, DummyUser> subject = subject();
 
-        FakeResourceLegacy notFoundResource = new FakeResourceLegacy();
+        FakeResource notFoundResource = new FakeResource();
         ErrorTarget<DummySession, DummyUser> notFound = new ErrorTargetBuilder<DummySession, DummyUser>()
                 .resource(notFoundResource)
                 .build();
 
-        FakeResourceLegacy fakeResource = new FakeResourceLegacy();
+        FakeResource fakeResource = new FakeResource();
         MimeType json = new MimeTypeBuilder().json().build();
 
         Target<DummySession, DummyUser> actual = subject
@@ -89,12 +89,12 @@ public class TargetBuilderTest {
     public void buildWhenMethodContentTypeShouldBeOk() {
         TargetBuilder<DummySession, DummyUser> subject = subject();
 
-        FakeResourceLegacy notFoundResource = new FakeResourceLegacy();
+        FakeResource notFoundResource = new FakeResource();
         ErrorTarget<DummySession, DummyUser> notFound = new ErrorTargetBuilder<DummySession, DummyUser>()
                 .resource(notFoundResource)
                 .build();
 
-        FakeResourceLegacy fakeResource = new FakeResourceLegacy();
+        FakeResource fakeResource = new FakeResource();
         MimeType json = new MimeTypeBuilder().json().build();
         MimeType jwt = new MimeTypeBuilder().jwt().build();
 
@@ -125,12 +125,12 @@ public class TargetBuilderTest {
     public void buildShouldHaveErrorResources() {
         TargetBuilder<DummySession, DummyUser> subject = subject();
 
-        FakeResourceLegacy notFoundResource = new FakeResourceLegacy();
+        FakeResource notFoundResource = new FakeResource();
         ErrorTarget<DummySession, DummyUser> notFound = new ErrorTargetBuilder<DummySession, DummyUser>()
                 .resource(notFoundResource)
                 .build();
 
-        FakeResourceLegacy fakeResource = new FakeResourceLegacy();
+        FakeResource fakeResource = new FakeResource();
         MimeType json = new MimeTypeBuilder().json().build();
 
         ServerErrorResource serverErrorResource = new ServerErrorResource();

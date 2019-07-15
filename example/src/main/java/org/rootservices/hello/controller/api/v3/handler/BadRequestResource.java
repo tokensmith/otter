@@ -10,7 +10,7 @@ import org.rootservices.otter.translator.exception.Reason;
 import java.util.Optional;
 
 
-// 113: move this to otter as a default, can it use the ClientError too as the payload?
+
 public class BadRequestResource extends RestErrorResource<ApiUser, BadRequestPayload> {
 
     @Override

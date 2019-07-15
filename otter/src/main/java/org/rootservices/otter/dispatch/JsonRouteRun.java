@@ -5,7 +5,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.DefaultUser;
-import org.rootservices.otter.controller.entity.ErrorPayload;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.request.RestRequest;
 import org.rootservices.otter.controller.entity.response.RestResponse;
@@ -44,11 +43,6 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
     private Map<StatusCode, RestErrorHandler<U>> errorHandlers;
     private RestErrorRequestTranslator<U> errorRequestTranslator;
     private RestErrorResponseTranslator errorResponseTranslator;
-
-    // default error messaging.
-    private static final String DUPLICATE_KEY_DESC = "%s was repeated";
-    private static final String INVALID_VALUE_DESC = "%s was invalid";
-    private static final String UNKNOWN_KEY_DESC = "%s was not expected";
 
     public JsonRouteRun(RestRoute<U, P> restRoute, RestResponseTranslator<P> restResponseTranslator, RestRequestTranslator<U, P> restRequestTranslator, RestBtwnRequestTranslator<U, P> restBtwnRequestTranslator, RestBtwnResponseTranslator<P> restBtwnResponseTranslator, JsonTranslator<P> jsonTranslator, Map<StatusCode, RestErrorHandler<U>> errorHandlers, RestErrorRequestTranslator<U> errorRequestTranslator, RestErrorResponseTranslator errorResponseTranslator) {
         this.restRoute = restRoute;
@@ -127,16 +121,8 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
             answer = restBtwnResponseTranslator.from(answer, error.getBtwnResponse());
             throw (HaltException) error.getCause();
         } else if (RestResponseError.ErrorType.BAD_REQUEST.equals(errorType)) {
+            // a default bad request handler is always there.
             Optional<Answer> answerFromHandler = handle(StatusCode.BAD_REQUEST, error.getCause(), ask, answer);
-
-            // 113: a default 400 should be there. it would make it simpler
-            if (!answerFromHandler.isPresent()) {
-
-                Optional<byte[]> errorPayload = toDefaultBadRequest((ClientException) error.getCause());
-                answer.setStatusCode(StatusCode.BAD_REQUEST);
-                answer.setPayload(errorPayload);
-                throw new HaltException(error.getCause().getMessage(), error.getCause());
-            }
             answer = answerFromHandler.get();
         } else if (RestResponseError.ErrorType.SERVER.equals(errorType)) {
             answer = handleServerError(error.getCause(), ask, answer);
@@ -144,7 +130,6 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
 
         return answer;
     }
-
 
     protected Optional<Answer> handle(StatusCode statusCode, Throwable cause, Ask ask, Answer answer) {
         Optional<Answer> answerFromHandler = Optional.empty();
@@ -164,31 +149,6 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
             throw new HaltException(cause.getMessage(), cause);
         }
         return answerFromHandler.get();
-    }
-
-    protected Optional<byte[]> toDefaultBadRequest(ClientException from) {
-        DeserializationException cause = (DeserializationException) from.getCause();
-
-        Optional<byte[]> to = Optional.empty();
-        String description = "Unknown error occurred";
-        if (Reason.DUPLICATE_KEY.equals(cause.getReason())) {
-            description = String.format(DUPLICATE_KEY_DESC, cause.getKey().get());
-        } else if (Reason.INVALID_VALUE.equals(cause.getReason())) {
-            description = String.format(INVALID_VALUE_DESC, cause.getKey().get());
-        } else if (Reason.UNKNOWN_KEY.equals(cause.getReason())) {
-            description = String.format(UNKNOWN_KEY_DESC, cause.getKey().get());
-        } else if (Reason.INVALID_PAYLOAD.equals(cause.getReason())) {
-            description = "Payload invalid";
-        }
-
-        ErrorPayload errorPayload = new ErrorPayload(cause.getMessage(), description);
-        try {
-            byte[] out = jsonTranslator.to(errorPayload);
-            to = Optional.of(out);
-        } catch (ToJsonException e1) {
-            logger.error(e1.getMessage(), e1);
-        }
-        return to;
     }
 
     /**

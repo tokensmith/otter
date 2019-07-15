@@ -2,7 +2,7 @@ package helper;
 
 
 import helper.entity.*;
-import helper.fake.FakeResourceLegacy;
+import helper.fake.FakeResource;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwk.Use;
@@ -78,7 +78,7 @@ public class FixtureFactory {
     }
 
     public static Route<DummySession, DummyUser> makeRoute() {
-        FakeResourceLegacy resource = new FakeResourceLegacy();
+        FakeResource resource = new FakeResource();
         return new RouteBuilder<DummySession, DummyUser>()
                 .resource(resource)
                 .before(new ArrayList<>())
@@ -94,7 +94,7 @@ public class FixtureFactory {
     }
 
     public static Location makeLocation(String regex) {
-        FakeResourceLegacy resource = new FakeResourceLegacy();
+        FakeResource resource = new FakeResource();
         return new LocationBuilder<DummySession, DummyUser>()
             .path(regex)
             .contentTypes(new ArrayList<MimeType>())
@@ -105,9 +105,9 @@ public class FixtureFactory {
     }
 
     public static Location makeLocationWithErrorRoutes(String regex) {
-        FakeResourceLegacy resource = new FakeResourceLegacy();
-        FakeResourceLegacy unSupportedMediaType = new FakeResourceLegacy();
-        FakeResourceLegacy serverError = new FakeResourceLegacy();
+        FakeResource resource = new FakeResource();
+        FakeResource unSupportedMediaType = new FakeResource();
+        FakeResource serverError = new FakeResource();
 
         return new LocationBuilder<DummySession, DummyUser>()
                 .path(regex)
@@ -175,12 +175,12 @@ public class FixtureFactory {
 
     public static Target<DummySession, DummyUser> makeTarget() {
 
-        FakeResourceLegacy notFoundResource = new FakeResourceLegacy();
+        FakeResource notFoundResource = new FakeResource();
         ErrorTarget<DummySession, DummyUser> notFound = new ErrorTargetBuilder<DummySession, DummyUser>()
                 .resource(notFoundResource)
                 .build();
 
-        FakeResourceLegacy fakeResource = new FakeResourceLegacy();
+        FakeResource fakeResource = new FakeResource();
         MimeType json = new MimeTypeBuilder().json().build();
 
         TargetBuilder<DummySession, DummyUser> targetBuilder = new TargetBuilder<DummySession, DummyUser>();

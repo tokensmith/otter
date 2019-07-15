@@ -11,7 +11,7 @@ import org.rootservices.otter.controller.entity.response.RestResponse;
 import java.util.Optional;
 
 public class HelloRestResource extends RestResource<ApiUser, Hello> {
-    public static String URL = "/rest/v2/org.rootservices.hello";
+    public static String URL = "/rest/v2/hello";
 
     @Override
     public RestResponse<Hello> get(RestRequest<ApiUser, Hello> request, RestResponse<Hello> response) {

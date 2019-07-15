@@ -5,20 +5,26 @@ import helper.entity.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.config.OtterAppFactory;
+import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.controller.error.BadRequestResource;
 import org.rootservices.otter.dispatch.exception.ClientException;
+import org.rootservices.otter.dispatch.translator.RestErrorHandler;
 import org.rootservices.otter.dispatch.translator.rest.*;
+import org.rootservices.otter.gateway.entity.rest.RestError;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.RestRoute;
 import org.rootservices.otter.router.entity.io.Answer;
 import org.rootservices.otter.router.entity.io.Ask;
 import org.rootservices.otter.router.exception.HaltException;
+import org.rootservices.otter.translatable.Translatable;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.exception.DeserializationException;
 
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -39,14 +45,23 @@ public class JsonRouteRunTest {
         JsonTranslator<DummyPayload> jsonTranslator = otterAppFactory.jsonTranslator(DummyPayload.class);
         RestRoute<DummyUser, DummyPayload> restRoute = FixtureFactory.makeRestRoute();
 
-        subject = new JsonRouteRun<>(
+        Map<StatusCode, RestErrorHandler<DummyUser>> errorHandlers = new HashMap<>();
+        RestErrorHandler<DummyUser> errorHandler = new JsonErrorHandler<DummyUser, ClientError>(
+                otterAppFactory.jsonTranslator(ClientError.class),
+                new BadRequestResource<DummyUser>(),
+                new RestRequestTranslator<DummyUser, ClientError>(),
+                new RestResponseTranslator<ClientError>()
+        );
+        errorHandlers.put(StatusCode.BAD_REQUEST, errorHandler);
+
+        subject = new JsonRouteRun<DummyUser, DummyPayload>(
                 restRoute,
                 restResponseTranslator,
                 restRequestTranslator,
                 restBtwnRequestTranslator,
                 restBtwnResponseTranslator,
                 jsonTranslator,
-                new HashMap<>(),
+                errorHandlers,
                 new RestErrorRequestTranslator<>(),
                 new RestErrorResponseTranslator()
         );
@@ -116,30 +131,15 @@ public class JsonRouteRunTest {
     }
 
     @Test
-    public void whenPostAndDeserializationExceptionShouldReturnBadRequest() {
+    public void whenPostAndDeserializationExceptionShouldReturnBadRequest() throws Exception {
         // Invalid Key
         String json = "{\"integer\": \"not a integer\", \"string\": \"foo\", \"local_date\": \"2019-01-01\"}";
         Ask ask = FixtureFactory.makeAsk();
         ask.setMethod(Method.POST);
         ask.setBody(Optional.of(json.getBytes()));
 
-        Answer answer = FixtureFactory.makeAnswer();
 
-        HaltException actual = null;
-        try {
-            answer = subject.run(ask, answer);
-        } catch (HaltException e) {
-            actual = e;
-        }
-
-        assertThat(actual, is(notNullValue()));
-        assertThat(actual.getCause(), is(instanceOf(ClientException.class)));
-        assertThat(actual.getCause().getCause(), is(instanceOf(DeserializationException.class)));
-        assertThat(answer.getStatusCode(), is(StatusCode.BAD_REQUEST));
-        assertThat(answer.getPayload().isPresent(), is(true));
-
-        String errorPayload = new String(answer.getPayload().get());
-        assertThat(errorPayload, is("{\"error\":\"Invalid Value\",\"description\":\"integer was invalid\"}"));
+        testRun(Method.HEAD, StatusCode.BAD_REQUEST, Optional.of(json.getBytes()));
     }
 
     @Test
