@@ -2,7 +2,6 @@ package suite;
 
 
 import org.rootservices.hello.controller.*;
-import org.rootservices.hello.controller.api.v1.HelloLegacyRestResourceTest;
 import org.rootservices.hello.controller.api.v2.HelloRestResourceTest;
 import org.rootservices.hello.controller.api.v3.BrokenRestResourceTest;
 import org.asynchttpclient.AsyncHttpClient;
@@ -23,7 +22,6 @@ import static org.asynchttpclient.Dsl.asyncHttpClient;
 @RunWith(Categories.class)
 @Categories.IncludeCategory(ServletContainerTest.class)
 @Suite.SuiteClasses(value = {
-        HelloLegacyRestResourceTest.class,
         HelloRestResourceTest.class,
         org.rootservices.hello.controller.api.v3.HelloRestResourceTest.class,
         BrokenRestResourceTest.class,

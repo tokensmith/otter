@@ -9,6 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.rootservices.otter.config.OtterAppFactory;
+import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.StatusCode;
 import suite.IntegrationTestSuite;
 import suite.ServletContainerTest;
@@ -29,7 +30,7 @@ public class HelloRestResourceTest {
     }
 
     public String getUri() {
-        return BASE_URI.toString() + "rest/v2/org.rootservices.hello";
+        return BASE_URI.toString() + "rest/v2/hello";
     }
 
     @Test
@@ -77,6 +78,28 @@ public class HelloRestResourceTest {
         assertThat(hello.getMessage(), is("Hello World"));
     }
 
+
+    @Test
+    public void postShouldReturn400() throws Exception {
+        String helloURI = getUri();
+
+        OtterAppFactory appFactory = new OtterAppFactory();
+        ObjectMapper om = appFactory.objectMapper();
+
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .preparePost(helloURI)
+                .addHeader("Content-Type", "application/json; charset=utf-8;")
+                .setBody("foo: bar")
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(StatusCode.BAD_REQUEST.getCode()));
+        ClientError clientError = om.reader().forType(ClientError.class).readValue(response.getResponseBody());
+
+        assertThat(clientError, is(notNullValue()));
+    }
 
     @Test
     public void getWhenWrongContentTypeShouldReturn415() throws Exception {

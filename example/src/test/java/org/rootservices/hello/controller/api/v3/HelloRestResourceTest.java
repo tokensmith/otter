@@ -29,7 +29,7 @@ public class HelloRestResourceTest {
     }
 
     public String getUri() {
-        return BASE_URI.toString() + "rest/v3/org.rootservices.hello";
+        return BASE_URI.toString() + "rest/v3/hello";
     }
 
     @Test

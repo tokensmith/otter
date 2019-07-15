@@ -2,8 +2,6 @@ package org.rootservices.hello.config;
 
 
 import org.rootservices.hello.controller.*;
-import org.rootservices.hello.controller.api.v1.HelloLegacyRestResource;
-
 import org.rootservices.hello.controller.api.between.AuthLegacyRestBetween;
 import org.rootservices.hello.controller.api.between.AuthRestBetween;
 import org.rootservices.hello.controller.api.model.ApiSession;
@@ -121,19 +119,8 @@ public class AppConfig implements Configure {
     public void routes(Gateway gateway) {
         errorRoutes(gateway);
 
-        // Legacy Rest - requires content type.
-        MimeType json = new MimeTypeBuilder().json().build();
-        Target<ApiSession, ApiUser> helloAPI = new TargetBuilder<ApiSession, ApiUser>()
-                .method(Method.GET)
-                .method(Method.POST)
-                .resource(appFactory.helloLegacyRestResource())
-                .regex(HelloLegacyRestResource.URL)
-                .label(Label.AUTH_REQUIRED)
-                .contentType(json)
-                .groupName(API_GROUP)
-                .build();
 
-        gateway.add(helloAPI);
+        MimeType json = new MimeTypeBuilder().json().build();
 
         // resource for v2 api
         RestTarget<ApiUser, Hello> helloApiV2 = new RestTargetBuilder<ApiUser, Hello>()

@@ -1,24 +1,16 @@
 package org.rootservices.hello.config;
 
 
-
-import org.rootservices.hello.controller.api.v1.HelloLegacyRestResource;
-import org.rootservices.hello.model.Hello;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwk.Use;
 import org.rootservices.otter.config.OtterAppFactory;
-import org.rootservices.otter.translator.JsonTranslator;
 
 import java.util.Optional;
 
 public class AppFactory {
+
     public OtterAppFactory otterAppFactory() {
         return new OtterAppFactory();
-    }
-
-    public HelloLegacyRestResource helloLegacyRestResource() {
-        JsonTranslator<Hello> jsonTranslator = otterAppFactory().jsonTranslator(Hello.class);
-        return new HelloLegacyRestResource(jsonTranslator);
     }
 
     /**
