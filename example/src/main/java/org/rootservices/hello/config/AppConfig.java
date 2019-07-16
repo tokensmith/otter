@@ -2,9 +2,7 @@ package org.rootservices.hello.config;
 
 
 import org.rootservices.hello.controller.*;
-import org.rootservices.hello.controller.api.between.AuthLegacyRestBetween;
 import org.rootservices.hello.controller.api.between.AuthRestBetween;
-import org.rootservices.hello.controller.api.model.ApiSession;
 import org.rootservices.hello.controller.api.model.ApiUser;
 
 import org.rootservices.hello.controller.api.v2.HelloRestResource;
@@ -39,7 +37,6 @@ import java.util.List;
 
 
 public class AppConfig implements Configure {
-    public static final String API_GROUP = "API_V1";
     public static final String API_GROUP_V2 = "API_V2";
     public static final String API_GROUP_V3 = "API_V3";
     public static final String WEB_SITE_GROUP = "WebSite";
@@ -73,15 +70,6 @@ public class AppConfig implements Configure {
                 .build();
 
         groups.add(webSiteGroup);
-
-        AuthLegacyRestBetween authLegacyRestBetween = new AuthLegacyRestBetween();
-        Group<ApiSession, ApiUser> apiGroup = new GroupBuilder<ApiSession, ApiUser>()
-                .name(API_GROUP)
-                .sessionClazz(ApiSession.class)
-                .authRequired(authLegacyRestBetween)
-                .build();
-
-        groups.add(apiGroup);
 
         return groups;
     }
