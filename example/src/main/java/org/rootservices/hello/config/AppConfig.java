@@ -234,13 +234,13 @@ public class AppConfig implements Configure {
                 .resource(new NotFoundResource())
                 .build();
 
-        gateway.setErrorRoute(StatusCode.NOT_FOUND, notFoundRoute);
+        gateway.setDispatchError(StatusCode.NOT_FOUND, notFoundRoute);
 
         Route<TokenSession, User> unSupportedMediaTypeRoute = new RouteBuilder<TokenSession, User>()
                 .resource(new UnSupportedMediaTypeResource())
                 .build();
 
-        gateway.setErrorRoute(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaTypeRoute);
+        gateway.setDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaTypeRoute);
 
         // TODO: server error handling.
     }

@@ -115,37 +115,18 @@ public class RestLocationBuilderTest {
         List<MimeType> contentTypes = new ArrayList<>();
         OkRestResource resource = new OkRestResource();
 
-        OkRestResource errorResource = new OkRestResource();
+        RestRoute<DummyUser, DummyPayload> errorRestRoute = FixtureFactory.makeRestRoute();
 
         Location actual = subject
                 .payload(DummyPayload.class)
                 .path(regex)
                 .contentTypes(contentTypes)
                 .restResource(resource)
-                .errorRouteRunner(StatusCode.NOT_FOUND, errorResource)
+                .errorRouteRunner(StatusCode.NOT_FOUND, errorRestRoute, DummyPayload.class)
                 .build();
 
         assertThat(actual.getErrorRouteRunners().size(), is(1));
         assertThat(actual.getErrorRouteRunners().get(StatusCode.NOT_FOUND), is(notNullValue()));
-    }
-
-    @Test
-    public void errorRouteRunnersShouldBeOk() {
-        String regex = "/foo/(.*)";
-        List<MimeType> contentTypes = new ArrayList<>();
-        OkRestResource resource = new OkRestResource();
-
-        Map<StatusCode, RestRoute<DummyUser, DummyPayload>> errorRoutes = FixtureFactory.makeErrorRestRoutes();
-
-        Location actual = subject
-                .payload(DummyPayload.class)
-                .path(regex)
-                .contentTypes(contentTypes)
-                .restResource(resource)
-                .errorRouteRunners(errorRoutes)
-                .build();
-
-        assertThat(actual.getErrorRouteRunners().size(), is(3));
     }
 
     @Test

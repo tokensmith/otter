@@ -133,19 +133,6 @@ public class FixtureFactory {
         return errorRoutes;
     }
 
-    public static Map<StatusCode, RestRoute<DummyUser, DummyPayload>> makeErrorRestRoutes() {
-        RestRoute<DummyUser, DummyPayload> notFound = FixtureFactory.makeRestRoute();
-        RestRoute<DummyUser, DummyPayload> unSupportedMediaType = FixtureFactory.makeRestRoute();
-        RestRoute<DummyUser, DummyPayload> serverError = FixtureFactory.makeRestRoute();
-
-        Map<StatusCode, RestRoute<DummyUser, DummyPayload>> errorRoutes = new HashMap<>();
-        errorRoutes.put(StatusCode.NOT_FOUND, notFound);
-        errorRoutes.put(StatusCode.UNSUPPORTED_MEDIA_TYPE, unSupportedMediaType);
-        errorRoutes.put(StatusCode.SERVER_ERROR, serverError);
-
-        return errorRoutes;
-    }
-
     public static Map<StatusCode, RouteRunner> makeErrorRouteRunners() {
         Route<DummySession, DummyUser> notFound = FixtureFactory.makeRoute();
         Route<DummySession, DummyUser> unSupportedMediaType = FixtureFactory.makeRoute();
@@ -214,7 +201,7 @@ public class FixtureFactory {
         OkRestResource okRestResource = new OkRestResource();
         OkRestResource notFoundResource = new OkRestResource();
         RestErrorTarget<DummyUser, DummyPayload> notFound = new RestErrorTarget<DummyUser, DummyPayload>(
-                notFoundResource, new ArrayList<>(), new ArrayList<>()
+                DummyPayload.class, notFoundResource, new ArrayList<>(), new ArrayList<>()
         );
 
         MimeType json = new MimeTypeBuilder().json().build();

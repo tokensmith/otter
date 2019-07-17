@@ -9,6 +9,7 @@ import org.rootservices.otter.gateway.entity.*;
 import org.rootservices.otter.gateway.entity.rest.RestErrorTarget;
 import org.rootservices.otter.gateway.entity.rest.RestTarget;
 import org.rootservices.otter.router.entity.Method;
+import org.rootservices.otter.translatable.Translatable;
 
 import java.util.ArrayList;
 
@@ -51,10 +52,15 @@ public class RestTargetBuilderTest {
 
         assertThat(actual.getRestErrors().get(StatusCode.BAD_REQUEST), is(notNullValue()));
 
-        Class<DummyErrorPayload> payload = (Class<DummyErrorPayload>) actual.getRestErrors().get(StatusCode.BAD_REQUEST).getPayload();
+        Class<DummyErrorPayload> payload = to(actual.getRestErrors().get(StatusCode.BAD_REQUEST).getPayload());
         assertThat(payload, is(notNullValue()));
 
         assertThat(actual.getRestErrors().get(StatusCode.BAD_REQUEST).getRestResource(), is(errorRestResource));
+    }
+
+    @SuppressWarnings("unchecked")
+    public Class<DummyErrorPayload> to(Class<? extends Translatable> from) {
+        return (Class<DummyErrorPayload>) from;
     }
 
     @Test
@@ -63,7 +69,7 @@ public class RestTargetBuilderTest {
 
         OkRestResource notFoundResource = new OkRestResource();
         RestErrorTarget<DummyUser, DummyPayload> notFound = new RestErrorTarget<>(
-                notFoundResource, new ArrayList<>(), new ArrayList<>()
+                DummyPayload.class, notFoundResource, new ArrayList<>(), new ArrayList<>()
         );
 
         OkRestResource okRestResource = new OkRestResource();
@@ -106,7 +112,7 @@ public class RestTargetBuilderTest {
 
         OkRestResource notFoundResource = new OkRestResource();
         RestErrorTarget<DummyUser, DummyPayload> notFound = new RestErrorTarget<>(
-                notFoundResource, new ArrayList<>(), new ArrayList<>()
+                DummyPayload.class, notFoundResource, new ArrayList<>(), new ArrayList<>()
         );
 
         OkRestResource okRestResource = new OkRestResource();

@@ -102,7 +102,7 @@ public class ServletGatewayTest {
         Map<StatusCode, RouteRunner> errorRoutes = new HashMap<>();
         when(mockEngine.getErrorRoutes()).thenReturn(errorRoutes);
 
-        subject.setErrorRoute(StatusCode.NOT_FOUND, notFoundRoute);
+        subject.setDispatchError(StatusCode.NOT_FOUND, notFoundRoute);
 
         assertThat(errorRoutes.size(), is(1));
         assertThat(errorRoutes.get(StatusCode.NOT_FOUND), is(notNullValue()));
@@ -111,7 +111,7 @@ public class ServletGatewayTest {
     @Test
     public void processRequestWhenExceptionShouldReturnServerError() throws Exception {
         Route<DummySession, DummyUser> notFoundRoute = FixtureFactory.makeRoute();
-        subject.setErrorRoute(StatusCode.NOT_FOUND, notFoundRoute);
+        subject.setDispatchError(StatusCode.NOT_FOUND, notFoundRoute);
 
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
@@ -133,7 +133,7 @@ public class ServletGatewayTest {
     @Test
     public void processRequestWhenIOExceptionShouldReturnServerError() throws Exception {
         Route<DummySession, DummyUser> notFoundRoute = FixtureFactory.makeRoute();
-        subject.setErrorRoute(StatusCode.NOT_FOUND, notFoundRoute);
+        subject.setDispatchError(StatusCode.NOT_FOUND, notFoundRoute);
 
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);

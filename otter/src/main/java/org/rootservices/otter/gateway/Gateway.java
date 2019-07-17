@@ -101,7 +101,14 @@ public class Gateway {
         return (RestLocationTranslator<U, P>) restLocationTranslators.get(groupName);
     }
 
-    public <S extends DefaultSession, U extends DefaultUser> void setErrorRoute(StatusCode statusCode, Route<S, U> errorRoute) {
+    /**
+     *
+     * @param statusCode
+     * @param errorRoute
+     * @param <S>
+     * @param <U>
+     */
+    public <S extends DefaultSession, U extends DefaultUser> void setDispatchError(StatusCode statusCode, Route<S, U> errorRoute) {
         RequestTranslator<S, U> requestTranslator = new RequestTranslator<>();
         AnswerTranslator<S> answerTranslator = new AnswerTranslator<>();
 

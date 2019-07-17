@@ -58,8 +58,11 @@ Then handle the error (500)
 
 #### Gatway
  - rename `gateway.setErrorRoute` to `gateway.setDispatchError`
+ - RestTarget, Target, RestErrorTarget, ErrorTarget.
  - add `Class<P>` to `RestErrorTarget`
  - modify builders to use `Class<P>` ^
+ - add interface to include regex with errorTarget
+ - add interface to include regex with restErrorTarget.
  
 #### Group, RestGroup
  - add method `dispatchError` to builders

@@ -28,7 +28,7 @@ public class RestTargetBuilder<U extends DefaultUser, P> {
     private List<Label> labels = new ArrayList<>();
     private List<RestBetween<U>> before = new ArrayList<>();
     private List<RestBetween<U>> after = new ArrayList<>();
-    private Map<StatusCode, RestErrorTarget<U, P>> errorTargets = new HashMap<>();
+    private Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> errorTargets = new HashMap<>();
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors = new HashMap<>();
     private String groupName;
 
@@ -84,8 +84,7 @@ public class RestTargetBuilder<U extends DefaultUser, P> {
         return this;
     }
 
-    // legacy error handling.
-    public RestTargetBuilder<U, P> errorTarget(StatusCode statusCode, RestErrorTarget<U, P> errorTarget) {
+    public RestTargetBuilder<U, P> errorTarget(StatusCode statusCode, RestErrorTarget<U, ? extends Translatable> errorTarget) {
         this.errorTargets.put(statusCode, errorTarget);
         return this;
     }
@@ -102,6 +101,6 @@ public class RestTargetBuilder<U extends DefaultUser, P> {
     }
 
     public RestTarget<U, P> build() {
-        return new RestTarget<>(methods, regex, restResource, payload, contentTypes, labels, before, after, errorTargets, restErrors, groupName);
+        return new RestTarget<U, P>(methods, regex, restResource, payload, contentTypes, labels, before, after, errorTargets, restErrors, groupName);
     }
 }
