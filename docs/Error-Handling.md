@@ -20,31 +20,58 @@ When I get to the engine
 And a unexpected exception occurs
 Then handle the error (500)
 
-## Questions
+## Implementation
 
-##### 1. Should RouteRun implementations have a map of status code -> route run?
-    This is one option. Everything done in the intended RouteRun's betweens will be lost.
-    the RouteRun interface expects an Ask and Answer which wont have Session or User.
+#### ServletGateway
+
+ - notFound
+    - 404
+ - onDispatchError
+    - 415
+ - onError
+    - 400, 500
     
-##### 2. How could RouteRun preserve work done in betweens?
-    By knowing the type to each error route runs then translate the intended req/resp to the 
-    req/resp desired. This would add an interface to route run to expect a typed req/resp.
-    
-##### 3. How can #2 be done specifically?
-    JsonRouteRun.executeResourceMethod() would need to throw an exception or return an either 
-    cannot put these as ivars on a exception b/c they have generic parameters.
-        RestBtwnRequest<U> btwnRequest
-        RestBtwnResponse btwnResponse
-        RestRequest<U, P> request
-        RestResponse<P> response
-    It would need to be an either.    
+#### Group, RestGroup
 
+ - onDispatchError
+    - 415
+ - onError
+     - 400, 500
+     
+#### Location
 
-##### Can ErrorTarget and RestErrorTarget be retrofitted to account for this feature?
-
+- onDispatchError
+    - 415
+ - onError
+     - 400, 500 
+     
+     
 ## Tasks
 
-##### refactor RouteRun.executeResourceMethod to return an Either.
-##### Add default 400 to RestLocationTranslator
-##### Remove default 400 code in JsonRouteRun
-##### Attempt to use a common interface for error handling.
+#### notFound
+ - add interface to gateway, `notFound(regex, errorTarget)` or `notFound(regex, resource)`
+   depends if we want to support adding betweens for not founds.
+ - add regex to the, `Engine.errorRouteRunners`
+ - punch it through to `Engine.errorRouteRunners`
+ - do regex matching on `Engine.errorRouteRunners`
+ - what happens when no match? have a default yo!
+
+#### Gatway
+ - rename `gateway.setErrorRoute` to `gateway.setDispatchError`
+ - RestTarget, Target, RestErrorTarget, ErrorTarget.
+ - add `Class<P>` to `RestErrorTarget`
+ - modify builders to use `Class<P>` ^
+ - add interface to include regex with errorTarget
+ - add interface to include regex with restErrorTarget.
+ 
+#### Group, RestGroup
+ - add method `dispatchError` to builders
+ - walk it through to LocationTranslators
+
+#### Location
+ - add method `dispatchError` to builders
+ - walk it through to LocationTranslators
+ 
+
+  
+    

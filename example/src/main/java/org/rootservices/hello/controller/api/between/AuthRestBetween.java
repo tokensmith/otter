@@ -10,6 +10,9 @@ import org.rootservices.otter.router.exception.HaltException;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * A Simple example of setting the user in a Authentication Between.
+ */
 public class AuthRestBetween implements RestBetween<ApiUser> {
     @Override
     public void process(Method method, RestBtwnRequest<ApiUser> request, RestBtwnResponse response) throws HaltException {

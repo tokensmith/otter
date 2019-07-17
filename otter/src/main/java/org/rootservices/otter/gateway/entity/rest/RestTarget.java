@@ -22,11 +22,11 @@ public class RestTarget<U extends DefaultUser, P> {
     private List<Label> labels;
     private List<RestBetween<U>> before;
     private List<RestBetween<U>> after;
-    private Map<StatusCode, RestErrorTarget<U, P>> errorTargets;
+    private Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> errorTargets;
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors;
     private String groupName;
 
-    public RestTarget(List<Method> methods, String regex, RestResource<U, P> restResource, Class<P> payload, Map<Method, List<MimeType>> contentTypes, List<Label> labels, List<RestBetween<U>> before, List<RestBetween<U>> after, Map<StatusCode, RestErrorTarget<U, P>> errorTargets, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, String groupName) {
+    public RestTarget(List<Method> methods, String regex, RestResource<U, P> restResource, Class<P> payload, Map<Method, List<MimeType>> contentTypes, List<Label> labels, List<RestBetween<U>> before, List<RestBetween<U>> after, Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> errorTargets, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, String groupName) {
         this.methods = methods;
         this.regex = regex;
         this.restResource = restResource;
@@ -104,11 +104,11 @@ public class RestTarget<U extends DefaultUser, P> {
         this.after = after;
     }
 
-    public Map<StatusCode, RestErrorTarget<U, P>> getErrorTargets() {
+    public Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> getErrorTargets() {
         return errorTargets;
     }
 
-    public void setErrorTargets(Map<StatusCode, RestErrorTarget<U, P>> errorTargets) {
+    public void setErrorTargets(Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> errorTargets) {
         this.errorTargets = errorTargets;
     }
 

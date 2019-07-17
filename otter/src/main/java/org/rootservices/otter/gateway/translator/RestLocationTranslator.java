@@ -25,6 +25,7 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
 
     // for route run to handle errors.
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors;
+
     // defaults if not provided, 400, 415
     private Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors;
 
@@ -50,7 +51,15 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
             Map<StatusCode, RestError<U, ? extends Translatable>> mergedRestErrors = mergeRestErrors(restErrors, from.getRestErrors());
             mergedRestErrors = mergeRestErrors(defaultErrors, mergedRestErrors);
 
-            Location location = new RestLocationBuilder<U, P>()
+            Map<StatusCode, RestRoute<U, ? extends Translatable>> farts =
+                    from.getErrorTargets()
+                            .entrySet().stream()
+                            .collect(Collectors.toMap(
+                                    Map.Entry::getKey,
+                                    e -> toRoute(e.getValue())
+                            ));
+
+            RestLocationBuilder<U, P> locationBuilder = new RestLocationBuilder<U, P>()
                     .path(from.getRegex())
                     .contentTypes(contentTypes)
                     .restResource(from.getRestResource())
@@ -65,23 +74,22 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
                                     .flatMap(Collection::stream)
                                     .collect(Collectors.toList())
                     )
-                    // these are used in ErrorRouteRunnerFactory via Engine.
-                    .errorRouteRunners(
-                            from.getErrorTargets()
-                                    .entrySet().stream()
-                                    .collect(Collectors.toMap(
-                                            Map.Entry::getKey,
-                                            e -> toRoute(e.getValue())
-                                    ))
-                    )
                     // these are used in JsonRouteRun
-                    .restErrorResources(mergedRestErrors)
-                    .build();
+                    .restErrorResources(mergedRestErrors);
 
 
+            // add the error routes to be used in engine.
+            for(Map.Entry<StatusCode, RestErrorTarget<U, ? extends Translatable>> entry: from.getErrorTargets().entrySet()) {
+                RestRoute<U, ? extends Translatable> restRoute = toRoute(entry.getValue());
+                locationBuilder = locationBuilder.errorRouteRunner(
+                        entry.getKey(),
+                        restRoute,
+                        entry.getValue().getPayload()
+                );
+            }
 
 
-            to.put(method, location);
+            to.put(method, locationBuilder.build());
         }
         return to;
     }
@@ -108,8 +116,8 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
         return to;
     }
 
-    protected RestRoute<U, P> toRoute(RestErrorTarget<U, P> from) {
-        return new RestRouteBuilder<U, P>()
+    protected <E extends Translatable> RestRoute<U, ? extends Translatable> toRoute(RestErrorTarget<U, E> from) {
+        return new RestRouteBuilder<U, E>()
                 .restResource(from.getResource())
                 .before(from.getBefore())
                 .after(from.getAfter())

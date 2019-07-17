@@ -5,6 +5,7 @@ import helper.entity.*;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.gateway.entity.rest.RestGroup;
+import org.rootservices.otter.translatable.Translatable;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -73,9 +74,14 @@ public class RestGroupBuilderTest {
 
         assertThat(actual.getRestErrors().get(StatusCode.BAD_REQUEST), is(notNullValue()));
 
-        Class<DummyErrorPayload> payload = (Class<DummyErrorPayload>) actual.getRestErrors().get(StatusCode.BAD_REQUEST).getPayload();
+        Class<DummyErrorPayload> payload = to(actual.getRestErrors().get(StatusCode.BAD_REQUEST).getPayload());
         assertThat(payload, is(notNullValue()));
 
         assertThat(actual.getRestErrors().get(StatusCode.BAD_REQUEST).getRestResource(), is(errorRestResource));
+    }
+
+    @SuppressWarnings("unchecked")
+    public Class<DummyErrorPayload> to(Class<? extends Translatable> from) {
+        return (Class<DummyErrorPayload>) from;
     }
 }
