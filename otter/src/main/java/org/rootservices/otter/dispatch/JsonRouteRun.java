@@ -44,6 +44,9 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
     private RestErrorRequestTranslator<U> errorRequestTranslator;
     private RestErrorResponseTranslator errorResponseTranslator;
 
+    public JsonRouteRun() {
+    }
+
     public JsonRouteRun(RestRoute<U, P> restRoute, RestResponseTranslator<P> restResponseTranslator, RestRequestTranslator<U, P> restRequestTranslator, RestBtwnRequestTranslator<U, P> restBtwnRequestTranslator, RestBtwnResponseTranslator<P> restBtwnResponseTranslator, JsonTranslator<P> jsonTranslator, Map<StatusCode, RestErrorHandler<U>> errorHandlers, RestErrorRequestTranslator<U> errorRequestTranslator, RestErrorResponseTranslator errorResponseTranslator) {
         this.restRoute = restRoute;
         this.restResponseTranslator = restResponseTranslator;

@@ -4,6 +4,7 @@ import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.gateway.entity.ErrorTarget;
 import org.rootservices.otter.gateway.entity.Group;
 import org.rootservices.otter.router.entity.between.Between;
 
@@ -18,6 +19,7 @@ public class GroupBuilder<S extends DefaultSession, U extends DefaultUser> {
     private Between<S, U> authRequired;
     private Between<S, U> authOptional;
     private Map<StatusCode, Resource<S, U>> errorResources = new HashMap<>();
+    private Map<StatusCode, ErrorTarget<S, U>> dispatchErrors = new HashMap<>();
 
     public GroupBuilder<S, U> name(String name) {
         this.name = name;
@@ -44,8 +46,20 @@ public class GroupBuilder<S extends DefaultSession, U extends DefaultUser> {
         return this;
     }
 
+    public GroupBuilder<S, U> onDispatchError(StatusCode statusCode, ErrorTarget<S, U> dispatchError) {
+        this.dispatchErrors.put(statusCode, dispatchError);
+        return this;
+    }
+
     public Group<S, U> build() {
-        return new Group<S, U>(name, sessionClazz, makeBetween(authRequired), makeBetween(authOptional), errorResources);
+        return new Group<S, U>(
+                name,
+                sessionClazz,
+                makeBetween(authRequired),
+                makeBetween(authOptional),
+                errorResources,
+                dispatchErrors
+        );
     }
 
     protected Optional<Between<S, U>> makeBetween(Between<S, U> between) {

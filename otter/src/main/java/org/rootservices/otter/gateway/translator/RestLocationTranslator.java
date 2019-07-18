@@ -4,11 +4,13 @@ package org.rootservices.otter.gateway.translator;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.dispatch.RouteRunner;
+import org.rootservices.otter.dispatch.translator.RestErrorHandler;
 import org.rootservices.otter.gateway.entity.rest.RestError;
 import org.rootservices.otter.gateway.entity.rest.RestErrorTarget;
 import org.rootservices.otter.gateway.entity.rest.RestTarget;
 import org.rootservices.otter.router.builder.RestLocationBuilder;
-import org.rootservices.otter.router.builder.RestRouteBuilder;
+import org.rootservices.otter.router.config.RouterAppFactory;
 import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.RestRoute;
@@ -21,19 +23,24 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class RestLocationTranslator<U extends DefaultUser, P> {
+    private static RouterAppFactory routerAppFactory = new RouterAppFactory();
+
     private RestBetweenFlyweight<U> restBetweenFlyweight;
 
     // for route run to handle errors.
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors;
 
-    // defaults if not provided, 400, 415
+    // defaults if not provided, 400
     private Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors;
 
-    // 113: left off here need to add default bad request and unsupported media type resource.
-    public RestLocationTranslator(RestBetweenFlyweight<U> restBetweenFlyweight, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors) {
+    // defaults if not provided 415
+    private Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> defaultErrorTargets;
+
+    public RestLocationTranslator(RestBetweenFlyweight<U> restBetweenFlyweight, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors, Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> defaultErrorTargets) {
         this.restBetweenFlyweight = restBetweenFlyweight;
         this.restErrors = restErrors;
         this.defaultErrors = defaultErrors;
+        this.defaultErrorTargets = defaultErrorTargets;
     }
 
     public Map<Method, Location> to(RestTarget<U, P> from) {
@@ -50,14 +57,7 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
 
             Map<StatusCode, RestError<U, ? extends Translatable>> mergedRestErrors = mergeRestErrors(restErrors, from.getRestErrors());
             mergedRestErrors = mergeRestErrors(defaultErrors, mergedRestErrors);
-
-            Map<StatusCode, RestRoute<U, ? extends Translatable>> farts =
-                    from.getErrorTargets()
-                            .entrySet().stream()
-                            .collect(Collectors.toMap(
-                                    Map.Entry::getKey,
-                                    e -> toRoute(e.getValue())
-                            ));
+            Map<StatusCode, RestErrorHandler<U>> errorHandlers = toErrorHandlers(mergedRestErrors);
 
             RestLocationBuilder<U, P> locationBuilder = new RestLocationBuilder<U, P>()
                     .path(from.getRegex())
@@ -75,19 +75,20 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
                                     .collect(Collectors.toList())
                     )
                     // these are used in JsonRouteRun
-                    .restErrorResources(mergedRestErrors);
+                    .restErrorHandlers(errorHandlers);
 
+            // merge defaultErrorTargets with target.errorTargets.
 
             // add the error routes to be used in engine.
             for(Map.Entry<StatusCode, RestErrorTarget<U, ? extends Translatable>> entry: from.getErrorTargets().entrySet()) {
-                RestRoute<U, ? extends Translatable> restRoute = toRoute(entry.getValue());
+                RestRoute<U, ? extends Translatable> restRoute = routerAppFactory.makeRestRoute(entry.getValue());
+                RouteRunner restRouteRunner = routerAppFactory.makeJsonRouteRun(restRoute, entry.getValue().getPayload());
+
                 locationBuilder = locationBuilder.errorRouteRunner(
                         entry.getKey(),
-                        restRoute,
-                        entry.getValue().getPayload()
+                        restRouteRunner
                 );
             }
-
 
             to.put(method, locationBuilder.build());
         }
@@ -116,11 +117,11 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
         return to;
     }
 
-    protected <E extends Translatable> RestRoute<U, ? extends Translatable> toRoute(RestErrorTarget<U, E> from) {
-        return new RestRouteBuilder<U, E>()
-                .restResource(from.getResource())
-                .before(from.getBefore())
-                .after(from.getAfter())
-                .build();
+    protected Map<StatusCode, RestErrorHandler<U>> toErrorHandlers(Map<StatusCode, RestError<U, ? extends Translatable>> from) {
+        Map<StatusCode, RestErrorHandler<U>> to = new HashMap<>();
+        for(Map.Entry<StatusCode, RestError<U, ? extends Translatable>> entry: from.entrySet()) {
+            to.put(entry.getKey(), routerAppFactory.restErrorHandler(entry.getValue()));
+        }
+        return to;
     }
 }

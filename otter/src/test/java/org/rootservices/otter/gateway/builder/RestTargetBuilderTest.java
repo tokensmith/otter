@@ -87,7 +87,7 @@ public class RestTargetBuilderTest {
                 .after(new DummyRestBetween<>())
                 .label(Label.CSRF)
                 .label(Label.SESSION_REQUIRED)
-                .errorTarget(StatusCode.NOT_FOUND, notFound)
+                .dispatchError(StatusCode.NOT_FOUND, notFound)
                 .build();
 
         assertThat(actual.getRegex(), is("/foo"));
@@ -133,7 +133,7 @@ public class RestTargetBuilderTest {
                 .after(new DummyRestBetween<>())
                 .label(Label.CSRF)
                 .label(Label.SESSION_REQUIRED)
-                .errorTarget(StatusCode.NOT_FOUND, notFound)
+                .dispatchError(StatusCode.NOT_FOUND, notFound)
                 .build();
 
 

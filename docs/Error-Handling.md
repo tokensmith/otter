@@ -55,18 +55,26 @@ Then handle the error (500)
  - punch it through to `Engine.errorRouteRunners`
  - do regex matching on `Engine.errorRouteRunners`
  - what happens when no match? have a default yo!
+ 
 
 #### Gatway
- - rename `gateway.setErrorRoute` to `gateway.setDispatchError`
- - RestTarget, Target, RestErrorTarget, ErrorTarget.
- - add `Class<P>` to `RestErrorTarget`
- - modify builders to use `Class<P>` ^
+ - Should a regex be used for error route runners?
+ - if yes, that will add complexity to building
+ - engine.errorRouteRunners -> Map<StatusCode, List<RouteRunner>> 
+   or Map<StatusCode, List<Location>>
+ - option, only do not founds here and ignore the rest of the status codes.
+ - do this last or first?
+  
  - add interface to include regex with errorTarget
  - add interface to include regex with restErrorTarget.
+
  
+
 #### Group, RestGroup
  - add method `dispatchError` to builders
  - walk it through to LocationTranslators
+ 
+
 
 #### Location
  - add method `dispatchError` to builders

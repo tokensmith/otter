@@ -16,13 +16,15 @@ public class Group<S extends DefaultSession, U extends DefaultUser> {
     private Optional<Between<S, U>> authRequired;
     private Optional<Between<S, U>> authOptional;
     private Map<StatusCode, Resource<S, U>> errorResources;
+    private Map<StatusCode, ErrorTarget<S, U>> dispatchErrors;
 
-    public Group(String name, Class<S> sessionClazz, Optional<Between<S, U>> authRequired, Optional<Between<S, U>> authOptional, Map<StatusCode, Resource<S, U>> errorResources) {
+    public Group(String name, Class<S> sessionClazz, Optional<Between<S, U>> authRequired, Optional<Between<S, U>> authOptional, Map<StatusCode, Resource<S, U>> errorResources, Map<StatusCode, ErrorTarget<S, U>> dispatchErrors) {
         this.name = name;
         this.sessionClazz = sessionClazz;
         this.authRequired = authRequired;
         this.authOptional = authOptional;
         this.errorResources = errorResources;
+        this.dispatchErrors = dispatchErrors;
     }
 
     public String getName() {
@@ -63,5 +65,13 @@ public class Group<S extends DefaultSession, U extends DefaultUser> {
 
     public void setErrorResources(Map<StatusCode, Resource<S, U>> errorResources) {
         this.errorResources = errorResources;
+    }
+
+    public Map<StatusCode, ErrorTarget<S, U>> getDispatchErrors() {
+        return dispatchErrors;
+    }
+
+    public void setDispatchErrors(Map<StatusCode, ErrorTarget<S, U>> dispatchErrors) {
+        this.dispatchErrors = dispatchErrors;
     }
 }

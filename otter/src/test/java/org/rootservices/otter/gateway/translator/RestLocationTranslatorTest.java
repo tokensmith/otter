@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.dispatch.JsonRouteRun;
 import org.rootservices.otter.gateway.entity.rest.RestError;
+import org.rootservices.otter.gateway.entity.rest.RestErrorTarget;
 import org.rootservices.otter.gateway.entity.rest.RestTarget;
 import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Method;
@@ -32,14 +33,18 @@ public class RestLocationTranslatorTest {
     private RestBetweenFlyweight<DummyUser> mockRestBetweenFlyweight;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         Map<StatusCode, RestError<DummyUser, ? extends Translatable>> restErrors = new HashMap<>();
         restErrors.put(StatusCode.BAD_REQUEST, new RestError<>(DummyErrorPayload.class, new ClientErrorRestResource()));
 
         // 113: need to add defaults here.
         Map<StatusCode, RestError<DummyUser, ? extends Translatable>> defaultErrors = new HashMap<>();
-        subject = new RestLocationTranslator<DummyUser, DummyPayload>(mockRestBetweenFlyweight, restErrors, defaultErrors);
+        Map<StatusCode, RestErrorTarget<DummyUser, ? extends Translatable>> defaultErrorTargets = new HashMap<>();
+
+        subject = new RestLocationTranslator<DummyUser, DummyPayload>(
+                mockRestBetweenFlyweight, restErrors, defaultErrors, defaultErrorTargets
+        );
     }
 
     @Test
