@@ -64,7 +64,7 @@ public class LocationBuilder<S extends DefaultSession, U extends DefaultUser> {
         return this;
     }
 
-    // TODO: 114, 115
+    // used in Engine
     public LocationBuilder<S, U> errorRouteRunners(Map<StatusCode, Route<S, U>> errorRoutes) {
 
         for (Map.Entry<StatusCode, Route<S, U>> entry : errorRoutes.entrySet()) {
@@ -74,7 +74,7 @@ public class LocationBuilder<S extends DefaultSession, U extends DefaultUser> {
         return this;
     }
 
-    // TODO: 114, 115
+    // used in Engine
     public LocationBuilder<S, U> errorRouteRunner(StatusCode statusCode, Resource<S, U> resource) {
         Route<S, U> errorRoute = new RouteBuilder<S, U>()
                 .resource(resource)
@@ -87,6 +87,7 @@ public class LocationBuilder<S extends DefaultSession, U extends DefaultUser> {
         return this;
     }
 
+    // used in RouteRunner
     public LocationBuilder<S, U> errorResources(Map<StatusCode, Resource<S, U>> errorResources) {
         this.errorResources = errorResources;
         return this;

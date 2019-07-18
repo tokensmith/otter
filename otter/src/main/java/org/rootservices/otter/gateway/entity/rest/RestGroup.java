@@ -17,12 +17,15 @@ public class RestGroup<U extends DefaultUser> {
     // for route run to handle errors.
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors;
 
+    private Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> dispatchErrors;
 
-    public RestGroup(String name, Optional<RestBetween<U>> authRequired, Optional<RestBetween<U>> authOptional, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors) {
+
+    public RestGroup(String name, Optional<RestBetween<U>> authRequired, Optional<RestBetween<U>> authOptional, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> dispatchErrors) {
         this.name = name;
         this.authRequired = authRequired;
         this.authOptional = authOptional;
         this.restErrors = restErrors;
+        this.dispatchErrors = dispatchErrors;
     }
 
     public String getName() {
@@ -55,5 +58,13 @@ public class RestGroup<U extends DefaultUser> {
 
     public void setRestErrors(Map<StatusCode, RestError<U, ? extends Translatable>> restErrors) {
         this.restErrors = restErrors;
+    }
+
+    public Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> getDispatchErrors() {
+        return dispatchErrors;
+    }
+
+    public void setDispatchErrors(Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> dispatchErrors) {
+        this.dispatchErrors = dispatchErrors;
     }
 }

@@ -84,7 +84,7 @@ public class RestTargetBuilder<U extends DefaultUser, P> {
         return this;
     }
 
-    public RestTargetBuilder<U, P> errorTarget(StatusCode statusCode, RestErrorTarget<U, ? extends Translatable> errorTarget) {
+    public RestTargetBuilder<U, P> dispatchError(StatusCode statusCode, RestErrorTarget<U, ? extends Translatable> errorTarget) {
         this.errorTargets.put(statusCode, errorTarget);
         return this;
     }

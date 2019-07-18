@@ -119,6 +119,8 @@ public class OtterAppFactory {
         Map<String, LocationTranslator<? extends S, ? extends U>> locationTranslators = new HashMap<>();
 
         for(Group<? extends S, ? extends U> group: groups) {
+
+            // 113: need to pass through dispatch errors - maybe do a flyweight.
             Group<S, U> castedGroup = (Group<S,U>) group;
             locationTranslators.put(
                     group.getName(),
@@ -144,7 +146,7 @@ public class OtterAppFactory {
 
         for(RestGroup<? extends U> restGroup: restGroups) {
 
-            // 113: need default error targets too.
+            // 113: need to pass through dispatch errors - maybe do a flyweight.
             RestGroup<U> castedGroup = (RestGroup<U>) restGroup;
             restLocationTranslators.put(
                     castedGroup.getName(),

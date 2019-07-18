@@ -8,6 +8,7 @@ import org.rootservices.otter.router.entity.between.RestBetween;
 import org.rootservices.otter.router.factory.RestBetweenFlyweight;
 import org.rootservices.otter.translatable.Translatable;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -17,11 +18,13 @@ import java.util.Optional;
  */
 public class RestLocationTranslatorFactory {
 
+    // 113: should merging errors happen sooner?
     public <U extends DefaultUser, P> RestLocationTranslator<U, P> make(Optional<RestBetween<U>> authRequired, Optional<RestBetween<U>> authOptional, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors) {
         return new RestLocationTranslator<U, P>(
                 restBetweenFlyweight(authRequired, authOptional),
                 restErrors,
-                defaultErrors
+                defaultErrors,
+                new HashMap<>()
         );
     }
 

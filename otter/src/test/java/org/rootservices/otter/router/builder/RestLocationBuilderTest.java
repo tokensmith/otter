@@ -1,15 +1,16 @@
 package org.rootservices.otter.router.builder;
 
-import helper.FixtureFactory;
 import helper.entity.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.dispatch.JsonRouteRun;
+import org.rootservices.otter.dispatch.RouteRunner;
+import org.rootservices.otter.dispatch.translator.RestErrorHandler;
 import org.rootservices.otter.gateway.entity.rest.RestError;
 import org.rootservices.otter.router.entity.Location;
-import org.rootservices.otter.router.entity.RestRoute;
 import org.rootservices.otter.translatable.Translatable;
 
 import java.util.ArrayList;
@@ -115,14 +116,14 @@ public class RestLocationBuilderTest {
         List<MimeType> contentTypes = new ArrayList<>();
         OkRestResource resource = new OkRestResource();
 
-        RestRoute<DummyUser, DummyPayload> errorRestRoute = FixtureFactory.makeRestRoute();
+        RouteRunner errorRouteRunner = new JsonRouteRun<DummyUser, DummyPayload>();
 
         Location actual = subject
                 .payload(DummyPayload.class)
                 .path(regex)
                 .contentTypes(contentTypes)
                 .restResource(resource)
-                .errorRouteRunner(StatusCode.NOT_FOUND, errorRestRoute, DummyPayload.class)
+                .errorRouteRunner(StatusCode.NOT_FOUND, errorRouteRunner)
                 .build();
 
         assertThat(actual.getErrorRouteRunners().size(), is(1));
@@ -135,18 +136,14 @@ public class RestLocationBuilderTest {
         List<MimeType> contentTypes = new ArrayList<>();
         OkRestResource resource = new OkRestResource();
 
-        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> errors = new HashMap<>();
-        RestError<DummyUser, ? extends Translatable> restError = new RestError<>(
-                DummyErrorPayload.class, new ClientErrorRestResource()
-        );
-        errors.put(StatusCode.BAD_REQUEST, restError);
+        Map<StatusCode, RestErrorHandler<DummyUser>> errorHandlers = new HashMap<>();
 
         Location actual = subject
             .payload(DummyPayload.class)
             .path(regex)
             .contentTypes(contentTypes)
             .restResource(resource)
-            .restErrorResources(errors)
+            .restErrorHandlers(errorHandlers)
             .build();
 
         // no interface exposed to ensure it was built accurately.

@@ -35,12 +35,6 @@ public class RestLocationBuilder<U extends DefaultUser, P> {
     // error route runners that are called from engine.
     private Map<StatusCode, RouteRunner> errorRouteRunners = new HashMap<>();
 
-    // used when building routeRunner, errorRouteRunners
-    private RestRequestTranslator<U, P> restRequestTranslator = new RestRequestTranslator<U, P>();
-    private RestResponseTranslator<P> restResponseTranslator = new RestResponseTranslator<P>();
-    private RestBtwnRequestTranslator<U, P> restBtwnRequestTranslator = new RestBtwnRequestTranslator<>();
-    private RestBtwnResponseTranslator<P> restBtwnResponseTranslator = new RestBtwnResponseTranslator<>();
-
     // error resources that will be called from within the routerunner.
     private Map<StatusCode, RestErrorHandler<U>> errorHandlers = new HashMap<>();
 
@@ -81,51 +75,20 @@ public class RestLocationBuilder<U extends DefaultUser, P> {
         return this;
     }
 
-    // used in engine
-    @SuppressWarnings("unchecked")
-    public <E extends Translatable> RestLocationBuilder<U, P> errorRouteRunner(StatusCode statusCode, RestRoute<U, ? extends Translatable> errorRestRoute, Class<? extends Translatable> payload) {
-        JsonTranslator<E> jsonTranslator = otterAppFactory.jsonTranslator((Class<E>)payload);
-
-        // 113: might be able to put these in a flyweight if worried about memory footprint.
-        RestRequestTranslator<U, E> restRequestTranslator = new RestRequestTranslator<U, E>();
-        RestResponseTranslator<E> restResponseTranslator = new RestResponseTranslator<E>();
-        RestBtwnRequestTranslator<U, E> restBtwnRequestTranslator = new RestBtwnRequestTranslator<>();
-        RestBtwnResponseTranslator<E> restBtwnResponseTranslator = new RestBtwnResponseTranslator<>();
-
-        RouteRunner errorRouteRunner = new JsonRouteRun<U, E>(
-                (RestRoute<U, E>) errorRestRoute,
-                restResponseTranslator,
-                restRequestTranslator,
-                restBtwnRequestTranslator,
-                restBtwnResponseTranslator,
-                jsonTranslator,
-                new HashMap<>(),
-                new RestErrorRequestTranslator<>(),
-                new RestErrorResponseTranslator()
-        );
+    // used in Engine
+    public RestLocationBuilder<U, P> errorRouteRunner(StatusCode statusCode, RouteRunner errorRouteRunner) {
         errorRouteRunners.put(statusCode, errorRouteRunner);
         return this;
     }
 
-    @SuppressWarnings("unchecked")
-    public <E extends Translatable> RestLocationBuilder<U, P> restErrorResources(Map<StatusCode, RestError<U, ? extends E>> restErrors) {
+    // used in JsonRouteRun
+    public RestLocationBuilder<U, P> restErrorHandlers(Map<StatusCode, RestErrorHandler<U>> restErrorHandlers) {
 
-        for(Map.Entry<StatusCode, RestError<U, ? extends E>> restError: restErrors.entrySet()) {
-            RestError<U, E> castedRestErrorValue = (RestError<U, E>) restError.getValue();
-            JsonTranslator<E> jsonTranslator = otterAppFactory.jsonTranslator(castedRestErrorValue.getPayload());
-
-            RestErrorHandler<U> errorHandler = new JsonErrorHandler<U, E>(
-                    jsonTranslator,
-                    castedRestErrorValue.getRestResource(),
-                    new RestRequestTranslator<>(),
-                    new RestResponseTranslator<>()
-            );
-
-            errorHandlers.put(restError.getKey(), errorHandler);
+        for(Map.Entry<StatusCode, RestErrorHandler<U>> entry: restErrorHandlers.entrySet()) {
+            errorHandlers.put(entry.getKey(), entry.getValue());
         }
         return this;
     }
-
 
     public Location build() {
         RestRoute<U, P> restRoute = new RestRouteBuilder<U, P>()
@@ -135,6 +98,11 @@ public class RestLocationBuilder<U extends DefaultUser, P> {
                 .build();
 
         JsonTranslator<P> jsonTranslator = otterAppFactory.jsonTranslator(payload);
+
+        RestRequestTranslator<U, P> restRequestTranslator = new RestRequestTranslator<U, P>();
+        RestResponseTranslator<P> restResponseTranslator = new RestResponseTranslator<P>();
+        RestBtwnRequestTranslator<U, P> restBtwnRequestTranslator = new RestBtwnRequestTranslator<>();
+        RestBtwnResponseTranslator<P> restBtwnResponseTranslator = new RestBtwnResponseTranslator<>();
 
         RouteRunner routeRunner = new JsonRouteRun<U, P>(
                 restRoute,
