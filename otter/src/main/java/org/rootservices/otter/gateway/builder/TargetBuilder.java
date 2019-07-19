@@ -76,8 +76,7 @@ public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
         return this;
     }
 
-    // legacy error handling.
-    public TargetBuilder<S, U> errorTarget(StatusCode statusCode, ErrorTarget<S, U> errorTarget) {
+    public TargetBuilder<S, U> onDispatchError(StatusCode statusCode, ErrorTarget<S, U> errorTarget) {
         this.errorTargets.put(statusCode, errorTarget);
         return this;
     }

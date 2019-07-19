@@ -1,8 +1,8 @@
 package org.rootservices.otter.dispatch;
 
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.request.RestRequest;
@@ -21,7 +21,7 @@ import java.util.Optional;
 
 
 public class JsonErrorHandler<U extends DefaultUser, P> implements RestErrorHandler<U> {
-    protected static Logger logger = LogManager.getLogger(JsonErrorHandler.class);
+    protected static Logger LOGGER = LoggerFactory.getLogger(JsonErrorHandler.class);
     private JsonTranslator<P> jsonTranslator;
     private RestResource<U, P> resource;
     private RestRequestTranslator<U, P> restRequestTranslator;
@@ -81,7 +81,7 @@ public class JsonErrorHandler<U extends DefaultUser, P> implements RestErrorHand
         try {
             out = Optional.of(jsonTranslator.to(payload));
         } catch (ToJsonException e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
 
         return out;

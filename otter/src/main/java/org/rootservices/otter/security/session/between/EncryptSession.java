@@ -1,10 +1,10 @@
 package org.rootservices.otter.security.session.between;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.rootservices.jwt.builder.compact.EncryptedCompactBuilder;
 import org.rootservices.jwt.builder.exception.CompactException;
 import org.rootservices.jwt.entity.jwe.EncryptionAlgorithm;
@@ -33,7 +33,7 @@ import java.io.ByteArrayOutputStream;
 public class EncryptSession<S, U> implements Between<S, U> {
     public static final String NOT_ENCRYPTING = "Not re-encrypting session cookie";
     public static final String COULD_NOT_ENCRYPT_SESSION = "Could not encrypt session cookie";
-    protected static Logger LOGGER = LogManager.getLogger(EncryptSession.class);
+    protected static Logger LOGGER = LoggerFactory.getLogger(EncryptSession.class);
 
     private CookieConfig cookieConfig;
     private SymmetricKey preferredKey;

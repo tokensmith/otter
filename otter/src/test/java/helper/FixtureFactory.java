@@ -184,7 +184,7 @@ public class FixtureFactory {
                 .after(new DummyBetween<>())
                 .label(Label.CSRF)
                 .label(Label.SESSION_REQUIRED)
-                .errorTarget(StatusCode.NOT_FOUND, notFound)
+                .onDispatchError(StatusCode.NOT_FOUND, notFound)
                 .build();
     }
 

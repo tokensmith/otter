@@ -64,7 +64,7 @@ public class TargetBuilderTest {
                 .after(new DummyBetween<>())
                 .label(Label.CSRF)
                 .label(Label.SESSION_REQUIRED)
-                .errorTarget(StatusCode.NOT_FOUND, notFound)
+                .onDispatchError(StatusCode.NOT_FOUND, notFound)
                 .build();
 
         assertThat(actual.getRegex(), is("/foo"));
@@ -111,7 +111,7 @@ public class TargetBuilderTest {
                 .after(new DummyBetween<>())
                 .label(Label.CSRF)
                 .label(Label.SESSION_REQUIRED)
-                .errorTarget(StatusCode.NOT_FOUND, notFound)
+                .onDispatchError(StatusCode.NOT_FOUND, notFound)
                 .build();
 
 
@@ -147,7 +147,7 @@ public class TargetBuilderTest {
                 .after(new DummyBetween<>())
                 .label(Label.CSRF)
                 .label(Label.SESSION_REQUIRED)
-                .errorTarget(StatusCode.NOT_FOUND, notFound)
+                .onDispatchError(StatusCode.NOT_FOUND, notFound)
                 .onError(StatusCode.SERVER_ERROR, serverErrorResource)
                 .build();
 

@@ -5,6 +5,7 @@ import org.rootservices.hello.controller.*;
 import org.rootservices.hello.controller.api.between.AuthRestBetween;
 import org.rootservices.hello.controller.api.model.ApiUser;
 
+import org.rootservices.hello.controller.api.v2.BrokenRestResourceV2;
 import org.rootservices.hello.controller.api.v2.HelloRestResource;
 import org.rootservices.hello.controller.api.v3.BrokenRestResource;
 import org.rootservices.hello.controller.api.v3.handler.BadRequestResource;
@@ -107,7 +108,6 @@ public class AppConfig implements Configure {
     public void routes(Gateway gateway) {
         errorRoutes(gateway);
 
-
         MimeType json = new MimeTypeBuilder().json().build();
 
         // resource for v2 api
@@ -123,6 +123,25 @@ public class AppConfig implements Configure {
                 .build();
 
         gateway.add(helloApiV2);
+
+
+        // this will always throw a runtime exception and force the default error handler.
+        BrokenRestResourceV2 brokenRestResourceV2 = new BrokenRestResourceV2();
+        RestTarget<ApiUser, BrokenPayload> brokenApiV2 = new RestTargetBuilder<ApiUser, BrokenPayload>()
+                .method(Method.GET)
+                .method(Method.POST)
+                .method(Method.PATCH)
+                .method(Method.PUT)
+                .method(Method.DELETE)
+                .restResource(brokenRestResourceV2)
+                .regex(brokenRestResourceV2.URL)
+                .label(Label.AUTH_REQUIRED)
+                .contentType(json)
+                .groupName(API_GROUP_V2)
+                .payload(BrokenPayload.class)
+                .build();
+
+        gateway.add(brokenApiV2);
 
         // resource for v3 api
         org.rootservices.hello.controller.api.v3.HelloRestResource helloRestResourceV3 = new org.rootservices.hello.controller.api.v3.HelloRestResource();

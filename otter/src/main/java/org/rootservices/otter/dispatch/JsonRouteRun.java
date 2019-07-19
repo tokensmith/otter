@@ -1,8 +1,8 @@
 package org.rootservices.otter.dispatch;
 
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
-    protected static Logger logger = LogManager.getLogger(JsonRouteRun.class);
+    protected static Logger LOGGER = LoggerFactory.getLogger(JsonRouteRun.class);
     private RestRoute<U, P> restRoute;
     private RestResponseTranslator<P> restResponseTranslator;
     private RestRequestTranslator<U, P> restRequestTranslator;
@@ -301,7 +301,7 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
         try {
             out = Optional.of(jsonTranslator.to(payload));
         } catch (ToJsonException e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
 
         return out;

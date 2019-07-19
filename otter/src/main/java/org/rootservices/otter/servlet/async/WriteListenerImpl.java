@@ -1,22 +1,19 @@
 package org.rootservices.otter.servlet.async;
 
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.eclipse.jetty.server.AsyncContextEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import javax.servlet.AsyncContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 
 public class WriteListenerImpl implements WriteListener {
-    protected static Logger logger = LogManager.getLogger(WriteListenerImpl.class);
+    protected static Logger LOGGER = LoggerFactory.getLogger(WriteListenerImpl.class);
     private ServletOutputStream output = null;
     private Queue queue = null;
     private AsyncContext context = null;
@@ -42,6 +39,6 @@ public class WriteListenerImpl implements WriteListener {
     @Override
     public void onError(Throwable t) {
         context.complete();
-        logger.error(t.getMessage(), t);
+        LOGGER.error(t.getMessage(), t);
     }
 }

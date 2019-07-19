@@ -2,8 +2,8 @@ package org.rootservices.otter.security.session.between;
 
 
 import com.fasterxml.jackson.databind.ObjectReader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.exception.InvalidJWT;
@@ -49,7 +49,7 @@ public class DecryptSession<S, U> implements Between<S, U> {
     public static final String COOKIE_NOT_PRESENT = "session cookie not present.";
     public static final String FAILED_TO_COPY_REQUEST_SESSION = "failed to copy request session";
     public static final String COULD_NOT_CALL_THE_SESSION_COPY_CONSTRUCTOR = "Could not call the session's copy constructor";
-    protected static Logger LOGGER = LogManager.getLogger(DecryptSession.class);
+    protected static Logger LOGGER = LoggerFactory.getLogger(DecryptSession.class);
 
     private Constructor<S> ctor;
     private String sessionCookieName;
