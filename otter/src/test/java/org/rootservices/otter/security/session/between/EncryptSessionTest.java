@@ -9,13 +9,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.config.CookieConfig;
-import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.request.Request;
 import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.exception.HaltException;
 import org.rootservices.otter.security.session.between.exception.EncryptSessionException;
+import org.rootservices.otter.translator.config.TranslatorAppFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Optional;
@@ -24,7 +24,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 public class EncryptSessionTest {
-    private OtterAppFactory otterAppFactory = new OtterAppFactory();
+    private TranslatorAppFactory appFactory = new TranslatorAppFactory();
     private EncryptSession<DummySession, DummyUser> subject;
 
     @Before
@@ -33,7 +33,7 @@ public class EncryptSessionTest {
         subject = new EncryptSession<DummySession, DummyUser>(
                 cookieConfig,
                 FixtureFactory.encKey("1234"),
-                otterAppFactory.objectWriter()
+                appFactory.objectWriter()
         );
     }
 
@@ -77,7 +77,7 @@ public class EncryptSessionTest {
         EncryptSession<DummySession, DummyUser> subject = new EncryptSession<DummySession, DummyUser>(
                 cookieConfig,
                 veryBadKey,
-                otterAppFactory.objectWriter()
+                appFactory.objectWriter()
         );
 
         DummySession requestSession = new DummySession();
@@ -197,7 +197,7 @@ public class EncryptSessionTest {
         EncryptSession<DummySession, DummyUser> subject = new EncryptSession<DummySession, DummyUser>(
                 cookieConfig,
                 FixtureFactory.encKey("1234"),
-                otterAppFactory.objectWriter()
+                appFactory.objectWriter()
         );
 
         SymmetricKey encKey = FixtureFactory.encKey("1000");
@@ -213,7 +213,7 @@ public class EncryptSessionTest {
         EncryptSession<DummySession, DummyUser> subject = new EncryptSession<DummySession, DummyUser>(
                 cookieConfig,
                 FixtureFactory.encKey("1234"),
-                otterAppFactory.objectWriter()
+                appFactory.objectWriter()
         );
 
         CookieConfig sessionCookieConfig = new CookieConfig("session_store", true, -1);

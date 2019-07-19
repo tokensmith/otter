@@ -1,21 +1,19 @@
 package org.rootservices.otter.router.builder;
 
-import org.rootservices.otter.config.OtterAppFactory;
+
 import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
-import org.rootservices.otter.dispatch.JsonErrorHandler;
 import org.rootservices.otter.dispatch.JsonRouteRun;
 import org.rootservices.otter.dispatch.RouteRunner;
 import org.rootservices.otter.dispatch.translator.RestErrorHandler;
 import org.rootservices.otter.dispatch.translator.rest.*;
-import org.rootservices.otter.gateway.entity.rest.RestError;
 import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.RestRoute;
 import org.rootservices.otter.router.entity.between.RestBetween;
-import org.rootservices.otter.translatable.Translatable;
 import org.rootservices.otter.translator.JsonTranslator;
+import org.rootservices.otter.translator.config.TranslatorAppFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +36,7 @@ public class RestLocationBuilder<U extends DefaultUser, P> {
     // error resources that will be called from within the routerunner.
     private Map<StatusCode, RestErrorHandler<U>> errorHandlers = new HashMap<>();
 
-    private OtterAppFactory otterAppFactory = new OtterAppFactory();
+    private TranslatorAppFactory translatorAppFactory = new TranslatorAppFactory();
 
     public RestLocationBuilder<U, P> path(String path) {
         this.pattern = Pattern.compile(path);
@@ -97,7 +95,7 @@ public class RestLocationBuilder<U extends DefaultUser, P> {
                 .after(after)
                 .build();
 
-        JsonTranslator<P> jsonTranslator = otterAppFactory.jsonTranslator(payload);
+        JsonTranslator<P> jsonTranslator = translatorAppFactory.jsonTranslator(payload);
 
         RestRequestTranslator<U, P> restRequestTranslator = new RestRequestTranslator<U, P>();
         RestResponseTranslator<P> restResponseTranslator = new RestResponseTranslator<P>();

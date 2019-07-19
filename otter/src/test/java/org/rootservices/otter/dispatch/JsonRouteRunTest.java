@@ -4,36 +4,31 @@ import helper.FixtureFactory;
 import helper.entity.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.request.Request;
 import org.rootservices.otter.controller.error.BadRequestResource;
-import org.rootservices.otter.dispatch.exception.ClientException;
 import org.rootservices.otter.dispatch.translator.RestErrorHandler;
 import org.rootservices.otter.dispatch.translator.rest.*;
-import org.rootservices.otter.gateway.entity.rest.RestError;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.RestRoute;
 import org.rootservices.otter.router.entity.io.Answer;
 import org.rootservices.otter.router.entity.io.Ask;
 import org.rootservices.otter.router.exception.HaltException;
-import org.rootservices.otter.translatable.Translatable;
 import org.rootservices.otter.translator.JsonTranslator;
-import org.rootservices.otter.translator.exception.DeserializationException;
+import org.rootservices.otter.translator.config.TranslatorAppFactory;
 
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
 
 public class JsonRouteRunTest {
-    private static OtterAppFactory otterAppFactory = new OtterAppFactory();
+    private static TranslatorAppFactory appFactory = new TranslatorAppFactory();
     private JsonRouteRun<DummyUser, DummyPayload> subject;
 
     @Before
@@ -42,12 +37,12 @@ public class JsonRouteRunTest {
         RestRequestTranslator<DummyUser, DummyPayload> restRequestTranslator = new RestRequestTranslator<>();
         RestBtwnRequestTranslator<DummyUser, DummyPayload> restBtwnRequestTranslator = new RestBtwnRequestTranslator<>();
         RestBtwnResponseTranslator<DummyPayload> restBtwnResponseTranslator = new RestBtwnResponseTranslator<>();
-        JsonTranslator<DummyPayload> jsonTranslator = otterAppFactory.jsonTranslator(DummyPayload.class);
+        JsonTranslator<DummyPayload> jsonTranslator = appFactory.jsonTranslator(DummyPayload.class);
         RestRoute<DummyUser, DummyPayload> restRoute = FixtureFactory.makeRestRoute();
 
         Map<StatusCode, RestErrorHandler<DummyUser>> errorHandlers = new HashMap<>();
         RestErrorHandler<DummyUser> errorHandler = new JsonErrorHandler<DummyUser, ClientError>(
-                otterAppFactory.jsonTranslator(ClientError.class),
+                appFactory.jsonTranslator(ClientError.class),
                 new BadRequestResource<DummyUser>(),
                 new RestRequestTranslator<DummyUser, ClientError>(),
                 new RestResponseTranslator<ClientError>()
@@ -71,7 +66,7 @@ public class JsonRouteRunTest {
     public void whenPostShouldReturnOk() throws Exception {
         DummyPayload dummyPayload = new DummyPayload();
         dummyPayload.setInteger(123);
-        byte[] body = otterAppFactory.objectWriter().writeValueAsBytes(dummyPayload);
+        byte[] body = appFactory.objectWriter().writeValueAsBytes(dummyPayload);
 
         testRun(Method.POST, StatusCode.CREATED, Optional.of(body));
     }
@@ -80,7 +75,7 @@ public class JsonRouteRunTest {
     public void whenPutShouldReturnOk() throws Exception {
         DummyPayload dummyPayload = new DummyPayload();
         dummyPayload.setInteger(123);
-        byte[] body = otterAppFactory.objectWriter().writeValueAsBytes(dummyPayload);
+        byte[] body = appFactory.objectWriter().writeValueAsBytes(dummyPayload);
 
         testRun(Method.PUT, StatusCode.OK, Optional.of(body));
     }
@@ -89,7 +84,7 @@ public class JsonRouteRunTest {
     public void whenPatchShouldReturnOk() throws Exception {
         DummyPayload dummyPayload = new DummyPayload();
         dummyPayload.setInteger(123);
-        byte[] body = otterAppFactory.objectWriter().writeValueAsBytes(dummyPayload);
+        byte[] body = appFactory.objectWriter().writeValueAsBytes(dummyPayload);
 
         testRun(Method.PATCH, StatusCode.OK, Optional.of(body));
     }

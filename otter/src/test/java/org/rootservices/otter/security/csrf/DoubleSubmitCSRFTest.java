@@ -6,8 +6,8 @@ import org.junit.Test;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwt.JsonWebToken;
 import org.rootservices.jwt.serialization.exception.JsonToJwtException;
-import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.Cookie;
+import org.rootservices.otter.security.config.SecurityAppFactory;
 import org.rootservices.otter.security.csrf.exception.CsrfException;
 import org.rootservices.otter.security.entity.ChallengeToken;
 
@@ -30,8 +30,8 @@ public class DoubleSubmitCSRFTest {
 
     @Before
     public void setUp() {
-        OtterAppFactory otterFactory = new OtterAppFactory();
-        subject = otterFactory.doubleSubmitCSRF();
+        SecurityAppFactory appFactory = new SecurityAppFactory();
+        subject = appFactory.doubleSubmitCSRF();
 
         SymmetricKey preferredSignKey = FixtureFactory.signKey("preferred-key");
 

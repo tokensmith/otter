@@ -10,7 +10,7 @@ import org.rootservices.otter.gateway.entity.rest.RestError;
 import org.rootservices.otter.gateway.entity.rest.RestErrorTarget;
 import org.rootservices.otter.gateway.entity.rest.RestTarget;
 import org.rootservices.otter.router.builder.RestLocationBuilder;
-import org.rootservices.otter.router.config.RouterAppFactory;
+import org.rootservices.otter.dispatch.config.DispatchAppFactory;
 import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.RestRoute;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class RestLocationTranslator<U extends DefaultUser, P> {
-    private static RouterAppFactory routerAppFactory = new RouterAppFactory();
+    private static DispatchAppFactory dispatchAppFactory = new DispatchAppFactory();
 
     private RestBetweenFlyweight<U> restBetweenFlyweight;
 
@@ -33,18 +33,25 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
     // defaults if not provided, 400
     private Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors;
 
-    // defaults if not provided 415
-    private Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> defaultErrorTargets;
+    // dispatch errors if not provided 415
+    private Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> dispatchErrors;
 
-    public RestLocationTranslator(RestBetweenFlyweight<U> restBetweenFlyweight, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors, Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> defaultErrorTargets) {
+    // dispatch error defaults if not provided 415
+    private Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> defaultDispatchErrors;
+
+    public RestLocationTranslator(RestBetweenFlyweight<U> restBetweenFlyweight, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors, Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> dispatchErrors, Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> defaultDispatchErrors) {
         this.restBetweenFlyweight = restBetweenFlyweight;
         this.restErrors = restErrors;
         this.defaultErrors = defaultErrors;
-        this.defaultErrorTargets = defaultErrorTargets;
+        this.dispatchErrors = dispatchErrors;
+        this.defaultDispatchErrors = defaultDispatchErrors;
     }
 
     public Map<Method, Location> to(RestTarget<U, P> from) {
         Map<Method, Location> to = new HashMap<>();
+
+        Map<StatusCode, RestError<U, ? extends Translatable>> mergedRestErrors = mergeRestErrors(defaultErrors, restErrors);
+        Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> mergedDispatchErrors = mergeDispatchErrors(defaultDispatchErrors, dispatchErrors);
 
         for(Method method: from.getMethods()) {
 
@@ -55,8 +62,7 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
                 contentTypes = new ArrayList<>();
             }
 
-            Map<StatusCode, RestError<U, ? extends Translatable>> mergedRestErrors = mergeRestErrors(restErrors, from.getRestErrors());
-            mergedRestErrors = mergeRestErrors(defaultErrors, mergedRestErrors);
+            mergedRestErrors = mergeRestErrors(mergedRestErrors, from.getRestErrors());
             Map<StatusCode, RestErrorHandler<U>> errorHandlers = toErrorHandlers(mergedRestErrors);
 
             RestLocationBuilder<U, P> locationBuilder = new RestLocationBuilder<U, P>()
@@ -77,12 +83,13 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
                     // these are used in JsonRouteRun
                     .restErrorHandlers(errorHandlers);
 
-            // merge defaultErrorTargets with target.errorTargets.
+            // merge dispatch errors
+            Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> dispatchErrors = mergeDispatchErrors(mergedDispatchErrors, from.getErrorTargets());
 
             // add the error routes to be used in engine.
-            for(Map.Entry<StatusCode, RestErrorTarget<U, ? extends Translatable>> entry: from.getErrorTargets().entrySet()) {
-                RestRoute<U, ? extends Translatable> restRoute = routerAppFactory.makeRestRoute(entry.getValue());
-                RouteRunner restRouteRunner = routerAppFactory.makeJsonRouteRun(restRoute, entry.getValue().getPayload());
+            for(Map.Entry<StatusCode, RestErrorTarget<U, ? extends Translatable>> entry: dispatchErrors.entrySet()) {
+                RestRoute<U, ? extends Translatable> restRoute = dispatchAppFactory.makeRestRoute(entry.getValue());
+                RouteRunner restRouteRunner = dispatchAppFactory.makeJsonRouteRun(restRoute, entry.getValue().getPayload());
 
                 locationBuilder = locationBuilder.errorRouteRunner(
                         entry.getKey(),
@@ -120,8 +127,29 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
     protected Map<StatusCode, RestErrorHandler<U>> toErrorHandlers(Map<StatusCode, RestError<U, ? extends Translatable>> from) {
         Map<StatusCode, RestErrorHandler<U>> to = new HashMap<>();
         for(Map.Entry<StatusCode, RestError<U, ? extends Translatable>> entry: from.entrySet()) {
-            to.put(entry.getKey(), routerAppFactory.restErrorHandler(entry.getValue()));
+            to.put(entry.getKey(), dispatchAppFactory.restErrorHandler(entry.getValue()));
         }
+        return to;
+    }
+
+
+    /**
+     * Merges two maps of rest error targets (dispatch errors) with the preference to the right when a collision occurs.
+     *
+     * @param left a map of rest errors
+     * @param right a map of rest errors
+     * @return a merged map of RestErrorTarget.
+     */
+    protected Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> mergeDispatchErrors(Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> left, Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> right) {
+        Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> to = Stream.of(left, right)
+                .flatMap(map -> map.entrySet().stream())
+                .collect(
+                        Collectors.toMap(
+                                Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (v1, v2) -> v2
+                        )
+                );
         return to;
     }
 }

@@ -1,13 +1,6 @@
 package org.rootservices.otter.config;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.rootservices.jwt.config.JwtAppFactory;
+
 import org.rootservices.otter.QueryStringToMap;
 import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.ClientError;
@@ -15,10 +8,12 @@ import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.error.BadRequestResource;
+import org.rootservices.otter.controller.error.MediaTypeResource;
 import org.rootservices.otter.gateway.LocationTranslatorFactory;
 import org.rootservices.otter.gateway.RestLocationTranslatorFactory;
 import org.rootservices.otter.gateway.entity.Group;
 import org.rootservices.otter.gateway.entity.rest.RestError;
+import org.rootservices.otter.gateway.entity.rest.RestErrorTarget;
 import org.rootservices.otter.gateway.entity.rest.RestGroup;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
@@ -32,20 +27,14 @@ import org.rootservices.otter.gateway.translator.RestLocationTranslator;
 import org.rootservices.otter.router.Dispatcher;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.factory.ErrorRouteRunnerFactory;
-import org.rootservices.otter.security.RandomString;
 import org.rootservices.otter.security.exception.SessionCtorException;
-import org.rootservices.otter.security.csrf.DoubleSubmitCSRF;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 import org.rootservices.otter.server.path.CompiledClassPath;
 import org.rootservices.otter.server.path.WebAppPath;
 import org.rootservices.otter.translatable.Translatable;
-import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.MimeTypeTranslator;
 
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -53,9 +42,7 @@ import java.util.Map;
  */
 public class OtterAppFactory {
     public static Integer WRITE_CHUNK_SIZE = 1024;
-    private static ObjectMapper objectMapper;
-    private static ObjectReader objectReader;
-    private static ObjectWriter objectWriter;
+
 
     public CompiledClassPath compiledClassPath() {
         return new CompiledClassPath();
@@ -69,20 +56,6 @@ public class OtterAppFactory {
         return new ServletContainerFactory(
                 compiledClassPath(),
                 webAppPath()
-        );
-    }
-
-    /**
-     * Make a JsonTranslator used in LegacyRestResource.
-     * It must be used exclusively for {@code Class<T> clazz}
-     *
-     * @param clazz Class to be serialized
-     * @param <T> Type to be serialized
-     * @return instance of a JsonTranslator intended for T
-     */
-    public <T> JsonTranslator<T> jsonTranslator(Class<T> clazz) {
-        return new JsonTranslator<T>(
-                objectReader().forType(clazz), objectWriter(), clazz
         );
     }
 
@@ -120,7 +93,6 @@ public class OtterAppFactory {
 
         for(Group<? extends S, ? extends U> group: groups) {
 
-            // 113: need to pass through dispatch errors - maybe do a flyweight.
             Group<S, U> castedGroup = (Group<S,U>) group;
             locationTranslators.put(
                     group.getName(),
@@ -128,7 +100,9 @@ public class OtterAppFactory {
                             castedGroup.getSessionClazz(),
                             castedGroup.getAuthRequired(),
                             castedGroup.getAuthOptional(),
-                            castedGroup.getErrorResources()
+                            castedGroup.getErrorResources(),
+                            castedGroup.getDispatchErrors(),
+                            new HashMap<>() // 113: default dispatch errors.
                     )
             );
         }
@@ -146,7 +120,6 @@ public class OtterAppFactory {
 
         for(RestGroup<? extends U> restGroup: restGroups) {
 
-            // 113: need to pass through dispatch errors - maybe do a flyweight.
             RestGroup<U> castedGroup = (RestGroup<U>) restGroup;
             restLocationTranslators.put(
                     castedGroup.getName(),
@@ -154,7 +127,9 @@ public class OtterAppFactory {
                             castedGroup.getAuthRequired(),
                             castedGroup.getAuthOptional(),
                             castedGroup.getRestErrors(),
-                            defaultErrors()
+                            defaultErrors(),
+                            castedGroup.getDispatchErrors(),
+                            defaultDispatchErrors()
                     )
             );
         }
@@ -167,38 +142,28 @@ public class OtterAppFactory {
 
         Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors = new HashMap<>();
 
-        // TODO: sort out needing to cast.
         RestError<U, P> badRequest = new RestError<U, P>((Class<P>)ClientError.class, (RestResource<U, P>)new BadRequestResource<U>());
         defaultErrors.put(StatusCode.BAD_REQUEST, badRequest);
 
         return defaultErrors;
     }
 
-    public ObjectMapper objectMapper() {
-        if (objectMapper == null) {
-            objectMapper = new ObjectMapper()
-                    .setPropertyNamingStrategy(
-                            PropertyNamingStrategy.SNAKE_CASE
-                    )
-                    .configure(JsonParser.Feature.STRICT_DUPLICATE_DETECTION, true)
-                    .registerModule(new Jdk8Module())
-                    .registerModule(new JavaTimeModule());
-        }
-        return objectMapper;
-    }
+    @SuppressWarnings("unchecked")
+    public <U extends DefaultUser, P extends Translatable> Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> defaultDispatchErrors() {
 
-    public ObjectReader objectReader() {
-        if (objectReader == null) {
-            objectReader = objectMapper().reader();
-        }
-        return objectReader;
-    }
+        Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> defaultDispatchErrors = new HashMap<>();
 
-    public ObjectWriter objectWriter() {
-        if (objectWriter == null) {
-            objectWriter = objectMapper().writer();
-        }
-        return objectWriter;
+        // Server Error - a bit unlikely
+
+
+        // Unsupported Media Type.
+        RestResource<U, P> mediaType = (RestResource<U, P>) new MediaTypeResource<U>();
+        RestErrorTarget<U, P> mediaTypeTarget = new RestErrorTarget<>((Class<P>)ClientError.class, mediaType, new ArrayList<>(), new ArrayList<>());
+
+        defaultDispatchErrors.put(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaTypeTarget);
+
+
+        return defaultDispatchErrors;
     }
 
     public HttpServletRequestTranslator httpServletRequestTranslator() {
@@ -220,14 +185,6 @@ public class OtterAppFactory {
 
     public HttpServletRequestCookieTranslator httpServletRequestCookieTranslator() {
         return new HttpServletRequestCookieTranslator();
-    }
-
-    public JwtAppFactory jwtAppFactory() {
-        return new JwtAppFactory();
-    }
-
-    public DoubleSubmitCSRF doubleSubmitCSRF() {
-        return new DoubleSubmitCSRF(jwtAppFactory(), new RandomString());
     }
 
     public Base64.Decoder urlDecoder() {

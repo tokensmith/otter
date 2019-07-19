@@ -40,10 +40,11 @@ public class RestLocationTranslatorTest {
 
         // 113: need to add defaults here.
         Map<StatusCode, RestError<DummyUser, ? extends Translatable>> defaultErrors = new HashMap<>();
-        Map<StatusCode, RestErrorTarget<DummyUser, ? extends Translatable>> defaultErrorTargets = new HashMap<>();
+        Map<StatusCode, RestErrorTarget<DummyUser, ? extends Translatable>> dispatchErrors = new HashMap<>();
+        Map<StatusCode, RestErrorTarget<DummyUser, ? extends Translatable>> defaultDispatchTargets = new HashMap<>();
 
         subject = new RestLocationTranslator<DummyUser, DummyPayload>(
-                mockRestBetweenFlyweight, restErrors, defaultErrors, defaultErrorTargets
+                mockRestBetweenFlyweight, restErrors, defaultErrors, dispatchErrors, defaultDispatchTargets
         );
     }
 

@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.dispatch.RouteRun;
+import org.rootservices.otter.gateway.entity.ErrorTarget;
 import org.rootservices.otter.gateway.entity.Target;
 import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Method;
@@ -30,11 +31,13 @@ public class LocationTranslatorTest {
     @Mock
     private BetweenFlyweight<DummySession, DummyUser> mockBetweenFlyweight;
     private Map<StatusCode, Resource<DummySession, DummyUser>> errorResources = new HashMap<>();
+    private Map<StatusCode, ErrorTarget<DummySession, DummyUser>> dispatchErrors = new HashMap<>();
+    private Map<StatusCode, ErrorTarget<DummySession, DummyUser>> defaultDispatchErrors = new HashMap<>();
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        subject = new LocationTranslator<DummySession, DummyUser>(mockBetweenFlyweight, errorResources);
+        subject = new LocationTranslator<DummySession, DummyUser>(mockBetweenFlyweight, errorResources, dispatchErrors, defaultDispatchErrors);
     }
 
     @SuppressWarnings("unchecked")

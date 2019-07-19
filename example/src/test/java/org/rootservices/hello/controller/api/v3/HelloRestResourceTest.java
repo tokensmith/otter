@@ -9,8 +9,10 @@ import org.asynchttpclient.Response;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.rootservices.otter.config.OtterAppFactory;
+import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.header.Header;
+import org.rootservices.otter.translator.config.TranslatorAppFactory;
 import suite.IntegrationTestSuite;
 import suite.ServletContainerTest;
 
@@ -21,7 +23,9 @@ import static org.junit.Assert.assertThat;
 
 @Category(ServletContainerTest.class)
 public class HelloRestResourceTest {
+    private static TranslatorAppFactory appFactory = new TranslatorAppFactory();
     private static URI BASE_URI;
+
 
     @BeforeClass
     public static void beforeClass() {
@@ -45,7 +49,7 @@ public class HelloRestResourceTest {
 
         assertThat(response.getStatusCode(), is(StatusCode.OK.getCode()));
 
-        OtterAppFactory appFactory = new OtterAppFactory();
+
         ObjectMapper om = appFactory.objectMapper();
         Hello hello = om.readValue(response.getResponseBody(), Hello.class);
 
@@ -58,7 +62,6 @@ public class HelloRestResourceTest {
     public void postShouldReturn201() throws Exception {
         String helloURI = getUri();
 
-        OtterAppFactory appFactory = new OtterAppFactory();
         ObjectMapper om = appFactory.objectMapper();
         Hello hello = new Hello("Hello World");
 
@@ -91,7 +94,6 @@ public class HelloRestResourceTest {
 
         assertThat(response.getStatusCode(), is(StatusCode.BAD_REQUEST.getCode()));
 
-        OtterAppFactory appFactory = new OtterAppFactory();
         ObjectMapper om = appFactory.objectMapper();
         BadRequestPayload actual = om.readValue(response.getResponseBody(), BadRequestPayload.class);
 
@@ -102,7 +104,7 @@ public class HelloRestResourceTest {
     }
 
     @Test
-    public void getWhenWrongContentTypeShouldReturn415() throws Exception {
+    public void getWhenWrongContentTypeShouldReturnDefault415() throws Exception {
         String helloURI = getUri();
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
@@ -113,5 +115,15 @@ public class HelloRestResourceTest {
         Response response = f.get();
 
         assertThat(response.getStatusCode(), is(StatusCode.UNSUPPORTED_MEDIA_TYPE.getCode()));
+        ObjectMapper om = appFactory.objectMapper();
+        ClientError clientError = om.readValue(response.getResponseBody(), ClientError.class);
+        assertThat(clientError, is(notNullValue()));
+        assertThat(clientError.getSource(), is(ClientError.Source.HEADER));
+        assertThat(clientError.getKey(), is(Header.CONTENT_TYPE.toString()));
+        assertThat(clientError.getActual(), is("application/xml; charset=utf-8;"));
+        assertThat(clientError.getExpected(), is(notNullValue()));
+        assertThat(clientError.getExpected().size(), is(1));
+        assertThat(clientError.getExpected().get(0), is("application/json; charset=utf-8;"));
+        assertThat(clientError.getReason(), is(nullValue()));
     }
 }
