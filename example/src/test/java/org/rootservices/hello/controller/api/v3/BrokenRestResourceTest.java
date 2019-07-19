@@ -7,8 +7,8 @@ import org.asynchttpclient.Response;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.translator.config.TranslatorAppFactory;
 import suite.IntegrationTestSuite;
 import suite.ServletContainerTest;
 
@@ -31,7 +31,7 @@ public class BrokenRestResourceTest {
     }
 
     protected ServerErrorPayload to(byte[] from) throws Exception {
-        OtterAppFactory appFactory = new OtterAppFactory();
+        TranslatorAppFactory appFactory = new TranslatorAppFactory();
         ObjectMapper om = appFactory.objectMapper();
         return om.readValue(from, ServerErrorPayload.class);
     }

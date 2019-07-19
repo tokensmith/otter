@@ -19,9 +19,10 @@ import org.rootservices.jwt.entity.jwt.JsonWebToken;
 import org.rootservices.jwt.jwe.entity.JWE;
 import org.rootservices.jwt.jwe.serialization.JweDeserializer;
 import org.rootservices.jwt.serialization.JwtSerde;
-import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.security.config.SecurityAppFactory;
 import org.rootservices.otter.security.csrf.CsrfClaims;
+import org.rootservices.otter.translator.config.TranslatorAppFactory;
 import suite.IntegrationTestSuite;
 import suite.ServletContainerTest;
 
@@ -152,12 +153,13 @@ public class LoginSetSessionResourceTest {
         AppFactory appConfig = new AppFactory();
         SymmetricKey encKey = appConfig.encKey();
 
-        OtterAppFactory otterAppFactory = new OtterAppFactory();
-        JwtAppFactory jwtAppFactory = otterAppFactory.jwtAppFactory();
+        SecurityAppFactory securityAppFactory = new SecurityAppFactory();
+        JwtAppFactory jwtAppFactory = securityAppFactory.jwtAppFactory();
         JweDeserializer deserializer = jwtAppFactory.jweDirectDesializer();
         JWE sessionPayload = deserializer.stringToJWE(sessionCookie.value(), encKey);
 
-        ObjectMapper om = otterAppFactory.objectMapper();
+        TranslatorAppFactory translatorAppFactory = new TranslatorAppFactory();
+        ObjectMapper om = translatorAppFactory.objectMapper();
         TokenSession actual = om.readValue(sessionPayload.getPayload(), TokenSession.class);
 
         assertThat(actual, is(notNullValue()));

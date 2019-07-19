@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.gateway.entity.ErrorTarget;
 import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
 
@@ -30,7 +31,16 @@ public class LocationTranslatorFactoryTest {
     @Test
     public void shouldMakeLocationTranslator() throws Exception {
         Map<StatusCode, Resource<DummySession, DummyUser>> errorResources = new HashMap<>();
-        LocationTranslator<DummySession, DummyUser> actual = subject.make(DummySession.class, Optional.empty(), Optional.empty(), errorResources);
+        Map<StatusCode, ErrorTarget<DummySession, DummyUser>> dispatchErrors = new HashMap<>();
+        Map<StatusCode, ErrorTarget<DummySession, DummyUser>> defaultDispatchErrors = new HashMap<>();
+        LocationTranslator<DummySession, DummyUser> actual = subject.make(
+                DummySession.class,
+                Optional.empty(),
+                Optional.empty(),
+                errorResources,
+                dispatchErrors,
+                defaultDispatchErrors
+        );
 
         assertThat(actual, is(notNullValue()));
     }

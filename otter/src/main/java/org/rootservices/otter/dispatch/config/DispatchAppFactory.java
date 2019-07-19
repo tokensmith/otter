@@ -1,7 +1,6 @@
-package org.rootservices.otter.router.config;
+package org.rootservices.otter.dispatch.config;
 
 
-import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.dispatch.JsonErrorHandler;
 import org.rootservices.otter.dispatch.JsonRouteRun;
@@ -14,13 +13,13 @@ import org.rootservices.otter.router.builder.RestRouteBuilder;
 import org.rootservices.otter.router.entity.RestRoute;
 import org.rootservices.otter.translatable.Translatable;
 import org.rootservices.otter.translator.JsonTranslator;
+import org.rootservices.otter.translator.config.TranslatorAppFactory;
 
 import java.util.HashMap;
 
 
-public class RouterAppFactory {
-    private static OtterAppFactory otterAppFactory = new OtterAppFactory();
-
+public class DispatchAppFactory {
+    private static TranslatorAppFactory translatorAppFactory = new TranslatorAppFactory();
 
     public <U extends DefaultUser, P extends Translatable> RestRoute<U, ? extends Translatable> makeRestRoute(RestErrorTarget<U, P> from) {
         return new RestRouteBuilder<U, P>()
@@ -33,7 +32,7 @@ public class RouterAppFactory {
     public <U extends DefaultUser, P extends Translatable> RouteRunner makeJsonRouteRun(RestRoute<U, ? extends Translatable> restRoute, Class<? extends Translatable> payload) {
 
         Class<P> castedPayload = toPayload(payload);
-        JsonTranslator<P> jsonTranslator = otterAppFactory.jsonTranslator(castedPayload);
+        JsonTranslator<P> jsonTranslator = translatorAppFactory.jsonTranslator(castedPayload);
 
         RestRequestTranslator<U, P> restRequestTranslator = new RestRequestTranslator<U, P>();
         RestResponseTranslator<P> restResponseTranslator = new RestResponseTranslator<P>();
@@ -69,7 +68,7 @@ public class RouterAppFactory {
     public <U extends DefaultUser, P extends Translatable> RestErrorHandler<U> restErrorHandler(RestError<U, ? extends P> restError) {
 
         RestError<U, P> castedRestErrorValue = toRestError(restError);
-        JsonTranslator<P> jsonTranslator = otterAppFactory.jsonTranslator(castedRestErrorValue.getPayload());
+        JsonTranslator<P> jsonTranslator = translatorAppFactory.jsonTranslator(castedRestErrorValue.getPayload());
 
         return new JsonErrorHandler<U, P>(
                 jsonTranslator,

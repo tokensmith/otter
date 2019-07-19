@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.otter.config.CookieConfig;
-import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.router.entity.between.Between;
 import org.rootservices.otter.security.RandomString;
 import org.rootservices.otter.security.builder.entity.Betweens;
@@ -15,6 +14,7 @@ import org.rootservices.otter.security.csrf.between.CheckCSRF;
 import org.rootservices.otter.security.csrf.between.PrepareCSRF;
 import org.rootservices.otter.security.session.between.DecryptSession;
 import org.rootservices.otter.security.session.between.EncryptSession;
+import org.rootservices.otter.translator.config.TranslatorAppFactory;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class BetweenBuilder<S, U> {
     private static String SESSION_NAME = "session";
     public static final String COULD_NOT_ACCESS_SESSION_CTORS = "Could not access session copy constructor";
 
-    private OtterAppFactory otterAppFactory;
+    private TranslatorAppFactory appFactory;
     private Boolean secure;
     private SymmetricKey signKey;
     private Map<String, SymmetricKey> rotationSignKeys;
@@ -39,8 +39,8 @@ public class BetweenBuilder<S, U> {
     private List<Between<S,U>> before = new ArrayList<>();
     private List<Between<S,U>> after = new ArrayList<>();
 
-    public BetweenBuilder<S, U> otterFactory(OtterAppFactory otterAppFactory) {
-        this.otterAppFactory = otterAppFactory;
+    public BetweenBuilder<S, U> routerAppFactory(TranslatorAppFactory appFactory) {
+        this.appFactory = appFactory;
         return this;
     }
 
@@ -91,7 +91,7 @@ public class BetweenBuilder<S, U> {
 
     public BetweenBuilder<S, U> sessionClass(Class<S> sessionClass) {
         this.sessionClass = sessionClass;
-        this.sessionObjectReader =  otterAppFactory.objectReader().forType(sessionClass);
+        this.sessionObjectReader =  appFactory.objectReader().forType(sessionClass);
         return this;
     }
 
@@ -107,7 +107,7 @@ public class BetweenBuilder<S, U> {
         Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, SESSION_NAME, new JwtAppFactory(), encKey, rotationEncKeys, sessionObjectReader, true);
         before.add(decryptSession);
 
-        Between<S,U> encryptSession = new EncryptSession<S, U>(sessionCookieConfig, encKey, otterAppFactory.objectWriter());
+        Between<S,U> encryptSession = new EncryptSession<S, U>(sessionCookieConfig, encKey, appFactory.objectWriter());
         after.add(encryptSession);
 
         return this;
@@ -125,7 +125,7 @@ public class BetweenBuilder<S, U> {
         Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, SESSION_NAME, new JwtAppFactory(), encKey, rotationEncKeys, sessionObjectReader, false);
         before.add(decryptSession);
 
-        Between<S,U> encryptSession = new EncryptSession<S, U>(sessionCookieConfig, encKey, otterAppFactory.objectWriter());
+        Between<S,U> encryptSession = new EncryptSession<S, U>(sessionCookieConfig, encKey, appFactory.objectWriter());
         after.add(encryptSession);
 
         return this;

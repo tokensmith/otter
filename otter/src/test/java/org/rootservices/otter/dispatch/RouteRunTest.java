@@ -4,7 +4,6 @@ import helper.FixtureFactory;
 import helper.entity.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.request.Request;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -15,6 +14,7 @@ import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.router.entity.io.Answer;
 import org.rootservices.otter.router.entity.io.Ask;
 import org.rootservices.otter.router.exception.HaltException;
+import org.rootservices.otter.translator.config.TranslatorAppFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,10 +23,10 @@ import java.util.Optional;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+
 
 public class RouteRunTest {
-    private static OtterAppFactory otterAppFactory = new OtterAppFactory();
+    private static TranslatorAppFactory appFactory = new TranslatorAppFactory();
     private RouteRun<DummySession, DummyUser> subject;
 
     @Before
@@ -61,7 +61,7 @@ public class RouteRunTest {
     public void whenPostShouldReturnOk() throws Exception {
         DummyPayload dummyPayload = new DummyPayload();
         dummyPayload.setInteger(123);
-        byte[] body = otterAppFactory.objectWriter().writeValueAsBytes(dummyPayload);
+        byte[] body = appFactory.objectWriter().writeValueAsBytes(dummyPayload);
 
         testRun(Method.POST, StatusCode.CREATED, Optional.of(body));
     }
@@ -70,7 +70,7 @@ public class RouteRunTest {
     public void whenPutShouldReturnOk() throws Exception {
         DummyPayload dummyPayload = new DummyPayload();
         dummyPayload.setInteger(123);
-        byte[] body = otterAppFactory.objectWriter().writeValueAsBytes(dummyPayload);
+        byte[] body = appFactory.objectWriter().writeValueAsBytes(dummyPayload);
 
         testRun(Method.PUT, StatusCode.OK, Optional.of(body));
     }
@@ -79,7 +79,7 @@ public class RouteRunTest {
     public void whenPatchShouldReturnOk() throws Exception {
         DummyPayload dummyPayload = new DummyPayload();
         dummyPayload.setInteger(123);
-        byte[] body = otterAppFactory.objectWriter().writeValueAsBytes(dummyPayload);
+        byte[] body = appFactory.objectWriter().writeValueAsBytes(dummyPayload);
 
         testRun(Method.PATCH, StatusCode.OK, Optional.of(body));
     }

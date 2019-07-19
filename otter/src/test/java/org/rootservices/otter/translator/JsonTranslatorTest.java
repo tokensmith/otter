@@ -3,11 +3,10 @@ package org.rootservices.otter.translator;
 import helper.entity.DummyPayload;
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.otter.config.OtterAppFactory;
+import org.rootservices.otter.translator.config.TranslatorAppFactory;
 import org.rootservices.otter.translator.exception.*;
 
 
-import java.io.OutputStream;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -22,7 +21,7 @@ public class JsonTranslatorTest {
 
     @Before
     public void setUp() {
-        OtterAppFactory factory = new OtterAppFactory();
+        TranslatorAppFactory factory = new TranslatorAppFactory();
         subject = factory.jsonTranslator(DummyPayload.class);
     }
 

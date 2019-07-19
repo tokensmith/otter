@@ -8,7 +8,6 @@ import helper.entity.DummyPayload;
 import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.dispatch.entity.RestErrorRequest;
 import org.rootservices.otter.dispatch.entity.RestErrorResponse;
@@ -16,6 +15,7 @@ import org.rootservices.otter.dispatch.translator.rest.*;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.io.Answer;
 import org.rootservices.otter.translator.JsonTranslator;
+import org.rootservices.otter.translator.config.TranslatorAppFactory;
 import org.rootservices.otter.translator.exception.DeserializationException;
 import org.rootservices.otter.translator.exception.InvalidValueException;
 import org.rootservices.otter.translator.exception.Reason;
@@ -29,12 +29,12 @@ import static org.junit.Assert.*;
 
 public class JsonErrorHandlerTest {
 
-    private static OtterAppFactory otterAppFactory = new OtterAppFactory();
+    private static TranslatorAppFactory appFactory = new TranslatorAppFactory();
     private JsonErrorHandler<DummyUser, DummyErrorPayload> subject;
 
     @Before
     public void setUp() {
-        JsonTranslator<DummyErrorPayload> jsonTranslator = otterAppFactory.jsonTranslator(DummyErrorPayload.class);
+        JsonTranslator<DummyErrorPayload> jsonTranslator = appFactory.jsonTranslator(DummyErrorPayload.class);
 
         ClientErrorRestResource errorRestResource = new ClientErrorRestResource();
         subject = new JsonErrorHandler<>(
@@ -50,7 +50,7 @@ public class JsonErrorHandlerTest {
     public void whenGetShouldReturnOk() throws Exception {
         DummyPayload dummyPayload = new DummyPayload();
         dummyPayload.setInteger(123);
-        byte[] body = otterAppFactory.objectWriter().writeValueAsBytes(dummyPayload);
+        byte[] body = appFactory.objectWriter().writeValueAsBytes(dummyPayload);
 
         testRun(Method.GET, StatusCode.BAD_REQUEST, Optional.of(body));
     }
@@ -59,7 +59,7 @@ public class JsonErrorHandlerTest {
     public void whenPostShouldReturnOk() throws Exception {
         DummyPayload dummyPayload = new DummyPayload();
         dummyPayload.setInteger(123);
-        byte[] body = otterAppFactory.objectWriter().writeValueAsBytes(dummyPayload);
+        byte[] body = appFactory.objectWriter().writeValueAsBytes(dummyPayload);
 
         testRun(Method.POST, StatusCode.BAD_REQUEST, Optional.of(body));
     }
@@ -68,7 +68,7 @@ public class JsonErrorHandlerTest {
     public void whenPutShouldReturnOk() throws Exception {
         DummyPayload dummyPayload = new DummyPayload();
         dummyPayload.setInteger(123);
-        byte[] body = otterAppFactory.objectWriter().writeValueAsBytes(dummyPayload);
+        byte[] body = appFactory.objectWriter().writeValueAsBytes(dummyPayload);
 
         testRun(Method.PUT, StatusCode.BAD_REQUEST, Optional.of(body));
     }
@@ -77,7 +77,7 @@ public class JsonErrorHandlerTest {
     public void whenPatchShouldReturnOk() throws Exception {
         DummyPayload dummyPayload = new DummyPayload();
         dummyPayload.setInteger(123);
-        byte[] body = otterAppFactory.objectWriter().writeValueAsBytes(dummyPayload);
+        byte[] body = appFactory.objectWriter().writeValueAsBytes(dummyPayload);
 
         testRun(Method.PATCH, StatusCode.BAD_REQUEST, Optional.of(body));
     }
@@ -122,7 +122,7 @@ public class JsonErrorHandlerTest {
         assertThat(actual.getStatusCode(), is(statusCode));
         assertThat(actual.getPayload().isPresent(), is(true));
 
-        ObjectReader reader = otterAppFactory
+        ObjectReader reader = appFactory
                 .objectReader()
                 .forType(DummyErrorPayload.class);
 

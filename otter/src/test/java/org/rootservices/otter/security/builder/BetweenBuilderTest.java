@@ -5,12 +5,12 @@ import helper.entity.DummySession;
 import helper.entity.DummyUser;
 import org.junit.Test;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
-import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.security.builder.entity.Betweens;
 import org.rootservices.otter.security.csrf.between.CheckCSRF;
 import org.rootservices.otter.security.csrf.between.PrepareCSRF;
 import org.rootservices.otter.security.session.between.DecryptSession;
 import org.rootservices.otter.security.session.between.EncryptSession;
+import org.rootservices.otter.translator.config.TranslatorAppFactory;
 
 
 import java.util.Map;
@@ -21,14 +21,14 @@ import static org.junit.Assert.*;
 
 
 public class BetweenBuilderTest {
-    private static OtterAppFactory otterAppFactory = new OtterAppFactory();
+    private static TranslatorAppFactory appFactory = new TranslatorAppFactory();
 
     @Test
     public void buildShouldBeEmptyLists() {
         BetweenBuilder<DummySession, DummyUser> subject = new BetweenBuilder<DummySession, DummyUser>();
 
         Betweens<DummySession, DummyUser> actual = subject
-                .otterFactory(otterAppFactory)
+                .routerAppFactory(appFactory)
                 .build();
 
         assertThat(actual.getBefore().size(), is(0));
@@ -43,7 +43,7 @@ public class BetweenBuilderTest {
         Map<String, SymmetricKey> rotationSignKeys = FixtureFactory.rotationSignKeys("rotation-key-", 2);
 
         Betweens<DummySession, DummyUser> actual = subject
-                .otterFactory(otterAppFactory)
+                .routerAppFactory(appFactory)
                 .secure(false)
                 .signKey(preferredSignKey)
                 .rotationSignKeys(rotationSignKeys)
@@ -63,13 +63,13 @@ public class BetweenBuilderTest {
     @Test
     public void buildSecureCsrfPrepareShouldBeOk() {
         BetweenBuilder<DummySession, DummyUser> subject = new BetweenBuilder<DummySession, DummyUser>();
-        subject.otterFactory(otterAppFactory);
+        subject.routerAppFactory(appFactory);
 
         SymmetricKey preferredSignKey = FixtureFactory.signKey("preferred-key");
         Map<String, SymmetricKey> rotationSignKeys = FixtureFactory.rotationSignKeys("rotation-key-", 2);
 
         Betweens<DummySession, DummyUser> actual = subject
-                .otterFactory(otterAppFactory)
+                .routerAppFactory(appFactory)
                 .secure(true)
                 .signKey(preferredSignKey)
                 .rotationSignKeys(rotationSignKeys)
@@ -90,13 +90,13 @@ public class BetweenBuilderTest {
     @Test
     public void buildSecureCsrfProtectShouldBeOk() {
         BetweenBuilder<DummySession, DummyUser> subject = new BetweenBuilder<DummySession, DummyUser>();
-        subject.otterFactory(otterAppFactory);
+        subject.routerAppFactory(appFactory);
 
         SymmetricKey preferredSignKey = FixtureFactory.signKey("preferred-key");
         Map<String, SymmetricKey> rotationSignKeys = FixtureFactory.rotationSignKeys("rotation-key-", 2);
 
         Betweens<DummySession, DummyUser> actual = subject
-                .otterFactory(otterAppFactory)
+                .routerAppFactory(appFactory)
                 .secure(true)
                 .signKey(preferredSignKey)
                 .rotationSignKeys(rotationSignKeys)
@@ -116,13 +116,13 @@ public class BetweenBuilderTest {
     @Test
     public void buildUnSecureSessionShouldBeOk() throws Exception {
         BetweenBuilder<DummySession, DummyUser> subject = new BetweenBuilder<DummySession, DummyUser>();
-        subject.otterFactory(otterAppFactory);
+        subject.routerAppFactory(appFactory);
 
         SymmetricKey preferredEncKey = FixtureFactory.encKey("preferred-key");
         Map<String, SymmetricKey> rotationEncKeys = FixtureFactory.rotationEncKeys("rotation-key-", 2);
 
         Betweens<DummySession, DummyUser> actual = subject
-                .otterFactory(otterAppFactory)
+                .routerAppFactory(appFactory)
                 .secure(false)
                 .encKey(preferredEncKey)
                 .rotationEncKey(rotationEncKeys)
@@ -149,13 +149,13 @@ public class BetweenBuilderTest {
     @Test
     public void buildSecureSessionShouldBeOk() throws Exception {
         BetweenBuilder<DummySession, DummyUser> subject = new BetweenBuilder<DummySession, DummyUser>();
-        subject.otterFactory(otterAppFactory);
+        subject.routerAppFactory(appFactory);
 
         SymmetricKey preferredEncKey = FixtureFactory.encKey("preferred-key");
         Map<String, SymmetricKey> rotationEncKeys = FixtureFactory.rotationEncKeys("rotation-key-", 2);
 
         Betweens<DummySession, DummyUser> actual = subject
-                .otterFactory(otterAppFactory)
+                .routerAppFactory(appFactory)
                 .secure(true)
                 .encKey(preferredEncKey)
                 .rotationEncKey(rotationEncKeys)
@@ -181,13 +181,13 @@ public class BetweenBuilderTest {
     @Test
     public void buildUnSecureOptionalSessionShouldBeOk() throws Exception {
         BetweenBuilder<DummySession, DummyUser> subject = new BetweenBuilder<DummySession, DummyUser>();
-        subject.otterFactory(otterAppFactory);
+        subject.routerAppFactory(appFactory);
 
         SymmetricKey preferredEncKey = FixtureFactory.encKey("preferred-key");
         Map<String, SymmetricKey> rotationEncKeys = FixtureFactory.rotationEncKeys("rotation-key-", 2);
 
         Betweens<DummySession, DummyUser> actual = subject
-                .otterFactory(otterAppFactory)
+                .routerAppFactory(appFactory)
                 .secure(false)
                 .encKey(preferredEncKey)
                 .rotationEncKey(rotationEncKeys)
@@ -214,13 +214,13 @@ public class BetweenBuilderTest {
     @Test
     public void buildSecureOptionalSessionShouldBeOk() throws Exception {
         BetweenBuilder<DummySession, DummyUser> subject = new BetweenBuilder<DummySession, DummyUser>();
-        subject.otterFactory(otterAppFactory);
+        subject.routerAppFactory(appFactory);
 
         SymmetricKey preferredEncKey = FixtureFactory.encKey("preferred-key");
         Map<String, SymmetricKey> rotationEncKeys = FixtureFactory.rotationEncKeys("rotation-key-", 2);
 
         Betweens<DummySession, DummyUser> actual = subject
-                .otterFactory(otterAppFactory)
+                .routerAppFactory(appFactory)
                 .secure(true)
                 .encKey(preferredEncKey)
                 .rotationEncKey(rotationEncKeys)
