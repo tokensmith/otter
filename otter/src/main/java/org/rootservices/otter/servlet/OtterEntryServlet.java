@@ -2,8 +2,8 @@ package org.rootservices.otter.servlet;
 
 
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
@@ -32,7 +32,7 @@ public abstract class OtterEntryServlet extends HttpServlet {
     public static final String DESTROYING_SERVLET = "destroying servlet";
     public static final String INIT_AGAIN = "Servlet initializing after being destroyed. Not initializing Otter again.";
     public static final String INIT_OTTER = "Initializing Otter";
-    protected static Logger LOGGER = LogManager.getLogger(OtterEntryServlet.class);
+    protected static Logger LOGGER = LoggerFactory.getLogger(OtterEntryServlet.class);
     protected static OtterAppFactory otterAppFactory;
     protected static ServletGateway servletGateway;
 

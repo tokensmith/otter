@@ -1,8 +1,8 @@
 package org.rootservices.otter.gateway.servlet;
 
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.gateway.Gateway;
@@ -31,7 +31,7 @@ import java.util.*;
  *
  */
 public class ServletGateway extends Gateway {
-    protected static Logger logger = LogManager.getLogger(ServletGateway.class);
+    protected static Logger LOGGER = LoggerFactory.getLogger(ServletGateway.class);
 
     private HttpServletRequestTranslator httpServletRequestTranslator;
     private HttpServletRequestMerger httpServletRequestMerger;
@@ -63,7 +63,7 @@ public class ServletGateway extends Gateway {
             try {
                 resourceAnswer = engine.route(ask, answer);
             } catch (HaltException e) {
-                logger.debug(e.getMessage(), e);
+                LOGGER.debug(e.getMessage(), e);
                 resourceAnswer = answer;
             }
 
@@ -79,10 +79,10 @@ public class ServletGateway extends Gateway {
             gatewayResponse.setTemplate(resourceAnswer.getTemplate());
 
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             containerResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             containerResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
         return gatewayResponse;

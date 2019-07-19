@@ -2,8 +2,8 @@ package org.rootservices.otter.security.csrf;
 
 
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.rootservices.jwt.builder.compact.SecureCompactBuilder;
 import org.rootservices.jwt.builder.exception.CompactException;
 import org.rootservices.jwt.config.JwtAppFactory;
@@ -32,7 +32,7 @@ public class DoubleSubmitCSRF {
     private static String VERIFY_MSG = "Could not verify signature";
     private static String SERIALIZE_JWT = "Could not serialize to compact jwt";
     private static String DE_SERIALIZE_JWT = "Could not deserialize CSRF JWT to pojo";
-    protected static Logger logger = LogManager.getLogger(DoubleSubmitCSRF.class);
+    protected static Logger LOGGER = LoggerFactory.getLogger(DoubleSubmitCSRF.class);
 
     private JwtAppFactory jwtAppFactory;
     private RandomString randomString;
@@ -59,7 +59,7 @@ public class DoubleSubmitCSRF {
             cookieClaims = toClaims(cookieValue);
             formClaims = toClaims(formValue);
         } catch (CsrfException e) {
-            logger.debug(e.getMessage(), e);
+            LOGGER.debug(e.getMessage(), e);
             return false;
         }
 
@@ -69,7 +69,7 @@ public class DoubleSubmitCSRF {
         if (challengeTokensMatch && !noiseMatch) {
             return true;
         } else {
-            logger.debug(CSRF_FAILED, challengeTokensMatch, noiseMatch);
+            LOGGER.debug(CSRF_FAILED, challengeTokensMatch, noiseMatch);
         }
         return false;
     }
@@ -79,7 +79,7 @@ public class DoubleSubmitCSRF {
         try {
             csrfJwt = csrfToJwt(value);
         } catch (CsrfException e) {
-            logger.debug(e.getMessage(), e);
+            LOGGER.debug(e.getMessage(), e);
             throw e;
         }
 
@@ -88,12 +88,12 @@ public class DoubleSubmitCSRF {
         try {
             signatureValid = verifyCsrfCookieSignature(csrfJwt, signKey);
         } catch (CsrfException e) {
-            logger.debug(e.getMessage(), e);
+            LOGGER.debug(e.getMessage(), e);
             throw e;
         }
 
         if (!signatureValid) {
-            logger.debug(SIGNATURE_INVALID);
+            LOGGER.debug(SIGNATURE_INVALID);
             throw new CsrfException(SIGNATURE_INVALID);
         }
 

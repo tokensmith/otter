@@ -23,6 +23,7 @@ import static org.asynchttpclient.Dsl.asyncHttpClient;
 @Categories.IncludeCategory(ServletContainerTest.class)
 @Suite.SuiteClasses(value = {
         HelloRestResourceTest.class,
+        org.rootservices.hello.controller.api.v2.BrokenRestResourceTest.class,
         org.rootservices.hello.controller.api.v3.HelloRestResourceTest.class,
         BrokenRestResourceTest.class,
         NotFoundResourceTest.class,

@@ -1,7 +1,7 @@
 package org.rootservices.otter.security.csrf.between;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.rootservices.jwt.entity.jwt.JsonWebToken;
 import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.controller.entity.Cookie;
@@ -27,7 +27,7 @@ import java.util.Optional;
  * @param <U> User object, intended to be a authenticated user.
  */
 public class PrepareCSRF<S, U> implements Between<S, U> {
-    protected static Logger logger = LogManager.getLogger(PrepareCSRF.class);
+    protected static Logger LOGGER = LoggerFactory.getLogger(PrepareCSRF.class);
     private CookieConfig cookieConfig;
     private DoubleSubmitCSRF doubleSubmitCSRF;
 
@@ -61,14 +61,14 @@ public class PrepareCSRF<S, U> implements Between<S, U> {
                 request.setCsrfChallenge(Optional.of(formValue.toString()));
 
             } catch (CsrfException e) {
-                logger.error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             }
         } else {
             JsonWebToken csrfJwt = null;
             try {
                 csrfJwt = doubleSubmitCSRF.csrfToJwt(response.getCookies().get(cookieConfig.getName()).getValue());
             } catch (CsrfException e) {
-                logger.error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             }
             CsrfClaims claims = (CsrfClaims) csrfJwt.getClaims();
             request.setCsrfChallenge(Optional.of(claims.getChallengeToken()));

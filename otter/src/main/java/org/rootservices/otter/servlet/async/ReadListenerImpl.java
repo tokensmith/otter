@@ -1,8 +1,8 @@
 package org.rootservices.otter.servlet.async;
 
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.rootservices.otter.gateway.servlet.GatewayResponse;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
 
@@ -16,7 +16,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 
 public class ReadListenerImpl implements ReadListener {
-    protected static Logger logger = LogManager.getLogger(ReadListenerImpl.class);
+    protected static Logger LOGGER = LoggerFactory.getLogger(ReadListenerImpl.class);
     private ServletGateway servletGateway;
     private ServletInputStream input = null;
     private AsyncContext ac = null;
@@ -81,7 +81,7 @@ public class ReadListenerImpl implements ReadListener {
 
     @Override
     public void onError(Throwable t) {
-        logger.error(t.getMessage(), t);
+        LOGGER.error(t.getMessage(), t);
         ac.complete();
     }
 
