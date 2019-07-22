@@ -78,7 +78,7 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
         try {
             entity = makeEntity(ask.getBody());
         } catch (DeserializationException e) {
-            // 113: may want to consider an alternative to prevent duplicate returns in this method.
+            // May want to consider an alternative to prevent duplicate returns in this method.
             ClientException clientException = new ClientException("Could not serialize request body", e);
             RestResponseError<U, P> error = new RestResponseErrorBuilder<U, P>()
                     .cause(clientException)
@@ -205,13 +205,13 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
                 .cause(e)
                 .errorType(RestResponseError.ErrorType.HALT);
         } catch (DeserializationException e) {
-            // 113: keeping the old interface here for server exceptions.
+            // it's more descriptive to use ServerException, other than e.
             ServerException cause = new ServerException("", e);
             errorBuilder = errorBuilder
                 .cause(cause)
                 .errorType(RestResponseError.ErrorType.SERVER);
         } catch (Throwable e) {
-            // 113: keeping the old interface here for server exceptions.
+            // it's more descriptive to use ServerException, other than e.
             ServerException cause = new ServerException("", e);
             errorBuilder = errorBuilder
                 .cause(cause)

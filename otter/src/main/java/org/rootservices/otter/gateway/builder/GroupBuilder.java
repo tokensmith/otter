@@ -11,6 +11,7 @@ import org.rootservices.otter.router.entity.between.Between;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 
 public class GroupBuilder<S extends DefaultSession, U extends DefaultUser> {

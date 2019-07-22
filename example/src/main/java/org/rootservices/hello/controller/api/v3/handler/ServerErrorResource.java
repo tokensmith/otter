@@ -9,7 +9,6 @@ import org.rootservices.otter.controller.entity.StatusCode;
 import java.util.Optional;
 
 
-// 113: move this to otter as a default.
 public class ServerErrorResource extends RestErrorResource<ApiUser, ServerErrorPayload> {
 
     @Override

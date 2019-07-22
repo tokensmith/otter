@@ -20,6 +20,7 @@ import org.rootservices.otter.translatable.Translatable;
 
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

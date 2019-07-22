@@ -9,6 +9,8 @@ import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.gateway.entity.ErrorTarget;
 import org.rootservices.otter.gateway.entity.Group;
 
+import java.util.ArrayList;
+
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.*;

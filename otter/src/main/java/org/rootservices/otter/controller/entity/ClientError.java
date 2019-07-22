@@ -12,7 +12,7 @@ public class ClientError implements Translatable {
     private String reason;
 
     public enum Source {
-        HEADER, BODY
+        HEADER, BODY, URL
     }
 
     public ClientError() {

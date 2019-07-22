@@ -12,6 +12,7 @@ import org.rootservices.otter.gateway.entity.rest.RestTarget;
 import org.rootservices.otter.gateway.entity.Target;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
 import org.rootservices.otter.gateway.translator.RestLocationTranslator;
+import org.rootservices.otter.router.Dispatcher;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Method;
@@ -40,8 +41,8 @@ public class Gateway {
         this.restLocationTranslators = restLocationTranslators;
     }
 
-    public Location add(Method method, Location location) {
-        engine.getDispatcher().locations(method).add(location);
+    protected Location add(Dispatcher dispatcher, Method method, Location location) {
+        dispatcher.locations(method).add(location);
         return location;
     }
 
@@ -50,7 +51,7 @@ public class Gateway {
 
         Map<Method, Location> locations = locationTranslator.to(target);
         for(Map.Entry<Method, Location> location: locations.entrySet()) {
-            add(location.getKey(), location.getValue());
+            add(engine.getDispatcher(), location.getKey(), location.getValue());
         }
     }
 
@@ -59,7 +60,7 @@ public class Gateway {
 
         Map<Method, Location> locations = restLocationTranslator.to(restTarget);
         for(Map.Entry<Method, Location> location: locations.entrySet()) {
-            add(location.getKey(), location.getValue());
+            add(engine.getDispatcher(), location.getKey(), location.getValue());
         }
     }
 
@@ -101,22 +102,21 @@ public class Gateway {
         return (RestLocationTranslator<U, P>) restLocationTranslators.get(groupName);
     }
 
-    /**
-     *
-     * @param statusCode
-     * @param errorRoute
-     * @param <S>
-     * @param <U>
-     */
-    public <S extends DefaultSession, U extends DefaultUser> void setDispatchError(StatusCode statusCode, Route<S, U> errorRoute) {
-        RequestTranslator<S, U> requestTranslator = new RequestTranslator<>();
-        AnswerTranslator<S> answerTranslator = new AnswerTranslator<>();
+    public <S extends DefaultSession, U extends DefaultUser> void notFound(Target<S, U> notFound) {
+        LocationTranslator<S, U> locationTranslator = locationTranslator(notFound.getGroupName());
 
-        RouteRunner errorRouteRunner = new RouteRun<S, U>(errorRoute, requestTranslator, answerTranslator, new HashMap<>());
-        this.engine.getErrorRoutes().put(statusCode, errorRouteRunner);
+        Map<Method, Location> locations = locationTranslator.to(notFound);
+        for(Map.Entry<Method, Location> location: locations.entrySet()) {
+            add(engine.getNotFoundDispatcher(), location.getKey(), location.getValue());
+        }
     }
 
-    public RouteRunner getErrorRoute(StatusCode statusCode) {
-        return this.engine.getErrorRoutes().get(statusCode);
+    public <U extends DefaultUser, P> void notFound(RestTarget<U, P> notFound) {
+        RestLocationTranslator<U, P> restLocationTranslator = restLocationTranslator(notFound.getGroupName());
+
+        Map<Method, Location> locations = restLocationTranslator.to(notFound);
+        for(Map.Entry<Method, Location> location: locations.entrySet()) {
+            add(engine.getNotFoundDispatcher(), location.getKey(), location.getValue());
+        }
     }
 }
