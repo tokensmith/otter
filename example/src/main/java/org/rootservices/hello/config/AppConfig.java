@@ -1,7 +1,6 @@
 package org.rootservices.hello.config;
 
 
-import org.eclipse.jetty.io.ssl.ALPNProcessor;
 import org.rootservices.hello.controller.*;
 import org.rootservices.hello.controller.api.between.AuthRestBetween;
 import org.rootservices.hello.controller.api.model.ApiUser;
@@ -31,9 +30,7 @@ import org.rootservices.otter.gateway.builder.*;
 import org.rootservices.otter.gateway.entity.*;
 import org.rootservices.otter.gateway.entity.rest.RestGroup;
 import org.rootservices.otter.gateway.entity.rest.RestTarget;
-import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.Method;
-import org.rootservices.otter.router.entity.Route;
 
 
 import java.util.ArrayList;
@@ -65,11 +62,6 @@ public class AppConfig implements Configure {
     @Override
     public List<Group<? extends DefaultSession, ? extends DefaultUser>> groups() {
         List<Group<? extends DefaultSession, ? extends DefaultUser>> groups = new ArrayList<>();
-
-        Resource<TokenSession, User> notFound = new NotFoundResource();
-        ErrorTarget<TokenSession, User> notFoundTarget = new ErrorTargetBuilder<TokenSession, User>()
-                .resource(notFound)
-                .build();
 
         var serverErrorResource = new org.rootservices.hello.controller.ServerErrorResource();
         Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
