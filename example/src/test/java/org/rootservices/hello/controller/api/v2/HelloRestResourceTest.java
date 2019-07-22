@@ -122,4 +122,28 @@ public class HelloRestResourceTest {
         assertThat(clientError.getExpected().get(0), is("application/json; charset=utf-8;"));
         assertThat(clientError.getReason(), is(nullValue()));
     }
+
+    @Test
+    public void getShouldReturn404() throws Exception {
+        String helloURI = BASE_URI.toString() + "rest/v2/notFound";
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .prepareGet(helloURI)
+                .addHeader("Content-Type", "application/json; charset=utf-8;")
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(StatusCode.NOT_FOUND.getCode()));
+
+        ObjectMapper om = appFactory.objectMapper();
+        ClientError clientError = om.readValue(response.getResponseBody(), ClientError.class);
+        assertThat(clientError, is(notNullValue()));
+        assertThat(clientError.getSource(), is(ClientError.Source.URL));
+        assertThat(clientError.getKey(), is(nullValue()));
+        assertThat(clientError.getActual(), is("/rest/v2/notFound"));
+        assertThat(clientError.getExpected(), is(notNullValue()));
+        assertThat(clientError.getExpected().size(), is(0));
+        assertThat(clientError.getReason(), is(nullValue()));
+    }
 }

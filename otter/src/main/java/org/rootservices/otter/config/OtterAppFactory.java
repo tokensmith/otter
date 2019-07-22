@@ -24,7 +24,6 @@ import org.rootservices.otter.gateway.translator.LocationTranslator;
 import org.rootservices.otter.gateway.translator.RestLocationTranslator;
 import org.rootservices.otter.router.Dispatcher;
 import org.rootservices.otter.router.Engine;
-import org.rootservices.otter.router.factory.ErrorRouteRunnerFactory;
 import org.rootservices.otter.security.exception.SessionCtorException;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 import org.rootservices.otter.server.path.CompiledClassPath;
@@ -78,7 +77,7 @@ public class OtterAppFactory {
     }
 
     public Engine engine() {
-        return new Engine(new Dispatcher(), new ErrorRouteRunnerFactory());
+        return new Engine(new Dispatcher(), new Dispatcher());
     }
 
     public LocationTranslatorFactory locationTranslatorFactory(Shape shape) {

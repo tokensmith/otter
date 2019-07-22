@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.List;
 
 
@@ -31,7 +32,8 @@ import java.util.List;
 public abstract class OtterEntryServlet extends HttpServlet {
     public static final String DESTROYING_SERVLET = "destroying servlet";
     public static final String INIT_AGAIN = "Servlet initializing after being destroyed. Not initializing Otter again.";
-    public static final String INIT_OTTER = "Initializing Otter";
+    public static final String INIT_OTTER = "Initializing Otter - Starting";
+    public static final String INIT_OTTER_DONE = "Initializing Otter - Done - %s ms";
     protected static Logger LOGGER = LoggerFactory.getLogger(OtterEntryServlet.class);
     protected static OtterAppFactory otterAppFactory;
     protected static ServletGateway servletGateway;
@@ -43,12 +45,15 @@ public abstract class OtterEntryServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
 
+        Long start = Instant.now().toEpochMilli();
         if (hasBeenDestroyed()) {
             LOGGER.info(INIT_AGAIN);
         } else {
             LOGGER.info(INIT_OTTER);
             initOtter();
         }
+        Long end = Instant.now().toEpochMilli();
+        LOGGER.info(String.format(INIT_OTTER_DONE, end - start));
     }
 
     public void initOtter() throws ServletException {

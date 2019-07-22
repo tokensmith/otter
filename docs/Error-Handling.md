@@ -67,18 +67,14 @@ Then handle the error (500)
   
  - add interface to include regex with errorTarget
  - add interface to include regex with restErrorTarget.
-
  
-
-#### Group, RestGroup
- - add method `dispatchError` to builders
- - walk it through to LocationTranslators
  
-
-
-#### Location
- - add method `dispatchError` to builders
- - walk it through to LocationTranslators
+ NPE in engine - should we expect a 404 to be found?
+ 
+ On start up should it validate its configured ok?
+ Should onDispatchError() be replaced with, mediaType()?
+ Should onError() be replaced with serverError(), badRequest()?
+ 
  
 
   

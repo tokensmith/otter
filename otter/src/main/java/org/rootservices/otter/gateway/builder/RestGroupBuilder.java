@@ -12,6 +12,7 @@ import org.rootservices.otter.translatable.Translatable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 public class RestGroupBuilder<U extends DefaultUser> {
     private String name;
@@ -20,7 +21,7 @@ public class RestGroupBuilder<U extends DefaultUser> {
 
     // for route run to handle errors.
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors = new HashMap<>();
-
+    // for engine to handle errors
     private Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> dispatchErrors = new HashMap<>();
 
     public RestGroupBuilder<U> name(String name) {

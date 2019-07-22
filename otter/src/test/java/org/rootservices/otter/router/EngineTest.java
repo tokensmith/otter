@@ -17,34 +17,31 @@ import org.rootservices.otter.router.entity.MatchedLocation;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.io.Answer;
 import org.rootservices.otter.router.entity.io.Ask;
-import org.rootservices.otter.router.factory.ErrorRouteRunnerFactory;
+
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 public class EngineTest {
     @Mock
     private Dispatcher mockDispatcher;
     @Mock
-    private ErrorRouteRunnerFactory mockErrorRouteRunnerFactory;
+    private Dispatcher mockNotFoundDispatcher;
+
     private Engine subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new Engine(mockDispatcher, mockErrorRouteRunnerFactory);
+        subject = new Engine(mockDispatcher, mockNotFoundDispatcher);
     }
 
     public Ask askForEngineTests(Method method, String url, MimeType mimeType) {
@@ -55,6 +52,8 @@ public class EngineTest {
         ask.setPossibleContentTypes(new ArrayList<>()); // empty list to make sure it gets assigned.
         return ask;
     }
+
+
 
     public void routeWhenMethodIsXShouldMatch(Method method) throws Exception {
         String url = "foo";
@@ -74,7 +73,6 @@ public class EngineTest {
                 .contentTypes(contentTypes)
                 .build();
 
-        // TODO: 99: should this be in the builder?
         location.setRouteRunner(mockRouteRunner);
 
         match.get().setLocation(location);
@@ -132,32 +130,109 @@ public class EngineTest {
         routeWhenMethodIsXShouldMatch(Method.HEAD);
     }
 
+
+    public Optional<MatchedLocation> matchedLocation(String url, MimeType contentType) {
+        Optional<MatchedLocation> match = FixtureFactory.makeMatch(url);
+
+        List<MimeType> contentTypes = new ArrayList<>();
+        contentTypes.add(contentType);
+
+        Location location = new LocationBuilder<DummySession, DummyUser>()
+                .contentTypes(contentTypes)
+                .build();
+
+        match.get().setLocation(location);
+        return match;
+    }
+
     @Test
-    public void routeWhenGetAndNoMatchedRouteShouldRunErrorRoute() throws Exception {
+    public void routeWhenGetAndNoMatchedRouteShouldUseNotFound() throws Exception {
         Method method = Method.GET;
         String url = "foo";
-        Optional<MatchedLocation> match = Optional.empty();
 
         MimeType json = new MimeTypeBuilder().json().build();
         Ask ask = askForEngineTests(method, url, json);
-
         Answer answer = FixtureFactory.makeAnswer();
 
-        when(mockDispatcher.find(Method.GET, url)).thenReturn(match);
+        // dispatcher will return an empty response
+        Optional<MatchedLocation> emptyMatch = Optional.empty();
+        when(mockDispatcher.find(Method.GET, url)).thenReturn(emptyMatch);
 
-        RouteRunner errorRouteRunner = mock(RouteRunner.class);
-        when(errorRouteRunner.run(ask, answer)).thenReturn(answer);
+        // notFoundDispatcher will return a matched location.
+        Optional<MatchedLocation> notFoundMatchedLocation = matchedLocation(url, json);
+        RouteRunner mockRouteRunner = mock(RouteRunner.class);
+        Answer notFoundAnswer = FixtureFactory.makeAnswer();
+        notFoundAnswer.setStatusCode(StatusCode.NOT_FOUND);
+        when(mockRouteRunner.run(ask, answer)).thenReturn(notFoundAnswer);
+        notFoundMatchedLocation.get().getLocation().setRouteRunner(mockRouteRunner);
+        when(mockNotFoundDispatcher.find(Method.GET, url)).thenReturn(notFoundMatchedLocation);
 
-        Map<StatusCode, RouteRunner> errorRoutes = FixtureFactory.makeErrorRouteRunners();
-        when(mockErrorRouteRunnerFactory.fromLocation(match, errorRoutes)).thenReturn(errorRouteRunner);
-
-        subject.setErrorRoutes(errorRoutes);
         Answer actual = subject.route(ask, answer);
 
-        assertThat(actual, is(answer));
+        assertThat(actual, is(notFoundAnswer));
+        assertThat(actual.getStatusCode(), is(StatusCode.NOT_FOUND));
 
-        // these should not have values since there was no match.
-        assertThat(ask.getPossibleContentTypes().size(), is(0));
-        assertThat(ask.getMatcher().isPresent(), is(false));
+        // from the not found location match.
+        assertThat(ask.getPossibleContentTypes().size(), is(1));
+        assertThat(ask.getPossibleContentTypes().get(0), is(json));
+        assertThat(ask.getMatcher().isPresent(), is(true));
+    }
+
+    @Test
+    public void unsupportedMediaTypeWhenNotPresentShouldBeTrue() {
+        Optional<MatchedLocation> match = Optional.empty();
+        MimeType json = new MimeTypeBuilder().json().build();
+
+        Boolean actual = subject.unsupportedMediaType(match, json);
+
+        assertThat(actual, is(true));
+    }
+
+    @Test
+    public void unsupportedMediaTypeWhenNoContentTypesShouldBeTrue() {
+        String url = "foo";
+        Optional<MatchedLocation> match = FixtureFactory.makeMatch(url);
+        match.get().getLocation().setContentTypes(new ArrayList<>()); // empty them out.
+        MimeType json = new MimeTypeBuilder().json().build();
+
+        Boolean actual = subject.unsupportedMediaType(match, json);
+
+        assertThat(actual, is(true));
+    }
+
+    @Test
+    public void unsupportedMediaTypeWhenContentTypesDoNotMatchShouldBeTrue() {
+        String url = "foo";
+        Optional<MatchedLocation> match = FixtureFactory.makeMatch(url);
+
+        // location to html.
+        List<MimeType> contentTypes = new ArrayList<>();
+        MimeType html = new MimeTypeBuilder().html().build();
+        contentTypes.add(html);
+        match.get().getLocation().setContentTypes(contentTypes);
+
+        // actual is json
+        MimeType json = new MimeTypeBuilder().json().build();
+
+        Boolean actual = subject.unsupportedMediaType(match, json);
+
+        assertThat(actual, is(true));
+    }
+
+    @Test
+    public void unsupportedMediaTypeShouldBeFalse() {
+        String url = "foo";
+        Optional<MatchedLocation> match = FixtureFactory.makeMatch(url);
+
+        MimeType json = new MimeTypeBuilder().json().build();
+
+        // location to json.
+        List<MimeType> contentTypes = new ArrayList<>();
+        contentTypes.add(json);
+        match.get().getLocation().setContentTypes(contentTypes);
+
+        Boolean actual = subject.unsupportedMediaType(match, json);
+
+        assertThat(actual, is(false));
     }
 }
