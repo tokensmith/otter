@@ -37,6 +37,15 @@ public class RestTargetBuilder<U extends DefaultUser, P> {
         return this;
     }
 
+    public RestTargetBuilder<U, P> crud() {
+        this.method(Method.GET)
+            .method(Method.POST)
+            .method(Method.PUT)
+            .method(Method.PATCH)
+            .method(Method.DELETE);
+        return this;
+    }
+
     public RestTargetBuilder<U, P> regex(String regex) {
         this.regex = regex;
         return this;

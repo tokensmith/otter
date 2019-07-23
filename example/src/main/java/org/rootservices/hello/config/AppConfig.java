@@ -95,6 +95,7 @@ public class AppConfig implements Configure {
         RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
                 .name(API_GROUP_V3)
                 .authRequired(authRestBetween)
+                .authOptional(authRestBetween)
                 .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
                 .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
                 .build();
@@ -106,7 +107,7 @@ public class AppConfig implements Configure {
 
     @Override
     public void routes(Gateway gateway) {
-        errorRoutes(gateway);
+        notFoundTargets(gateway);
 
         MimeType json = new MimeTypeBuilder().json().build();
 
@@ -129,11 +130,7 @@ public class AppConfig implements Configure {
         BrokenRestResourceV2 brokenRestResourceV2 = new BrokenRestResourceV2();
         RestTarget<ApiUser, BrokenPayload> brokenApiV2 = new RestTargetBuilder<ApiUser, BrokenPayload>()
                 .groupName(API_GROUP_V2)
-                .method(Method.GET)
-                .method(Method.POST)
-                .method(Method.PATCH)
-                .method(Method.PUT)
-                .method(Method.DELETE)
+                .crud()
                 .restResource(brokenRestResourceV2)
                 .regex(brokenRestResourceV2.URL)
                 .label(Label.AUTH_REQUIRED)
@@ -162,11 +159,7 @@ public class AppConfig implements Configure {
         BrokenRestResource brokenRestResource = new BrokenRestResource();
         RestTarget<ApiUser, BrokenPayload> brokenApiV3 = new RestTargetBuilder<ApiUser, BrokenPayload>()
                 .groupName(API_GROUP_V3)
-                .method(Method.GET)
-                .method(Method.POST)
-                .method(Method.PATCH)
-                .method(Method.PUT)
-                .method(Method.DELETE)
+                .crud()
                 .restResource(brokenRestResource)
                 .regex(brokenRestResource.URL)
                 .label(Label.AUTH_REQUIRED)
@@ -189,11 +182,9 @@ public class AppConfig implements Configure {
         // csrf
         Target<TokenSession, User> login = new TargetBuilder<TokenSession, User>()
                 .groupName(WEB_SITE_GROUP)
-                .method(Method.GET)
-                .method(Method.POST)
+                .form()
                 .resource(new LoginResource())
                 .regex(LoginResource.URL)
-                .label(Label.CSRF)
                 .build();
 
         gateway.add(login);
@@ -201,11 +192,9 @@ public class AppConfig implements Configure {
         // csrf & session
         Target<TokenSession, User> loginWithSession = new TargetBuilder<TokenSession, User>()
                 .groupName(WEB_SITE_GROUP)
-                .method(Method.GET)
-                .method(Method.POST)
+                .form()
                 .resource(new LoginSessionResource())
                 .regex(LoginSessionResource.URL)
-                .label(Label.CSRF)
                 .label(Label.SESSION_REQUIRED)
                 .build();
 
@@ -214,11 +203,9 @@ public class AppConfig implements Configure {
         // set session
         Target<TokenSession, User> loginSetSessionResource = new TargetBuilder<TokenSession, User>()
                 .groupName(WEB_SITE_GROUP)
-                .method(Method.GET)
-                .method(Method.POST)
+                .form()
                 .resource(new LoginSetSessionResource())
                 .regex(LoginSetSessionResource.URL)
-                .label(Label.CSRF)
                 .label(Label.SESSION_OPTIONAL)
                 .build();
 
@@ -248,17 +235,13 @@ public class AppConfig implements Configure {
         gateway.add(exceptionTarget);
     }
 
-    public void errorRoutes(Gateway gateway) {
+    public void notFoundTargets(Gateway gateway) {
 
         // rest
         var restNotFoundResource = new org.rootservices.otter.controller.error.NotFoundResource<ApiUser>();
         RestTarget<ApiUser, ClientError> notFoundV2 = new RestTargetBuilder<ApiUser, ClientError>()
                 .groupName(API_GROUP_V2)
-                .method(Method.GET)
-                .method(Method.POST)
-                .method(Method.PUT)
-                .method(Method.DELETE)
-                .label(Label.SESSION_OPTIONAL)
+                .crud()
                 .label(Label.AUTH_OPTIONAL)
                 .restResource(restNotFoundResource)
                 .regex("/rest/v2/(.*)")
@@ -269,11 +252,7 @@ public class AppConfig implements Configure {
 
         RestTarget<ApiUser, ClientError> notFoundV3 = new RestTargetBuilder<ApiUser, ClientError>()
                 .groupName(API_GROUP_V3)
-                .method(Method.GET)
-                .method(Method.POST)
-                .method(Method.PUT)
-                .method(Method.DELETE)
-                .label(Label.SESSION_OPTIONAL)
+                .crud()
                 .label(Label.AUTH_OPTIONAL)
                 .restResource(restNotFoundResource)
                 .regex("/rest/v3/(.*)")

@@ -64,6 +64,32 @@ public class RestTargetBuilderTest {
     }
 
     @Test
+    public void buildCrudShouldAddMethods() {
+        RestTargetBuilder<DummyUser, DummyPayload> subject = subject();
+
+        MimeType json = new MimeTypeBuilder().json().build();
+        OkRestResource okRestResource = new OkRestResource();
+
+        RestTarget<DummyUser, DummyPayload> actual = subject
+                .regex("/foo")
+                .crud()
+                .contentType(json)
+                .restResource(okRestResource)
+                .label(Label.AUTH_REQUIRED)
+                .build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getMethods(), is(notNullValue()));
+        assertThat(actual.getMethods().size(), is(5));
+        assertTrue(actual.getMethods().contains(Method.GET));
+        assertTrue(actual.getMethods().contains(Method.PUT));
+        assertTrue(actual.getMethods().contains(Method.PATCH));
+        assertTrue(actual.getMethods().contains(Method.POST));
+        assertTrue(actual.getMethods().contains(Method.DELETE));
+
+    }
+
+    @Test
     public void buildShouldBeOk() {
         RestTargetBuilder<DummyUser, DummyPayload> subject = subject();
 
