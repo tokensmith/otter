@@ -6,6 +6,7 @@ import helper.entity.DummySession;
 import helper.entity.DummyUser;
 import helper.entity.ServerErrorResource;
 import helper.fake.FakeResource;
+import org.hamcrest.core.IsNull;
 import org.junit.Test;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -38,6 +39,31 @@ public class TargetBuilderTest {
         assertThat(actual.getLabels().size(), is(0));
         assertThat(actual.getBefore().size(), is(0));
         assertThat(actual.getAfter().size(), is(0));
+    }
+
+    @Test
+    public void buildWhenFormShouldHaveMethodsAndCSRF() {
+        TargetBuilder<DummySession, DummyUser> subject = subject();
+
+        FakeResource fakeResource = new FakeResource();
+
+        Target<DummySession, DummyUser> actual = subject
+                .regex("/foo")
+                .form()
+                .resource(fakeResource)
+                .build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual, is(IsNull.notNullValue()));
+
+        assertThat(actual.getLabels(), is(IsNull.notNullValue()));
+        assertThat(actual.getLabels().size(), is(1));
+        assertThat(actual.getLabels().get(0), is(Label.CSRF));
+
+        assertThat(actual.getMethods(), is(IsNull.notNullValue()));
+        assertThat(actual.getMethods().size(), is(2));
+        assertTrue(actual.getMethods().contains(Method.GET));
+
     }
 
     @Test

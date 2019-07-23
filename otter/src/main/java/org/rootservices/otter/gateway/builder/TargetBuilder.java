@@ -34,6 +34,17 @@ public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
         return this;
     }
 
+    /**
+     * Exposes GET and POST methods and CSRF protects it.
+     * @return
+     */
+    public TargetBuilder<S, U> form() {
+        this.method(Method.GET)
+            .method(Method.POST)
+            .label(Label.CSRF);
+        return this;
+    }
+
     public TargetBuilder<S, U> regex(String regex) {
         this.regex = regex;
         return this;
