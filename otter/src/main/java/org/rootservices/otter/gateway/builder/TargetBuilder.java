@@ -11,17 +11,17 @@ import org.rootservices.otter.gateway.entity.Label;
 import org.rootservices.otter.router.entity.between.Between;
 import org.rootservices.otter.router.entity.Method;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
     private List<Method> methods = new ArrayList<>();
     private String regex;
     private Resource<S, U> resource;
     private Map<Method, List<MimeType>> contentTypes = new HashMap<>();
-    private List<Label> labels = new ArrayList<>();
+
+    // always default to optional session and optional authentication.
+    private List<Label> labels = new ArrayList<>(Arrays.asList(Label.SESSION_OPTIONAL, Label.AUTH_OPTIONAL));
+
     private List<Between<S, U>> before = new ArrayList<>();
     private List<Between<S, U>> after = new ArrayList<>();
     // legacy error handling.
@@ -40,8 +40,10 @@ public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
      */
     public TargetBuilder<S, U> form() {
         this.method(Method.GET)
-            .method(Method.POST)
-            .label(Label.CSRF);
+            .method(Method.POST);
+
+        this.labels.add(Label.CSRF);
+
         return this;
     }
 
@@ -72,8 +74,22 @@ public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
         return this;
     }
 
-    public TargetBuilder<S, U> label(Label label) {
-        this.labels.add(label);
+    public TargetBuilder<S, U> authenticate() {
+
+        this.labels.remove(Label.SESSION_OPTIONAL);
+        this.labels.remove(Label.AUTH_OPTIONAL);
+
+        this.labels.add(Label.SESSION_REQUIRED);
+        this.labels.add(Label.AUTH_REQUIRED);
+        return this;
+    }
+
+    public TargetBuilder<S, U> anonymous() {
+        // remove all session and auth labels.
+        this.labels.remove(Label.SESSION_OPTIONAL);
+        this.labels.remove(Label.AUTH_OPTIONAL);
+        this.labels.remove(Label.SESSION_REQUIRED);
+        this.labels.remove(Label.AUTH_REQUIRED);
         return this;
     }
 

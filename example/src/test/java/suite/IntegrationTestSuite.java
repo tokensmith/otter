@@ -1,6 +1,7 @@
 package suite;
 
 
+import org.apache.tomcat.util.descriptor.web.ErrorPage;
 import org.rootservices.hello.controller.*;
 import org.rootservices.hello.controller.api.v2.HelloRestResourceTest;
 import org.rootservices.hello.controller.api.v3.BrokenRestResourceTest;
@@ -16,6 +17,8 @@ import org.rootservices.otter.server.container.ServletContainer;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.asynchttpclient.Dsl.asyncHttpClient;
 
@@ -56,10 +59,10 @@ public class IntegrationTestSuite {
         otterTestAppFactory = new OtterAppFactory();
         servletContainerFactory = otterTestAppFactory.servletContainerFactory();
 
-        String webAppLocation = "/src/test/java/integration/app/webapp";
-
-        // servletContainer = servletContainerFactory.makeServletContainer(DOCUMENT_ROOT, HelloResource.class, webAppLocation, RANDOM_PORT, REQUEST_LOG);
-        servletContainer = servletContainerFactory.makeServletContainer(DOCUMENT_ROOT, HelloResource.class, RANDOM_PORT, REQUEST_LOG);
+        List<ErrorPage> errorPages = new ArrayList<>();
+        servletContainer = servletContainerFactory.makeServletContainer(
+                DOCUMENT_ROOT, HelloResource.class, RANDOM_PORT, REQUEST_LOG, errorPages
+        );
         servletContainer.start();
 
         servletContainerURI = servletContainer.getURI();

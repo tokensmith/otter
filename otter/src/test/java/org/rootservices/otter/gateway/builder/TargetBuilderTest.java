@@ -29,16 +29,18 @@ public class TargetBuilderTest {
     }
 
     @Test
-    public void buildShouldHaveEmptyLists() {
+    public void buildShouldHaveEmptyListsAndDefaultOptionalForAuthenticate() {
         TargetBuilder<DummySession, DummyUser> subject = subject();
 
         Target<DummySession, DummyUser> actual = subject.build();
 
         assertThat(actual.getContentTypes().size(), is(0));
         assertThat(actual.getMethods().size(), is(0));
-        assertThat(actual.getLabels().size(), is(0));
         assertThat(actual.getBefore().size(), is(0));
         assertThat(actual.getAfter().size(), is(0));
+        assertThat(actual.getLabels().size(), is(2));
+        assertTrue(actual.getLabels().contains(Label.SESSION_OPTIONAL));
+        assertTrue(actual.getLabels().contains(Label.AUTH_OPTIONAL));
     }
 
     @Test
@@ -57,8 +59,8 @@ public class TargetBuilderTest {
         assertThat(actual, is(IsNull.notNullValue()));
 
         assertThat(actual.getLabels(), is(IsNull.notNullValue()));
-        assertThat(actual.getLabels().size(), is(1));
-        assertThat(actual.getLabels().get(0), is(Label.CSRF));
+        assertThat(actual.getLabels().size(), is(3));
+        assertTrue(actual.getLabels().contains(Label.CSRF));
 
         assertThat(actual.getMethods(), is(IsNull.notNullValue()));
         assertThat(actual.getMethods().size(), is(2));
@@ -88,8 +90,6 @@ public class TargetBuilderTest {
                 .before(new DummyBetween<>())
                 .after(new DummyBetween<>())
                 .after(new DummyBetween<>())
-                .label(Label.CSRF)
-                .label(Label.SESSION_REQUIRED)
                 .onDispatchError(StatusCode.NOT_FOUND, notFound)
                 .build();
 
@@ -102,9 +102,11 @@ public class TargetBuilderTest {
         assertThat(actual.getContentTypes().get(Method.POST).get(0), is(json));
         assertThat(actual.getBefore().size(), is(2));
         assertThat(actual.getAfter().size(), is(2));
+
         assertThat(actual.getLabels().size(), is(2));
-        assertThat(actual.getLabels().get(0), is(Label.CSRF));
-        assertThat(actual.getLabels().get(1), is(Label.SESSION_REQUIRED));
+        assertTrue(actual.getLabels().contains(Label.SESSION_OPTIONAL));
+        assertTrue(actual.getLabels().contains(Label.AUTH_OPTIONAL));
+
         assertThat(actual.getErrorTargets().size(), is(1));
         assertThat(actual.getErrorTargets().get(StatusCode.NOT_FOUND).getResource(), is(notFoundResource));
         assertThat(actual.getErrorResources(), is(notNullValue()));
@@ -135,8 +137,7 @@ public class TargetBuilderTest {
                 .before(new DummyBetween<>())
                 .after(new DummyBetween<>())
                 .after(new DummyBetween<>())
-                .label(Label.CSRF)
-                .label(Label.SESSION_REQUIRED)
+                .form()
                 .onDispatchError(StatusCode.NOT_FOUND, notFound)
                 .build();
 
@@ -171,8 +172,6 @@ public class TargetBuilderTest {
                 .before(new DummyBetween<>())
                 .after(new DummyBetween<>())
                 .after(new DummyBetween<>())
-                .label(Label.CSRF)
-                .label(Label.SESSION_REQUIRED)
                 .onDispatchError(StatusCode.NOT_FOUND, notFound)
                 .onError(StatusCode.SERVER_ERROR, serverErrorResource)
                 .build();
@@ -186,14 +185,45 @@ public class TargetBuilderTest {
         assertThat(actual.getContentTypes().get(Method.POST).get(0), is(json));
         assertThat(actual.getBefore().size(), is(2));
         assertThat(actual.getAfter().size(), is(2));
-        assertThat(actual.getLabels().size(), is(2));
-        assertThat(actual.getLabels().get(0), is(Label.CSRF));
-        assertThat(actual.getLabels().get(1), is(Label.SESSION_REQUIRED));
+
         assertThat(actual.getErrorTargets().size(), is(1));
         assertThat(actual.getErrorTargets().get(StatusCode.NOT_FOUND).getResource(), is(notFoundResource));
         assertThat(actual.getErrorResources(), is(notNullValue()));
         assertThat(actual.getErrorResources().size(), is(1));
         assertThat(actual.getErrorResources().get(StatusCode.SERVER_ERROR), is(serverErrorResource));
+    }
+
+
+    @Test
+    public void buildAuthenticateShouldHaveLabels() {
+        TargetBuilder<DummySession, DummyUser> subject = subject();
+
+        Target<DummySession, DummyUser> actual = subject
+                .authenticate()
+                .build();
+
+        assertThat(actual.getContentTypes().size(), is(0));
+        assertThat(actual.getMethods().size(), is(0));
+        assertThat(actual.getBefore().size(), is(0));
+        assertThat(actual.getAfter().size(), is(0));
+        assertThat(actual.getLabels().size(), is(2));
+        assertTrue(actual.getLabels().contains(Label.AUTH_REQUIRED));
+        assertTrue(actual.getLabels().contains(Label.SESSION_REQUIRED));
+    }
+
+    @Test
+    public void buildAnonymousShouldHaveNoLabels() {
+        TargetBuilder<DummySession, DummyUser> subject = subject();
+
+        Target<DummySession, DummyUser> actual = subject
+                .anonymous()
+                .build();
+
+        assertThat(actual.getContentTypes().size(), is(0));
+        assertThat(actual.getMethods().size(), is(0));
+        assertThat(actual.getBefore().size(), is(0));
+        assertThat(actual.getAfter().size(), is(0));
+        assertThat(actual.getLabels().size(), is(0));
     }
 
 }

@@ -13,10 +13,7 @@ import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.between.RestBetween;
 import org.rootservices.otter.translatable.Translatable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class RestTargetBuilder<U extends DefaultUser, P> {
@@ -25,7 +22,10 @@ public class RestTargetBuilder<U extends DefaultUser, P> {
     private RestResource<U, P> restResource;
     private Class<P> payload;
     private Map<Method, List<MimeType>> contentTypes = new HashMap<>();
-    private List<Label> labels = new ArrayList<>();
+
+    // always default to optional authentication.
+    private List<Label> labels = new ArrayList<>(Arrays.asList(Label.AUTH_OPTIONAL));
+
     private List<RestBetween<U>> before = new ArrayList<>();
     private List<RestBetween<U>> after = new ArrayList<>();
     private Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> errorTargets = new HashMap<>();
@@ -78,8 +78,22 @@ public class RestTargetBuilder<U extends DefaultUser, P> {
         return this;
     }
 
-    public RestTargetBuilder<U, P> label(Label label) {
-        this.labels.add(label);
+    public RestTargetBuilder<U, P> authenticate() {
+
+        // just in-case
+        this.labels.remove(Label.SESSION_OPTIONAL);
+        this.labels.remove(Label.AUTH_OPTIONAL);
+
+        this.labels.add(Label.AUTH_REQUIRED);
+        return this;
+    }
+
+    public RestTargetBuilder<U, P> anonymous() {
+        // remove all session and auth labels.
+        this.labels.remove(Label.SESSION_OPTIONAL);
+        this.labels.remove(Label.AUTH_OPTIONAL);
+        this.labels.remove(Label.SESSION_REQUIRED);
+        this.labels.remove(Label.AUTH_REQUIRED);
         return this;
     }
 
