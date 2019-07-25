@@ -182,8 +182,7 @@ public class FixtureFactory {
                 .before(new DummyBetween<>())
                 .after(new DummyBetween<>())
                 .after(new DummyBetween<>())
-                .label(Label.CSRF)
-                .label(Label.SESSION_REQUIRED)
+                .form()
                 .onDispatchError(StatusCode.NOT_FOUND, notFound)
                 .build();
     }
@@ -219,8 +218,7 @@ public class FixtureFactory {
                 .before(new DummyRestBetween<>())
                 .after(new DummyRestBetween<>())
                 .after(new DummyRestBetween<>())
-                .label(Label.CSRF)
-                .label(Label.SESSION_REQUIRED)
+                .authenticate()
                 .dispatchError(StatusCode.NOT_FOUND, notFound)
                 .build();
     }

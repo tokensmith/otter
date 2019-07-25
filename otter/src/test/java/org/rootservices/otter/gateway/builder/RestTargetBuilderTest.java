@@ -31,6 +31,22 @@ public class RestTargetBuilderTest {
 
         assertThat(actual.getContentTypes().size(), is(0));
         assertThat(actual.getMethods().size(), is(0));
+        assertThat(actual.getLabels().size(), is(1));
+        assertTrue(actual.getLabels().contains(Label.AUTH_OPTIONAL));
+        assertThat(actual.getBefore().size(), is(0));
+        assertThat(actual.getAfter().size(), is(0));
+    }
+
+    @Test
+    public void buildWhenAnonymousShouldHaveNoLabels() {
+        RestTargetBuilder<DummyUser, DummyPayload> subject = subject();
+
+        RestTarget<DummyUser, DummyPayload> actual = subject
+                .anonymous()
+                .build();
+
+        assertThat(actual.getContentTypes().size(), is(0));
+        assertThat(actual.getMethods().size(), is(0));
         assertThat(actual.getLabels().size(), is(0));
         assertThat(actual.getBefore().size(), is(0));
         assertThat(actual.getAfter().size(), is(0));
@@ -75,7 +91,7 @@ public class RestTargetBuilderTest {
                 .crud()
                 .contentType(json)
                 .restResource(okRestResource)
-                .label(Label.AUTH_REQUIRED)
+                .authenticate()
                 .build();
 
         assertThat(actual, is(notNullValue()));
@@ -111,8 +127,7 @@ public class RestTargetBuilderTest {
                 .before(new DummyRestBetween<>())
                 .after(new DummyRestBetween<>())
                 .after(new DummyRestBetween<>())
-                .label(Label.CSRF)
-                .label(Label.SESSION_REQUIRED)
+                .authenticate()
                 .dispatchError(StatusCode.NOT_FOUND, notFound)
                 .build();
 
@@ -125,9 +140,8 @@ public class RestTargetBuilderTest {
         assertThat(actual.getContentTypes().get(Method.POST).get(0), is(json));
         assertThat(actual.getBefore().size(), is(2));
         assertThat(actual.getAfter().size(), is(2));
-        assertThat(actual.getLabels().size(), is(2));
-        assertThat(actual.getLabels().get(0), is(Label.CSRF));
-        assertThat(actual.getLabels().get(1), is(Label.SESSION_REQUIRED));
+        assertThat(actual.getLabels().size(), is(1));
+        assertTrue(actual.getLabels().contains(Label.AUTH_REQUIRED));
         assertThat(actual.getErrorTargets().size(), is(1));
         assertThat(actual.getErrorTargets().get(StatusCode.NOT_FOUND).getResource(), is(notFoundResource));
     }
@@ -157,8 +171,6 @@ public class RestTargetBuilderTest {
                 .before(new DummyRestBetween<>())
                 .after(new DummyRestBetween<>())
                 .after(new DummyRestBetween<>())
-                .label(Label.CSRF)
-                .label(Label.SESSION_REQUIRED)
                 .dispatchError(StatusCode.NOT_FOUND, notFound)
                 .build();
 

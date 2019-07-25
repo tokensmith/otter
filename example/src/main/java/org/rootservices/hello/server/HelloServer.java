@@ -1,6 +1,7 @@
 package org.rootservices.hello.server;
 
 
+import org.apache.tomcat.util.descriptor.web.ErrorPage;
 import org.rootservices.hello.controller.HelloResource;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.server.container.ServletContainer;
@@ -10,6 +11,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,9 +48,13 @@ public class HelloServer {
         OtterAppFactory otterAppFactory = new OtterAppFactory();
         ServletContainerFactory servletContainerFactory = otterAppFactory.servletContainerFactory();
 
+        List<ErrorPage> errorPages = new ArrayList<>();
+
         ServletContainer server = null;
         try {
-            server = servletContainerFactory.makeServletContainer(DOCUMENT_ROOT, HelloResource.class, PORT, REQUEST_LOG);
+            server = servletContainerFactory.makeServletContainer(
+                    DOCUMENT_ROOT, HelloResource.class, PORT, REQUEST_LOG, errorPages
+            );
         } catch (URISyntaxException e) {
             logger.error(e.getMessage(), e);
         } catch (MalformedURLException e) {
@@ -71,9 +78,12 @@ public class HelloServer {
             logger.error(e.getMessage(), e);
         }
 
+        List<ErrorPage> errorPages = new ArrayList<>();
         ServletContainer server = null;
         try {
-            server = servletContainerFactory.makeServletContainerFromWar(DOCUMENT_ROOT, war, PORT, REQUEST_LOG);
+            server = servletContainerFactory.makeServletContainerFromWar(
+                    DOCUMENT_ROOT, war, PORT, REQUEST_LOG, errorPages
+            );
         } catch (MalformedURLException e) {
             logger.error(e.getMessage(), e);
         } catch (IOException e) {

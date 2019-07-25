@@ -17,7 +17,6 @@ import org.rootservices.hello.model.Hello;
 import org.rootservices.hello.security.TokenSession;
 import org.rootservices.hello.security.User;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
-import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.DefaultSession;
@@ -118,7 +117,7 @@ public class AppConfig implements Configure {
                 .method(Method.POST)
                 .restResource(new HelloRestResource())
                 .regex(HelloRestResource.URL)
-                .label(Label.AUTH_REQUIRED)
+                .authenticate()
                 .contentType(json)
                 .payload(Hello.class)
                 .build();
@@ -133,7 +132,7 @@ public class AppConfig implements Configure {
                 .crud()
                 .restResource(brokenRestResourceV2)
                 .regex(brokenRestResourceV2.URL)
-                .label(Label.AUTH_REQUIRED)
+                .authenticate()
                 .contentType(json)
                 .payload(BrokenPayload.class)
                 .build();
@@ -148,7 +147,7 @@ public class AppConfig implements Configure {
                 .method(Method.POST)
                 .restResource(helloRestResourceV3)
                 .regex(helloRestResourceV3.URL)
-                .label(Label.AUTH_REQUIRED)
+                .authenticate()
                 .contentType(json)
                 .payload(Hello.class)
                 .build();
@@ -162,7 +161,7 @@ public class AppConfig implements Configure {
                 .crud()
                 .restResource(brokenRestResource)
                 .regex(brokenRestResource.URL)
-                .label(Label.AUTH_REQUIRED)
+                .authenticate()
                 .contentType(json)
                 .payload(BrokenPayload.class)
                 .build();
@@ -195,7 +194,7 @@ public class AppConfig implements Configure {
                 .form()
                 .resource(new LoginSessionResource())
                 .regex(LoginSessionResource.URL)
-                .label(Label.SESSION_REQUIRED)
+                .authenticate()
                 .build();
 
         gateway.add(loginWithSession);
@@ -206,7 +205,6 @@ public class AppConfig implements Configure {
                 .form()
                 .resource(new LoginSetSessionResource())
                 .regex(LoginSetSessionResource.URL)
-                .label(Label.SESSION_OPTIONAL)
                 .build();
 
         gateway.add(loginSetSessionResource);
@@ -218,7 +216,7 @@ public class AppConfig implements Configure {
                 .method(Method.POST)
                 .resource(new ProtectedResource())
                 .regex(ProtectedResource.URL)
-                .label(Label.SESSION_REQUIRED)
+                .authenticate()
                 .build();
 
         gateway.add(protectedTarget);
@@ -242,7 +240,6 @@ public class AppConfig implements Configure {
         RestTarget<ApiUser, ClientError> notFoundV2 = new RestTargetBuilder<ApiUser, ClientError>()
                 .groupName(API_GROUP_V2)
                 .crud()
-                .label(Label.AUTH_OPTIONAL)
                 .restResource(restNotFoundResource)
                 .regex("/rest/v2/(.*)")
                 .payload(ClientError.class)
@@ -253,7 +250,6 @@ public class AppConfig implements Configure {
         RestTarget<ApiUser, ClientError> notFoundV3 = new RestTargetBuilder<ApiUser, ClientError>()
                 .groupName(API_GROUP_V3)
                 .crud()
-                .label(Label.AUTH_OPTIONAL)
                 .restResource(restNotFoundResource)
                 .regex("/rest/v3/(.*)")
                 .payload(ClientError.class)
@@ -266,14 +262,10 @@ public class AppConfig implements Configure {
                 .groupName(WEB_SITE_GROUP)
                 .method(Method.GET)
                 .method(Method.POST)
-                .label(Label.SESSION_OPTIONAL)
-                .label(Label.AUTH_OPTIONAL)
                 .resource(new NotFoundResource())
                 .regex("(.*)")
                 .build();
 
         gateway.notFound(notFoundTarget);
-
-
     }
 }
