@@ -1,6 +1,6 @@
 apply plugin: 'java'
-apply plugin: 'signing'
 apply plugin: 'maven'
+apply plugin: 'signing'
 
 group = "org.rootservices"
 version = "1.4-SNAPSHOT"
@@ -91,7 +91,6 @@ uploadArchives {
                 project.ext.ossrhPassword = 'wrongPassword'
             }
 
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
             snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
                 authentication(userName: ossrhUser, password: ossrhPassword)
             }
@@ -130,5 +129,5 @@ uploadArchives {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '5.5'
+    gradleVersion = '5.5.1'
 }

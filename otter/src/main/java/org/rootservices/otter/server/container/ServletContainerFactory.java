@@ -53,7 +53,7 @@ public class ServletContainerFactory {
      * @param clazz a class in your project.
      * @param port the port the container should use. 0 will randomly assign a port.
      * @param requestLog path to the request log
-     * @param errorPages
+     * @param errorPages a list of ErrorPages
      * @return a configured instance of ServletContainer
      * @throws URISyntaxException if an issue occurred constructing a URI
      * @throws IOException if issues come up regarding webapp or containerResources
@@ -79,7 +79,7 @@ public class ServletContainerFactory {
      * @param compliedClassPath absolute file path to, target/classes/ in your project.
      * @param port the port the container should use. 0 will randomly assign a port.
      * @param requestLog path to the request log
-     * @param errorPages
+     * @param errorPages a list of ErrorPages
      * @return a configured instance of ServletContainer
      * @throws IOException if issues come up regarding webapp or containerResources
      */

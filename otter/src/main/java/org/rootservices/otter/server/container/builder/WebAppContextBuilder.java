@@ -105,10 +105,10 @@ public class WebAppContextBuilder {
     /**
      * Configure delivery of static assets if they are included in the war file.
      *
-     * @param relativeResourceBase
+     * @param resourceBase absolute file path to the webapp directory in your project.
      * @return an instance of, WebAppContextBuilder
      */
-    public WebAppContextBuilder staticAssetServletWar(String relativeResourceBase) {
+    public WebAppContextBuilder staticAssetServletWar(String resourceBase) {
         ServletHolder defaultServletHolder = new ServletHolder("default", DefaultServlet.class);
         defaultServletHolder.setInitParameter("relativeResourceBase", resourceBase);
 

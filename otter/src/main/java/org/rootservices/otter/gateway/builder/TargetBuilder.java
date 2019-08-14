@@ -36,7 +36,8 @@ public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
 
     /**
      * Exposes GET and POST methods and CSRF protects it.
-     * @return
+     *
+     * @return this, an instance of the TargetBuilder
      */
     public TargetBuilder<S, U> form() {
         this.method(Method.GET)

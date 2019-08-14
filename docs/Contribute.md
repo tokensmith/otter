@@ -15,5 +15,5 @@
 
 ## How to release.
 ```bash
-$ gradle clean signArchives uploadArchives
+$ ./gradlew clean signArchives uploadArchives
 ```
