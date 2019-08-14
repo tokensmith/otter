@@ -6,7 +6,7 @@ jdk:
   - openjdk12
 
 install:
-- ./gradlew assemble -x signArchives -i
+- ./gradlew assemble -i
 
 script:
-- ./gradlew check -x signArchives -i
+- ./gradlew check -i
