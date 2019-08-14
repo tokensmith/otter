@@ -1,5 +1,5 @@
 apply plugin: 'java'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group = "org.rootservices"
@@ -67,64 +67,63 @@ test {
     mkdir 'logs/jetty'
 }
 
-task javadocJar(type: Jar) {
-    from javadoc
-}
-
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives javadocJar, sourcesJar
-}
-
-signing {
-    sign configurations.archives
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            if(!project.ext.properties.containsKey("ossrhUser")) {
-                project.ext.ossrhUser = 'wrongUser'
-                project.ext.ossrhPassword = 'wrongPassword'
-            }
-
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
-                authentication(userName: ossrhUser, password: ossrhPassword)
-            }
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUser, password: ossrhPassword)
-            }
-            pom.project {
-                name project.name
-                packaging 'jar'
-                description 'Micro web framework for servlet api 4.0'
-                url 'https://github.com/RootServices/otter'
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = 'otter'
+                packaging = 'jar'
+                description = 'Micro web framework for servlet api 4.0'
+                url = 'https://github.com/RootServices/otter'
 
                 scm {
-                    connection 'git@github.com:RootServices/otter.git'
-                    developerConnection 'git@github.com:RootServices/otter.git'
-                    url 'https://github.com/RootServices/otter'
+                    connection = 'git@github.com:RootServices/otter.git'
+                    developerConnection = 'git@github.com:RootServices/otter.git'
+                    url = 'https://github.com/RootServices/otter'
                 }
 
                 licenses {
                     license {
-                        name 'The MIT License (MIT)'
-                        url 'https://github.com/RootServices/otter/blob/development/LICENSE'
+                        name = 'The MIT License (MIT)'
+                        url = 'https://github.com/RootServices/otter/blob/development/LICENSE'
                     }
                 }
 
                 developers {
                     developer {
-                        id 'tmackenzie'
-                        name 'Tom MacKenzie'
-                        email 'tom@rootservices.org'
+                        id = 'tmackenzie'
+                        name = 'Tom MacKenzie'
+                        email = 'tom@rootservices.org'
                     }
                 }
             }
         }
+    }
+    repositories {
+        maven {
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+            if(!project.ext.properties.containsKey("ossrhUser")) {
+                project.ext.ossrhUser = 'wrongUser'
+                project.ext.ossrhPassword = 'wrongPassword'
+            }
+            credentials {
+                username = ossrhUser
+                password =ossrhPassword
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
     }
 }
 
