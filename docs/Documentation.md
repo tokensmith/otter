@@ -1,4 +1,4 @@
-# Introduction
+# Documentation
 
 ## Contents
 - [Scaffolding](#scaffolding)
@@ -22,7 +22,7 @@
 
 ### Scaffolding
 
-Here is a layout of a project. Which can be observed in the [example application](https://github.com/RootServices/otter/tree/development/example).
+Here is a layout of a project. Which can be observed in the [hello world application](https://github.com/RootServices/otter/tree/development/hello-world).
 ```bash
     project/
         src/
@@ -188,7 +188,7 @@ The implementation instructs otter how to:
  - Group RestResources together to use the same User
  - Handle Errors
 
-Have a look a the hello world application for an [example](https://github.com/RootServices/otter/blob/development/example/src/main/java/org/rootservices/hello/config/AppConfig.java).
+Have a look a the hello world application for an [example](https://github.com/RootServices/otter/blob/development/hello-world/src/main/java/org/rootservices/hello/config/AppConfig.java).
 
 #### Entry Servlet
 An otter application needs to extend [OtterEntryServlet](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/servlet/OtterEntryServlet.java). This is needed to route requests from the servlet conatiner
@@ -204,15 +204,15 @@ It must override the following:
 
 `makeConfigure()` must return your `configure` implementation.
 
-Have a look a the hello world application for an [example](https://github.com/RootServices/otter/blob/development/example/src/main/java/org/rootservices/hello/config/AppEntryServlet.java).
+Have a look a the hello world application for an [example](https://github.com/RootServices/otter/blob/development/hello-world/src/main/java/org/rootservices/hello/config/AppEntryServlet.java).
 
 #### Main Method
 
-Otter runs in a Jetty powered [embedded servlet container](https://github.com/RootServices/otter/blob/development/example/src/main/java/org.rootservices.hello/server/HelloServer.java).
+Otter runs in a Jetty powered [embedded servlet container](https://github.com/RootServices/otter/blob/development/hello-world/src/main/java/org.rootservices.hello/server/HelloServer.java).
 The port, document root, and the request log are all configurable. The [servlet container factory](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/server/container/ServletContainerFactory.java) 
 is how the container is configured to run Otter.
 
-Have a look a the hello world application for an [example](https://github.com/RootServices/otter/blob/development/example/src/main/java/org/rootservices/hello/server/HelloServer.java)
+Have a look a the hello world application for an [example](https://github.com/RootServices/otter/blob/development/hello-world/src/main/java/org/rootservices/hello/server/HelloServer.java)
 
 ### CSRF
 
@@ -232,12 +232,12 @@ In the configure implementation:
     gateway.add(login);
 ```
 
-Set the csrf challenge token value on the [login presenter](https://github.com/RootServices/otter/blob/development/example/src/main/java/org.rootservices.hello/controller/presenter/LoginPresenter.java#L18).
+Set the csrf challenge token value on the [login presenter](https://github.com/RootServices/otter/blob/development/hello-world/src/main/java/org.rootservices.hello/controller/presenter/LoginPresenter.java#L18).
 ```java
     LoginPresenter presenter = new LoginPresenter("", request.getCsrfChallenge().get());
 ```
 
-Render the [CSRF challenge token](https://github.com/RootServices/otter/blob/development/example/src/main/webapp/WEB-INF/jsp/login.jsp#L12) 
+Render the [CSRF challenge token](https://github.com/RootServices/otter/blob/development/hello-world/src/main/webapp/WEB-INF/jsp/login.jsp#L12) 
 on the page.
 ```java
     <input id="csrfToken" type="hidden" name="csrfToken" value="${presenter.getCsrfChallengeToken()}" / >
