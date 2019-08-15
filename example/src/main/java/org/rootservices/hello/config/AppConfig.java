@@ -48,6 +48,7 @@ public class AppConfig implements Configure {
 
     @Override
     public Shape shape() {
+        // You should vault your keys, this is shown for simplicity.
         SymmetricKey encKey = appFactory.encKey();
         SymmetricKey signKey = appFactory.signKey();
 
