@@ -1,5 +1,7 @@
 # hello world
-This is an example web application that uses otter. It demonstrates:
+This is an example web application that uses otter. 
+
+It demonstrates:
  - CSRF
  - Session Management
  - `text/html` Content-Type 

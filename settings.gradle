@@ -1,4 +1,5 @@
 rootProject.name = 'otter'
 include 'otter'
 include 'example'
+include 'quick-start'
 
