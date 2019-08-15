@@ -4,6 +4,14 @@ import org.rootservices.jwt.entity.jwk.SymmetricKey;
 
 import java.util.Map;
 
+
+/**
+ * Used to instruct otter on what values to use for:
+ *  - csrf sign keys
+ *  - session encryption keys
+ *  - rotation keys
+ *  - async i/o chuck sizes
+ */
 public class Shape {
     private Boolean secure;
     private SymmetricKey signkey;

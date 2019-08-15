@@ -140,7 +140,7 @@ public class AppConfig implements Configure {
         gateway.add(brokenApiV2);
 
         // resource for v3 api
-        org.rootservices.hello.controller.api.v3.HelloRestResource helloRestResourceV3 = new org.rootservices.hello.controller.api.v3.HelloRestResource();
+        var helloRestResourceV3 = new org.rootservices.hello.controller.api.v3.HelloRestResource();
         RestTarget<ApiUser, Hello> helloApiV3 = new RestTargetBuilder<ApiUser, Hello>()
                 .groupName(API_GROUP_V3)
                 .method(Method.GET)
