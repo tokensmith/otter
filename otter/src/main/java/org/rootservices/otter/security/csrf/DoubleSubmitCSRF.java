@@ -144,7 +144,7 @@ public class DoubleSubmitCSRF {
         return randomString.run();
     }
 
-    public Cookie makeCsrfCookie(String name, ChallengeToken challengeToken, Boolean secure, int maxAge) throws CsrfException {
+    public Cookie makeCsrfCookie(String name, ChallengeToken challengeToken, Boolean secure, int maxAge, Boolean isHttpOnly) throws CsrfException {
 
         ByteArrayOutputStream compactJwt = toJwt(challengeToken);
 
@@ -153,6 +153,7 @@ public class DoubleSubmitCSRF {
         csrfCookie.setName(name);
         csrfCookie.setMaxAge(maxAge);
         csrfCookie.setValue(compactJwt.toString());
+        csrfCookie.setHttpOnly(isHttpOnly);
 
         return csrfCookie;
     }

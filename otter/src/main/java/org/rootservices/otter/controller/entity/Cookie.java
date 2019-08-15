@@ -10,6 +10,7 @@ public class Cookie {
     private String path;
     private boolean secure;
     private int version = 0;
+    private boolean httpOnly;
 
     public String getName() {
         return name;
@@ -73,5 +74,13 @@ public class Cookie {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    public boolean isHttpOnly() {
+        return httpOnly;
+    }
+
+    public void setHttpOnly(boolean httpOnly) {
+        this.httpOnly = httpOnly;
     }
 }

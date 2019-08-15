@@ -26,6 +26,7 @@ public class HttpServletRequestCookieTranslatorTest {
         containerCookie.setPath("/account");
         containerCookie.setSecure(true);
         containerCookie.setVersion(0);
+        containerCookie.setHttpOnly(true);
 
         org.rootservices.otter.controller.entity.Cookie actual = subject.from.apply(containerCookie);
 
@@ -35,6 +36,7 @@ public class HttpServletRequestCookieTranslatorTest {
         assertThat(actual.getPath(), is("/account"));
         assertThat(actual.isSecure(), is(true));
         assertThat(actual.getVersion(), is(0));
+        assertThat(actual.isHttpOnly(), is(true));
 
     }
 
@@ -48,6 +50,7 @@ public class HttpServletRequestCookieTranslatorTest {
         otterCookie.setPath("/account");
         otterCookie.setSecure(true);
         otterCookie.setVersion(0);
+        otterCookie.setHttpOnly(true);
 
         Cookie actual = subject.to.apply(otterCookie);
 
@@ -57,6 +60,7 @@ public class HttpServletRequestCookieTranslatorTest {
         assertThat(actual.getPath(), is("/account"));
         assertThat(actual.getSecure(), is(true));
         assertThat(actual.getVersion(), is(0));
+        assertThat(actual.isHttpOnly(), is(true));
 
     }
 }

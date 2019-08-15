@@ -53,7 +53,8 @@ public class PrepareCSRF<S, U> implements Between<S, U> {
 
             try {
                 Cookie csrfCookie = doubleSubmitCSRF.makeCsrfCookie(
-                        cookieConfig.getName(), cookieChallengeToken, cookieConfig.getSecure(), cookieConfig.getAge()
+                        cookieConfig.getName(), cookieChallengeToken, cookieConfig.getSecure(), cookieConfig.getAge(),
+                        cookieConfig.getHttpOnly()
                 );
                 response.getCookies().put(cookieConfig.getName(), csrfCookie);
 

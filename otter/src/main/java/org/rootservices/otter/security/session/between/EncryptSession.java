@@ -64,6 +64,7 @@ public class EncryptSession<S, U> implements Between<S, U> {
             cookie.setName(cookieConfig.getName());
             cookie.setMaxAge(cookieConfig.getAge());
             cookie.setSecure(cookieConfig.getSecure());
+            cookie.setHttpOnly(cookieConfig.getHttpOnly());
             cookie.setValue(session.toString());
 
             response.getCookies().put(cookieConfig.getName(), cookie);

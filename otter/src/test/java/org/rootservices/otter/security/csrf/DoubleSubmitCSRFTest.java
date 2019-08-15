@@ -47,7 +47,7 @@ public class DoubleSubmitCSRFTest {
     public void doTokensMatchShouldBeOk() throws Exception {
         // use the software to test it :)
         ChallengeToken challengeToken = new ChallengeToken("challenge-token", "cookie-noise");
-        Cookie cookie = subject.makeCsrfCookie("CSRF", challengeToken, true, -1);
+        Cookie cookie = subject.makeCsrfCookie("CSRF", challengeToken, true, -1, true);
 
         ChallengeToken formChallengeToken = new ChallengeToken("challenge-token", "form-noise");
         ByteArrayOutputStream formValueJwt = subject.toJwt(formChallengeToken);
@@ -60,7 +60,7 @@ public class DoubleSubmitCSRFTest {
     public void doTokensMatchWhenTokensAreDifferentShouldBeFalse() throws Exception {
         // use the software to test it :)
         ChallengeToken challengeToken = new ChallengeToken("challenge-token", "noise");
-        Cookie cookie = subject.makeCsrfCookie("CSRF", challengeToken, true, -1);
+        Cookie cookie = subject.makeCsrfCookie("CSRF", challengeToken, true, -1, true);
 
         ChallengeToken formChallengeToken = new ChallengeToken("form-challenge-token", "form-noise");
         ByteArrayOutputStream formValueJwt = subject.toJwt(formChallengeToken);
@@ -73,7 +73,7 @@ public class DoubleSubmitCSRFTest {
     public void doTokensMatchWhenNoiseAreIdenticalShouldBeFalse() throws Exception {
         // use the software to test it :)
         ChallengeToken challengeToken = new ChallengeToken("challenge-token", "noise");
-        Cookie cookie = subject.makeCsrfCookie("CSRF", challengeToken, true, -1);
+        Cookie cookie = subject.makeCsrfCookie("CSRF", challengeToken, true, -1, true);
 
         ChallengeToken formChallengeToken = new ChallengeToken("form-challenge-token", "noise");
         ByteArrayOutputStream formValueJwt = subject.toJwt(formChallengeToken);
@@ -169,12 +169,13 @@ public class DoubleSubmitCSRFTest {
     @Test
     public void makeCsrfCookieShouldBeOk() throws Exception {
         ChallengeToken challengeToken = new ChallengeToken("challenge-token", "noise");
-        Cookie actual = subject.makeCsrfCookie("CSRF", challengeToken, true, -1);
+        Cookie actual = subject.makeCsrfCookie("CSRF", challengeToken, true, -1, true);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getName(), is("CSRF"));
         assertThat(actual.isSecure(), is(true));
         assertThat(actual.getMaxAge(), is(-1));
+        assertThat(actual.isHttpOnly(), is(true));
 
         // might as well use csrfCookieValueToJwt to validate the cookie value.
 

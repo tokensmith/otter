@@ -60,7 +60,7 @@ public class BetweenBuilder<S, U> {
     }
 
     public BetweenBuilder<S, U> csrfPrepare() {
-        CookieConfig csrfCookieConfig = new CookieConfig(CSRF_NAME, secure, -1);
+        CookieConfig csrfCookieConfig = new CookieConfig(CSRF_NAME, secure, -1, true);
         DoubleSubmitCSRF doubleSubmitCSRF = new DoubleSubmitCSRF(new JwtAppFactory(), new RandomString(), signKey, rotationSignKeys);
 
         Between<S,U> prepareCSRF = new PrepareCSRF<S, U>(csrfCookieConfig, doubleSubmitCSRF);
@@ -96,7 +96,7 @@ public class BetweenBuilder<S, U> {
     }
 
     public BetweenBuilder<S, U> session() throws SessionCtorException {
-        CookieConfig sessionCookieConfig = new CookieConfig(SESSION_NAME, secure, -1);
+        CookieConfig sessionCookieConfig = new CookieConfig(SESSION_NAME, secure, -1, true);
 
         try {
             sessionCtor = sessionClass.getConstructor(sessionClass);
@@ -114,7 +114,7 @@ public class BetweenBuilder<S, U> {
     }
 
     public BetweenBuilder<S, U> optionalSession() throws SessionCtorException {
-        CookieConfig sessionCookieConfig = new CookieConfig(SESSION_NAME, secure, -1);
+        CookieConfig sessionCookieConfig = new CookieConfig(SESSION_NAME, secure, -1, true);
 
         try {
             sessionCtor = sessionClass.getConstructor(sessionClass);
