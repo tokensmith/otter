@@ -2,7 +2,7 @@ package org.rootservices.hello.server;
 
 
 import org.apache.tomcat.util.descriptor.web.ErrorPage;
-import org.rootservices.hello.controller.HelloResource;
+import org.rootservices.hello.controller.html.HelloResource;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.server.container.ServletContainer;
 import org.rootservices.otter.server.container.ServletContainerFactory;

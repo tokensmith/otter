@@ -1,4 +1,4 @@
-package org.rootservices.hello.controller;
+package org.rootservices.hello.controller.html;
 
 
 import org.rootservices.hello.security.TokenSession;
@@ -8,10 +8,10 @@ import org.rootservices.otter.controller.entity.request.Request;
 import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 
-public class UnSupportedMediaTypeResource extends Resource<TokenSession, User> {
+public class NotFoundResource extends Resource<TokenSession, User> {
 
     public Response<TokenSession> get(Request<TokenSession, User> request, Response<TokenSession> response) {
-        response.setStatusCode(StatusCode.UNSUPPORTED_MEDIA_TYPE);
+        response.setStatusCode(StatusCode.NOT_FOUND);
         return response;
     }
 }

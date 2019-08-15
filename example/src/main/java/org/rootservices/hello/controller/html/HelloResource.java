@@ -1,4 +1,4 @@
-package org.rootservices.hello.controller;
+package org.rootservices.hello.controller.html;
 
 
 import org.rootservices.hello.security.TokenSession;
@@ -8,10 +8,16 @@ import org.rootservices.otter.controller.entity.request.Request;
 import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 
-public class NotFoundResource extends Resource<TokenSession, User> {
+import java.util.Optional;
+
+public class HelloResource extends Resource<TokenSession, User> {
+    public static String URL = "/hello";
+
+    private static String JSP_PATH = "/WEB-INF/jsp/hello.jsp";
 
     public Response<TokenSession> get(Request<TokenSession, User> request, Response<TokenSession> response) {
-        response.setStatusCode(StatusCode.NOT_FOUND);
+        response.setStatusCode(StatusCode.OK);
+        response.setTemplate(Optional.of(JSP_PATH));
         return response;
     }
 }

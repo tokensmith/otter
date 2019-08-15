@@ -1,7 +1,6 @@
 package org.rootservices.hello.config;
 
 
-import org.rootservices.hello.controller.*;
 import org.rootservices.hello.controller.api.between.AuthRestBetween;
 import org.rootservices.hello.controller.api.model.ApiUser;
 
@@ -13,6 +12,9 @@ import org.rootservices.hello.controller.api.v3.handler.ServerErrorResource;
 import org.rootservices.hello.controller.api.v3.model.BadRequestPayload;
 import org.rootservices.hello.controller.api.v3.model.BrokenPayload;
 import org.rootservices.hello.controller.api.v3.model.ServerErrorPayload;
+import org.rootservices.hello.controller.html.*;
+import org.rootservices.hello.controller.html.authenticate.AuthBetween;
+import org.rootservices.hello.controller.html.authenticate.AuthOptBetween;
 import org.rootservices.hello.model.Hello;
 import org.rootservices.hello.security.TokenSession;
 import org.rootservices.hello.security.User;
@@ -63,10 +65,12 @@ public class AppConfig implements Configure {
     public List<Group<? extends DefaultSession, ? extends DefaultUser>> groups() {
         List<Group<? extends DefaultSession, ? extends DefaultUser>> groups = new ArrayList<>();
 
-        var serverErrorResource = new org.rootservices.hello.controller.ServerErrorResource();
+        var serverErrorResource = new org.rootservices.hello.controller.html.ServerErrorResource();
         Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
                 .name(WEB_SITE_GROUP)
                 .sessionClazz(TokenSession.class)
+                .authOptional(new AuthOptBetween())
+                .authRequired(new AuthBetween())
                 .onError(StatusCode.SERVER_ERROR, serverErrorResource)
                 .build();
 

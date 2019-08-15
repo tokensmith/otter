@@ -29,7 +29,10 @@ Here is a layout of a project. Which can be observed in the [example application
             main/
                 java/{groupId}.{artifactId}
                     config/
+                        AppConfig.java
+                        AppEntryServlet.java
                     server/
+                        AppServer.java
                 resources/
             webapp/
                 public/
@@ -37,6 +40,12 @@ Here is a layout of a project. Which can be observed in the [example application
                     jsp/    
             test/
 ```
+
+`AppConfig.java` contains the [configuration](#configuration) to set up your web application.
+
+`AppEntryServlet.java` allows [servlet container requests](#entry-servlet) to be sent to otter.
+
+`AppServer.java` the application's [main method](#main-method) to start the web application.
 
 ### Fundamentals
 #### Resource
@@ -89,18 +98,18 @@ A [Target]() instructs otter which http methods to allow for a given resource an
 ```
 
 #### Group
-A [Group](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/Group.java) allows sharing betweens, Session, User, and Error handling amongst Targets.
+A [Group](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/Group.java) allows sharing Session, User, and Error handling amongst Targets.
 
 Sharing error handling.
 ```java
-    var serverErrorResource = new ServerErrorResource();
+    var serverErrorResource = new org.rootservices.hello.controller.html.ServerErrorResource();
     Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
             .name(WEB_SITE_GROUP)
             .sessionClazz(TokenSession.class)
+            .authOptional(new AuthOptBetween())
+            .authRequired(new AuthBetween())
             .onError(StatusCode.SERVER_ERROR, serverErrorResource)
             .build();
-    
-    groups.add(webSiteGroup);
 ```
 
 ```java
@@ -136,7 +145,7 @@ A [RestTarget]() instructs otter which http methods to allow for a given rest re
 ```
 
 #### RestGroup
-A [RestGroup]() allows sharing rest betweens, User, and Error handling amongst RestTargets.
+A [RestGroup]() allows sharing User and Error handling amongst RestTargets.
 
 Sharing error handling..
 ```java
