@@ -65,13 +65,6 @@ public class ServletContainerFactory {
         return makeServletContainer(documentRoot, webApp, compliedClassPath, port, requestLog, errorPages);
     }
 
-    public ServletContainer makeServletContainer(String documentRoot, Class clazz, String customWebAppLocation, int port, String requestLog, List<ErrorPage> errorPages) throws URISyntaxException, IOException {
-        URI compliedClassPath = compiledClassPath.getForClass(clazz);
-        URI webApp = webAppPath.fromClassURI(compliedClassPath, customWebAppLocation);
-
-        return makeServletContainer(documentRoot, webApp, compliedClassPath, port, requestLog, errorPages);
-    }
-
     /**
      *
      * @param documentRoot root path for the servlet container to run. example, "/"

@@ -1,5 +1,5 @@
 # Quick Start
-This is an application that shows how to configure otter and render a hello world template. For a more complete 
+This is an application that shows how to configure otter and render a simple template. For a more complete 
 application head over to the example application.
 
 The following are in the project.

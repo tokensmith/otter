@@ -14,6 +14,7 @@ public class WebAppPath {
     private static String FILE = "file:";
     private static String DEFAULT_WEB_APP = "/src/main/webapp";
     private static String GRADLE_PATH = "/build";
+    private static String INTELLIJ_PATH = "/out";
     private static String MVN_PATH = "/target";
 
     /**
@@ -36,8 +37,10 @@ public class WebAppPath {
 
         if (classURI.getPath().contains(MVN_PATH)) {
             projectPath = makeProjectPath(classURI.getPath(), MVN_PATH);
-        } else {
+        } else if (classURI.getPath().contains(GRADLE_PATH)) {
             projectPath = makeProjectPath(classURI.getPath(), GRADLE_PATH);
+        } else {
+            projectPath = makeProjectPath(classURI.getPath(), INTELLIJ_PATH);
         }
 
         String webAppPath = FILE + projectPath + customWebAppLocation;
