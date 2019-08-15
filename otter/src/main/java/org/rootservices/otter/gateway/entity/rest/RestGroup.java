@@ -3,13 +3,12 @@ package org.rootservices.otter.gateway.entity.rest;
 
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.gateway.entity.ErrorTarget;
 import org.rootservices.otter.router.entity.between.RestBetween;
 import org.rootservices.otter.translatable.Translatable;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Pattern;
+
 
 public class RestGroup<U extends DefaultUser> {
     private String name;

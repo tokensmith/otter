@@ -1,4 +1,4 @@
-package org.rootservices.hello.controller;
+package org.rootservices.hello.controller.html;
 
 import org.rootservices.hello.security.TokenSession;
 import org.rootservices.hello.security.User;

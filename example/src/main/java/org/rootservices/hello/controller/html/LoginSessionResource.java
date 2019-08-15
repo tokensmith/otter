@@ -1,7 +1,7 @@
-package org.rootservices.hello.controller;
+package org.rootservices.hello.controller.html;
 
 
-import org.rootservices.hello.controller.presenter.LoginPresenter;
+import org.rootservices.hello.controller.html.presenter.LoginPresenter;
 import org.rootservices.hello.security.TokenSession;
 import org.rootservices.hello.security.User;
 import org.rootservices.otter.controller.Resource;

@@ -127,7 +127,7 @@ public class LoginResourceTest {
     }
 
     @Test
-    public void postShouldReturn403() throws Exception {
+    public void postWhenNoCSRFCookieShouldReturn403() throws Exception {
         String loginURI = BASE_URI.toString() + "login";
 
         List<Param> formData = new ArrayList<>();

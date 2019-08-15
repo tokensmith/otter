@@ -14,8 +14,32 @@ import java.util.List;
  *
  */
 public interface Configure {
+    /**
+     * Returns a shape instance which instructs otter what to use for the csrf sign keys, session encrption keys,
+     * rotation keys, and async i/o chuck sizes.
+     *
+     * @return an instance of a Shape
+     */
     Shape shape();
+
+    /**
+     * Returns a list of Groups which is used to share betweens, Session, and User amongst Routes.
+     *
+     * @return a List of Groups
+     */
     List<Group<? extends DefaultSession, ? extends DefaultUser>> groups();
+
+    /**
+     * Returns a list of RestGroup which is used to share RestBetweens and User amongst RestRoutes.
+     *
+     * @return a List of RestGroup
+     */
     List<RestGroup<? extends DefaultUser>> restGroups();
+
+    /**
+     * Add Routes and RestRoutes to the gateway here.
+     *
+     * @param gateway An instance of the gateway.
+     */
     void routes(Gateway gateway);
 }

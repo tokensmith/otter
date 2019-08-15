@@ -1,9 +1,8 @@
-package org.rootservices.hello.controller;
+package org.rootservices.hello.controller.html;
 
 import org.rootservices.hello.security.TokenSession;
 import org.rootservices.hello.security.User;
 import org.rootservices.otter.controller.Resource;
-import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.request.Request;
 import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.entity.StatusCode;

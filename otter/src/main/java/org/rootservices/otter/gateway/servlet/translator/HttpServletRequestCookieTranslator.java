@@ -19,6 +19,7 @@ public class HttpServletRequestCookieTranslator {
             otterCookie.setPath(containerCookie.getPath());
             otterCookie.setVersion(containerCookie.getVersion());
             otterCookie.setSecure(containerCookie.getSecure());
+            otterCookie.setHttpOnly(containerCookie.isHttpOnly());
 
             return otterCookie;
         }
@@ -39,7 +40,7 @@ public class HttpServletRequestCookieTranslator {
             containerCookie.setPath(otterCookie.getPath());
             containerCookie.setSecure(otterCookie.isSecure());
             containerCookie.setVersion(otterCookie.getVersion());
-
+            containerCookie.setHttpOnly(otterCookie.isHttpOnly());
             return containerCookie;
         }
     };

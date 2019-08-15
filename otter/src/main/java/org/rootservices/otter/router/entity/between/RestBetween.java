@@ -9,7 +9,7 @@ import org.rootservices.otter.router.exception.HaltException;
 
 /**
  * Implementations will be used as rules that may be run before a request reaches
- * a resource or after a resource executes. Also referred to as a before and a after.
+ * a rest resource or after a rest resource executes. Also referred to as a before and a after.
  *
  * @param <U> User object, intended to be a authenticated user.
  */

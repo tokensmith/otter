@@ -29,7 +29,7 @@ public class EncryptSessionTest {
 
     @Before
     public void setUp() {
-        CookieConfig cookieConfig = new CookieConfig("session", true, -1);
+        CookieConfig cookieConfig = new CookieConfig("session", true, -1, true);
         subject = new EncryptSession<DummySession, DummyUser>(
                 cookieConfig,
                 FixtureFactory.encKey("1234"),
@@ -73,7 +73,7 @@ public class EncryptSessionTest {
         SymmetricKey veryBadKey = FixtureFactory.encKey("1234");
         veryBadKey.setKey("MMNj8rE5m7NIDhwKYDmHSnlU1wfKuVvW6G--");
 
-        CookieConfig cookieConfig = new CookieConfig("session", true, -1);
+        CookieConfig cookieConfig = new CookieConfig("session", true, -1, true);
         EncryptSession<DummySession, DummyUser> subject = new EncryptSession<DummySession, DummyUser>(
                 cookieConfig,
                 veryBadKey,
@@ -193,7 +193,7 @@ public class EncryptSessionTest {
 
     @Test
     public void setPreferredKey() {
-        CookieConfig cookieConfig = new CookieConfig("session", true, -1);
+        CookieConfig cookieConfig = new CookieConfig("session", true, -1, true);
         EncryptSession<DummySession, DummyUser> subject = new EncryptSession<DummySession, DummyUser>(
                 cookieConfig,
                 FixtureFactory.encKey("1234"),
@@ -209,14 +209,14 @@ public class EncryptSessionTest {
 
     @Test
     public void setCookieConfig() {
-        CookieConfig cookieConfig = new CookieConfig("session", true, -1);
+        CookieConfig cookieConfig = new CookieConfig("session", true, -1, true);
         EncryptSession<DummySession, DummyUser> subject = new EncryptSession<DummySession, DummyUser>(
                 cookieConfig,
                 FixtureFactory.encKey("1234"),
                 appFactory.objectWriter()
         );
 
-        CookieConfig sessionCookieConfig = new CookieConfig("session_store", true, -1);
+        CookieConfig sessionCookieConfig = new CookieConfig("session_store", true, -1, true);
         subject.setCookieConfig(sessionCookieConfig);
 
         CookieConfig actual = subject.getCookieConfig();

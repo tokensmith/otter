@@ -119,27 +119,6 @@ public class ServletContainerFactory {
         return server;
     }
 
-    public ServletContainer makeServletContainerFromWar(String documentRoot, URI warFilePath, int port, String requestLog, List<ErrorPage> errorPages) throws IOException {
-
-        Configuration[] configurations = makeConfigurations();
-        PathResource warFileResource = makeFileResource(warFilePath);
-        WebAppContext context = makeWebAppContextForWAR(documentRoot, configurations, warFileResource, errorPages);
-
-        Server jetty = new Server(port);
-        jetty.setHandler(context);
-
-        ServerConnector serverConnector = makeServerConnector(jetty, port);
-        jetty.setConnectors( new Connector[] { serverConnector } );
-
-        // request logs
-        CustomRequestLog log = makeRequestLog(requestLog);
-
-        jetty.setRequestLog(log);
-
-        ServletContainer server = new ServletContainerImpl(jetty);
-        return server;
-    }
-
     protected WebAppContext makeWebAppContext(String documentRoot, String resourceBase, Configuration[] configurations, PathResource containerResources, List<ErrorPage> errorPages) {
 
         WebAppContext webAppContext = new WebAppContextBuilder()
