@@ -27,7 +27,6 @@ public class HelloServer {
 
     public static void main(String[] args) {
 
-        // ServletContainer server = makeServer();
         ServletContainer server = makeServer();
 
         try {
@@ -57,33 +56,6 @@ public class HelloServer {
             );
         } catch (URISyntaxException e) {
             logger.error(e.getMessage(), e);
-        } catch (MalformedURLException e) {
-            logger.error(e.getMessage(), e);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-        return server;
-    }
-
-
-    public static ServletContainer makeServerFromWar() {
-        OtterAppFactory otterAppFactory = new OtterAppFactory();
-        ServletContainerFactory servletContainerFactory = otterAppFactory.servletContainerFactory();
-
-        URI war = null;
-        try {
-            war = new URI("");
-        } catch (URISyntaxException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-        List<ErrorPage> errorPages = new ArrayList<>();
-        ServletContainer server = null;
-        try {
-            server = servletContainerFactory.makeServletContainerFromWar(
-                    DOCUMENT_ROOT, war, PORT, REQUEST_LOG, errorPages
-            );
         } catch (MalformedURLException e) {
             logger.error(e.getMessage(), e);
         } catch (IOException e) {
