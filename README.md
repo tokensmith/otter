@@ -2,12 +2,17 @@
 Otter is a micro web framework that sits on top of the servlet api 4.0 
 
 - [Contribute!](/docs/Contribute.md)
-- [Example Application](#example-application)
+- [Hello World Application](#hello-world-application)
+- [Quick Start Application](#quick-start-application)
 - [Dependency Coordinates](#dependency-coordinates)
-- [Introduction](/docs/Introduction.md)
+- [Documentation](/docs/Documentation.md)
 
-## Example Application
-If you want to get started quickly head over to the [hello world](/example) 
+## Hello World Application
+If you want to get started with all the details head over to the [hello world](/hello-world) 
+example application.
+
+## Quick Start Application
+If you want to get started quickly head over to the [quick start](/quick-start) 
 example application.
 
 ## Dependency coordinates
