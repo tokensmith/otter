@@ -12,6 +12,10 @@ import java.util.UUID;
 
 /**
  * A Simple example of setting the user in a Authentication Between.
+ *
+ * In a real application it would use the authentication header to fetch the user from a identity server or database or
+ * wherever you want. If authentication fails then throw a HaltException. That will stop the request from reaching its
+ * intended Resource.
  */
 public class AuthRestBetween implements RestBetween<ApiUser> {
     @Override

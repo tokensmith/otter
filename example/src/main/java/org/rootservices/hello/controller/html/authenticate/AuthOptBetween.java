@@ -11,6 +11,10 @@ import org.rootservices.otter.router.exception.HaltException;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * This is only an example of how to optionally authenticate a user. For simplicity this will always assign the user.
+ * In a real application if authenticate fails, then set the user to empty.
+ */
 public class AuthOptBetween implements Between<TokenSession, User> {
     @Override
     public void process(Method method, Request<TokenSession, User> request, Response<TokenSession> response) throws HaltException {

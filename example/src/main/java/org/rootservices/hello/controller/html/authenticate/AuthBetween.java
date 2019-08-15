@@ -11,6 +11,13 @@ import org.rootservices.otter.router.exception.HaltException;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * A Simple example of setting the user in a Authentication Between.
+ *
+ * In a real application it would use data in the Session to fetch the user from a identity server or database or
+ * wherever you want. If authentication fails then throw a HaltException. That will stop the request from reaching its
+ * intended Resource.
+ */
 public class AuthBetween implements Between<TokenSession, User> {
     @Override
     public void process(Method method, Request<TokenSession, User> request, Response<TokenSession> response) throws HaltException {

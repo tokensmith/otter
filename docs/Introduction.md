@@ -83,7 +83,7 @@ User implementations:
  - Must extend [DefaultUser](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/controller/entity/DefaultUser.java)
 
 #### Between
-A [Between](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/router/entity/between/Between.java) allows a rule to be executed before a request reaches a Resource or after a resource executes. Also referred to as a before and a after.
+A [Between](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/router/entity/between/Between.java) allows a rule to be executed before a request reaches a Resource or after a Resource executes. Also referred to as a before and a after.
 
 #### Target
 A [Target]() instructs otter which http methods to allow for a given resource and its regex url.
@@ -124,7 +124,7 @@ Sharing error handling.
 All Targets that call, `.groupName(WEB_SITE_GROUP)` will inherit that group's features.
 
 #### RestBetween
-A [RestBetween](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/router/entity/between/RestBetween.java) allows a rule to be executed before a request reaches a rest resource or after a rest resource executes. Also referred to as a before and a after.
+A [RestBetween](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/router/entity/between/RestBetween.java) allows a rule to be executed before a request reaches a RestResource or after a RestResource executes. Also referred to as a before and a after.
 
 #### RestTarget
 
