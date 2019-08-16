@@ -215,7 +215,6 @@ Then all the request to reach the resource.
 
 
 ##### Resource Authentication
-Group
 ```java
     var serverErrorResource = new org.rootservices.hello.controller.html.ServerErrorResource();
     Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
