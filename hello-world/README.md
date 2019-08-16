@@ -1,5 +1,5 @@
 # hello world
-This is an example web application that uses otter. It is used to execute integration tests with otter. 
+This is an example web application that uses all of otter's features. It is used to execute integration tests against Otter. 
 
 It demonstrates:
  - CSRF

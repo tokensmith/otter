@@ -5,8 +5,9 @@
 - [Fundamentals](#fundamentals)
     - [Resource](#resource)
     - [RestResource](#resource)
-    - [Session](#session)
-    - [User](#user)
+    - [Authentication](#authentication)
+        - [Session](#session)
+        - [User](#user)
     - [Between](#between)
     - [Target](#target)
     - [Group](#group)
@@ -53,9 +54,21 @@ A [Resource](https://github.com/RootServices/otter/blob/development/otter/src/ma
 
 #### RestResource
 A [RestResource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/controller/RestResource.java) is designed to accept and respond with the `Content-Type`, `application/json`. Sorry, there is no support for `applicaiton/xml`.
+
+#### Authentication
+Authentication in otter is dependent on the value objects:
+ - [Session](#session)
+ - [User](#user)
+
+Next, authentication betweens are needed which are configured in `Group` and `RestGroup`
+
+The two different betweens required are:
+ - [required authentication](#required-authentication-between)
+ - [optional authentication](#optional-authentication-between)
  
-#### Session
-If an application implements a Resource then it must implement a `Session`.
+##### Session
+If an application that uses Resources and also needs to have authentication then it must implement a `Session`. A 
+`Session` is a cookie that is `http-only` and it's value is a `JWE`.
 
 Sessions in otter are stateless. 
  - There is no state stored on the web server.
@@ -67,8 +80,6 @@ Session don'ts:
 Session implementations:
  - Must extend [DefaultSession](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/controller/entity/DefaultSession.java)
  - Must have a copy constructor.
- 
-The session cookie is a compact JWE. 
 
 **Why JWE?**
  
@@ -76,11 +87,101 @@ The threats are:
  - Session hijacking by modifying values of the session cookie to take over a different session.
  - In the instance the session cookie is revealed then sensitive data is not easily accessible. 
  
-#### User
-If an application implements a Resource or RestResource then it must implement a `User`.
+##### User
+If an application implements a Resource or RestResource and also needs to have authentication then it must implement a `User`.
 
 User implementations:
  - Must extend [DefaultUser](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/controller/entity/DefaultUser.java)
+
+##### Required Authentication Between
+Given the required authentication between
+
+When authentication succeeds
+Then assign the request user to the appropriate user
+ 
+When authentication fails
+Then possibly set the status code to 401
+And throw a halt exception. 
+           
+
+##### Optional Authentication Between
+Given the optional authentication between
+
+When the Session is present 
+and authentication succeeds
+Then assign the request user to the appropriate user
+ 
+When the Session is present 
+and authentication fails
+Then possibly set the status code to 401
+And throw a halt exception. 
+
+When the Session is not present 
+Then all the request to reach the resource. 
+
+
+##### Resource Authentication
+Group
+```java
+    var serverErrorResource = new org.rootservices.hello.controller.html.ServerErrorResource();
+    Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
+            .name(WEB_SITE_GROUP)
+            .sessionClazz(TokenSession.class)
+            .authOptional(new AuthOptBetween())
+            .authRequired(new AuthBetween())
+            .onError(StatusCode.SERVER_ERROR, serverErrorResource)
+            .build();
+
+    groups.add(webSiteGroup);
+```
+
+Then, to require authentication for a Resource use, `.authenticate()`.
+
+```java
+    Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
+        .groupName(WEB_SITE_GROUP)
+        .method(Method.GET)
+        .resource(new HelloResource())
+        .regex(HelloResource.URL)
+        .authenticate()
+        .build();
+```
+
+If, `authenticate()` is not used, then it will use the optional authenticate between.
+
+##### RestResource Authentication
+
+```java
+    AuthRestBetween authRestBetween = new AuthRestBetween();
+
+    BadRequestResource badRequestResource = new BadRequestResource();
+    ServerErrorResource serverErrorResource = new ServerErrorResource();
+    RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
+            .name(API_GROUP_V3)
+            .authRequired(authRestBetween)
+            .authOptional(authRestBetween)
+            .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
+            .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
+            .build();
+```
+
+Then, to require authentication for a Resource use, `.authenticate()`.
+
+```java
+    var helloRestResourceV3 = new org.rootservices.hello.controller.api.v3.HelloRestResource();
+    RestTarget<ApiUser, Hello> helloApiV3 = new RestTargetBuilder<ApiUser, Hello>()
+            .groupName(API_GROUP_V3)
+            .method(Method.GET)
+            .method(Method.POST)
+            .restResource(helloRestResourceV3)
+            .regex(helloRestResourceV3.URL)
+            .authenticate()
+            .contentType(json)
+            .payload(Hello.class)
+            .build();
+```
+
+If, `authenticate()` is not used, then it will use the optional authenticate between.
 
 #### Between
 A [Between](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/router/entity/between/Between.java) allows a rule to be executed before a request reaches a Resource or after a Resource executes. Also referred to as a before and a after.
