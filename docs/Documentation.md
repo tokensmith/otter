@@ -52,7 +52,7 @@ Here is a layout of a project. Which can be observed in the [hello world applica
 A [Resource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/controller/Resource.java) is what handles an http request. It can accept any `Content-Type`, it's typically used to render `text/html`.
 
 #### RestResource
-A [RestResource]() is designed to accept and respond with the `Content-Type`, `application/json`. Sorry, there is no support for `applicaiton/xml`.
+A [RestResource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/controller/RestResource.java) is designed to accept and respond with the `Content-Type`, `application/json`. Sorry, there is no support for `applicaiton/xml`.
  
 #### Session
 If an application implements a Resource then it must implement a `Session`.
@@ -86,7 +86,7 @@ User implementations:
 A [Between](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/router/entity/between/Between.java) allows a rule to be executed before a request reaches a Resource or after a Resource executes. Also referred to as a before and a after.
 
 #### Target
-A [Target]() instructs otter which http methods to allow for a given resource and its regex url.
+A [Target](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/Target.java) instructs otter which http methods to allow for a given resource and its regex url.
 
 ```java
     Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
@@ -128,7 +128,7 @@ A [RestBetween](https://github.com/RootServices/otter/blob/development/otter/src
 
 #### RestTarget
 
-A [RestTarget]() instructs otter which http methods to allow for a given rest resource and its regex url.
+A [RestTarget](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/rest/RestTarget.java) instructs otter which http methods to allow for a given rest resource and its regex url.
 
 ```java
     var helloRestResourceV3 = new HelloRestResource();
@@ -145,7 +145,7 @@ A [RestTarget]() instructs otter which http methods to allow for a given rest re
 ```
 
 #### RestGroup
-A [RestGroup]() allows sharing User and Error handling amongst RestTargets.
+A [RestGroup](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/rest/RestGroup.java) allows sharing User and Error handling amongst RestTargets.
 
 Sharing error handling..
 ```java
@@ -208,9 +208,8 @@ Have a look a the hello world application for an [example](https://github.com/Ro
 
 #### Main Method
 
-Otter runs in a Jetty powered [embedded servlet container](https://github.com/RootServices/otter/blob/development/hello-world/src/main/java/org.rootservices.hello/server/HelloServer.java).
-The port, document root, and the request log are all configurable. The [servlet container factory](https://github.com/RootServices/otter/blob/development/src/main/java/org/rootservices/otter/server/container/ServletContainerFactory.java) 
-is how the container is configured to run Otter.
+Otter runs in a Jetty powered [embedded servlet container](https://github.com/RootServices/otter/blob/development/hello-world/src/main/java/org/rootservices/hello/server/HelloServer.java).
+The port, document root, and the request log are all configurable.
 
 Have a look a the hello world application for an [example](https://github.com/RootServices/otter/blob/development/hello-world/src/main/java/org/rootservices/hello/server/HelloServer.java)
 
@@ -232,7 +231,8 @@ In the configure implementation:
     gateway.add(login);
 ```
 
-Set the csrf challenge token value on the [login presenter](https://github.com/RootServices/otter/blob/development/hello-world/src/main/java/org.rootservices.hello/controller/presenter/LoginPresenter.java#L18).
+In the [Login Resource](https://github.com/RootServices/otter/blob/development/hello-world/src/main/java/org/rootservices/hello/controller/html/LoginResource.java#L20) 
+set the csrf challenge token to the appropriate ivar in the [login presenter](https://github.com/RootServices/otter/blob/development/hello-world/src/main/java/org/rootservices/hello/controller/html/presenter/LoginPresenter.java).
 ```java
     LoginPresenter presenter = new LoginPresenter("", request.getCsrfChallenge().get());
 ```
@@ -243,8 +243,9 @@ on the page.
     <input id="csrfToken" type="hidden" name="csrfToken" value="${presenter.getCsrfChallengeToken()}" / >
 ```
 
+Done, it is CSRF protected.
 ### Static Assets
 
-Files that are placed in, `src/main/webapp/public` are public as long as they pass the entry filter [regex](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/servlet/EntryFilter.java#L19)
+Files that are placed in, `src/main/webapp/public` are public as long as they pass the entry filter [regex](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/servlet/EntryFilter.java#L18)
 
 For example, `src/main/webapp/public/assets/js/jquery-3.3.1.min.js` can be retrieved from, `assets/js/jquery-3.3.1.min.js`

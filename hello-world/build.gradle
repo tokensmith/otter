@@ -42,18 +42,6 @@ dependencies {
     testCompile "org.asynchttpclient:async-http-client:2.4.4"
 }
 
-task fatJar(type: Jar) {
-    manifest {
-        attributes 'Implementation-Title': 'org.rootservices.hello-world', 'Implementation-Version': version, 'Main-Class': 'org.rootservices.org.rootservices.hello.server.HelloServer'
-    }
-    baseName = project.name + '-all'
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-    with jar
-    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
-}
-
 configurations {
     executableWarDeps
 }
