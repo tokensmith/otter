@@ -11,13 +11,14 @@
     - [RestBetween](#restbetween)
     - [RestTarget](#target)
     - [RestGroup](#group)
-    - [Authentication](#authentication)
-        - [Session](#session)
-        - [User](#user)
-        - [Required Authentication](#required-authentication-between)
-        - [Optional Authentication](#optional-authentication-between)
-        - [Resource Authentication](#resource-authentication)
-        - [RestRestource Authentication](#restresource-authentication)
+- [Authentication](#authentication)
+    - [Session](#session)
+    - [User](#user)
+    - [Required Authentication](#required-authentication-between)
+    - [Optional Authentication](#optional-authentication-between)
+    - [Resource Authentication](#resource-authentication)
+    - [RestRestource Authentication](#restresource-authentication)    
+- [Error Handling](#error-handling)
 - [Configuration](#configuration)
     - [Configure](#configure)
     - [Entry Servlet](#entry-servlet)
@@ -151,7 +152,7 @@ Sharing error handling..
             .build();
 ```
 
-#### Authentication
+### Authentication
 Authentication in otter is dependent on the value objects:
  - [Session](#session)
  - [User](#user)
@@ -160,7 +161,7 @@ Next, two different authentication betweens are needed which are configured in `
  - [required authentication](#required-authentication-between)
  - [optional authentication](#optional-authentication-between)
  
-##### Session
+#### Session
 If an application that uses Resources and also needs to have authentication then it must implement a `Session`. A 
 `Session` is a cookie that is `http-only` and it's value is a `JWE`.
 
@@ -181,13 +182,13 @@ The threats are:
  - Session hijacking by modifying values of the session cookie to take over a different session.
  - In the instance the session cookie is revealed then sensitive data is not easily accessible. 
  
-##### User
+#### User
 If an application implements a Resource or RestResource and also needs to have authentication then it must implement a `User`.
 
 User implementations:
  - Must extend [DefaultUser](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/controller/entity/DefaultUser.java)
 
-##### Required Authentication Between
+#### Required Authentication Between
 Given the required authentication between
 
 When authentication succeeds
@@ -198,7 +199,7 @@ Then possibly set the status code to 401
 And throw a halt exception. 
            
 
-##### Optional Authentication Between
+#### Optional Authentication Between
 Given the optional authentication between
 
 When the Session is present 
@@ -214,7 +215,7 @@ When the Session is not present
 Then all the request to reach the resource. 
 
 
-##### Resource Authentication
+#### Resource Authentication
 ```java
     var serverErrorResource = new org.rootservices.hello.controller.html.ServerErrorResource();
     Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
@@ -242,7 +243,7 @@ Then, to require authentication for a Resource use, `.authenticate()`.
 
 If, `authenticate()` is not used, then it will use the optional authenticate between.
 
-##### RestResource Authentication
+#### RestResource Authentication
 
 ```java
     AuthRestBetween authRestBetween = new AuthRestBetween();
@@ -276,8 +277,22 @@ Then, to require authentication for a Resource use, `.authenticate()`.
 
 If, `authenticate()` is not used, then it will use the optional authenticate between.
 
+### Error Handling
+
+#### Resource
+In the event that an unexpected error occurs in a Resource it can be handled by configuring the Group or Target with 
+how to react to the error.
+
+#### RestResource
+In the event that an unexpected, unsupported media type, or bad request error occurs in a Resource it can be handled by 
+configuring the RestGroup or RestTarget with how to react to the error.
 
 ### Configuration
+
+### Not Founds
+To configure how to handle urls that are not found use the interface, `gateway.notFound(..)` for both `Target` and 
+`RestTarget`. The regex must be specified which will be used to determine which `Resource` or `RestResouce` to execute.
+This allows applications to have many ways to react to a not found url based on the url regex.
 
 #### Configure
 Configuring otter is done by implementing [Configure](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/Configure.java). 
