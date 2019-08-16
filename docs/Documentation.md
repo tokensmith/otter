@@ -5,15 +5,19 @@
 - [Fundamentals](#fundamentals)
     - [Resource](#resource)
     - [RestResource](#resource)
-    - [Authentication](#authentication)
-        - [Session](#session)
-        - [User](#user)
     - [Between](#between)
     - [Target](#target)
     - [Group](#group)
     - [RestBetween](#restbetween)
     - [RestTarget](#target)
     - [RestGroup](#group)
+    - [Authentication](#authentication)
+        - [Session](#session)
+        - [User](#user)
+        - [Required Authentication](#required-authentication-between)
+        - [Optional Authentication](#optional-authentication-between)
+        - [Resource Authentication](#resource-authentication)
+        - [RestRestource Authentication](#restresource-authentication)
 - [Configuration](#configuration)
     - [Configure](#configure)
     - [Entry Servlet](#entry-servlet)
@@ -55,14 +59,104 @@ A [Resource](https://github.com/RootServices/otter/blob/development/otter/src/ma
 #### RestResource
 A [RestResource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/controller/RestResource.java) is designed to accept and respond with the `Content-Type`, `application/json`. Sorry, there is no support for `applicaiton/xml`.
 
+#### Between
+A [Between](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/router/entity/between/Between.java) allows a rule to be executed before a request reaches a Resource or after a Resource executes. Also referred to as a before and a after.
+
+#### Target
+A [Target](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/Target.java) instructs otter which http methods to allow for a given resource and its regex url.
+
+```java
+    Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
+        .groupName(WEB_SITE_GROUP)
+        .method(Method.GET)
+        .resource(new HelloResource())
+        .regex(HelloResource.URL)
+        .build();
+```
+
+#### Group
+A [Group](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/Group.java) allows sharing Session, User, and Error handling amongst Targets.
+
+Sharing error handling.
+```java
+    var serverErrorResource = new org.rootservices.hello.controller.html.ServerErrorResource();
+    Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
+            .name(WEB_SITE_GROUP)
+            .sessionClazz(TokenSession.class)
+            .authOptional(new AuthOptBetween())
+            .authRequired(new AuthBetween())
+            .onError(StatusCode.SERVER_ERROR, serverErrorResource)
+            .build();
+```
+
+```java
+    Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
+        .groupName(WEB_SITE_GROUP)
+        .method(Method.GET)
+        .resource(new HelloResource())
+        .regex(HelloResource.URL)
+        .build();
+```
+
+All Targets that call, `.groupName(WEB_SITE_GROUP)` will inherit that group's features.
+
+#### RestBetween
+A [RestBetween](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/router/entity/between/RestBetween.java) allows a rule to be executed before a request reaches a RestResource or after a RestResource executes. Also referred to as a before and a after.
+
+#### RestTarget
+
+A [RestTarget](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/rest/RestTarget.java) instructs otter which http methods to allow for a given rest resource and its regex url.
+
+```java
+    var helloRestResourceV3 = new HelloRestResource();
+    RestTarget<ApiUser, Hello> helloApiV3 = new RestTargetBuilder<ApiUser, Hello>()
+            .groupName(API_GROUP_V3)
+            .method(Method.GET)
+            .method(Method.POST)
+            .restResource(helloRestResourceV3)
+            .regex(helloRestResourceV3.URL)
+            .authenticate()
+            .contentType(json)
+            .payload(Hello.class)
+            .build();
+```
+
+#### RestGroup
+A [RestGroup](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/rest/RestGroup.java) allows sharing User and Error handling amongst RestTargets.
+
+Sharing error handling..
+```java
+    BadRequestResource badRequestResource = new BadRequestResource();
+    ServerErrorResource serverErrorResource = new ServerErrorResource();
+    RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
+            .name(API_GROUP_V3)
+            .authRequired(authRestBetween)
+            .authOptional(authRestBetween)
+            .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
+            .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
+            .build();
+```
+
+```java
+    var helloRestResourceV3 = new HelloRestResource();
+    RestTarget<ApiUser, Hello> helloApiV3 = new RestTargetBuilder<ApiUser, Hello>()
+            .groupName(API_GROUP_V3)
+            .method(Method.GET)
+            .method(Method.POST)
+            .restResource(helloRestResourceV3)
+            .regex(helloRestResourceV3.URL)
+            .authenticate()
+            .contentType(json)
+            .payload(Hello.class)
+            .build();
+```
+
 #### Authentication
 Authentication in otter is dependent on the value objects:
  - [Session](#session)
  - [User](#user)
 
-Next, authentication betweens are needed which are configured in `Group` and `RestGroup`
-
-The two different betweens required are:
+Next, two different authentication betweens are needed which are configured in `Group` and `RestGroup`.
  - [required authentication](#required-authentication-between)
  - [optional authentication](#optional-authentication-between)
  
@@ -183,97 +277,6 @@ Then, to require authentication for a Resource use, `.authenticate()`.
 
 If, `authenticate()` is not used, then it will use the optional authenticate between.
 
-#### Between
-A [Between](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/router/entity/between/Between.java) allows a rule to be executed before a request reaches a Resource or after a Resource executes. Also referred to as a before and a after.
-
-#### Target
-A [Target](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/Target.java) instructs otter which http methods to allow for a given resource and its regex url.
-
-```java
-    Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
-        .groupName(WEB_SITE_GROUP)
-        .method(Method.GET)
-        .resource(new HelloResource())
-        .regex(HelloResource.URL)
-        .build();
-```
-
-#### Group
-A [Group](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/Group.java) allows sharing Session, User, and Error handling amongst Targets.
-
-Sharing error handling.
-```java
-    var serverErrorResource = new org.rootservices.hello.controller.html.ServerErrorResource();
-    Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
-            .name(WEB_SITE_GROUP)
-            .sessionClazz(TokenSession.class)
-            .authOptional(new AuthOptBetween())
-            .authRequired(new AuthBetween())
-            .onError(StatusCode.SERVER_ERROR, serverErrorResource)
-            .build();
-```
-
-```java
-    Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
-        .groupName(WEB_SITE_GROUP)
-        .method(Method.GET)
-        .resource(new HelloResource())
-        .regex(HelloResource.URL)
-        .build();
-```
-
-All Targets that call, `.groupName(WEB_SITE_GROUP)` will inherit that group's features.
-
-#### RestBetween
-A [RestBetween](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/router/entity/between/RestBetween.java) allows a rule to be executed before a request reaches a RestResource or after a RestResource executes. Also referred to as a before and a after.
-
-#### RestTarget
-
-A [RestTarget](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/rest/RestTarget.java) instructs otter which http methods to allow for a given rest resource and its regex url.
-
-```java
-    var helloRestResourceV3 = new HelloRestResource();
-    RestTarget<ApiUser, Hello> helloApiV3 = new RestTargetBuilder<ApiUser, Hello>()
-            .groupName(API_GROUP_V3)
-            .method(Method.GET)
-            .method(Method.POST)
-            .restResource(helloRestResourceV3)
-            .regex(helloRestResourceV3.URL)
-            .authenticate()
-            .contentType(json)
-            .payload(Hello.class)
-            .build();
-```
-
-#### RestGroup
-A [RestGroup](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/rest/RestGroup.java) allows sharing User and Error handling amongst RestTargets.
-
-Sharing error handling..
-```java
-    BadRequestResource badRequestResource = new BadRequestResource();
-    ServerErrorResource serverErrorResource = new ServerErrorResource();
-    RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
-            .name(API_GROUP_V3)
-            .authRequired(authRestBetween)
-            .authOptional(authRestBetween)
-            .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
-            .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
-            .build();
-```
-
-```java
-    var helloRestResourceV3 = new HelloRestResource();
-    RestTarget<ApiUser, Hello> helloApiV3 = new RestTargetBuilder<ApiUser, Hello>()
-            .groupName(API_GROUP_V3)
-            .method(Method.GET)
-            .method(Method.POST)
-            .restResource(helloRestResourceV3)
-            .regex(helloRestResourceV3.URL)
-            .authenticate()
-            .contentType(json)
-            .payload(Hello.class)
-            .build();
-```
 
 ### Configuration
 
