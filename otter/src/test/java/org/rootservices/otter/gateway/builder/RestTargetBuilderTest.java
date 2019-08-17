@@ -128,7 +128,7 @@ public class RestTargetBuilderTest {
                 .after(new DummyRestBetween<>())
                 .after(new DummyRestBetween<>())
                 .authenticate()
-                .dispatchError(StatusCode.NOT_FOUND, notFound)
+                .onDispatchError(StatusCode.NOT_FOUND, notFound)
                 .build();
 
         assertThat(actual.getRegex(), is("/foo"));
@@ -171,7 +171,7 @@ public class RestTargetBuilderTest {
                 .before(new DummyRestBetween<>())
                 .after(new DummyRestBetween<>())
                 .after(new DummyRestBetween<>())
-                .dispatchError(StatusCode.NOT_FOUND, notFound)
+                .onDispatchError(StatusCode.NOT_FOUND, notFound)
                 .build();
 
 

@@ -4,9 +4,9 @@ package org.rootservices.otter.config;
 import org.rootservices.otter.QueryStringToMap;
 import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.*;
-import org.rootservices.otter.controller.error.BadRequestResource;
+import org.rootservices.otter.controller.error.BadRequestRestResource;
 import org.rootservices.otter.controller.error.MediaTypeRestResource;
-import org.rootservices.otter.controller.error.ServerErrorResource;
+import org.rootservices.otter.controller.error.ServerErrorRestResource;
 import org.rootservices.otter.gateway.LocationTranslatorFactory;
 import org.rootservices.otter.gateway.RestLocationTranslatorFactory;
 import org.rootservices.otter.gateway.entity.Group;
@@ -139,10 +139,10 @@ public class OtterAppFactory {
 
         Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors = new HashMap<>();
 
-        RestError<U, P> badRequest = new RestError<U, P>((Class<P>)ClientError.class, (RestResource<U, P>) new BadRequestResource<U>());
+        RestError<U, P> badRequest = new RestError<U, P>((Class<P>)ClientError.class, (RestResource<U, P>) new BadRequestRestResource<U>());
         defaultErrors.put(StatusCode.BAD_REQUEST, badRequest);
 
-        RestError<U, P> serverError = new RestError<U, P>((Class<P>)ServerError.class, (RestResource<U, P>) new ServerErrorResource<U>());
+        RestError<U, P> serverError = new RestError<U, P>((Class<P>)ServerError.class, (RestResource<U, P>) new ServerErrorRestResource<U>());
         defaultErrors.put(StatusCode.SERVER_ERROR, serverError);
 
         return defaultErrors;

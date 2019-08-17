@@ -10,7 +10,7 @@ import org.rootservices.otter.translator.exception.Reason;
 import java.util.Optional;
 
 
-public class BadRequestResource<U extends DefaultUser> extends RestErrorResource<U, ClientError> {
+public class BadRequestRestResource<U extends DefaultUser> extends RestErrorResource<U, ClientError> {
 
 
     @Override

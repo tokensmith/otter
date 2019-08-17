@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 
-public class NotFoundResource <U extends DefaultUser> extends RestResource<U, ClientError> {
+public class NotFoundRestResource<U extends DefaultUser> extends RestResource<U, ClientError> {
 
     protected ClientError to(RestRequest<U, ClientError> from) {
         ClientError to = new ClientError(

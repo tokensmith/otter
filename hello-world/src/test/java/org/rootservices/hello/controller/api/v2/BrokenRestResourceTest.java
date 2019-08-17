@@ -6,10 +6,9 @@ import org.asynchttpclient.Response;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.rootservices.hello.controller.api.v3.model.ServerErrorPayload;
 import org.rootservices.otter.controller.entity.ServerError;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.error.ServerErrorResource;
+import org.rootservices.otter.controller.error.ServerErrorRestResource;
 import org.rootservices.otter.translator.config.TranslatorAppFactory;
 import suite.IntegrationTestSuite;
 import suite.ServletContainerTest;
@@ -52,7 +51,7 @@ public class BrokenRestResourceTest {
         assertThat(response.getStatusCode(), is(StatusCode.SERVER_ERROR.getCode()));
 
         ServerError payload = to(response.getResponseBodyAsBytes());
-        assertThat(payload.getMessage(), is(ServerErrorResource.RESPONSE_MESSAGE));
+        assertThat(payload.getMessage(), is(ServerErrorRestResource.RESPONSE_MESSAGE));
     }
 
     @Test
@@ -69,7 +68,7 @@ public class BrokenRestResourceTest {
         assertThat(response.getStatusCode(), is(StatusCode.SERVER_ERROR.getCode()));
 
         ServerError payload = to(response.getResponseBodyAsBytes());
-        assertThat(payload.getMessage(), is(ServerErrorResource.RESPONSE_MESSAGE));
+        assertThat(payload.getMessage(), is(ServerErrorRestResource.RESPONSE_MESSAGE));
     }
 
     @Test
@@ -86,7 +85,7 @@ public class BrokenRestResourceTest {
         assertThat(response.getStatusCode(), is(StatusCode.SERVER_ERROR.getCode()));
 
         ServerError payload = to(response.getResponseBodyAsBytes());
-        assertThat(payload.getMessage(), is(ServerErrorResource.RESPONSE_MESSAGE));
+        assertThat(payload.getMessage(), is(ServerErrorRestResource.RESPONSE_MESSAGE));
     }
 
     @Test
@@ -103,7 +102,7 @@ public class BrokenRestResourceTest {
         assertThat(response.getStatusCode(), is(StatusCode.SERVER_ERROR.getCode()));
 
         ServerError payload = to(response.getResponseBodyAsBytes());
-        assertThat(payload.getMessage(), is(ServerErrorResource.RESPONSE_MESSAGE));
+        assertThat(payload.getMessage(), is(ServerErrorRestResource.RESPONSE_MESSAGE));
     }
 
     @Test
@@ -120,6 +119,6 @@ public class BrokenRestResourceTest {
         assertThat(response.getStatusCode(), is(StatusCode.SERVER_ERROR.getCode()));
 
         ServerError payload = to(response.getResponseBodyAsBytes());
-        assertThat(payload.getMessage(), is(ServerErrorResource.RESPONSE_MESSAGE));
+        assertThat(payload.getMessage(), is(ServerErrorRestResource.RESPONSE_MESSAGE));
     }
 }

@@ -8,7 +8,7 @@ import org.rootservices.hello.controller.api.v2.BrokenRestResourceV2;
 import org.rootservices.hello.controller.api.v2.HelloRestResource;
 import org.rootservices.hello.controller.api.v3.BrokenRestResource;
 import org.rootservices.hello.controller.api.v3.handler.BadRequestResource;
-import org.rootservices.hello.controller.api.v3.handler.ServerErrorResource;
+import org.rootservices.hello.controller.api.v3.handler.ServerErrorRestResource;
 import org.rootservices.hello.controller.api.v3.model.BadRequestPayload;
 import org.rootservices.hello.controller.api.v3.model.BrokenPayload;
 import org.rootservices.hello.controller.api.v3.model.ServerErrorPayload;
@@ -27,6 +27,7 @@ import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.controller.error.MediaTypeRestResource;
+import org.rootservices.otter.controller.error.NotFoundRestResource;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
 import org.rootservices.otter.gateway.builder.*;
@@ -68,7 +69,7 @@ public class AppConfig implements Configure {
     public List<Group<? extends DefaultSession, ? extends DefaultUser>> groups() {
         List<Group<? extends DefaultSession, ? extends DefaultUser>> groups = new ArrayList<>();
 
-        var serverErrorResource = new org.rootservices.hello.controller.html.ServerErrorResource();
+        var serverErrorResource = new ServerErrorResource();
 
         ErrorTarget<TokenSession, User> mediaType = new ErrorTargetBuilder<TokenSession, User>()
                 .resource(new MediaTypeResource())
@@ -104,7 +105,7 @@ public class AppConfig implements Configure {
 
         // has overrides for error handling.
         BadRequestResource badRequestResource = new BadRequestResource();
-        ServerErrorResource serverErrorResource = new ServerErrorResource();
+        ServerErrorRestResource serverErrorResource = new ServerErrorRestResource();
 
         RestResource<ApiUser, ClientError> mediaTypeResource = new MediaTypeRestResource<>();
         RestErrorTarget<ApiUser, ClientError> mediaTypeTarget = new RestErrorTargetBuilder<ApiUser, ClientError>()
@@ -257,7 +258,7 @@ public class AppConfig implements Configure {
     public void notFoundTargets(Gateway gateway) {
 
         // rest
-        var restNotFoundResource = new org.rootservices.otter.controller.error.NotFoundResource<ApiUser>();
+        var restNotFoundResource = new NotFoundRestResource<ApiUser>();
         RestTarget<ApiUser, ClientError> notFoundV2 = new RestTargetBuilder<ApiUser, ClientError>()
                 .groupName(API_GROUP_V2)
                 .crud()

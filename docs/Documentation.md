@@ -29,7 +29,7 @@
 
 ### Scaffolding
 
-Here is a layout of a project. Which can be observed in the [hello world application](https://github.com/RootServices/otter/tree/development/hello-world).
+Below is one approach to a project layout. Which can be observed in the [hello world application](https://github.com/RootServices/otter/tree/development/hello-world).
 ```bash
     project/
         src/
@@ -48,24 +48,24 @@ Here is a layout of a project. Which can be observed in the [hello world applica
             test/
 ```
 
-`AppConfig.java` contains the [configuration](#configuration) to set up your web application.
+`AppConfig.java` contains the [configuration](#configuration) to set up your web application. 
 
 `AppEntryServlet.java` allows [servlet container requests](#entry-servlet) to be sent to otter.
 
-`AppServer.java` the application's [main method](#main-method) to start the web application.
+`AppServer.java` has the application's [main method](#main-method) to start the web application.
 
 ### Fundamentals
 #### Resource
-A [Resource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/controller/Resource.java) is what handles an http request. It can accept any `Content-Type`, it's typically used to render `text/html`.
+A [Resource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/controller/Resource.java) handles an http request. it's typically used to accept `text/html`, however, It can accept any `Content-Type`.
 
 #### RestResource
-A [RestResource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/controller/RestResource.java) is designed to accept and respond with the `Content-Type`, `application/json`. Sorry, there is no support for `applicaiton/xml`.
+A [RestResource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/controller/RestResource.java) is designed to accept and reply `application/json`. Sorry, there is no support for `applicaiton/xml`.
 
 #### Between
 A [Between](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/router/entity/between/Between.java) allows a rule to be executed before a request reaches a Resource or after a Resource executes. Also referred to as a before and a after.
 
 #### Target
-A [Target](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/Target.java) instructs otter which http methods to allow for a given resource and its regex url.
+A [Target](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/Target.java) instructs otter which `Resource` to use for a given url and http methods. 
 
 ```java
     Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
@@ -77,11 +77,10 @@ A [Target](https://github.com/RootServices/otter/blob/development/otter/src/main
 ```
 
 #### Group
-A [Group](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/Group.java) allows sharing Session, User, and Error handling amongst Targets.
+A [Group](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/Group.java) allows sharing authentication and error handling with `Targets`.
 
-Sharing error handling.
 ```java
-    var serverErrorResource = new org.rootservices.hello.controller.html.ServerErrorResource();
+    var serverErrorResource = new ServerErrorResource();
     Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
             .name(WEB_SITE_GROUP)
             .sessionClazz(TokenSession.class)
@@ -91,6 +90,7 @@ Sharing error handling.
             .build();
 ```
 
+To share a `Group's` feature with a `Target` set the `.groupName(..)` ot the `name(..)` of the `Group`.
 ```java
     Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
         .groupName(WEB_SITE_GROUP)
@@ -100,14 +100,14 @@ Sharing error handling.
         .build();
 ```
 
-All Targets that call, `.groupName(WEB_SITE_GROUP)` will inherit that group's features.
+All `Targets` must relate to a `Group`.
 
 #### RestBetween
 A [RestBetween](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/router/entity/between/RestBetween.java) allows a rule to be executed before a request reaches a RestResource or after a RestResource executes. Also referred to as a before and a after.
 
 #### RestTarget
 
-A [RestTarget](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/rest/RestTarget.java) instructs otter which http methods to allow for a given rest resource and its regex url.
+A [RestTarget](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/rest/RestTarget.java) instructs otter which `RestResource` to use for a given url and http methods.
 
 ```java
     var helloRestResourceV3 = new HelloRestResource();
@@ -124,9 +124,8 @@ A [RestTarget](https://github.com/RootServices/otter/blob/development/otter/src/
 ```
 
 #### RestGroup
-A [RestGroup](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/rest/RestGroup.java) allows sharing User and Error handling amongst RestTargets.
+A [RestGroup](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/entity/rest/RestGroup.java) allows sharing authentication and error handling with `RestTargets`.
 
-Sharing error handling..
 ```java
     BadRequestResource badRequestResource = new BadRequestResource();
     ServerErrorResource serverErrorResource = new ServerErrorResource();
@@ -138,6 +137,8 @@ Sharing error handling..
             .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
             .build();
 ```
+
+To share a `RestGroup's` feature with a `RestTarget` set the `.groupName(..)` to the `name(..)` of the `RestGroup`.
 
 ```java
     var helloRestResourceV3 = new HelloRestResource();
@@ -153,17 +154,19 @@ Sharing error handling..
             .build();
 ```
 
+All `RestTargets` must relate to a `RestGroup`.
+
 ### Authentication
 Authentication in otter is dependent on the value objects:
  - [Session](#session)
  - [User](#user)
 
-Next, two different authentication betweens are needed which are configured in `Group` and `RestGroup`.
+Next, two different authentication betweens must be configured in `Group` or `RestGroup`.
  - [required authentication](#required-authentication-between)
  - [optional authentication](#optional-authentication-between)
  
 #### Session
-If an application that uses Resources and also needs to have authentication then it must implement a `Session`. A 
+If an application has Resources and needs Authentication then it must implement a `Session`. A 
 `Session` is a cookie that is `http-only` and it's value is a `JWE`.
 
 Sessions in otter are stateless. 
@@ -184,12 +187,13 @@ The threats are:
  - In the instance the session cookie is revealed then sensitive data is not easily accessible. 
  
 #### User
-If an application implements a Resource or RestResource and also needs to have authentication then it must implement a `User`.
+If an application needs authentication then it must implement a `User`.
 
 User implementations:
  - Must extend [DefaultUser](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/controller/entity/DefaultUser.java)
 
 #### Required Authentication Between
+```gherkin
 Given the required authentication between
 
 When authentication succeeds
@@ -198,9 +202,10 @@ Then assign the request user to the appropriate user
 When authentication fails
 Then possibly set the status code to 401
 And throw a halt exception. 
-           
+```
 
 #### Optional Authentication Between
+```gherkin
 Given the optional authentication between
 
 When the Session is present 
@@ -214,21 +219,26 @@ And throw a halt exception.
 
 When the Session is not present 
 Then all the request to reach the resource. 
-
-
+```
 #### Resource Authentication
 ```java
-    var serverErrorResource = new org.rootservices.hello.controller.html.ServerErrorResource();
+    var serverErrorResource = new ServerErrorResource();
+    
+    ErrorTarget<TokenSession, User> mediaType = new ErrorTargetBuilder<TokenSession, User>()
+            .resource(new MediaTypeResource())
+            .build();
+
     Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
             .name(WEB_SITE_GROUP)
             .sessionClazz(TokenSession.class)
             .authOptional(new AuthOptBetween())
             .authRequired(new AuthBetween())
             .onError(StatusCode.SERVER_ERROR, serverErrorResource)
+            .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaType)
             .build();
 ```
 
-Then, to require authentication for a Resource use, `.authenticate()`.
+Then, to require authentication for a `Resource` use, `.authenticate()`.
 
 ```java
     Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
@@ -240,21 +250,19 @@ Then, to require authentication for a Resource use, `.authenticate()`.
         .build();
 ```
 
-If, `authenticate()` is not used, then it will use the optional authenticate between.
+If `authenticate()` is not used, then it will use the optional authenticate between.
+
+Use `anonymous()` to not require authentication or optionally authenticate.
 
 #### RestResource Authentication
 
 ```java
     AuthRestBetween authRestBetween = new AuthRestBetween();
 
-    BadRequestResource badRequestResource = new BadRequestResource();
-    ServerErrorResource serverErrorResource = new ServerErrorResource();
     RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
             .name(API_GROUP_V3)
             .authRequired(authRestBetween)
             .authOptional(authRestBetween)
-            .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
-            .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
             .build();
 ```
 
@@ -274,18 +282,21 @@ Then, to require authentication for a Resource use, `.authenticate()`.
             .build();
 ```
 
-If, `authenticate()` is not used, then it will use the optional authenticate between.
+If `authenticate()` is not used, then it will use the optional authenticate between.
+
+Use `anonymous()` to not require authentication or optionally authenticate.
 
 ### Error Handling
 
 #### Resource
-Otter does not have default error handling when an error occurs attempting to reach a `Resource`.
 
 The errors that can be recovered from are:
  - Server Error `500`
  - Unsuppored Media Type `415`
  
 Everything else should be able to be handled with in a `Resource`.
+
+Otter does not have default error handling when an error occurs attempting to reach a `Resource`.
 
 To configure a `Group` to apply error handlers to all its related `Targets`.
 ```java
@@ -431,7 +442,7 @@ To override or add error handling to a `RestTarget`.
             .payload(Hello.class)
             .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
             .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
-            .dispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaTypeTarget)
+            .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaTypeTarget)
             .build();
 ```
 
