@@ -161,13 +161,17 @@ Authentication in otter is dependent on the value objects:
  - [Session](#session)
  - [User](#user)
 
-Next, two different authentication betweens must be configured in `Group` or `RestGroup`.
+Two different authentication betweens must be implemented.
  - [required authentication](#required-authentication-between)
  - [optional authentication](#optional-authentication-between)
- 
-#### Session
-If an application has Resources and needs Authentication then it must implement a `Session`. A 
-`Session` is a cookie that is `http-only` and it's value is a `JWE`.
+
+Configure the betweens to be used by a `Group` or `RestGroup`.
+ - [Resource Authentication](#resource-authentication)
+ - [RestResource Authentication](#restresource-authentication)
+  
+#### Session 
+A `Session` is a cookie that is `http-only` and it's value is a `JWE`. It is required to have authentication for 
+`Resources`
 
 Sessions in otter are stateless. 
  - There is no state stored on the web server.
@@ -187,12 +191,12 @@ The threats are:
  - In the instance the session cookie is revealed then sensitive data is not easily accessible. 
  
 #### User
-If an application needs authentication then it must implement a `User`.
 
 User implementations:
  - Must extend [DefaultUser](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/controller/entity/DefaultUser.java)
 
-#### Required Authentication Between
+#### Authentication Between Implementations
+##### Required Authentication Between
 ```gherkin
 Given the required authentication between
 
@@ -204,7 +208,7 @@ Then possibly set the status code to 401
 And throw a halt exception. 
 ```
 
-#### Optional Authentication Between
+##### Optional Authentication Between
 ```gherkin
 Given the optional authentication between
 
@@ -218,7 +222,7 @@ Then possibly set the status code to 401
 And throw a halt exception. 
 
 When the Session is not present 
-Then all the request to reach the resource. 
+Then allow the request to reach the resource. 
 ```
 #### Resource Authentication
 ```java
@@ -238,7 +242,7 @@ Then all the request to reach the resource.
             .build();
 ```
 
-Then, to require authentication for a `Resource` use, `.authenticate()`.
+Then to require authentication for a `Resource` use, `.authenticate()`.
 
 ```java
     Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
@@ -250,7 +254,7 @@ Then, to require authentication for a `Resource` use, `.authenticate()`.
         .build();
 ```
 
-If `authenticate()` is not used, then it will use the optional authenticate between.
+If `authenticate()` is not used then the optional authenticate between will be executed.
 
 Use `anonymous()` to not require authentication or optionally authenticate.
 
@@ -282,7 +286,7 @@ Then, to require authentication for a Resource use, `.authenticate()`.
             .build();
 ```
 
-If `authenticate()` is not used, then it will use the optional authenticate between.
+If `authenticate()` is not used then the optional authenticate between will be executed.
 
 Use `anonymous()` to not require authentication or optionally authenticate.
 
