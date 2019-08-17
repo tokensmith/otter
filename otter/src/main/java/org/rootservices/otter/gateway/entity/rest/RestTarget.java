@@ -22,7 +22,7 @@ public class RestTarget<U extends DefaultUser, P> {
     private List<Label> labels;
     private List<RestBetween<U>> before;
     private List<RestBetween<U>> after;
-    private Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> errorTargets;
+    private Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> errorTargets; // dispatch errors
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors;
     private String groupName;
 
@@ -35,7 +35,7 @@ public class RestTarget<U extends DefaultUser, P> {
         this.labels = labels;
         this.before = before;
         this.after = after;
-        this.errorTargets = errorTargets;
+        this.errorTargets = errorTargets; // dispatch errors
         this.restErrors = restErrors;
         this.groupName = groupName;
     }
@@ -104,6 +104,7 @@ public class RestTarget<U extends DefaultUser, P> {
         this.after = after;
     }
 
+    // dispatch errors.
     public Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> getErrorTargets() {
         return errorTargets;
     }

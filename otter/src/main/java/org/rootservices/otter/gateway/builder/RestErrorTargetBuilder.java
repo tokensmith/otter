@@ -8,7 +8,7 @@ import org.rootservices.otter.router.entity.between.RestBetween;
 import java.util.ArrayList;
 import java.util.List;
 
-// 113: needs tests and maybe content types?
+
 public class RestErrorTargetBuilder<U extends DefaultUser, P> {
     private Class<P> payload;
     private RestResource<U, P> resource;

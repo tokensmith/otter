@@ -3,10 +3,7 @@ package org.rootservices.otter.gateway.builder;
 
 import helper.entity.*;
 import org.junit.Test;
-import org.rootservices.otter.controller.RestResource;
-import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.error.NotFoundResource;
 import org.rootservices.otter.gateway.entity.rest.RestErrorTarget;
 import org.rootservices.otter.gateway.entity.rest.RestGroup;
 import org.rootservices.otter.translatable.Translatable;

@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
 
-public class ServerErrorResource<U extends DefaultUser> extends RestResource<U, ServerError> {
-    protected static Logger LOGGER = LoggerFactory.getLogger(ServerErrorResource.class);
+public class ServerErrorRestResource<U extends DefaultUser> extends RestResource<U, ServerError> {
+    protected static Logger LOGGER = LoggerFactory.getLogger(ServerErrorRestResource.class);
     public static String RESPONSE_MESSAGE = "An unexpected error occurred.";
     public static String NO_CAUSE = "No cause found for the error.";
 

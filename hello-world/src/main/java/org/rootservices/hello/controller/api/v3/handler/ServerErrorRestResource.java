@@ -9,7 +9,7 @@ import org.rootservices.otter.controller.entity.StatusCode;
 import java.util.Optional;
 
 
-public class ServerErrorResource extends RestErrorResource<ApiUser, ServerErrorPayload> {
+public class ServerErrorRestResource extends RestErrorResource<ApiUser, ServerErrorPayload> {
 
     @Override
     public Optional<ServerErrorPayload> to(Throwable cause) {

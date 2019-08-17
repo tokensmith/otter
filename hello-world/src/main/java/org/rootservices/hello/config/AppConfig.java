@@ -8,7 +8,7 @@ import org.rootservices.hello.controller.api.v2.BrokenRestResourceV2;
 import org.rootservices.hello.controller.api.v2.HelloRestResource;
 import org.rootservices.hello.controller.api.v3.BrokenRestResource;
 import org.rootservices.hello.controller.api.v3.handler.BadRequestResource;
-import org.rootservices.hello.controller.api.v3.handler.ServerErrorResource;
+import org.rootservices.hello.controller.api.v3.handler.ServerErrorRestResource;
 import org.rootservices.hello.controller.api.v3.model.BadRequestPayload;
 import org.rootservices.hello.controller.api.v3.model.BrokenPayload;
 import org.rootservices.hello.controller.api.v3.model.ServerErrorPayload;
@@ -19,16 +19,20 @@ import org.rootservices.hello.model.Hello;
 import org.rootservices.hello.security.TokenSession;
 import org.rootservices.hello.security.User;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
+import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.controller.error.MediaTypeRestResource;
+import org.rootservices.otter.controller.error.NotFoundRestResource;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
 import org.rootservices.otter.gateway.builder.*;
 import org.rootservices.otter.gateway.entity.*;
+import org.rootservices.otter.gateway.entity.rest.RestErrorTarget;
 import org.rootservices.otter.gateway.entity.rest.RestGroup;
 import org.rootservices.otter.gateway.entity.rest.RestTarget;
 import org.rootservices.otter.router.entity.Method;
@@ -65,13 +69,19 @@ public class AppConfig implements Configure {
     public List<Group<? extends DefaultSession, ? extends DefaultUser>> groups() {
         List<Group<? extends DefaultSession, ? extends DefaultUser>> groups = new ArrayList<>();
 
-        var serverErrorResource = new org.rootservices.hello.controller.html.ServerErrorResource();
+        var serverErrorResource = new ServerErrorResource();
+
+        ErrorTarget<TokenSession, User> mediaType = new ErrorTargetBuilder<TokenSession, User>()
+                .resource(new MediaTypeResource())
+                .build();
+
         Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
                 .name(WEB_SITE_GROUP)
                 .sessionClazz(TokenSession.class)
                 .authOptional(new AuthOptBetween())
                 .authRequired(new AuthBetween())
                 .onError(StatusCode.SERVER_ERROR, serverErrorResource)
+                .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaType)
                 .build();
 
         groups.add(webSiteGroup);
@@ -95,13 +105,21 @@ public class AppConfig implements Configure {
 
         // has overrides for error handling.
         BadRequestResource badRequestResource = new BadRequestResource();
-        ServerErrorResource serverErrorResource = new ServerErrorResource();
+        ServerErrorRestResource serverErrorResource = new ServerErrorRestResource();
+
+        RestResource<ApiUser, ClientError> mediaTypeResource = new MediaTypeRestResource<>();
+        RestErrorTarget<ApiUser, ClientError> mediaTypeTarget = new RestErrorTargetBuilder<ApiUser, ClientError>()
+                .payload(ClientError.class)
+                .resource(mediaTypeResource)
+                .build();
+
         RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
                 .name(API_GROUP_V3)
                 .authRequired(authRestBetween)
                 .authOptional(authRestBetween)
                 .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
                 .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
+                .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaTypeTarget)
                 .build();
 
         restGroups.add(apiGroupV3);
@@ -128,7 +146,6 @@ public class AppConfig implements Configure {
                 .build();
 
         gateway.add(helloApiV2);
-
 
         // this will always throw a runtime exception and force the default error handler.
         BrokenRestResourceV2 brokenRestResourceV2 = new BrokenRestResourceV2();
@@ -241,7 +258,7 @@ public class AppConfig implements Configure {
     public void notFoundTargets(Gateway gateway) {
 
         // rest
-        var restNotFoundResource = new org.rootservices.otter.controller.error.NotFoundResource<ApiUser>();
+        var restNotFoundResource = new NotFoundRestResource<ApiUser>();
         RestTarget<ApiUser, ClientError> notFoundV2 = new RestTargetBuilder<ApiUser, ClientError>()
                 .groupName(API_GROUP_V2)
                 .crud()
