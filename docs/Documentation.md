@@ -226,8 +226,6 @@ Then all the request to reach the resource.
             .authRequired(new AuthBetween())
             .onError(StatusCode.SERVER_ERROR, serverErrorResource)
             .build();
-
-    groups.add(webSiteGroup);
 ```
 
 Then, to require authentication for a Resource use, `.authenticate()`.
@@ -281,19 +279,48 @@ If, `authenticate()` is not used, then it will use the optional authenticate bet
 ### Error Handling
 
 #### Resource
-Otter does not have any defaults when any errors occur when processing a `Resource`.
+Otter does not have default error handling when an error occurs attempting to reach a `Resource`.
+
 The errors that can be recovered from are:
  - Server Error `500`
  - Unsuppored Media Type `415`
  
-Everything should be able to be handled with in a `Resource`.
+Everything else should be able to be handled with in a `Resource`.
 
 To configure a `Group` to apply error handlers to all its related `Targets`.
 ```java
+    var serverErrorResource = new org.rootservices.hello.controller.html.ServerErrorResource();
+
+    ErrorTarget<TokenSession, User> mediaType = new ErrorTargetBuilder<TokenSession, User>()
+            .resource(new MediaTypeResource())
+            .build();
+
+    Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
+            .name(WEB_SITE_GROUP)
+            .sessionClazz(TokenSession.class)
+            .authOptional(new AuthOptBetween())
+            .authRequired(new AuthBetween())
+            .onError(StatusCode.SERVER_ERROR, serverErrorResource)
+            .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaType)
+            .build();
 ```
 
 To override or add error handling to a `Target`.
 ```java
+    var serverErrorResource = new org.rootservices.hello.controller.html.ServerErrorResource();
+    
+    ErrorTarget<TokenSession, User> mediaType = new ErrorTargetBuilder<TokenSession, User>()
+        .resource(new MediaTypeResource())
+        .build();
+
+    Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
+        .groupName(WEB_SITE_GROUP)
+        .method(Method.GET)
+        .resource(new HelloResource())
+        .regex(HelloResource.URL)
+        .onError(StatusCode.SERVER_ERROR, serverErrorResource)
+        .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaType)
+        .build();
 ```
 
 #### RestResource
@@ -366,7 +393,7 @@ To configure a `RestGroup` to apply error handlers to all its related `RestTarge
     BadRequestResource badRequestResource = new BadRequestResource();
     ServerErrorResource serverErrorResource = new ServerErrorResource();
 
-    RestResource<ApiUser, ClientError> mediaTypeResource = new MediaTypeResource<>();
+    RestResource<ApiUser, ClientError> mediaTypeResource = new MediaTypeRestResource<>();
     RestErrorTarget<ApiUser, ClientError> mediaTypeTarget = new RestErrorTargetBuilder<ApiUser, ClientError>()
             .payload(ClientError.class)
             .resource(mediaTypeResource)

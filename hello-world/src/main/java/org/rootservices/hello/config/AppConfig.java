@@ -26,7 +26,7 @@ import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
-import org.rootservices.otter.controller.error.MediaTypeResource;
+import org.rootservices.otter.controller.error.MediaTypeRestResource;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
 import org.rootservices.otter.gateway.builder.*;
@@ -69,12 +69,18 @@ public class AppConfig implements Configure {
         List<Group<? extends DefaultSession, ? extends DefaultUser>> groups = new ArrayList<>();
 
         var serverErrorResource = new org.rootservices.hello.controller.html.ServerErrorResource();
+
+        ErrorTarget<TokenSession, User> mediaType = new ErrorTargetBuilder<TokenSession, User>()
+                .resource(new MediaTypeResource())
+                .build();
+
         Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
                 .name(WEB_SITE_GROUP)
                 .sessionClazz(TokenSession.class)
                 .authOptional(new AuthOptBetween())
                 .authRequired(new AuthBetween())
                 .onError(StatusCode.SERVER_ERROR, serverErrorResource)
+                .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaType)
                 .build();
 
         groups.add(webSiteGroup);
@@ -100,7 +106,7 @@ public class AppConfig implements Configure {
         BadRequestResource badRequestResource = new BadRequestResource();
         ServerErrorResource serverErrorResource = new ServerErrorResource();
 
-        RestResource<ApiUser, ClientError> mediaTypeResource = new MediaTypeResource<>();
+        RestResource<ApiUser, ClientError> mediaTypeResource = new MediaTypeRestResource<>();
         RestErrorTarget<ApiUser, ClientError> mediaTypeTarget = new RestErrorTargetBuilder<ApiUser, ClientError>()
                 .payload(ClientError.class)
                 .resource(mediaTypeResource)

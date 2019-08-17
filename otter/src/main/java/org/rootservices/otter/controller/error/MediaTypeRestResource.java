@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 
-public class MediaTypeResource<U extends DefaultUser> extends RestResource<U, ClientError> {
+public class MediaTypeRestResource<U extends DefaultUser> extends RestResource<U, ClientError> {
 
     protected ClientError to(RestRequest<U, ClientError> from) {
         ClientError to = new ClientError(
