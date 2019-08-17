@@ -281,14 +281,14 @@ If, `authenticate()` is not used, then it will use the optional authenticate bet
 ### Error Handling
 
 #### Resource
-Otter does not have any defaults when any errors when processing a `Resource`.
+Otter does not have any defaults when any errors occur when processing a `Resource`.
 The errors that can be recovered from are:
  - Server Error `500`
  - Unsuppored Media Type `415`
  
 Everything should be able to be handled with in a `Resource`.
 
-To configure a group to apply error handlers to all its related `Targets`.
+To configure a `Group` to apply error handlers to all its related `Targets`.
 ```java
 ```
 
@@ -300,18 +300,58 @@ To override or add error handling to a `Target`.
 Otter will use it's own default handling for Bad Request, Server Error, and UnSupported Media Type.
 
 Bad Request `400`
-```json
+```bash
+$ curl -X POST -H "Content-Type: application/json; charset=utf-8" -i http://localhost:8080/rest/v2/hello
+```
 
+```json
+HTTP/1.1 400 Bad Request
+Date: Sat, 17 Aug 2019 16:35:54 GMT
+Content-Length: 102
+
+{
+  "source": "BODY",
+  "key": null,
+  "actual": null,
+  "expected": null,
+  "reason": "The payload could not be parsed."
+}
 ```
 
 Server Error `500`
-```json
+```bash
+$ curl -H "Content-Type: application/json; charset=utf-8" -i http://localhost:8080/rest/v2/broken
+```
 
+```json
+HTTP/1.1 500 Server Error
+Date: Sat, 17 Aug 2019 16:38:53 GMT
+Content-Length: 43
+
+{
+  "message": "An unexpected error occurred."
+}
 ```
 
 Unsupported Media Type `415`
-```json
+```bash
+$ curl -i http://localhost:8080/rest/v2/hello
+```
 
+```json
+HTTP/1.1 415 Unsupported Media Type
+Date: Sat, 17 Aug 2019 16:30:01 GMT
+Content-Length: 124
+
+{
+  "source": "HEADER",
+  "key": "CONTENT_TYPE",
+  "actual": "null/null;",
+  "expected": [
+    "application/json; charset=utf-8;"
+  ],
+  "reason": null
+}
 ```
 
 The errors that can be recovered from are:
