@@ -19,16 +19,19 @@ import org.rootservices.hello.model.Hello;
 import org.rootservices.hello.security.TokenSession;
 import org.rootservices.hello.security.User;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
+import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.controller.error.MediaTypeResource;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
 import org.rootservices.otter.gateway.builder.*;
 import org.rootservices.otter.gateway.entity.*;
+import org.rootservices.otter.gateway.entity.rest.RestErrorTarget;
 import org.rootservices.otter.gateway.entity.rest.RestGroup;
 import org.rootservices.otter.gateway.entity.rest.RestTarget;
 import org.rootservices.otter.router.entity.Method;
@@ -96,12 +99,20 @@ public class AppConfig implements Configure {
         // has overrides for error handling.
         BadRequestResource badRequestResource = new BadRequestResource();
         ServerErrorResource serverErrorResource = new ServerErrorResource();
+
+        RestResource<ApiUser, ClientError> mediaTypeResource = new MediaTypeResource<>();
+        RestErrorTarget<ApiUser, ClientError> mediaTypeTarget = new RestErrorTargetBuilder<ApiUser, ClientError>()
+                .payload(ClientError.class)
+                .resource(mediaTypeResource)
+                .build();
+
         RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
                 .name(API_GROUP_V3)
                 .authRequired(authRestBetween)
                 .authOptional(authRestBetween)
                 .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
                 .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
+                .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaTypeTarget)
                 .build();
 
         restGroups.add(apiGroupV3);
@@ -128,7 +139,6 @@ public class AppConfig implements Configure {
                 .build();
 
         gateway.add(helloApiV2);
-
 
         // this will always throw a runtime exception and force the default error handler.
         BrokenRestResourceV2 brokenRestResourceV2 = new BrokenRestResourceV2();

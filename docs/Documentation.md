@@ -19,6 +19,7 @@
     - [Resource Authentication](#resource-authentication)
     - [RestRestource Authentication](#restresource-authentication)    
 - [Error Handling](#error-handling)
+- [Not Founds](#not-founds)
 - [Configuration](#configuration)
     - [Configure](#configure)
     - [Entry Servlet](#entry-servlet)
@@ -280,19 +281,100 @@ If, `authenticate()` is not used, then it will use the optional authenticate bet
 ### Error Handling
 
 #### Resource
-In the event that an unexpected error occurs in a Resource it can be handled by configuring the Group or Target with 
-how to react to the error.
+Otter does not have any defaults when any errors when processing a `Resource`.
+The errors that can be recovered from are:
+ - Server Error `500`
+ - Unsuppored Media Type `415`
+ 
+Everything should be able to be handled with in a `Resource`.
+
+To configure a group to apply error handlers to all its related `Targets`.
+```java
+```
+
+To override or add error handling to a `Target`.
+```java
+```
 
 #### RestResource
-In the event that an unexpected, unsupported media type, or bad request error occurs in a Resource it can be handled by 
-configuring the RestGroup or RestTarget with how to react to the error.
+Otter will use it's own default handling for Bad Request, Server Error, and UnSupported Media Type.
 
-### Configuration
+Bad Request `400`
+```json
+
+```
+
+Server Error `500`
+```json
+
+```
+
+Unsupported Media Type `415`
+```json
+
+```
+
+The errors that can be recovered from are:
+ - Bad Request `400`
+ - Server Error `500`
+ - Unsuppored Media Type `415`
+ 
+Everything else should be able to be handled with in a `RestResource`.
+
+To configure a `RestGroup` to apply error handlers to all its related `RestTargets`.
+```java
+    BadRequestResource badRequestResource = new BadRequestResource();
+    ServerErrorResource serverErrorResource = new ServerErrorResource();
+
+    RestResource<ApiUser, ClientError> mediaTypeResource = new MediaTypeResource<>();
+    RestErrorTarget<ApiUser, ClientError> mediaTypeTarget = new RestErrorTargetBuilder<ApiUser, ClientError>()
+            .payload(ClientError.class)
+            .resource(mediaTypeResource)
+            .build();
+    
+    RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
+            .name(API_GROUP_V3)
+            .authRequired(authRestBetween)
+            .authOptional(authRestBetween)
+            .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
+            .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
+            .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaTypeTarget)
+            .build();
+```
+
+To override or add error handling to a `RestTarget`.
+```java
+    BadRequestResource badRequestResource = new BadRequestResource();
+    ServerErrorResource serverErrorResource = new ServerErrorResource();
+
+    RestResource<ApiUser, ClientError> mediaTypeResource = new MediaTypeResource<>();
+    RestErrorTarget<ApiUser, ClientError> mediaTypeTarget = new RestErrorTargetBuilder<ApiUser, ClientError>()
+            .payload(ClientError.class)
+            .resource(mediaTypeResource)
+            .build();
+
+    RestTarget<ApiUser, Hello> helloApiV2 = new RestTargetBuilder<ApiUser, Hello>()
+            .groupName(API_GROUP_V2)
+            .method(Method.GET)
+            .method(Method.POST)
+            .restResource(new HelloRestResource())
+            .regex(HelloRestResource.URL)
+            .authenticate()
+            .contentType(json)
+            .payload(Hello.class)
+            .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
+            .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
+            .dispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaTypeTarget)
+            .build();
+```
+
 
 ### Not Founds
 To configure how to handle urls that are not found use the interface, `gateway.notFound(..)` for both `Target` and 
 `RestTarget`. The regex must be specified which will be used to determine which `Resource` or `RestResouce` to execute.
 This allows applications to have many ways to react to a not found url based on the url regex.
+
+### Configuration
 
 #### Configure
 Configuring otter is done by implementing [Configure](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/gateway/Configure.java). 
