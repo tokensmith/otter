@@ -26,7 +26,7 @@ example application. Only 5 files to get started.
     <dependency>
         <groupId>org.rootservices</groupId>
         <artifactId>otter</artifactId>
-        <version>1.3</version>
+        <version>1.4</version>
     </dependency>
 </dependencies>
 ```
