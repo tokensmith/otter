@@ -33,7 +33,7 @@ example application. Only 5 files to get started.
 
 #### Gradle
 ```groovy
-compile group: 'org.rootservices', name: 'otter', version: '1.3'
+compile group: 'org.rootservices', name: 'otter', version: '1.4'
 ```
 
 ## Documentation
