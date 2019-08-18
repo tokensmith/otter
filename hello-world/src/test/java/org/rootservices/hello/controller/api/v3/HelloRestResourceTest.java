@@ -17,6 +17,10 @@ import suite.IntegrationTestSuite;
 import suite.ServletContainerTest;
 
 import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
@@ -52,6 +56,29 @@ public class HelloRestResourceTest {
 
         ObjectMapper om = appFactory.objectMapper();
         Hello hello = om.readValue(response.getResponseBody(), Hello.class);
+
+        assertThat(hello, is(notNullValue()));
+        assertThat(hello.getMessage(), is(notNullValue()));
+        assertThat(hello.getMessage(), is("Hello, Obi-Wan Kenobi"));
+    }
+
+    @Test
+    public void getWhenH2ShouldReturn200() throws Exception {
+        String helloURI = getUri();
+
+        HttpClient httpClient = IntegrationTestSuite.getHttpClient2();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(helloURI))
+                .timeout(Duration.ofSeconds(2))
+                .header("Content-Type", "application/json; charset=utf-8;")
+                .build();
+        HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+
+        assertThat(response.statusCode(), is(StatusCode.OK.getCode()));
+        assertThat(response.version(), is(HttpClient.Version.HTTP_2));
+
+        ObjectMapper om = appFactory.objectMapper();
+        Hello hello = om.readValue(response.body(), Hello.class);
 
         assertThat(hello, is(notNullValue()));
         assertThat(hello.getMessage(), is(notNullValue()));

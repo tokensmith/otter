@@ -17,7 +17,11 @@ import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.server.container.ServletContainer;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 
+import java.net.Authenticator;
+import java.net.InetSocketAddress;
+import java.net.ProxySelector;
 import java.net.URI;
+import java.net.http.HttpClient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,5 +121,13 @@ public class IntegrationTestSuite {
      */
     public static AsyncHttpClient getHttpClient() {
         return httpClient;
+    }
+
+    public static HttpClient getHttpClient2() {
+        HttpClient client = HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_2)
+                .followRedirects(HttpClient.Redirect.NEVER)
+                .build();
+        return client;
     }
 }
