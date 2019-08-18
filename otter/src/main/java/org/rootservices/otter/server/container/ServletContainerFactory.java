@@ -2,6 +2,7 @@ package org.rootservices.otter.server.container;
 
 import org.apache.tomcat.util.descriptor.web.ErrorPage;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
+import org.eclipse.jetty.http2.server.HTTP2CServerConnectionFactory;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.util.resource.PathResource;
 import org.eclipse.jetty.util.resource.Resource;
@@ -180,8 +181,10 @@ public class ServletContainerFactory {
         HttpConfiguration httpConfig = new HttpConfiguration();
         httpConfig.setSendServerVersion(false);
 
-        HttpConnectionFactory httpFactory = new HttpConnectionFactory( httpConfig );
-        ServerConnector serverConnector = new ServerConnector(server, httpFactory);
+        ConnectionFactory httpFactory = new HttpConnectionFactory( httpConfig );
+        ConnectionFactory http2Factory = new HTTP2CServerConnectionFactory( httpConfig );
+
+        ServerConnector serverConnector = new ServerConnector(server, httpFactory, http2Factory);
         serverConnector.setPort(port);
 
         return serverConnector;
