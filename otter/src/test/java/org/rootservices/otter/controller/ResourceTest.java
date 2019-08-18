@@ -1,10 +1,12 @@
 package org.rootservices.otter.controller;
 
 import helper.FixtureFactory;
+import helper.entity.DummySession;
+import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -13,19 +15,19 @@ import static org.junit.Assert.*;
 
 
 public class ResourceTest {
-    private Resource subject;
+    private Resource<DummySession, DummyUser> subject;
 
     @Before
     public void setUp() {
-        subject = new Resource();
+        subject = new Resource<DummySession, DummyUser>();
     }
 
     @Test
     public void getShouldNotBeImplemented() {
-        Request request = FixtureFactory.makeRequest();
-        Response response = FixtureFactory.makeResponse();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Response<DummySession> response = FixtureFactory.makeResponse();
 
-        Response actual = subject.get(request, response);
+        Response<DummySession> actual = subject.get(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
@@ -34,10 +36,10 @@ public class ResourceTest {
 
     @Test
     public void postShouldNotBeImplemented() {
-        Request request = FixtureFactory.makeRequest();
-        Response response = FixtureFactory.makeResponse();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Response<DummySession> response = FixtureFactory.makeResponse();
 
-        Response actual = subject.post(request, response);
+        Response<DummySession> actual = subject.post(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
@@ -45,10 +47,10 @@ public class ResourceTest {
 
     @Test
     public void putShouldNotBeImplemented() {
-        Request request = FixtureFactory.makeRequest();
-        Response response = FixtureFactory.makeResponse();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Response<DummySession> response = FixtureFactory.makeResponse();
 
-        Response actual = subject.put(request, response);
+        Response<DummySession> actual = subject.put(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
@@ -56,10 +58,10 @@ public class ResourceTest {
 
     @Test
     public void patchShouldNotBeImplemented() {
-        Request request = FixtureFactory.makeRequest();
-        Response response = FixtureFactory.makeResponse();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Response<DummySession> response = FixtureFactory.makeResponse();
 
-        Response actual = subject.patch(request, response);
+        Response<DummySession> actual = subject.patch(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
@@ -67,10 +69,10 @@ public class ResourceTest {
 
     @Test
     public void deleteShouldNotBeImplemented() {
-        Request request = FixtureFactory.makeRequest();
-        Response response = FixtureFactory.makeResponse();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Response<DummySession> response = FixtureFactory.makeResponse();
 
-        Response actual = subject.delete(request, response);
+        Response<DummySession> actual = subject.delete(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
@@ -78,10 +80,10 @@ public class ResourceTest {
 
     @Test
     public void connectShouldNotBeImplemented() {
-        Request request = FixtureFactory.makeRequest();
-        Response response = FixtureFactory.makeResponse();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Response<DummySession> response = FixtureFactory.makeResponse();
 
-        Response actual = subject.connect(request, response);
+        Response<DummySession> actual = subject.connect(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
@@ -89,10 +91,10 @@ public class ResourceTest {
 
     @Test
     public void optionsShouldNotBeImplemented() {
-        Request request = FixtureFactory.makeRequest();
-        Response response = FixtureFactory.makeResponse();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Response<DummySession> response = FixtureFactory.makeResponse();
 
-        Response actual = subject.options(request, response);
+        Response<DummySession> actual = subject.options(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));
@@ -100,10 +102,10 @@ public class ResourceTest {
 
     @Test
     public void traceShouldNotBeImplemented() {
-        Request request = FixtureFactory.makeRequest();
-        Response response = FixtureFactory.makeResponse();
+        Request<DummySession, DummyUser> request = FixtureFactory.makeRequest();
+        Response<DummySession> response = FixtureFactory.makeResponse();
 
-        Response actual = subject.trace(request, response);
+        Response<DummySession> actual = subject.trace(request, response);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getStatusCode(), is(StatusCode.NOT_IMPLEMENTED));

@@ -1,314 +1,122 @@
 package org.rootservices.otter.gateway;
 
 
-import org.rootservices.jwt.entity.jwk.SymmetricKey;
-import org.rootservices.otter.config.CookieConfig;
-import org.rootservices.otter.controller.Resource;
+import org.rootservices.otter.controller.entity.DefaultSession;
+import org.rootservices.otter.controller.entity.DefaultUser;
+import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.dispatch.RouteRun;
+import org.rootservices.otter.dispatch.RouteRunner;
+import org.rootservices.otter.dispatch.translator.AnswerTranslator;
+import org.rootservices.otter.dispatch.translator.RequestTranslator;
+import org.rootservices.otter.gateway.entity.rest.RestTarget;
+import org.rootservices.otter.gateway.entity.Target;
+import org.rootservices.otter.gateway.translator.LocationTranslator;
+import org.rootservices.otter.gateway.translator.RestLocationTranslator;
+import org.rootservices.otter.router.Dispatcher;
 import org.rootservices.otter.router.Engine;
-import org.rootservices.otter.router.RouteBuilder;
-import org.rootservices.otter.router.entity.Between;
+import org.rootservices.otter.router.entity.Location;
+import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.Route;
-import org.rootservices.otter.security.csrf.between.CheckCSRF;
-import org.rootservices.otter.security.csrf.between.PrepareCSRF;
-import org.rootservices.otter.security.session.between.DecryptSession;
-import org.rootservices.otter.security.session.between.EncryptSession;
 
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Base implementation for integrating a gateway. A gateway translates the
+ * http delivery framework to otter and dispatches requests to resources. The
+ * http delivery framework objects must not go past this implementation into Otter's
+ * internals.
+ *
+ * Example extension is, ServletGateway.
+ */
 public class Gateway {
     protected Engine engine;
-    protected Between prepareCSRF;
-    protected Between checkCSRF;
-    protected EncryptSession encryptSession;
-    protected DecryptSession decryptSession;
-    protected Route notFoundRoute;
+    protected Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators;
+    protected Map<String, RestLocationTranslator<? extends DefaultUser, ?>> restLocationTranslators;
 
-    public Gateway(Engine engine, Between prepareCSRF, Between checkCSRF, EncryptSession encryptSession) {
+    public Gateway(Engine engine, Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators, Map<String, RestLocationTranslator<? extends DefaultUser, ?>> restLocationTranslators) {
         this.engine = engine;
-        this.prepareCSRF = prepareCSRF;
-        this.checkCSRF = checkCSRF;
-        this.encryptSession = encryptSession;
+        this.locationTranslators = locationTranslators;
+        this.restLocationTranslators = restLocationTranslators;
     }
 
-    public void get(String path, Resource resource) {
-        Route route = new RouteBuilder()
-                .path(path)
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getGet().add(route);
+    protected Location add(Dispatcher dispatcher, Method method, Location location) {
+        dispatcher.locations(method).add(location);
+        return location;
     }
 
-    public void getCsrfProtect(String path, Resource resource) {
-        List<Between> before = new ArrayList<>();
-        before.add(prepareCSRF);
+    public <S extends DefaultSession, U extends DefaultUser> void add(Target<S, U> target) {
+        LocationTranslator<S, U> locationTranslator = locationTranslator(target.getGroupName());
 
-        Route route = new RouteBuilder()
-                .path(path)
-                .resource(resource)
-                .before(before)
-                .after(new ArrayList<>())
-                .build();
-
-        engine.getDispatcher().getGet().add(route);
+        Map<Method, Location> locations = locationTranslator.to(target);
+        for(Map.Entry<Method, Location> location: locations.entrySet()) {
+            add(engine.getDispatcher(), location.getKey(), location.getValue());
+        }
     }
 
-    public void getCsrfAndSessionProtect(String path, Resource resource) {
-        List<Between> before = new ArrayList<>();
-        before.add(prepareCSRF);
+    public <U extends DefaultUser, P> void add(RestTarget<U, P> restTarget) {
+        RestLocationTranslator<U, P> restLocationTranslator = restLocationTranslator(restTarget.getGroupName());
 
-        List<Between> after = new ArrayList<>();
-        after.add(encryptSession);
-
-        Route route = new RouteBuilder()
-                .path(path)
-                .resource(resource)
-                .before(before)
-                .after(after)
-                .build();
-
-        engine.getDispatcher().getGet().add(route);
+        Map<Method, Location> locations = restLocationTranslator.to(restTarget);
+        for(Map.Entry<Method, Location> location: locations.entrySet()) {
+            add(engine.getDispatcher(), location.getKey(), location.getValue());
+        }
     }
 
-    public void getSessionProtect(String path, Resource resource) {
-        List<Between> before = new ArrayList<>();
-        before.add(decryptSession);
-
-        List<Between> after = new ArrayList<>();
-        after.add(encryptSession);
-
-        Route route = new RouteBuilder()
-                .path(path)
-                .resource(resource)
-                .before(before)
-                .after(after)
-                .build();
-
-        engine.getDispatcher().getGet().add(route);
+    /**
+     * Finds the location translator for the groupName.
+     *
+     * Casting is safe here because the type of the value in locationTranslators
+     * are upper bound wild cards for, DefaultSession and DefaultUser. Therefore the
+     * values extend, DefaultSession and DefaultUser.
+     *
+     * https://docs.oracle.com/javase/tutorial/java/generics/subtyping.html
+     *
+     * @param groupName the name of the group. Used as a lookup key for the translator.
+     * @param <S> Session
+     * @param <U> User
+     * @return the locationTranslator for the group
+     */
+    @SuppressWarnings("unchecked")
+    public <S extends DefaultSession, U extends DefaultUser> LocationTranslator<S, U> locationTranslator(String groupName) {
+        return (LocationTranslator<S, U>) locationTranslators.get(groupName);
     }
 
-    public void post(String path, Resource resource) {
-        Route route = new RouteBuilder()
-                .path(path)
-                .resource(resource)
-                .after(new ArrayList<>())
-                .before(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getPost().add(route);
+    /**
+     * Finds the rest location translator for the groupName.
+     *
+     * Casting is safe here because the type of the value in locationTranslators
+     * are upper bound wild cards for, DefaultUser and Translatable. Therefore the
+     * values extend, DefaultUser and Translatable.
+     *
+     * https://docs.oracle.com/javase/tutorial/java/generics/subtyping.html
+     *
+     * @param groupName the name of the group. Used as a lookup key for the translator.
+     * @param <U> User
+     * @param <P> Payload
+     * @return the restLocationTranslator for the group
+     */
+    @SuppressWarnings("unchecked")
+    public <U extends DefaultUser, P> RestLocationTranslator<U, P> restLocationTranslator(String groupName) {
+        return (RestLocationTranslator<U, P>) restLocationTranslators.get(groupName);
     }
 
-    public void postCsrfProtect(String path, Resource resource) {
-        List<Between> before = new ArrayList<>();
-        before.add(checkCSRF);
+    public <S extends DefaultSession, U extends DefaultUser> void notFound(Target<S, U> notFound) {
+        LocationTranslator<S, U> locationTranslator = locationTranslator(notFound.getGroupName());
 
-        Route route = new RouteBuilder()
-                .path(path)
-                .resource(resource)
-                .before(before)
-                .after(new ArrayList<>())
-                .build();
-
-        engine.getDispatcher().getPost().add(route);
+        Map<Method, Location> locations = locationTranslator.to(notFound);
+        for(Map.Entry<Method, Location> location: locations.entrySet()) {
+            add(engine.getNotFoundDispatcher(), location.getKey(), location.getValue());
+        }
     }
 
-    public void postCsrfAndSessionProtect(String path, Resource resource) {
-        List<Between> before = new ArrayList<>();
-        before.add(checkCSRF);
-        before.add(decryptSession);
+    public <U extends DefaultUser, P> void notFound(RestTarget<U, P> notFound) {
+        RestLocationTranslator<U, P> restLocationTranslator = restLocationTranslator(notFound.getGroupName());
 
-        List<Between> after = new ArrayList<>();
-        after.add(encryptSession);
-
-        Route route = new RouteBuilder()
-                .path(path)
-                .resource(resource)
-                .before(before)
-                .after(after)
-                .build();
-
-        engine.getDispatcher().getPost().add(route);
-    }
-
-    public void postCsrfAndSetSession(String path, Resource resource) {
-        List<Between> before = new ArrayList<>();
-        before.add(checkCSRF);
-
-        List<Between> after = new ArrayList<>();
-        after.add(encryptSession);
-
-        Route route = new RouteBuilder()
-                .path(path)
-                .resource(resource)
-                .before(before)
-                .after(after)
-                .build();
-
-        engine.getDispatcher().getPost().add(route);
-    }
-
-    public void postSessionProtect(String path, Resource resource) {
-        List<Between> before = new ArrayList<>();
-        before.add(decryptSession);
-
-        List<Between> after = new ArrayList<>();
-        after.add(encryptSession);
-
-        Route route = new RouteBuilder()
-                .path(path)
-                .resource(resource)
-                .before(before)
-                .after(after)
-                .build();
-
-        engine.getDispatcher().getPost().add(route);
-    }
-
-    public void put(String path, Resource resource) {
-        Route route = new RouteBuilder()
-                .path(path)
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getPut().add(route);
-    }
-
-    public void patch(String path, Resource resource) {
-        Route route = new RouteBuilder()
-                .path(path)
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getPatch().add(route);
-    }
-
-    public void delete(String path, Resource resource) {
-        Route route = new RouteBuilder()
-                .path(path)
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getDelete().add(route);
-    }
-
-    public void connect(String path, Resource resource) {
-        Route route = new RouteBuilder()
-                .path(path)
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getConnect().add(route);
-    }
-
-    public void options(String path, Resource resource) {
-        Route route = new RouteBuilder()
-                .path(path)
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getOptions().add(route);
-    }
-
-    public void trace(String path, Resource resource) {
-        Route route = new RouteBuilder()
-                .path(path)
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getTrace().add(route);
-    }
-
-    public void head(String path, Resource resource) {
-        Route route = new RouteBuilder()
-                .path(path)
-                .resource(resource)
-                .before(new ArrayList<>())
-                .after(new ArrayList<>())
-                .build();
-        engine.getDispatcher().getHead().add(route);
-    }
-
-    public void getRoute(Route route) {
-        engine.getDispatcher().getGet().add(route);
-    }
-
-    public void postRoute(Route route) {
-        engine.getDispatcher().getPost().add(route);
-    }
-
-    public void putRoute(Route route) {
-        engine.getDispatcher().getPut().add(route);
-    }
-
-    public void patchRoute(Route route) {
-        engine.getDispatcher().getPatch().add(route);
-    }
-
-    public void deleteRoute(Route route) {
-        engine.getDispatcher().getDelete().add(route);
-    }
-
-    public void connectRoute(Route route) {
-        engine.getDispatcher().getConnect().add(route);
-    }
-
-    public void optionsRoute(Route route) {
-        engine.getDispatcher().getOptions().add(route);
-    }
-
-    public void traceRoute(Route route) {
-        engine.getDispatcher().getTrace().add(route);
-    }
-
-    public void headRoute(Route route) {
-        engine.getDispatcher().getHead().add(route);
-    }
-
-    // configuration methods below.
-    public void setNotFoundRoute(Route notFoundRoute) {
-        this.notFoundRoute = notFoundRoute;
-    }
-
-    public void setCsrfCookieConfig(CookieConfig csrfCookieConfig) {
-        ((CheckCSRF) this.checkCSRF).setCookieName(csrfCookieConfig.getName());
-        ((PrepareCSRF) this.prepareCSRF).setCookieConfig(csrfCookieConfig);
-    }
-
-    public void setCsrfFormFieldName(String fieldName) {
-        ((CheckCSRF) this.checkCSRF).setFormFieldName(fieldName);
-    }
-
-    public void setSignKey(SymmetricKey signKey) {
-        ((CheckCSRF) this.checkCSRF).getDoubleSubmitCSRF().setPreferredSignKey(signKey);
-        ((PrepareCSRF) this.prepareCSRF).getDoubleSubmitCSRF().setPreferredSignKey(signKey);
-    }
-
-    public void setRotationSignKeys(Map<String, SymmetricKey> rotationSignKeys) {
-        ((CheckCSRF) this.checkCSRF).getDoubleSubmitCSRF().setRotationSignKeys(rotationSignKeys);
-        ((PrepareCSRF) this.prepareCSRF).getDoubleSubmitCSRF().setRotationSignKeys(rotationSignKeys);
-    }
-
-    public void setSessionCookieConfig(CookieConfig sessionCookieConfig) {
-        this.encryptSession.setCookieConfig(sessionCookieConfig);
-    }
-
-    public void setEncKey(SymmetricKey encKey) {
-        this.encryptSession.setPreferredKey(encKey);
-    }
-
-    public DecryptSession getDecryptSession() {
-        return decryptSession;
-    }
-
-    public void setDecryptSession(DecryptSession decryptSession) {
-        this.decryptSession = decryptSession;
+        Map<Method, Location> locations = restLocationTranslator.to(notFound);
+        for(Map.Entry<Method, Location> location: locations.entrySet()) {
+            add(engine.getNotFoundDispatcher(), location.getKey(), location.getValue());
+        }
     }
 }

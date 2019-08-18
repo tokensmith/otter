@@ -1,11 +1,12 @@
 package org.rootservices.otter.controller.builder;
 
 
-import helper.entity.FakePresenter;
+import helper.entity.DummySession;
+import helper.fake.FakePresenter;
 import helper.FixtureFactory;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.Cookie;
-import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 
 import java.io.ByteArrayOutputStream;
@@ -24,7 +25,7 @@ public class ResponseBuilderTest {
     public void headersShouldBeOk() {
         Map<String, String> headers = new HashMap<>();
 
-        ResponseBuilder subject = new ResponseBuilder();
+        ResponseBuilder<DummySession> subject = new ResponseBuilder<DummySession>();
         Response actual = subject.headers(headers).build();
 
         assertThat(actual, is(notNullValue()));
@@ -34,7 +35,7 @@ public class ResponseBuilderTest {
     public void cookiesShouldBeOk() {
         Map<String, Cookie> cookies = FixtureFactory.makeCookies();
 
-        ResponseBuilder subject = new ResponseBuilder();
+        ResponseBuilder<DummySession> subject = new ResponseBuilder<DummySession>();
         Response actual = subject.cookies(cookies).build();
 
         assertThat(actual, is(notNullValue()));
@@ -42,9 +43,9 @@ public class ResponseBuilderTest {
 
     @Test
     public void bodyShouldBeOk() {
-        Optional<ByteArrayOutputStream> body = Optional.empty();
+        Optional<byte[]> body = Optional.empty();
 
-        ResponseBuilder subject = new ResponseBuilder();
+        ResponseBuilder<DummySession> subject = new ResponseBuilder<DummySession>();
         Response actual = subject.payload(body).build();
 
         assertThat(actual, is(notNullValue()));
@@ -55,7 +56,7 @@ public class ResponseBuilderTest {
     public void templateShouldBeOk() {
         Optional<String> template = Optional.empty();
 
-        ResponseBuilder subject = new ResponseBuilder();
+        ResponseBuilder<DummySession> subject = new ResponseBuilder<DummySession>();
         Response actual = subject.template(template).build();
 
         assertThat(actual, is(notNullValue()));
@@ -64,7 +65,7 @@ public class ResponseBuilderTest {
     @Test
     public void presenterShouldBeOk() {
         Optional<Object> presenter = Optional.of(new FakePresenter());
-        ResponseBuilder subject = new ResponseBuilder();
+        ResponseBuilder<DummySession> subject = new ResponseBuilder<DummySession>();
         Response actual = subject.presenter(presenter).build();
 
         assertThat(actual, is(notNullValue()));
@@ -74,7 +75,7 @@ public class ResponseBuilderTest {
 
     @Test
     public void statusCodeShouldBeOk() {
-        ResponseBuilder subject = new ResponseBuilder();
+        ResponseBuilder<DummySession> subject = new ResponseBuilder<DummySession>();
         Response actual = subject.statusCode(StatusCode.CREATED).build();
 
         assertThat(actual, is(notNullValue()));
@@ -83,7 +84,7 @@ public class ResponseBuilderTest {
 
     @Test
     public void notFoundShouldBeOk() {
-        ResponseBuilder subject = new ResponseBuilder();
+        ResponseBuilder<DummySession> subject = new ResponseBuilder<DummySession>();
         Response actual = subject.notFound().build();
 
         assertThat(actual, is(notNullValue()));
@@ -92,7 +93,7 @@ public class ResponseBuilderTest {
 
     @Test
     public void notImplementedShouldBeOk() {
-        ResponseBuilder subject = new ResponseBuilder();
+        ResponseBuilder<DummySession> subject = new ResponseBuilder<DummySession>();
         Response actual = subject.notImplemented().build();
 
         assertThat(actual, is(notNullValue()));
@@ -102,7 +103,7 @@ public class ResponseBuilderTest {
 
     @Test
     public void badRequestShouldBeOk() {
-        ResponseBuilder subject = new ResponseBuilder();
+        ResponseBuilder<DummySession> subject = new ResponseBuilder<DummySession>();
         Response actual = subject.badRequest().build();
 
         assertThat(actual, is(notNullValue()));
@@ -111,7 +112,7 @@ public class ResponseBuilderTest {
 
     @Test
     public void unAuthorizedShouldBeOk() {
-        ResponseBuilder subject = new ResponseBuilder();
+        ResponseBuilder<DummySession> subject = new ResponseBuilder<DummySession>();
         Response actual = subject.unAuthorized().build();
 
         assertThat(actual, is(notNullValue()));
@@ -120,7 +121,7 @@ public class ResponseBuilderTest {
 
     @Test
     public void serverErrorShouldBeOk() {
-        ResponseBuilder subject = new ResponseBuilder();
+        ResponseBuilder<DummySession> subject = new ResponseBuilder<DummySession>();
         Response actual = subject.serverError().build();
 
         assertThat(actual, is(notNullValue()));

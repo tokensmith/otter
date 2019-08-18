@@ -1,11 +1,13 @@
 package org.rootservices.otter.router;
 
 import helper.FixtureFactory;
+import helper.entity.DummySession;
+import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.otter.router.entity.MatchedRoute;
+import org.rootservices.otter.router.entity.MatchedLocation;
 import org.rootservices.otter.router.entity.Method;
-import org.rootservices.otter.router.entity.Route;
+import org.rootservices.otter.router.entity.Location;
 
 
 import java.util.List;
@@ -24,32 +26,32 @@ public class DispatcherTest {
     public void setUp() {
 
         subject = new Dispatcher();
-        List<Route> getRoutes = FixtureFactory.makeRoutes("get");
-        subject.getGet().addAll(getRoutes);
+        List<Location> getLocations = FixtureFactory.makeLocations("get");
+        subject.getGet().addAll(getLocations);
 
-        List<Route> postRoutes = FixtureFactory.makeRoutes("post");
-        subject.getPost().addAll(postRoutes);
+        List<Location> postLocations = FixtureFactory.makeLocations("post");
+        subject.getPost().addAll(postLocations);
 
-        List<Route> patchRoutes = FixtureFactory.makeRoutes("patch");
-        subject.getPatch().addAll(patchRoutes);
+        List<Location> patchLocations = FixtureFactory.makeLocations("patch");
+        subject.getPatch().addAll(patchLocations);
 
-        List<Route> putRoutes = FixtureFactory.makeRoutes("put");
-        subject.getPut().addAll(putRoutes);
+        List<Location> putLocations = FixtureFactory.makeLocations("put");
+        subject.getPut().addAll(putLocations);
 
-        List<Route> deleteRoutes = FixtureFactory.makeRoutes("delete");
-        subject.getDelete().addAll(deleteRoutes);
+        List<Location> deleteLocations = FixtureFactory.makeLocations("delete");
+        subject.getDelete().addAll(deleteLocations);
 
-        List<Route> connectRoutes = FixtureFactory.makeRoutes("connect");
-        subject.getConnect().addAll(connectRoutes);
+        List<Location> connectLocations = FixtureFactory.makeLocations("connect");
+        subject.getConnect().addAll(connectLocations);
 
-        List<Route> optionRoutes = FixtureFactory.makeRoutes("option");
-        subject.getOptions().addAll(optionRoutes);
+        List<Location> optionLocations = FixtureFactory.makeLocations("option");
+        subject.getOptions().addAll(optionLocations);
 
-        List<Route> traceRoutes = FixtureFactory.makeRoutes("trace");
-        subject.getTrace().addAll(traceRoutes);
+        List<Location> traceLocations = FixtureFactory.makeLocations("trace");
+        subject.getTrace().addAll(traceLocations);
 
-        List<Route> headRoutes = FixtureFactory.makeRoutes("head");
-        subject.getHead().addAll(headRoutes);
+        List<Location> headLocations = FixtureFactory.makeLocations("head");
+        subject.getHead().addAll(headLocations);
     }
 
     @Test
@@ -57,7 +59,7 @@ public class DispatcherTest {
         UUID id = UUID.randomUUID();
         String url = "get" + id.toString();
 
-        Optional<MatchedRoute> actual = subject.find(Method.GET, url);
+        Optional<MatchedLocation> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -66,7 +68,7 @@ public class DispatcherTest {
         assertThat(actual.get().getMatcher().groupCount(), is(1));
         assertThat(actual.get().getMatcher().group(0), is(url));
         assertThat(actual.get().getMatcher().group(1), is(id.toString()));
-        assertThat(actual.get().getRoute(), is(notNullValue()));
+        assertThat(actual.get().getLocation(), is(notNullValue()));
     }
 
     @Test
@@ -74,7 +76,8 @@ public class DispatcherTest {
         UUID id = UUID.randomUUID();
         String url = "get" + id.toString() + "/bar";
 
-        Optional<MatchedRoute> actual = subject.find(Method.GET, url);
+
+        Optional<MatchedLocation> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(true));
@@ -83,7 +86,7 @@ public class DispatcherTest {
         assertThat(actual.get().getMatcher().groupCount(), is(1));
         assertThat(actual.get().getMatcher().group(0), is(url));
         assertThat(actual.get().getMatcher().group(1), is(id.toString()));
-        assertThat(actual.get().getRoute(), is(notNullValue()));
+        assertThat(actual.get().getLocation(), is(notNullValue()));
     }
 
     @Test
@@ -91,7 +94,7 @@ public class DispatcherTest {
         UUID id = UUID.randomUUID();
         String url = "/get/v2/" + id.toString() + "/bar";
 
-        Optional<MatchedRoute> actual = subject.find(Method.GET, url);
+        Optional<MatchedLocation> actual = subject.find(Method.GET, url);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.isPresent(), is(false));

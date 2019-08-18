@@ -1,17 +1,16 @@
 package org.rootservices.otter.gateway.servlet.merger;
 
 import helper.FixtureFactory;
-import helper.entity.FakePresenter;
+import helper.fake.FakePresenter;
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.router.entity.io.Answer;
 
 import javax.servlet.http.HttpServletRequest;
 
 
 import java.util.Optional;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 
@@ -26,14 +25,14 @@ public class HttpServletRequestMergerTest {
     @Test
     public void mergePresenterAndTemplateArePresent() throws Exception {
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
-        Response response = FixtureFactory.makeResponse();
+        Answer answer = FixtureFactory.makeAnswer();
 
-        response.setPresenter(Optional.of(new FakePresenter()));
-        response.setTemplate(Optional.of("path/to/template.jsp"));
+        answer.setPresenter(Optional.of(new FakePresenter()));
+        answer.setTemplate(Optional.of("path/to/template.jsp"));
 
-        subject.merge(mockContainerRequest, response);
+        subject.merge(mockContainerRequest, answer);
 
-        verify(mockContainerRequest).setAttribute(subject.getPresenterAttr(), response.getPresenter().get());
+        verify(mockContainerRequest).setAttribute(subject.getPresenterAttr(), answer.getPresenter().get());
     }
 
 
@@ -41,12 +40,12 @@ public class HttpServletRequestMergerTest {
     @Test
     public void mergePresenterAndTemplateAreNotPresent() throws Exception {
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
-        Response response = FixtureFactory.makeResponse();
+        Answer answer = FixtureFactory.makeAnswer();
 
-        response.setPresenter(Optional.empty());
-        response.setTemplate(Optional.empty());
+        answer.setPresenter(Optional.empty());
+        answer.setTemplate(Optional.empty());
 
-        subject.merge(mockContainerRequest, response);
+        subject.merge(mockContainerRequest, answer);
 
         verify(mockContainerRequest, never()).setAttribute(eq(subject.getPresenterAttr()), any(String.class));
 

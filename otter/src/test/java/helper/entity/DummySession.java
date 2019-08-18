@@ -1,11 +1,12 @@
 package helper.entity;
 
 
-import org.rootservices.otter.security.session.Session;
+
+import org.rootservices.otter.controller.entity.DefaultSession;
 
 import java.util.Objects;
 
-public class DummySession implements Session {
+public class DummySession extends DefaultSession {
     private String accessToken;
     private String refreshToken;
 

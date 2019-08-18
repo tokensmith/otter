@@ -1,5 +1,7 @@
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.6'
+allprojects {
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        }
+    }
 }
-

@@ -1,7 +1,7 @@
 package org.rootservices.otter.server.path;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -10,10 +10,11 @@ import java.net.URISyntaxException;
  * Created by tommackenzie on 4/3/16.
  */
 public class WebAppPath {
-    protected static Logger logger = LogManager.getLogger(WebAppPath.class);
+    protected static Logger LOGGER = LoggerFactory.getLogger(WebAppPath.class);
     private static String FILE = "file:";
     private static String DEFAULT_WEB_APP = "/src/main/webapp";
     private static String GRADLE_PATH = "/build";
+    private static String INTELLIJ_PATH = "/out";
     private static String MVN_PATH = "/target";
 
     /**
@@ -29,18 +30,20 @@ public class WebAppPath {
      * @param classURI location of a project's classes
      * @param customWebAppLocation the webapp location to append to the project's path, /src/main/webapp
      * @return an absolute file path to a project's webapp directory
-     * @throws URISyntaxException
+     * @throws URISyntaxException if the webApp URI cannot be constructed.
      */
     public URI fromClassURI(URI classURI, String customWebAppLocation) throws URISyntaxException {
         String projectPath;
 
         if (classURI.getPath().contains(MVN_PATH)) {
             projectPath = makeProjectPath(classURI.getPath(), MVN_PATH);
-        } else {
+        } else if (classURI.getPath().contains(GRADLE_PATH)) {
             projectPath = makeProjectPath(classURI.getPath(), GRADLE_PATH);
+        } else {
+            projectPath = makeProjectPath(classURI.getPath(), INTELLIJ_PATH);
         }
 
-        String webAppPath = FILE + projectPath.toString() + customWebAppLocation;
+        String webAppPath = FILE + projectPath + customWebAppLocation;
         URI webAppURI = new URI(webAppPath);
 
         return webAppURI;
@@ -49,7 +52,7 @@ public class WebAppPath {
     /**
      * Given a classURI Then return it's project path.
      *
-     * @param classURI
+     * @param classURI location of a project's classes
      * @param splitter /build or /target
      * @return an absolute file path to a project
      */

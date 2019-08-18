@@ -6,10 +6,12 @@ import org.junit.Test;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwt.JsonWebToken;
 import org.rootservices.jwt.serialization.exception.JsonToJwtException;
-import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.Cookie;
+import org.rootservices.otter.security.config.SecurityAppFactory;
 import org.rootservices.otter.security.csrf.exception.CsrfException;
+import org.rootservices.otter.security.entity.ChallengeToken;
 
+import java.io.ByteArrayOutputStream;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,8 +30,8 @@ public class DoubleSubmitCSRFTest {
 
     @Before
     public void setUp() {
-        OtterAppFactory otterFactory = new OtterAppFactory();
-        subject = otterFactory.doubleSubmitCSRF();
+        SecurityAppFactory appFactory = new SecurityAppFactory();
+        subject = appFactory.doubleSubmitCSRF();
 
         SymmetricKey preferredSignKey = FixtureFactory.signKey("preferred-key");
 
@@ -44,20 +46,39 @@ public class DoubleSubmitCSRFTest {
     @Test
     public void doTokensMatchShouldBeOk() throws Exception {
         // use the software to test it :)
-        String challengeToken = "challenge-token";
-        Cookie cookie = subject.makeCsrfCookie("CSRF", challengeToken, true, -1);
+        ChallengeToken challengeToken = new ChallengeToken("challenge-token", "cookie-noise");
+        Cookie cookie = subject.makeCsrfCookie("CSRF", challengeToken, true, -1, true);
 
-        Boolean actual = subject.doTokensMatch(cookie.getValue(), challengeToken);
+        ChallengeToken formChallengeToken = new ChallengeToken("challenge-token", "form-noise");
+        ByteArrayOutputStream formValueJwt = subject.toJwt(formChallengeToken);
+
+        Boolean actual = subject.doTokensMatch(cookie.getValue(), formValueJwt.toString());
         assertThat(actual, is(true));
     }
 
     @Test
-    public void doTokensMatchShouldBeFalse() throws Exception {
+    public void doTokensMatchWhenTokensAreDifferentShouldBeFalse() throws Exception {
         // use the software to test it :)
-        String challengeToken = "challenge-token";
-        Cookie cookie = subject.makeCsrfCookie("CSRF", challengeToken, true, -1);
+        ChallengeToken challengeToken = new ChallengeToken("challenge-token", "noise");
+        Cookie cookie = subject.makeCsrfCookie("CSRF", challengeToken, true, -1, true);
 
-        Boolean actual = subject.doTokensMatch(cookie.getValue(), "challenge-token-1");
+        ChallengeToken formChallengeToken = new ChallengeToken("form-challenge-token", "form-noise");
+        ByteArrayOutputStream formValueJwt = subject.toJwt(formChallengeToken);
+
+        Boolean actual = subject.doTokensMatch(cookie.getValue(), formValueJwt.toString());
+        assertThat(actual, is(false));
+    }
+
+    @Test
+    public void doTokensMatchWhenNoiseAreIdenticalShouldBeFalse() throws Exception {
+        // use the software to test it :)
+        ChallengeToken challengeToken = new ChallengeToken("challenge-token", "noise");
+        Cookie cookie = subject.makeCsrfCookie("CSRF", challengeToken, true, -1, true);
+
+        ChallengeToken formChallengeToken = new ChallengeToken("form-challenge-token", "noise");
+        ByteArrayOutputStream formValueJwt = subject.toJwt(formChallengeToken);
+
+        Boolean actual = subject.doTokensMatch(cookie.getValue(), formValueJwt.toString());
         assertThat(actual, is(false));
     }
 
@@ -80,11 +101,11 @@ public class DoubleSubmitCSRFTest {
     }
 
     @Test
-    public void csrfCookieValueToJwtShouldReturnJwt() throws Exception {
+    public void csrfToJwtShouldReturnJwt() throws Exception {
         SymmetricKey key = FixtureFactory.signKey("key-1");
         String compactJwtForCSRF = FixtureFactory.compactJwtForCSRF(key, "challenge-token");
 
-        JsonWebToken actual = subject.csrfCookieValueToJwt(compactJwtForCSRF);
+        JsonWebToken actual = subject.csrfToJwt(compactJwtForCSRF);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getHeader(), is(notNullValue()));
@@ -97,12 +118,12 @@ public class DoubleSubmitCSRFTest {
     }
 
     @Test
-    public void csrfCookieValueToJwtShouldShouldThrowCsrfException() throws Exception {
+    public void csrfToJwtShouldShouldThrowCsrfException() throws Exception {
         String mangledEncodedCsrfJwt = "foo.foo.foo";
 
         CsrfException actual = null;
         try {
-            subject.csrfCookieValueToJwt(mangledEncodedCsrfJwt);
+            subject.csrfToJwt(mangledEncodedCsrfJwt);
         } catch (CsrfException e) {
             actual = e;
         }
@@ -147,20 +168,23 @@ public class DoubleSubmitCSRFTest {
 
     @Test
     public void makeCsrfCookieShouldBeOk() throws Exception {
-        Cookie actual = subject.makeCsrfCookie("CSRF", "challenge-token", true, -1);
+        ChallengeToken challengeToken = new ChallengeToken("challenge-token", "noise");
+        Cookie actual = subject.makeCsrfCookie("CSRF", challengeToken, true, -1, true);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getName(), is("CSRF"));
         assertThat(actual.isSecure(), is(true));
         assertThat(actual.getMaxAge(), is(-1));
+        assertThat(actual.isHttpOnly(), is(true));
 
         // might as well use csrfCookieValueToJwt to validate the cookie value.
 
-        JsonWebToken csrfJwt = subject.csrfCookieValueToJwt(actual.getValue());
+        JsonWebToken csrfJwt = subject.csrfToJwt(actual.getValue());
         CsrfClaims csrfClaims = (CsrfClaims) csrfJwt.getClaims();
 
         assertThat(csrfClaims.getChallengeToken(), is(notNullValue()));
         assertThat(csrfClaims.getChallengeToken(), is("challenge-token"));
+        assertThat(csrfClaims.getNoise(), is("noise"));
         assertThat(csrfClaims.getIssuedAt(), is(notNullValue()));
         assertThat(csrfClaims.getIssuedAt().isPresent(), is(true));
         assertThat(csrfClaims.getIssuedAt().get(), is(lessThanOrEqualTo(OffsetDateTime.now().toEpochSecond())));

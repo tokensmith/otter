@@ -1,0 +1,74 @@
+group 'org.rootservices'
+version '1.4-SNAPSHOT'
+description = """an example project that uses otter"""
+
+apply plugin: 'java'
+apply plugin: 'war'
+
+sourceCompatibility = 12
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url "https://oss.sonatype.org/content/repositories/releases" }
+    mavenCentral()
+    mavenLocal()
+}
+
+ext {
+    log4jVersion = '2.12.0'
+    mainClass = 'org.rootservices.hello.server.HelloServer'
+    pathToJavaMain = "$buildDir/classes/java/main/"
+    mainClassAsFilePath = "org/rootservices/hello/server/HelloServer.class"
+    absolutePathToMain = "${pathToJavaMain}${mainClassAsFilePath}"
+    neededInRoot = ["org.rootservices.otter", "org.slf4j", "org.apache.logging.log4j"]
+}
+
+dependencies {
+    compile project (':otter')
+
+    // logging
+    compile "org.slf4j:slf4j-simple:1.7.26"
+    compile "org.apache.logging.log4j:log4j-1.2-api:${log4jVersion}"
+    compile "org.apache.logging.log4j:log4j-api:${log4jVersion}"
+    compile "org.apache.logging.log4j:log4j-core:${log4jVersion}"
+
+    testCompile 'junit:junit:4.12'
+    testCompile "org.asynchttpclient:async-http-client:2.4.4"
+}
+
+configurations {
+    executableWarDeps
+}
+
+
+war {
+    // Root - Danger
+    from "${pathToJavaMain}"
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    with jar
+    manifest {
+        attributes 'Main-Class': "${mainClass}"
+    }
+    // WEB-INF
+    from {
+        configurations.executableWarDeps.collect { it.isDirectory() ? it : project.zipTree(it) }
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+}
+
+test {
+    mkdir 'logs/jetty'
+    filter {
+        includeTestsMatching "*IntegrationTestSuite"
+    }
+}

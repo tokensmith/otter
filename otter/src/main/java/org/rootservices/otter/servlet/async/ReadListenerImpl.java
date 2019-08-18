@@ -1,55 +1,60 @@
 package org.rootservices.otter.servlet.async;
 
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.rootservices.otter.gateway.servlet.GatewayResponse;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
 public class ReadListenerImpl implements ReadListener {
-    protected static Logger logger = LogManager.getLogger(ReadListenerImpl.class);
+    protected static Logger LOGGER = LoggerFactory.getLogger(ReadListenerImpl.class);
     private ServletGateway servletGateway;
     private ServletInputStream input = null;
     private AsyncContext ac = null;
-    private Queue queue = new LinkedBlockingQueue();
+    private Integer readChunkSize;
+    private Queue<byte[]> queue = new LinkedBlockingQueue<byte[]>();
 
-    public ReadListenerImpl(ServletGateway sg, ServletInputStream in, AsyncContext c) {
-        servletGateway = sg;
-        input = in;
-        ac = c;
+    public ReadListenerImpl(ServletGateway sg, ServletInputStream in, AsyncContext ac, Integer readChunkSize) {
+        this.servletGateway = sg;
+        this.input = in;
+        this.ac = ac;
+        this.readChunkSize = readChunkSize;
     }
 
     @Override
     public void onDataAvailable() throws IOException {
-        StringBuilder sb = new StringBuilder();
+
         int len = -1;
-        byte b[] = new byte[1024];
-        while (input.isReady() && (len = input.read(b)) != -1 && !input.isFinished()) {
-            String data = new String(b, 0, len);
-            sb.append(data);
+        byte fixedBuffer[] = new byte[readChunkSize];
+        ByteArrayOutputStream variableBuffer = new ByteArrayOutputStream();
+
+        while (input.isReady() && (len = input.read(fixedBuffer)) != -1 && !input.isFinished()) {
+            int start = variableBuffer.size();
+            variableBuffer.write(fixedBuffer, start, len);
         }
-        queue.add(sb.toString());
+        queue.add(variableBuffer.toByteArray());
     }
+
 
     @Override
     public void onAllDataRead() throws IOException {
         HttpServletRequest request = (HttpServletRequest) ac.getRequest();
         HttpServletResponse response = (HttpServletResponse) ac.getResponse();
-        String body = queueToString(queue);
+        byte[] body = queueToByteArray(queue);
         GatewayResponse gatewayResponse = servletGateway.processRequest(request, response, body);
 
         if (gatewayResponse.getPayload().isPresent()) {
-            // its a API .. json
-            Queue out = byteArrayToQueue(gatewayResponse.getPayload().get(), 1024);
+            // its an API .. json
+            Queue out = byteArrayToQueue(gatewayResponse.getPayload().get(), gatewayResponse.getWriteChunkSize());
             ServletOutputStream output = response.getOutputStream();
             WriteListener writeListener = new WriteListenerImpl(output, out, ac);
             output.setWriteListener(writeListener);
@@ -62,23 +67,26 @@ public class ReadListenerImpl implements ReadListener {
         }
     }
 
-    public String queueToString(Queue queue) {
-        StringBuilder sb = new StringBuilder();
+    public byte[] queueToByteArray(Queue<byte[]> queue) {
+        ByteArrayOutputStream to = new ByteArrayOutputStream();
         while (queue.peek() != null) {
-            String data = (String) queue.poll();
-            sb.append(data);
+            try {
+                to.write(queue.poll());
+            } catch (IOException e) {
+                // TODO: #16
+            }
         }
-        return sb.toString();
+        return to.toByteArray();
     }
 
     @Override
     public void onError(Throwable t) {
-        logger.error(t.getMessage(), t);
+        LOGGER.error(t.getMessage(), t);
         ac.complete();
     }
 
     public Queue byteArrayToQueue(byte[] source, int chunksize) {
-        Queue out = new LinkedBlockingQueue();
+        Queue<byte[]> out = new LinkedBlockingQueue<byte[]>();
 
         int start = 0;
         while (start < source.length) {

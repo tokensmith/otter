@@ -5,8 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestCookieTranslator;
+import org.rootservices.otter.router.entity.io.Answer;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
@@ -29,17 +29,17 @@ public class HttpServletResponseMergerTest {
         MockitoAnnotations.initMocks(this);
         subject = new HttpServletResponseMerger(mockHttpServletRequestCookieTranslator);
     }
-
+    
     @Test
     public void mergeHasHeaders() throws Exception {
 
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
         Cookie[] containerCookies = new Cookie[0];
-        Response response = FixtureFactory.makeResponse();
+        Answer answer = FixtureFactory.makeAnswer();
 
-        response.getHeaders().put("some-header", "some-value");
+        answer.getHeaders().put("some-header", "some-value");
 
-        subject.merge(mockContainerResponse, containerCookies, response);
+        subject.merge(mockContainerResponse, containerCookies, answer);
 
         verify(mockContainerResponse).setHeader("some-header", "some-value");
 
@@ -54,16 +54,15 @@ public class HttpServletResponseMergerTest {
         when(mockContainerCookie.getName()).thenReturn("container-cookie");
         containerCookies[0] = mockContainerCookie;
 
-        Response response = FixtureFactory.makeResponse();
+        Answer answer = FixtureFactory.makeAnswer();
 
-        subject.merge(mockContainerResponse, containerCookies, response);
+        subject.merge(mockContainerResponse, containerCookies, answer);
 
         // indicates deletion.
         verify(mockContainerCookie).setMaxAge(0);
         verify(mockContainerResponse).addCookie(mockContainerCookie);
 
     }
-
 
     @Test
     @SuppressWarnings("unchecked")
@@ -76,18 +75,18 @@ public class HttpServletResponseMergerTest {
         when(mockContainerCookieToUpdate.getName()).thenReturn(cookieName);
         containerCookies[0] = mockContainerCookieToUpdate;
 
-        Response response = FixtureFactory.makeResponse();
-        response.getCookies().put(cookieName, FixtureFactory.makeCookie(cookieName));
+        Answer answer = FixtureFactory.makeAnswer();
+        answer.getCookies().put(cookieName, FixtureFactory.makeCookie(cookieName));
 
         Function mockTo = mock(Function.class);
         mockHttpServletRequestCookieTranslator.to = mockTo;
-        when(mockTo.apply(response.getCookies().get(cookieName)))
-            .thenReturn(mockContainerCookieToUpdate);
+        when(mockTo.apply(answer.getCookies().get(cookieName)))
+                .thenReturn(mockContainerCookieToUpdate);
 
-        subject.merge(mockContainerResponse, containerCookies, response);
+        subject.merge(mockContainerResponse, containerCookies, answer);
 
         // indicates cookie was updated.
-        verify(mockHttpServletRequestCookieTranslator.to).apply(response.getCookies().get(cookieName));
+        verify(mockHttpServletRequestCookieTranslator.to).apply(answer.getCookies().get(cookieName));
         verify(mockContainerResponse).addCookie(mockContainerCookieToUpdate);
     }
 
@@ -99,39 +98,19 @@ public class HttpServletResponseMergerTest {
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
         Cookie[] containerCookies = new Cookie[0];
 
-        Response response = FixtureFactory.makeResponse();
-        response.getCookies().put(cookieName, FixtureFactory.makeCookie(cookieName));
+        Answer answer = FixtureFactory.makeAnswer();
+        answer.getCookies().put(cookieName, FixtureFactory.makeCookie(cookieName));
 
         Cookie mockContainerCookieToCreate = mock(Cookie.class);
         Function mockTo = mock(Function.class);
         mockHttpServletRequestCookieTranslator.to = mockTo;
-        when(mockTo.apply(response.getCookies().get(cookieName)))
+        when(mockTo.apply(answer.getCookies().get(cookieName)))
                 .thenReturn(mockContainerCookieToCreate);
 
-        subject.merge(mockContainerResponse, containerCookies, response);
+        subject.merge(mockContainerResponse, containerCookies, answer);
 
         // indicates cookie was added
-        verify(mockHttpServletRequestCookieTranslator.to).apply(response.getCookies().get(cookieName));
+        verify(mockHttpServletRequestCookieTranslator.to).apply(answer.getCookies().get(cookieName));
         verify(mockContainerResponse).addCookie(mockContainerCookieToCreate);
     }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void mergeWhenPayloadShouldNotWritePayload() throws Exception {
-        HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
-        Cookie[] containerCookies = new Cookie[0];
-        Response response = FixtureFactory.makeResponse();
-
-        Optional<ByteArrayOutputStream> payload = Optional.of(new ByteArrayOutputStream());
-        response.setPayload(payload);
-
-        ServletOutputStream mockServletOutputStream = mock(ServletOutputStream.class);
-        when(mockContainerResponse.getOutputStream()).thenReturn(mockServletOutputStream);
-
-        subject.merge(mockContainerResponse, containerCookies, response);
-
-        // indicates json was not set in response.
-        verify(mockServletOutputStream, never()).write(payload.get().toByteArray());
-    }
-
 }

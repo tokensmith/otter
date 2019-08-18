@@ -1,8 +1,9 @@
 package org.rootservices.otter.security.csrf;
 
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.rootservices.jwt.builder.compact.SecureCompactBuilder;
 import org.rootservices.jwt.builder.exception.CompactException;
 import org.rootservices.jwt.config.JwtAppFactory;
@@ -11,14 +12,14 @@ import org.rootservices.jwt.entity.jwt.JsonWebToken;
 import org.rootservices.jwt.entity.jwt.header.Algorithm;
 import org.rootservices.jwt.exception.InvalidJWT;
 import org.rootservices.jwt.exception.SignatureException;
-import org.rootservices.jwt.jws.serialization.SecureJwtSerializer;
 import org.rootservices.jwt.jws.verifier.VerifySignature;
 import org.rootservices.jwt.serialization.JwtSerde;
 import org.rootservices.jwt.serialization.exception.JsonToJwtException;
-import org.rootservices.jwt.serialization.exception.JwtToJsonException;
 import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.security.RandomString;
 import org.rootservices.otter.security.csrf.exception.CsrfException;
+import org.rootservices.otter.security.entity.ChallengeToken;
+
 
 import java.io.ByteArrayOutputStream;
 import java.time.OffsetDateTime;
@@ -26,16 +27,17 @@ import java.util.Map;
 import java.util.Optional;
 
 public class DoubleSubmitCSRF {
-    protected static Logger logger = LogManager.getLogger(DoubleSubmitCSRF.class);
+    public static final String SIGNATURE_INVALID = "Signature Invalid";
+    public static final String CSRF_FAILED = "CSRF failed validation. challengeTokensMatch: {}, noiseMatch: {}";
+    private static String VERIFY_MSG = "Could not verify signature";
+    private static String SERIALIZE_JWT = "Could not serialize to compact jwt";
+    private static String DE_SERIALIZE_JWT = "Could not deserialize CSRF JWT to pojo";
+    protected static Logger LOGGER = LoggerFactory.getLogger(DoubleSubmitCSRF.class);
 
     private JwtAppFactory jwtAppFactory;
     private RandomString randomString;
     private SymmetricKey preferredSignKey;
     private Map<String, SymmetricKey> rotationSignKeys;
-
-    private static String VERIFY_MSG = "Could not verify signature";
-    private static String SERIALIZE_JWT = "Could not serialize to compact jwt";
-    private static String DE_SERIALIZE_JWT = "Could not deserialize CSRF JWT to pojo";
 
     public DoubleSubmitCSRF(JwtAppFactory jwtAppFactory, RandomString randomString) {
         this.jwtAppFactory = jwtAppFactory;
@@ -49,14 +51,36 @@ public class DoubleSubmitCSRF {
         this.rotationSignKeys = rotationSignKeys;
     }
 
-    public Boolean doTokensMatch(String encodedCsrfCookieValue, String csrfFormValue) {
+    public Boolean doTokensMatch(String cookieValue, String formValue) {
 
+        CsrfClaims cookieClaims;
+        CsrfClaims formClaims;
+        try {
+            cookieClaims = toClaims(cookieValue);
+            formClaims = toClaims(formValue);
+        } catch (CsrfException e) {
+            LOGGER.debug(e.getMessage(), e);
+            return false;
+        }
+
+        Boolean challengeTokensMatch = cookieClaims.getChallengeToken().equals(formClaims.getChallengeToken());
+        Boolean noiseMatch = cookieClaims.getNoise().equals(formClaims.getNoise());
+
+        if (challengeTokensMatch && !noiseMatch) {
+            return true;
+        } else {
+            LOGGER.debug(CSRF_FAILED, challengeTokensMatch, noiseMatch);
+        }
+        return false;
+    }
+
+    protected CsrfClaims toClaims(String value) throws CsrfException {
         JsonWebToken csrfJwt;
         try {
-            csrfJwt = csrfCookieValueToJwt(encodedCsrfCookieValue);
+            csrfJwt = csrfToJwt(value);
         } catch (CsrfException e) {
-            logger.debug(e.getMessage(), e);
-            return false;
+            LOGGER.debug(e.getMessage(), e);
+            throw e;
         }
 
         SymmetricKey signKey = getSignKey(csrfJwt.getHeader().getKeyId().get());
@@ -64,19 +88,20 @@ public class DoubleSubmitCSRF {
         try {
             signatureValid = verifyCsrfCookieSignature(csrfJwt, signKey);
         } catch (CsrfException e) {
-            logger.debug(e.getMessage(), e);
-            return false;
+            LOGGER.debug(e.getMessage(), e);
+            throw e;
+        }
+
+        if (!signatureValid) {
+            LOGGER.debug(SIGNATURE_INVALID);
+            throw new CsrfException(SIGNATURE_INVALID);
         }
 
         CsrfClaims csrfClaims = (CsrfClaims) csrfJwt.getClaims();
-
-        if (signatureValid && csrfClaims.getChallengeToken().equals(csrfFormValue)) {
-            return true;
-        }
-        return false;
+        return csrfClaims;
     }
 
-    public JsonWebToken csrfCookieValueToJwt(String encodedCsrfCookieValue) throws CsrfException {
+    public JsonWebToken csrfToJwt(String encodedCsrfCookieValue) throws CsrfException {
         JwtSerde jwtSerde = jwtAppFactory.jwtSerde();
 
         JsonWebToken jsonWebToken;
@@ -119,11 +144,26 @@ public class DoubleSubmitCSRF {
         return randomString.run();
     }
 
-    public Cookie makeCsrfCookie(String name, String challengeToken, Boolean secure, int maxAge) throws CsrfException {
+    public Cookie makeCsrfCookie(String name, ChallengeToken challengeToken, Boolean secure, int maxAge, Boolean isHttpOnly) throws CsrfException {
+
+        ByteArrayOutputStream compactJwt = toJwt(challengeToken);
+
+        Cookie csrfCookie = new Cookie();
+        csrfCookie.setSecure(secure);
+        csrfCookie.setName(name);
+        csrfCookie.setMaxAge(maxAge);
+        csrfCookie.setValue(compactJwt.toString());
+        csrfCookie.setHttpOnly(isHttpOnly);
+
+        return csrfCookie;
+    }
+
+    public ByteArrayOutputStream toJwt(ChallengeToken challengeToken) throws CsrfException {
         Optional<Long> issuedAt = Optional.of(OffsetDateTime.now().toEpochSecond());
 
         CsrfClaims csrfClaims = new CsrfClaims();
-        csrfClaims.setChallengeToken(challengeToken);
+        csrfClaims.setChallengeToken(challengeToken.getToken());
+        csrfClaims.setNoise(challengeToken.getNoise());
         csrfClaims.setIssuedAt(issuedAt);
 
         SecureCompactBuilder compactBuilder = new SecureCompactBuilder();
@@ -138,14 +178,9 @@ public class DoubleSubmitCSRF {
             throw new CsrfException(SERIALIZE_JWT, e);
         }
 
-        Cookie csrfCookie = new Cookie();
-        csrfCookie.setSecure(secure);
-        csrfCookie.setName(name);
-        csrfCookie.setMaxAge(maxAge);
-        csrfCookie.setValue(compactJwt.toString());
-
-        return csrfCookie;
+        return compactJwt;
     }
+
 
     public void setPreferredSignKey(SymmetricKey preferredSignKey) {
         this.preferredSignKey = preferredSignKey;

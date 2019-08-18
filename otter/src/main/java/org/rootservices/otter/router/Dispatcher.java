@@ -1,12 +1,11 @@
 package org.rootservices.otter.router;
 
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.rootservices.otter.gateway.servlet.ServletGateway;
-import org.rootservices.otter.router.entity.MatchedRoute;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.rootservices.otter.router.entity.MatchedLocation;
 import org.rootservices.otter.router.entity.Method;
-import org.rootservices.otter.router.entity.Route;
+import org.rootservices.otter.router.entity.Location;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,35 +13,36 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 
 public class Dispatcher {
-    protected static Logger logger = LogManager.getLogger(Dispatcher.class);
+    protected static Logger LOGGER = LoggerFactory.getLogger(Dispatcher.class);
     private static String OTTER_PREFIX = "/app";
     private static String EMPTY = "";
-    private List<Route> get = new ArrayList<>();
-    private List<Route> post = new ArrayList<>();
-    private List<Route> put = new ArrayList<>();
-    private List<Route> patch = new ArrayList<>();
-    private List<Route> delete = new ArrayList<>();
-    private List<Route> connect = new ArrayList<>();
-    private List<Route> options = new ArrayList<>();
-    private List<Route> trace = new ArrayList<>();
-    private List<Route> head = new ArrayList<>();
+    private List<Location> get = new ArrayList<>();
+    private List<Location> post = new ArrayList<>();
+    private List<Location> put = new ArrayList<>();
+    private List<Location> patch = new ArrayList<>();
+    private List<Location> delete = new ArrayList<>();
+    private List<Location> connect = new ArrayList<>();
+    private List<Location> options = new ArrayList<>();
+    private List<Location> trace = new ArrayList<>();
+    private List<Location> head = new ArrayList<>();
 
 
-    public Optional<MatchedRoute> find(Method method, String url) {
+    public Optional<MatchedLocation> find(Method method, String url) {
         // this allows urls to resources to not have the otter prefix, /app
         String scrubbedUrl = url.replaceAll(OTTER_PREFIX, EMPTY);
 
-        for(Route route: routes(method)) {
-            Matcher matcher = route.getPattern().matcher(scrubbedUrl);
+        Optional<MatchedLocation> m = Optional.empty();
+        for(Location location: locations(method)) {
+            Matcher matcher = location.getPattern().matcher(scrubbedUrl);
             if (matcher.matches()) {
-                Optional<MatchedRoute> m = Optional.of(new MatchedRoute(matcher, route));
-                return m;
+                m = Optional.of(new MatchedLocation(matcher, location));
+                break;
             }
         }
-        return Optional.empty();
+        return m;
     }
 
-    protected List<Route> routes(Method method) {
+    public List<Location> locations(Method method) {
         if (method == Method.GET) {
             return get;
         } else if (method == Method.POST) {
@@ -67,39 +67,39 @@ public class Dispatcher {
         return new ArrayList<>();
     }
 
-    public List<Route> getGet() {
+    public List<Location> getGet() {
         return get;
     }
 
-    public List<Route> getPost() {
+    public List<Location> getPost() {
         return post;
     }
 
-    public List<Route> getPut() {
+    public List<Location> getPut() {
         return put;
     }
 
-    public List<Route> getPatch() {
+    public List<Location> getPatch() {
         return patch;
     }
 
-    public List<Route> getDelete() {
+    public List<Location> getDelete() {
         return delete;
     }
 
-    public List<Route> getConnect() {
+    public List<Location> getConnect() {
         return connect;
     }
 
-    public List<Route> getOptions() {
+    public List<Location> getOptions() {
         return options;
     }
 
-    public List<Route> getTrace() {
+    public List<Location> getTrace() {
         return trace;
     }
 
-    public List<Route> getHead() {
+    public List<Location> getHead() {
         return head;
     }
 }

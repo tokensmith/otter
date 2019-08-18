@@ -91,7 +91,7 @@ public class WebAppContextBuilder {
     /**
      * Configure delivery of static assets if you know the absolute path to the assets.
      *
-     * @param resourceBase
+     * @param resourceBase absolute file path to the webapp directory in your project.
      * @return an instance of, WebAppContextBuilder
      */
     public WebAppContextBuilder staticAssetServlet(String resourceBase) {
@@ -105,10 +105,10 @@ public class WebAppContextBuilder {
     /**
      * Configure delivery of static assets if they are included in the war file.
      *
-     * @param relativeResourceBase
+     * @param resourceBase absolute file path to the webapp directory in your project.
      * @return an instance of, WebAppContextBuilder
      */
-    public WebAppContextBuilder staticAssetServletWar(String relativeResourceBase) {
+    public WebAppContextBuilder staticAssetServletWar(String resourceBase) {
         ServletHolder defaultServletHolder = new ServletHolder("default", DefaultServlet.class);
         defaultServletHolder.setInitParameter("relativeResourceBase", resourceBase);
 
@@ -116,11 +116,8 @@ public class WebAppContextBuilder {
         return this;
     }
 
-    public WebAppContextBuilder errorPageHandler(int statusCode, String location) {
-        ErrorPage errorPage = new ErrorPage();
-        errorPage.setErrorCode(statusCode);
-        errorPage.setLocation(location);
-        errorPages.add(errorPage);
+    public WebAppContextBuilder errorPages(List<ErrorPage> errorPages) {
+        errorPages.addAll(errorPages);
         return this;
     }
 
@@ -170,6 +167,7 @@ public class WebAppContextBuilder {
             webAppContext.getServletHandler().addServlet(holder);
         }
 
+        // 114: need to inject in custom error handler here.
         ErrorPageErrorHandler errorHandler = (ErrorPageErrorHandler) webAppContext.getErrorHandler();
         for(ErrorPage errorPage: errorPages) {
             errorHandler.addErrorPage(errorPage.getErrorCode(), errorPage.getLocation());

@@ -2,11 +2,17 @@ package org.rootservices.otter.servlet;
 
 
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.rootservices.otter.config.OtterAppFactory;
+import org.rootservices.otter.controller.entity.DefaultSession;
+import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.gateway.Configure;
+import org.rootservices.otter.gateway.entity.Group;
+import org.rootservices.otter.gateway.entity.rest.RestGroup;
+import org.rootservices.otter.gateway.entity.Shape;
 import org.rootservices.otter.gateway.servlet.ServletGateway;
+import org.rootservices.otter.security.exception.SessionCtorException;
 import org.rootservices.otter.servlet.async.OtterAsyncListener;
 import org.rootservices.otter.servlet.async.ReadListenerImpl;
 
@@ -16,21 +22,73 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Instant;
+import java.util.List;
 
 
-
+/**
+ * Entry Servlet for all incoming requests Otter will handle.
+ */
 public abstract class OtterEntryServlet extends HttpServlet {
-    protected static Logger logger = LogManager.getLogger(OtterEntryServlet.class);
-    protected OtterAppFactory otterAppFactory;
-    protected ServletGateway servletGateway;
+    public static final String DESTROYING_SERVLET = "destroying servlet";
+    public static final String INIT_AGAIN = "Servlet initializing after being destroyed. Not initializing Otter again.";
+    public static final String INIT_OTTER = "Initializing Otter - Starting";
+    public static final String INIT_OTTER_DONE = "Initializing Otter - Done - %s ms";
+    protected static Logger LOGGER = LoggerFactory.getLogger(OtterEntryServlet.class);
+    protected static OtterAppFactory otterAppFactory;
+    protected static ServletGateway servletGateway;
+
+    // async i/o read chunk size
+    protected static Integer DEFAULT_READ_CHUNK_SIZE = 1024;
+    protected static Integer readChunkSize;
 
     @Override
-    public void init() {
+    public void init() throws ServletException {
+
+        Long start = Instant.now().toEpochMilli();
+        if (hasBeenDestroyed()) {
+            LOGGER.info(INIT_AGAIN);
+        } else {
+            LOGGER.info(INIT_OTTER);
+            initOtter();
+        }
+        Long end = Instant.now().toEpochMilli();
+        LOGGER.info(String.format(INIT_OTTER_DONE, end - start));
+    }
+
+    public void initOtter() throws ServletException {
         otterAppFactory = new OtterAppFactory();
-        servletGateway = otterAppFactory.servletGateway();
         Configure configure = makeConfigure();
-        configure.configure(servletGateway);
+        Shape shape = configure.shape();
+
+        List<Group<? extends DefaultSession, ? extends DefaultUser>> groups = configure.groups();
+        List<RestGroup<? extends DefaultUser>> restGroups = configure.restGroups();
+
+        try {
+            servletGateway = otterAppFactory.servletGateway(shape, groups, restGroups);
+        } catch (SessionCtorException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new ServletException(e);
+        }
+
         configure.routes(servletGateway);
+
+        // async i/o read chunk size.
+        readChunkSize = (shape.getReadChunkSize() != null) ? shape.getReadChunkSize() : DEFAULT_READ_CHUNK_SIZE;
+    }
+
+    /**
+     * Determines if this servlet has been destroyed. It is possible to check because
+     * otterAppFactory and servletGateway are static.
+     *
+     * @return True if its been destroyed before. False if it has not been destroyed.
+     */
+    protected Boolean hasBeenDestroyed() {
+        Boolean hasBeenDestroyed = false;
+        if (otterAppFactory != null || servletGateway != null) {
+            hasBeenDestroyed = true;
+        }
+        return hasBeenDestroyed;
     }
 
     public abstract Configure makeConfigure();
@@ -41,7 +99,7 @@ public abstract class OtterEntryServlet extends HttpServlet {
         context.addListener(asyncListener);
 
         ServletInputStream input = request.getInputStream();
-        ReadListener readListener = new ReadListenerImpl(servletGateway, input, context);
+        ReadListener readListener = new ReadListenerImpl(servletGateway, input, context, readChunkSize);
         input.setReadListener(readListener);
     }
 
@@ -70,5 +128,10 @@ public abstract class OtterEntryServlet extends HttpServlet {
         doAsync(req, resp);
     }
 
+    @Override
+    public void destroy() {
+        LOGGER.info(DESTROYING_SERVLET);
+        super.destroy();
+    }
 }
 

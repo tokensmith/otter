@@ -4,8 +4,9 @@ package org.rootservices.otter.gateway.servlet;
 import java.util.Optional;
 
 public class GatewayResponse {
-    private Optional<byte[]> payload;
-    private Optional<String> template;
+    private Optional<byte[]> payload = Optional.empty();
+    private Optional<String> template = Optional.empty();
+    private Integer writeChunkSize;
 
     public GatewayResponse() {}
 
@@ -23,5 +24,13 @@ public class GatewayResponse {
 
     public void setTemplate(Optional<String> template) {
         this.template = template;
+    }
+
+    public Integer getWriteChunkSize() {
+        return writeChunkSize;
+    }
+
+    public void setWriteChunkSize(Integer writeChunkSize) {
+        this.writeChunkSize = writeChunkSize;
     }
 }
