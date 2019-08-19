@@ -17,7 +17,11 @@ import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.server.container.ServletContainer;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 
+import java.net.Authenticator;
+import java.net.InetSocketAddress;
+import java.net.ProxySelector;
 import java.net.URI;
+import java.net.http.HttpClient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +49,7 @@ public class IntegrationTestSuite {
     private static ServletContainer servletContainer;
     private static URI servletContainerURI;
     private static AsyncHttpClient httpClient;
+    private static HttpClient httpClient2;
     private static String DOCUMENT_ROOT = "/";
     private static int RANDOM_PORT = 0;
     private static String REQUEST_LOG = "logs/jetty/jetty-test-yyyy_mm_dd.request.log";
@@ -69,6 +74,11 @@ public class IntegrationTestSuite {
         servletContainerURI = servletContainer.getURI();
 
         httpClient = asyncHttpClient(new DefaultAsyncHttpClientConfig.Builder().setCookieStore(null).build());
+
+        httpClient2 = HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_2)
+                .followRedirects(HttpClient.Redirect.NEVER)
+                .build();
     }
 
     /**
@@ -117,5 +127,9 @@ public class IntegrationTestSuite {
      */
     public static AsyncHttpClient getHttpClient() {
         return httpClient;
+    }
+
+    public static HttpClient getHttpClient2() {
+        return httpClient2;
     }
 }
