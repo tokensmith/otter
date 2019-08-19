@@ -49,6 +49,7 @@ public class IntegrationTestSuite {
     private static ServletContainer servletContainer;
     private static URI servletContainerURI;
     private static AsyncHttpClient httpClient;
+    private static HttpClient httpClient2;
     private static String DOCUMENT_ROOT = "/";
     private static int RANDOM_PORT = 0;
     private static String REQUEST_LOG = "logs/jetty/jetty-test-yyyy_mm_dd.request.log";
@@ -73,6 +74,11 @@ public class IntegrationTestSuite {
         servletContainerURI = servletContainer.getURI();
 
         httpClient = asyncHttpClient(new DefaultAsyncHttpClientConfig.Builder().setCookieStore(null).build());
+
+        httpClient2 = HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_2)
+                .followRedirects(HttpClient.Redirect.NEVER)
+                .build();
     }
 
     /**
@@ -124,10 +130,6 @@ public class IntegrationTestSuite {
     }
 
     public static HttpClient getHttpClient2() {
-        HttpClient client = HttpClient.newBuilder()
-                .version(HttpClient.Version.HTTP_2)
-                .followRedirects(HttpClient.Redirect.NEVER)
-                .build();
-        return client;
+        return httpClient2;
     }
 }
