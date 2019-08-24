@@ -1,5 +1,5 @@
 group 'org.rootservices'
-version '1.4.1-SNAPSHOT'
+version '1.4.1'
 description = """an example project that uses otter"""
 
 apply plugin: 'java'
