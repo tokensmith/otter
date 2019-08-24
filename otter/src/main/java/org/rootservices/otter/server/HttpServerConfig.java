@@ -9,13 +9,15 @@ public class HttpServerConfig {
     private int port;
     private String requestLog;
     private Class clazz;
+    private List<String> gzipMimeTypes;
     private List<ErrorPage> errorPages;
 
-    public HttpServerConfig(String documentRoot, int port, String requestLog, Class clazz, List<ErrorPage> errorPages) {
+    public HttpServerConfig(String documentRoot, int port, String requestLog, Class clazz, List<String> gzipMimeTypes, List<ErrorPage> errorPages) {
         this.documentRoot = documentRoot;
         this.port = port;
         this.requestLog = requestLog;
         this.clazz = clazz;
+        this.gzipMimeTypes = gzipMimeTypes;
         this.errorPages = errorPages;
     }
 
@@ -49,6 +51,14 @@ public class HttpServerConfig {
 
     public void setClazz(Class clazz) {
         this.clazz = clazz;
+    }
+
+    public List<String> getGzipMimeTypes() {
+        return gzipMimeTypes;
+    }
+
+    public void setGzipMimeTypes(List<String> gzipMimeTypes) {
+        this.gzipMimeTypes = gzipMimeTypes;
     }
 
     public List<ErrorPage> getErrorPages() {
