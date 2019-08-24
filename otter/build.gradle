@@ -3,7 +3,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group = "org.rootservices"
-version = "1.4.1"
+version = "1.4.2-SNAPSHOT"
 archivesBaseName="otter"
 
 description = """Otter"""
