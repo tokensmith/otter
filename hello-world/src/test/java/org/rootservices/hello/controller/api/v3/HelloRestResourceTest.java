@@ -16,7 +16,13 @@ import org.rootservices.otter.translator.config.TranslatorAppFactory;
 import suite.IntegrationTestSuite;
 import suite.ServletContainerTest;
 
+import java.io.InputStream;
 import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
+import java.util.zip.GZIPInputStream;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
@@ -57,6 +63,60 @@ public class HelloRestResourceTest {
         assertThat(hello.getMessage(), is(notNullValue()));
         assertThat(hello.getMessage(), is("Hello, Obi-Wan Kenobi"));
     }
+
+    @Test
+    public void getWhenH2ShouldReturn200() throws Exception {
+        String helloURI = getUri();
+
+        HttpClient httpClient = IntegrationTestSuite.getHttpClient2();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(helloURI))
+                .timeout(Duration.ofSeconds(2))
+                .header("Content-Type", "application/json; charset=utf-8;")
+                .build();
+        HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+
+        assertThat(response.statusCode(), is(StatusCode.OK.getCode()));
+        assertThat(response.version(), is(HttpClient.Version.HTTP_2));
+
+        ObjectMapper om = appFactory.objectMapper();
+        Hello hello = om.readValue(response.body(), Hello.class);
+
+        assertThat(hello, is(notNullValue()));
+        assertThat(hello.getMessage(), is(notNullValue()));
+        assertThat(hello.getMessage(), is("Hello, Obi-Wan Kenobi"));
+    }
+
+    @Test
+    public void getWhenH2AndAcceptGZipThenReturnGzipBody() throws Exception {
+        String helloURI = getUri();
+
+        HttpClient httpClient = IntegrationTestSuite.getHttpClient2();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(helloURI))
+                .timeout(Duration.ofSeconds(2))
+                .header("Content-Type", "application/json; charset=utf-8;")
+                .header("Accept-Encoding", "gzip")
+                .build();
+
+        HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
+
+        assertThat(response.statusCode(), is(StatusCode.OK.getCode()));
+        assertThat(response.version(), is(HttpClient.Version.HTTP_2));
+        assertThat(response.headers().firstValue("content-encoding").isPresent(), is(true));
+        assertThat(response.headers().firstValue("content-encoding").get(), is("gzip"));
+
+        // decompress the body.
+        InputStream body = new GZIPInputStream(response.body());
+
+        ObjectMapper om = appFactory.objectMapper();
+        Hello hello = om.readValue(body, Hello.class);
+
+        assertThat(hello, is(notNullValue()));
+        assertThat(hello.getMessage(), is(notNullValue()));
+        assertThat(hello.getMessage(), is("Hello, Obi-Wan Kenobi"));
+    }
+
 
     @Test
     public void postShouldReturn201() throws Exception {

@@ -33,7 +33,7 @@ example application. Only 5 files to get started.
 
 #### Gradle
 ```groovy
-compile group: 'org.rootservices', name: 'otter', version: '1.3'
+compile group: 'org.rootservices', name: 'otter', version: '1.4'
 ```
 
 ## Documentation
@@ -46,6 +46,7 @@ Otter was created to provide these features:
  - Regex routing
  - Application encrypted sessions
  - Async I/O
+ - HTTP 2
  
 Otter began embedded within a web application in late 2014. Back then there were not many options for those 
 features. It was extracted and open sourced in 2017. 

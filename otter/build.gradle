@@ -3,7 +3,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group = "org.rootservices"
-version = "1.4"
+version = "1.4.1"
 archivesBaseName="otter"
 
 description = """Otter"""
@@ -46,6 +46,7 @@ dependencies {
     compile "org.eclipse.jetty:apache-jsp:${jettyVersion}"
     compile "org.eclipse.jetty:apache-jstl:${jettyVersion}"
     compile "org.eclipse.jetty:jetty-http:${jettyVersion}"
+    compile "org.eclipse.jetty.http2:http2-server:${jettyVersion}"
     compile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
     compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
     compile "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${jacksonVersion}"

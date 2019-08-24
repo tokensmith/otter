@@ -2,7 +2,7 @@ package org.rootservices.otter.server.container.builder;
 
 
 import org.apache.tomcat.util.descriptor.web.ErrorPage;
-import org.eclipse.jetty.server.session.Session;
+import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
@@ -19,7 +19,6 @@ import java.util.Map;
 
 public class WebAppContextBuilder {
     private ClassLoader classLoader;
-    private String contextPath;
     private String resourceBase;
     private Configuration[] configurations;
     private File tempDirectory;
@@ -28,16 +27,12 @@ public class WebAppContextBuilder {
     private Map<String, String> initParameters = new HashMap<>();
     private Map<String, String> attributes = new HashMap<>();
     private List<ServletHolder> servletHolders = new ArrayList<>();
-    private List<ErrorPage>  errorPages = new ArrayList<>();
+    private List<String> gzipMimeTypes = new ArrayList<>();
+    private List<ErrorPage> errorPages = new ArrayList<>();
     private SessionHandler sessionHandler;
 
     public WebAppContextBuilder classLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
-        return this;
-    }
-
-    public WebAppContextBuilder contextPath(String contextPath) {
-        this.contextPath = contextPath;
         return this;
     }
 
@@ -116,6 +111,11 @@ public class WebAppContextBuilder {
         return this;
     }
 
+    public WebAppContextBuilder gzipMimeTypes(List<String> gzipMimeTypes) {
+        this.gzipMimeTypes = gzipMimeTypes;
+        return this;
+    }
+
     public WebAppContextBuilder errorPages(List<ErrorPage> errorPages) {
         errorPages.addAll(errorPages);
         return this;
@@ -173,8 +173,14 @@ public class WebAppContextBuilder {
             errorHandler.addErrorPage(errorPage.getErrorCode(), errorPage.getLocation());
         }
 
+        if (gzipMimeTypes != null && gzipMimeTypes.size() > 0) {
+            GzipHandler gzipHandler = new GzipHandler();
+            gzipHandler.setIncludedMimeTypes(
+                    gzipMimeTypes.toArray(new String[gzipMimeTypes.size()])
+            );
+            webAppContext.setGzipHandler(gzipHandler);
+        }
         webAppContext.setSessionHandler(this.sessionHandler);
-
         return webAppContext;
     }
 

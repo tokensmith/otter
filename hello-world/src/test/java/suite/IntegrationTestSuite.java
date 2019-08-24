@@ -13,12 +13,18 @@ import org.junit.experimental.categories.Categories;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.rootservices.hello.controller.html.HelloResource;
+import org.rootservices.hello.server.HelloServer;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.server.container.ServletContainer;
 import org.rootservices.otter.server.container.ServletContainerFactory;
 
+import java.net.Authenticator;
+import java.net.InetSocketAddress;
+import java.net.ProxySelector;
 import java.net.URI;
+import java.net.http.HttpClient;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.asynchttpclient.Dsl.asyncHttpClient;
@@ -45,6 +51,7 @@ public class IntegrationTestSuite {
     private static ServletContainer servletContainer;
     private static URI servletContainerURI;
     private static AsyncHttpClient httpClient;
+    private static HttpClient httpClient2;
     private static String DOCUMENT_ROOT = "/";
     private static int RANDOM_PORT = 0;
     private static String REQUEST_LOG = "logs/jetty/jetty-test-yyyy_mm_dd.request.log";
@@ -61,14 +68,26 @@ public class IntegrationTestSuite {
         servletContainerFactory = otterTestAppFactory.servletContainerFactory();
 
         List<ErrorPage> errorPages = new ArrayList<>();
+
+        List<String> gzipMimeTypes = Arrays.asList(
+                "text/html", "text/plain", "text/xml",
+                "text/css", "application/javascript", "text/javascript",
+                "application/json");
+
         servletContainer = servletContainerFactory.makeServletContainer(
-                DOCUMENT_ROOT, HelloResource.class, RANDOM_PORT, REQUEST_LOG, errorPages
+                DOCUMENT_ROOT, HelloResource.class, RANDOM_PORT, REQUEST_LOG, gzipMimeTypes, errorPages
         );
         servletContainer.start();
 
         servletContainerURI = servletContainer.getURI();
 
+
         httpClient = asyncHttpClient(new DefaultAsyncHttpClientConfig.Builder().setCookieStore(null).build());
+
+        httpClient2 = HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_2)
+                .followRedirects(HttpClient.Redirect.NEVER)
+                .build();
     }
 
     /**
@@ -117,5 +136,9 @@ public class IntegrationTestSuite {
      */
     public static AsyncHttpClient getHttpClient() {
         return httpClient;
+    }
+
+    public static HttpClient getHttpClient2() {
+        return httpClient2;
     }
 }
