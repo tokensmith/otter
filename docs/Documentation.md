@@ -24,6 +24,7 @@
     - [Configure](#configure)
     - [Entry Servlet](#entry-servlet)
     - [Main Method](#main-method)
+    - [Compression](#compression)
 - [CSRF protection](#csrf)
 - [Delivery of static assets](#static-assets)
 
@@ -494,6 +495,24 @@ Otter runs in a Jetty powered [embedded servlet container](https://github.com/Ro
 The port, document root, and the request log are all configurable.
 
 Have a look a the hello world application for an [example](https://github.com/RootServices/otter/blob/development/hello-world/src/main/java/org/rootservices/hello/server/HelloServer.java)
+
+#### Compression
+
+Otter is able to compress the response body with `gzip`. To enable it then add the `MimeTypes` to compress in the [Server 
+implementation](https://github.com/RootServices/otter/blob/development/hello-world/src/main/java/org/rootservices/hello/server/HelloServer.java#L19-L22).
+
+With the hello world project:
+```bash
+$ curl -H "Content-Type: application/json; charset=utf-8" -H "Accept-Encoding: gzip" -i http://localhost:8080/rest/v2/hello
+
+HTTP/1.1 200 OK
+Date: Sat, 24 Aug 2019 13:03:54 GMT
+Vary: Accept-Encoding, User-Agent
+Content-Encoding: gzip
+Content-Length: 55
+
+O?S?N??O?T?jW&?#
+```
 
 ### CSRF
 
