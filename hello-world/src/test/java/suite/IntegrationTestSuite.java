@@ -13,6 +13,7 @@ import org.junit.experimental.categories.Categories;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.rootservices.hello.controller.html.HelloResource;
+import org.rootservices.hello.server.HelloServer;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.server.container.ServletContainer;
 import org.rootservices.otter.server.container.ServletContainerFactory;
@@ -23,6 +24,7 @@ import java.net.ProxySelector;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.asynchttpclient.Dsl.asyncHttpClient;
@@ -66,12 +68,19 @@ public class IntegrationTestSuite {
         servletContainerFactory = otterTestAppFactory.servletContainerFactory();
 
         List<ErrorPage> errorPages = new ArrayList<>();
+
+        List<String> gzipMimeTypes = Arrays.asList(
+                "text/html", "text/plain", "text/xml",
+                "text/css", "application/javascript", "text/javascript",
+                "application/json");
+
         servletContainer = servletContainerFactory.makeServletContainer(
-                DOCUMENT_ROOT, HelloResource.class, RANDOM_PORT, REQUEST_LOG, errorPages
+                DOCUMENT_ROOT, HelloResource.class, RANDOM_PORT, REQUEST_LOG, gzipMimeTypes, errorPages
         );
         servletContainer.start();
 
         servletContainerURI = servletContainer.getURI();
+
 
         httpClient = asyncHttpClient(new DefaultAsyncHttpClientConfig.Builder().setCookieStore(null).build());
 

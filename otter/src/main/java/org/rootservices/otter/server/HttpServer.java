@@ -14,9 +14,10 @@ import java.net.URISyntaxException;
 
 public class HttpServer {
     private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
+    private static ServletContainer server;
 
     public static void run(HttpServerConfig config) {
-        ServletContainer server = makeServer(config);
+        server = makeServer(config);
 
         try {
             logger.info("server starting");
@@ -30,7 +31,6 @@ public class HttpServer {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-
     }
 
     public static ServletContainer makeServer(HttpServerConfig config) {
@@ -40,7 +40,12 @@ public class HttpServer {
         ServletContainer server = null;
         try {
             server = servletContainerFactory.makeServletContainer(
-                config.getDocumentRoot(), config.getClazz(), config.getPort(), config.getRequestLog(), config.getErrorPages()
+                config.getDocumentRoot(),
+                config.getClazz(),
+                config.getPort(),
+                config.getRequestLog(),
+                config.getGzipMimeTypes(),
+                config.getErrorPages()
             );
         } catch (URISyntaxException e) {
             logger.error(e.getMessage(), e);
@@ -50,6 +55,10 @@ public class HttpServer {
             logger.error(e.getMessage(), e);
         }
 
+        return server;
+    }
+
+    public static ServletContainer getServer() {
         return server;
     }
 }
