@@ -26,14 +26,14 @@ example application. Only 5 files to get started.
     <dependency>
         <groupId>org.rootservices</groupId>
         <artifactId>otter</artifactId>
-        <version>1.4</version>
+        <version>1.4.1</version>
     </dependency>
 </dependencies>
 ```
 
 #### Gradle
 ```groovy
-compile group: 'org.rootservices', name: 'otter', version: '1.4'
+compile group: 'org.rootservices', name: 'otter', version: '1.4.1'
 ```
 
 ## Documentation
