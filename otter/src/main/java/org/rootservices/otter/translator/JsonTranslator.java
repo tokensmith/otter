@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 public class JsonTranslator<T> {
     private ObjectReader objectReader;
     private ObjectWriter objectWriter;
-    private Class<T> type;
 
     // For Specific Exceptions.
     private static final String DUPLICATE_NAME = "key";
@@ -45,12 +44,10 @@ public class JsonTranslator<T> {
     public JsonTranslator(ObjectReader objectReader, ObjectWriter objectWriter, Class<T> type) {
         this.objectReader = objectReader;
         this.objectWriter = objectWriter;
-        this.type = type;
     }
 
     public T from(byte[] json) throws DeserializationException {
         T entity;
-
 
         try{
             entity = fromWithSpecificCause(json);

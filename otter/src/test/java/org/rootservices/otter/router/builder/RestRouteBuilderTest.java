@@ -1,7 +1,7 @@
 package org.rootservices.otter.router.builder;
 
-import helper.entity.DummyPayload;
-import helper.entity.DummyUser;
+import helper.entity.model.DummyPayload;
+import helper.entity.model.DummyUser;
 import helper.entity.OkRestResource;
 import org.junit.Test;
 import org.rootservices.otter.router.entity.RestRoute;

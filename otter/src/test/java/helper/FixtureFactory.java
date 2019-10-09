@@ -2,6 +2,9 @@ package helper;
 
 
 import helper.entity.*;
+import helper.entity.model.DummyPayload;
+import helper.entity.model.DummySession;
+import helper.entity.model.DummyUser;
 import helper.fake.FakeResource;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
@@ -339,7 +342,7 @@ public class FixtureFactory {
 
     public static RestBtwnResponse makeRestBtwnResponse() {
         return new RestBtwnResponse(
-                StatusCode.OK, new HashMap<>(), new HashMap<>(), Optional.empty()
+                StatusCode.OK, new HashMap<>(), new HashMap<>(), Optional.empty(), Optional.empty()
         );
     }
 

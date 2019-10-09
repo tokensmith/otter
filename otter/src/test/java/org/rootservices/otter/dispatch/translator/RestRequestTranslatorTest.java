@@ -1,8 +1,8 @@
 package org.rootservices.otter.dispatch.translator;
 
 import helper.FixtureFactory;
-import helper.entity.DummyPayload;
-import helper.entity.DummyUser;
+import helper.entity.model.DummyPayload;
+import helper.entity.model.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.request.RestRequest;

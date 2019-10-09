@@ -1,6 +1,6 @@
 package org.rootservices.otter.translator;
 
-import helper.entity.DummyPayload;
+import helper.entity.model.DummyPayload;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.translator.config.TranslatorAppFactory;

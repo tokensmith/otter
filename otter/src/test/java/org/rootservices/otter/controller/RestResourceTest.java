@@ -1,15 +1,12 @@
 package org.rootservices.otter.controller;
 
 import helper.FixtureFactory;
-import helper.entity.DummyPayload;
-import helper.entity.DummySession;
-import helper.entity.DummyUser;
+import helper.entity.model.DummyPayload;
+import helper.entity.model.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.request.Request;
 import org.rootservices.otter.controller.entity.request.RestRequest;
-import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.entity.response.RestResponse;
 
 import static org.hamcrest.CoreMatchers.notNullValue;

@@ -10,7 +10,8 @@ public class RestResponse<P> {
     private StatusCode statusCode;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
-    private Optional<P> payload;
+    private Optional<P> payload = Optional.empty();
+    private Optional<byte[]> rawPayload = Optional.empty();
 
     public RestResponse() {
     }
@@ -52,5 +53,13 @@ public class RestResponse<P> {
 
     public void setPayload(Optional<P> payload) {
         this.payload = payload;
+    }
+
+    public Optional<byte[]> getRawPayload() {
+        return rawPayload;
+    }
+
+    public void setRawPayload(Optional<byte[]> rawPayload) {
+        this.rawPayload = rawPayload;
     }
 }

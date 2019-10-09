@@ -1,15 +1,13 @@
 package org.rootservices.otter.gateway.builder;
 
 import helper.entity.DummyBetween;
-import helper.entity.DummySession;
-import helper.entity.DummyUser;
+import helper.entity.model.DummySession;
+import helper.entity.model.DummyUser;
 import helper.entity.ServerErrorResource;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.gateway.entity.ErrorTarget;
 import org.rootservices.otter.gateway.entity.Group;
-
-import java.util.ArrayList;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;

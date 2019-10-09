@@ -2,8 +2,8 @@ package org.rootservices.otter.gateway.builder;
 
 
 import helper.entity.DummyBetween;
-import helper.entity.DummySession;
-import helper.entity.DummyUser;
+import helper.entity.model.DummySession;
+import helper.entity.model.DummyUser;
 import helper.entity.ServerErrorResource;
 import helper.fake.FakeResource;
 import org.hamcrest.core.IsNull;

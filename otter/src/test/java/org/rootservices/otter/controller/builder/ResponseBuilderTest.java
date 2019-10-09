@@ -1,7 +1,7 @@
 package org.rootservices.otter.controller.builder;
 
 
-import helper.entity.DummySession;
+import helper.entity.model.DummySession;
 import helper.fake.FakePresenter;
 import helper.FixtureFactory;
 import org.junit.Test;
@@ -9,7 +9,6 @@ import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
 
-import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

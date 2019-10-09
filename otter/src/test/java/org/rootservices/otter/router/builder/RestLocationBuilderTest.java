@@ -1,6 +1,8 @@
 package org.rootservices.otter.router.builder;
 
 import helper.entity.*;
+import helper.entity.model.DummyPayload;
+import helper.entity.model.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
@@ -9,9 +11,7 @@ import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.dispatch.JsonRouteRun;
 import org.rootservices.otter.dispatch.RouteRunner;
 import org.rootservices.otter.dispatch.translator.RestErrorHandler;
-import org.rootservices.otter.gateway.entity.rest.RestError;
 import org.rootservices.otter.router.entity.Location;
-import org.rootservices.otter.translatable.Translatable;
 
 import java.util.ArrayList;
 import java.util.HashMap;

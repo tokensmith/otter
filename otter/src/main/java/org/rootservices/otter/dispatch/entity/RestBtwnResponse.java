@@ -12,15 +12,17 @@ public class RestBtwnResponse {
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
     private Optional<byte[]> payload;
+    private Optional<byte[]> rawPayload;
 
     public RestBtwnResponse() {
     }
 
-    public RestBtwnResponse(StatusCode statusCode, Map<String, String> headers, Map<String, Cookie> cookies, Optional<byte[]> payload) {
+    public RestBtwnResponse(StatusCode statusCode, Map<String, String> headers, Map<String, Cookie> cookies, Optional<byte[]> payload, Optional<byte[]> rawPayload) {
         this.statusCode = statusCode;
         this.headers = headers;
         this.cookies = cookies;
         this.payload = payload;
+        this.rawPayload = payload;
     }
 
     public StatusCode getStatusCode() {
@@ -53,5 +55,13 @@ public class RestBtwnResponse {
 
     public void setPayload(Optional<byte[]> payload) {
         this.payload = payload;
+    }
+
+    public Optional<byte[]> getRawPayload() {
+        return rawPayload;
+    }
+
+    public void setRawPayload(Optional<byte[]> rawPayload) {
+        this.rawPayload = rawPayload;
     }
 }

@@ -1,8 +1,8 @@
 package org.rootservices.otter.security.session.between;
 
 import helper.FixtureFactory;
-import helper.entity.DummySession;
-import helper.entity.DummyUser;
+import helper.entity.model.DummySession;
+import helper.entity.model.DummyUser;
 import org.junit.Test;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.exception.InvalidJWT;

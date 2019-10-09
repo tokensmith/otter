@@ -24,6 +24,7 @@ public class RestBtwnResponseTranslator<P> {
         to.setStatusCode(from.getStatusCode());
         to.setHeaders(from.getHeaders());
         to.setCookies(from.getCookies());
+        to.setRawPayload(Optional.empty());
         to.setPayload(from.getPayload());
 
         return to;
@@ -35,6 +36,7 @@ public class RestBtwnResponseTranslator<P> {
         to.setStatusCode(from.getStatusCode());
         to.setHeaders(from.getHeaders());
         to.setCookies(from.getCookies());
+        to.setRawPayload(from.getRawPayload());
         to.setPayload(fromPayload);
 
         return to;

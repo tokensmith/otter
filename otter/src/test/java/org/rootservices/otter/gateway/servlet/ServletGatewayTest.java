@@ -1,8 +1,6 @@
 package org.rootservices.otter.gateway.servlet;
 
 import helper.FixtureFactory;
-import helper.entity.DummySession;
-import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -10,8 +8,6 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.config.OtterAppFactory;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
-import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.dispatch.RouteRunner;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletRequestMerger;
 import org.rootservices.otter.gateway.servlet.merger.HttpServletResponseMerger;
 import org.rootservices.otter.gateway.servlet.translator.HttpServletRequestTranslator;
@@ -19,7 +15,6 @@ import org.rootservices.otter.gateway.translator.LocationTranslator;
 import org.rootservices.otter.gateway.translator.RestLocationTranslator;
 import org.rootservices.otter.router.Dispatcher;
 import org.rootservices.otter.router.Engine;
-import org.rootservices.otter.router.entity.Route;
 import org.rootservices.otter.router.entity.io.Answer;
 import org.rootservices.otter.router.entity.io.Ask;
 

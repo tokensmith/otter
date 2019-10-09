@@ -1,7 +1,7 @@
 package org.rootservices.otter.dispatch.translator;
 
 import helper.FixtureFactory;
-import helper.entity.DummySession;
+import helper.entity.model.DummySession;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.response.Response;

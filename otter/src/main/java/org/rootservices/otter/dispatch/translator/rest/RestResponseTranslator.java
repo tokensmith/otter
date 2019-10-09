@@ -41,6 +41,7 @@ public class RestResponseTranslator<P> {
         to.setHeaders(from.getHeaders());
         to.setCookies(from.getCookies());
         to.setPayload(Optional.empty());
+        to.setRawPayload(from.getRawPayload());
 
         return to;
     }

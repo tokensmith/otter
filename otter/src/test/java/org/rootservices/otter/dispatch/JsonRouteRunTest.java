@@ -2,7 +2,10 @@ package org.rootservices.otter.dispatch;
 
 import helper.FixtureFactory;
 import helper.entity.*;
-import org.junit.Before;
+import helper.entity.model.AlternatePayload;
+import helper.entity.model.DummyPayload;
+import helper.entity.model.DummySession;
+import helper.entity.model.DummyUser;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -19,6 +22,7 @@ import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.config.TranslatorAppFactory;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -29,28 +33,38 @@ import static org.junit.Assert.*;
 
 public class JsonRouteRunTest {
     private static TranslatorAppFactory appFactory = new TranslatorAppFactory();
-    private JsonRouteRun<DummyUser, DummyPayload> subject;
 
-    @Before
-    public void setUp() {
+
+    public RestRoute<DummyUser, DummyPayload> rawPayloadRestResource() {
+        JsonTranslator<DummyPayload> translator = appFactory.jsonTranslator(DummyPayload.class);
+        RawPayloadRestResource rawPayloadRestResource = new RawPayloadRestResource(translator);
+        return new RestRoute<>(
+                rawPayloadRestResource, new ArrayList<>(), new ArrayList<>()
+        );
+    }
+
+    public RestRoute<DummyUser, DummyPayload> okRestRoute() {
+        return FixtureFactory.makeRestRoute();
+    }
+
+    public JsonRouteRun<DummyUser, DummyPayload> subject(RestRoute<DummyUser, DummyPayload> route) {
         RestResponseTranslator<DummyPayload> restResponseTranslator = new RestResponseTranslator<>();
         RestRequestTranslator<DummyUser, DummyPayload> restRequestTranslator = new RestRequestTranslator<>();
         RestBtwnRequestTranslator<DummyUser, DummyPayload> restBtwnRequestTranslator = new RestBtwnRequestTranslator<>();
         RestBtwnResponseTranslator<DummyPayload> restBtwnResponseTranslator = new RestBtwnResponseTranslator<>();
         JsonTranslator<DummyPayload> jsonTranslator = appFactory.jsonTranslator(DummyPayload.class);
-        RestRoute<DummyUser, DummyPayload> restRoute = FixtureFactory.makeRestRoute();
 
         Map<StatusCode, RestErrorHandler<DummyUser>> errorHandlers = new HashMap<>();
-        RestErrorHandler<DummyUser> errorHandler = new JsonErrorHandler<DummyUser, ClientError>(
+        RestErrorHandler<DummyUser> errorHandler = new JsonErrorHandler<>(
                 appFactory.jsonTranslator(ClientError.class),
-                new BadRequestRestResource<DummyUser>(),
-                new RestRequestTranslator<DummyUser, ClientError>(),
-                new RestResponseTranslator<ClientError>()
+                new BadRequestRestResource<>(),
+                new RestRequestTranslator<>(),
+                new RestResponseTranslator<>()
         );
         errorHandlers.put(StatusCode.BAD_REQUEST, errorHandler);
 
-        subject = new JsonRouteRun<DummyUser, DummyPayload>(
-                restRoute,
+        JsonRouteRun<DummyUser, DummyPayload> subject = new JsonRouteRun<>(
+                route,
                 restResponseTranslator,
                 restRequestTranslator,
                 restBtwnRequestTranslator,
@@ -60,61 +74,154 @@ public class JsonRouteRunTest {
                 new RestErrorRequestTranslator<>(),
                 new RestErrorResponseTranslator()
         );
+        return subject;
+    }
+
+    @Test
+    public void whenGetShouldReturnOk() throws Exception {
+        RestRoute<DummyUser, DummyPayload> route = okRestRoute();
+        testRun(route, Method.GET, StatusCode.OK, Optional.empty(), Optional.empty());
     }
 
     @Test
     public void whenPostShouldReturnOk() throws Exception {
+        RestRoute<DummyUser, DummyPayload> route = okRestRoute();
         DummyPayload dummyPayload = new DummyPayload();
         dummyPayload.setInteger(123);
         byte[] body = appFactory.objectWriter().writeValueAsBytes(dummyPayload);
 
-        testRun(Method.POST, StatusCode.CREATED, Optional.of(body));
+        testRun(route, Method.POST, StatusCode.CREATED, Optional.of(body), Optional.empty());
     }
 
     @Test
     public void whenPutShouldReturnOk() throws Exception {
+        RestRoute<DummyUser, DummyPayload> route = okRestRoute();
         DummyPayload dummyPayload = new DummyPayload();
         dummyPayload.setInteger(123);
         byte[] body = appFactory.objectWriter().writeValueAsBytes(dummyPayload);
 
-        testRun(Method.PUT, StatusCode.OK, Optional.of(body));
+        testRun(route, Method.PUT, StatusCode.OK, Optional.of(body), Optional.empty());
     }
 
     @Test
     public void whenPatchShouldReturnOk() throws Exception {
+        RestRoute<DummyUser, DummyPayload> route = okRestRoute();
         DummyPayload dummyPayload = new DummyPayload();
         dummyPayload.setInteger(123);
         byte[] body = appFactory.objectWriter().writeValueAsBytes(dummyPayload);
 
-        testRun(Method.PATCH, StatusCode.OK, Optional.of(body));
+        testRun(route, Method.PATCH, StatusCode.OK, Optional.of(body), Optional.empty());
     }
 
     @Test
     public void whenDeletedShouldReturnOk() throws Exception {
-        testRun(Method.DELETE, StatusCode.OK, Optional.empty());
+        RestRoute<DummyUser, DummyPayload> route = okRestRoute();
+        testRun(route, Method.DELETE, StatusCode.OK, Optional.empty(), Optional.empty());
     }
 
     @Test
     public void whenConnectShouldReturnOk() throws Exception {
-        testRun(Method.CONNECT, StatusCode.OK, Optional.empty());
+        RestRoute<DummyUser, DummyPayload> route = okRestRoute();
+        testRun(route, Method.CONNECT, StatusCode.OK, Optional.empty(), Optional.empty());
     }
 
     @Test
     public void whenOptionsShouldReturnOk() throws Exception {
-        testRun(Method.OPTIONS, StatusCode.OK, Optional.empty());
+        RestRoute<DummyUser, DummyPayload> route = okRestRoute();
+        testRun(route, Method.OPTIONS, StatusCode.OK, Optional.empty(), Optional.empty());
     }
 
     @Test
     public void whenTraceShouldReturnOk() throws Exception {
-        testRun(Method.TRACE, StatusCode.OK, Optional.empty());
+        RestRoute<DummyUser, DummyPayload> route = okRestRoute();
+        testRun(route, Method.TRACE, StatusCode.OK, Optional.empty(), Optional.empty());
     }
 
     @Test
     public void whenHeadShouldReturnOk() throws Exception {
-        testRun(Method.HEAD, StatusCode.OK, Optional.empty());
+        RestRoute<DummyUser, DummyPayload> route = okRestRoute();
+        testRun(route, Method.HEAD, StatusCode.OK, Optional.empty(), Optional.empty());
     }
 
-    public void testRun(Method method, StatusCode statusCode, Optional<byte[]> body) throws Exception {
+    // raw response tests
+    @Test
+    public void whenGetShouldReturnOkAndRawResponse() throws Exception {
+        RestRoute<DummyUser, DummyPayload> route = rawPayloadRestResource();
+        byte[] response = "{\"id\":\"b5b24f75-7c7a-453f-a574-1bae3d6820a7\"}".getBytes();
+        testRun(route, Method.GET, StatusCode.OK, Optional.empty(), Optional.of(response));
+    }
+
+    @Test
+    public void whenPostShouldReturnOkAndRawResponse() throws Exception {
+        RestRoute<DummyUser, DummyPayload> route = rawPayloadRestResource();
+        DummyPayload dummyPayload = new DummyPayload();
+        dummyPayload.setInteger(123);
+        byte[] body = appFactory.objectWriter().writeValueAsBytes(dummyPayload);
+
+        byte[] response = "{\"id\":\"b5b24f75-7c7a-453f-a574-1bae3d6820a7\"}".getBytes();
+        testRun(route, Method.POST, StatusCode.CREATED, Optional.of(body), Optional.of(response));
+    }
+
+    @Test
+    public void whenPutShouldReturnOkAndRawResponse() throws Exception {
+        RestRoute<DummyUser, DummyPayload> route = rawPayloadRestResource();
+        DummyPayload dummyPayload = new DummyPayload();
+        dummyPayload.setInteger(123);
+        byte[] body = appFactory.objectWriter().writeValueAsBytes(dummyPayload);
+
+        byte[] response = "{\"id\":\"b5b24f75-7c7a-453f-a574-1bae3d6820a7\"}".getBytes();
+        testRun(route, Method.PUT, StatusCode.OK, Optional.of(body), Optional.of(response));
+    }
+
+    @Test
+    public void whenPatchShouldReturnOkAndRawResponse() throws Exception {
+        RestRoute<DummyUser, DummyPayload> route = rawPayloadRestResource();
+        DummyPayload dummyPayload = new DummyPayload();
+        dummyPayload.setInteger(123);
+        byte[] body = appFactory.objectWriter().writeValueAsBytes(dummyPayload);
+
+        byte[] response = "{\"id\":\"b5b24f75-7c7a-453f-a574-1bae3d6820a7\"}".getBytes();
+        testRun(route, Method.PATCH, StatusCode.OK, Optional.of(body), Optional.of(response));
+    }
+
+    @Test
+    public void whenDeletedShouldReturnOkAndRawResponse() throws Exception {
+        RestRoute<DummyUser, DummyPayload> route = rawPayloadRestResource();
+        byte[] response = "{\"id\":\"b5b24f75-7c7a-453f-a574-1bae3d6820a7\"}".getBytes();
+        testRun(route, Method.DELETE, StatusCode.OK, Optional.empty(), Optional.of(response));
+    }
+
+    @Test
+    public void whenConnectShouldReturnOkAndRawResponse() throws Exception {
+        RestRoute<DummyUser, DummyPayload> route = rawPayloadRestResource();
+        byte[] response = "{\"id\":\"b5b24f75-7c7a-453f-a574-1bae3d6820a7\"}".getBytes();
+        testRun(route, Method.CONNECT, StatusCode.OK, Optional.empty(), Optional.of(response));
+    }
+
+    @Test
+    public void whenOptionsShouldReturnOkAndRawResponse() throws Exception {
+        RestRoute<DummyUser, DummyPayload> route = rawPayloadRestResource();
+        byte[] response = "{\"id\":\"b5b24f75-7c7a-453f-a574-1bae3d6820a7\"}".getBytes();
+        testRun(route, Method.OPTIONS, StatusCode.OK, Optional.empty(), Optional.of(response));
+    }
+
+    @Test
+    public void whenTraceShouldReturnOkAndRawResponse() throws Exception {
+        RestRoute<DummyUser, DummyPayload> route = rawPayloadRestResource();
+        byte[] response = "{\"id\":\"b5b24f75-7c7a-453f-a574-1bae3d6820a7\"}".getBytes();
+        testRun(route, Method.TRACE, StatusCode.OK, Optional.empty(), Optional.of(response));
+    }
+
+    @Test
+    public void whenHeadShouldReturnOkAndRawResponse() throws Exception {
+        RestRoute<DummyUser, DummyPayload> route = rawPayloadRestResource();
+        byte[] response = "{\"id\":\"b5b24f75-7c7a-453f-a574-1bae3d6820a7\"}".getBytes();
+        testRun(route, Method.HEAD, StatusCode.OK, Optional.empty(), Optional.of(response));
+    }
+
+    public void testRun(RestRoute<DummyUser, DummyPayload> route, Method method, StatusCode statusCode, Optional<byte[]> body, Optional<byte[]> response) throws Exception {
+        JsonRouteRun<DummyUser, DummyPayload> subject = subject(route);
+
         Ask ask = FixtureFactory.makeAsk();
         ask.setMethod(method);
         ask.setBody(body);
@@ -123,10 +230,19 @@ public class JsonRouteRunTest {
         Answer actual = subject.run(ask, answer);
 
         assertThat(actual.getStatusCode(), is(statusCode));
+
+        assertThat(actual.getPayload().isPresent(), is(response.isPresent()));
+
+        if (actual.getPayload().isPresent()) {
+            var actualPayload = new String(actual.getPayload().get());
+            var expectedPayload = new String(response.get());
+            assertThat(actualPayload, is(expectedPayload));
+        }
     }
 
     @Test
     public void whenPostAndDeserializationExceptionShouldReturnBadRequest() throws Exception {
+        RestRoute<DummyUser, DummyPayload> route = okRestRoute();
         // Invalid Key
         String json = "{\"integer\": \"not a integer\", \"string\": \"foo\", \"local_date\": \"2019-01-01\"}";
         Ask ask = FixtureFactory.makeAsk();
@@ -134,11 +250,14 @@ public class JsonRouteRunTest {
         ask.setBody(Optional.of(json.getBytes()));
 
 
-        testRun(Method.HEAD, StatusCode.BAD_REQUEST, Optional.of(json.getBytes()));
+        byte[] response = "{\"source\":\"BODY\",\"key\":\"integer\",\"actual\":null,\"expected\":null,\"reason\":\"There was a invalid value for a key.\"}".getBytes();
+        testRun(route, Method.POST, StatusCode.BAD_REQUEST, Optional.of(json.getBytes()), Optional.of(response));
     }
 
     @Test
     public void whenHaltExceptionShouldReturn403() {
+        RestRoute<DummyUser, DummyPayload> route = okRestRoute();
+        JsonRouteRun<DummyUser, DummyPayload> subject = subject(route);
 
         Ask ask = FixtureFactory.makeAsk();
         Answer answer = FixtureFactory.makeAnswer();
@@ -159,5 +278,14 @@ public class JsonRouteRunTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(answer.getStatusCode(), is(StatusCode.UNAUTHORIZED));
+    }
+
+    @Test
+    public void payloadToBytesWhenNoPayloadShouldBeEmpty() {
+        RestRoute<DummyUser, DummyPayload> route = okRestRoute();
+        JsonRouteRun<DummyUser, DummyPayload> subject = subject(route);
+
+        Optional<byte[]> actual = subject.payloadToBytes(Optional.empty());
+        assertThat(actual.isPresent(), is(false));
     }
 }
