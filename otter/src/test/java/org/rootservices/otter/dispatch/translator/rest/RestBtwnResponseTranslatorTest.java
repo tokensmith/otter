@@ -1,7 +1,7 @@
 package org.rootservices.otter.dispatch.translator.rest;
 
 import helper.FixtureFactory;
-import helper.entity.DummyPayload;
+import helper.entity.model.DummyPayload;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.response.RestResponse;
@@ -34,6 +34,7 @@ public class RestBtwnResponseTranslatorTest {
         assertThat(actual.getCookies(), is(from.getCookies()));
         assertThat(actual.getHeaders(), is(from.getHeaders()));
         assertThat(actual.getPayload().isPresent(), is(false));
+        assertThat(actual.getRawPayload().isPresent(), is(false));
     }
 
     @Test
@@ -48,5 +49,6 @@ public class RestBtwnResponseTranslatorTest {
         assertThat(actual.getCookies(), is(from.getCookies()));
         assertThat(actual.getHeaders(), is(from.getHeaders()));
         assertThat(actual.getPayload().isPresent(), is(false));
+        assertThat(actual.getRawPayload().isPresent(), is(false));
     }
 }

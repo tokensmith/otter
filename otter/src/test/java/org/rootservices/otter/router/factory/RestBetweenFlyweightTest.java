@@ -2,6 +2,7 @@ package org.rootservices.otter.router.factory;
 
 
 import helper.entity.*;
+import helper.entity.model.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.gateway.entity.Label;

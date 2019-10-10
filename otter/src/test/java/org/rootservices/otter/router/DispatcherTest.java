@@ -1,8 +1,6 @@
 package org.rootservices.otter.router;
 
 import helper.FixtureFactory;
-import helper.entity.DummySession;
-import helper.entity.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.router.entity.MatchedLocation;

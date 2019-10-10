@@ -1,6 +1,9 @@
 package org.rootservices.otter.gateway.builder;
 
 import helper.entity.*;
+import helper.entity.model.DummyErrorPayload;
+import helper.entity.model.DummyPayload;
+import helper.entity.model.DummyUser;
 import org.junit.Test;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.StatusCode;

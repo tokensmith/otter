@@ -1,4 +1,4 @@
-package helper.entity;
+package helper.entity.model;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;

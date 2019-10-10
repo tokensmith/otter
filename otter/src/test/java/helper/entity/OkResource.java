@@ -1,5 +1,7 @@
 package helper.entity;
 
+import helper.entity.model.DummySession;
+import helper.entity.model.DummyUser;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.request.Request;

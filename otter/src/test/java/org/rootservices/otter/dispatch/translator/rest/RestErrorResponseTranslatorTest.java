@@ -1,10 +1,8 @@
 package org.rootservices.otter.dispatch.translator.rest;
 
 import helper.FixtureFactory;
-import helper.entity.DummyPayload;
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.otter.controller.entity.response.RestResponse;
 import org.rootservices.otter.dispatch.entity.RestBtwnResponse;
 import org.rootservices.otter.dispatch.entity.RestErrorResponse;
 import org.rootservices.otter.router.entity.io.Answer;

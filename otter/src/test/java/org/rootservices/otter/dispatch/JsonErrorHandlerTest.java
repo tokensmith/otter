@@ -3,9 +3,9 @@ package org.rootservices.otter.dispatch;
 import com.fasterxml.jackson.databind.ObjectReader;
 import helper.FixtureFactory;
 import helper.entity.ClientErrorRestResource;
-import helper.entity.DummyErrorPayload;
-import helper.entity.DummyPayload;
-import helper.entity.DummyUser;
+import helper.entity.model.DummyErrorPayload;
+import helper.entity.model.DummyPayload;
+import helper.entity.model.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -114,8 +114,8 @@ public class JsonErrorHandlerTest {
 
         RestErrorResponse response = FixtureFactory.makeRestErrorResponse();
 
-        InvalidValueException ive = new InvalidValueException("", null, "id");
-        DeserializationException cause = new DeserializationException("", "id", Reason.INVALID_VALUE, ive);
+        InvalidValueException ive = new InvalidValueException("", null, "id", "not and integer");
+        DeserializationException cause = new DeserializationException("", "id", null, Reason.INVALID_VALUE, ive);
 
         Answer actual = subject.run(request, response, cause);
 

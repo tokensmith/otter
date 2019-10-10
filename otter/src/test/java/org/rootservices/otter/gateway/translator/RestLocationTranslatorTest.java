@@ -2,6 +2,9 @@ package org.rootservices.otter.gateway.translator;
 
 import helper.FixtureFactory;
 import helper.entity.*;
+import helper.entity.model.DummyErrorPayload;
+import helper.entity.model.DummyPayload;
+import helper.entity.model.DummyUser;
 import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;

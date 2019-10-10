@@ -2,6 +2,9 @@ package org.rootservices.otter.dispatch;
 
 import helper.FixtureFactory;
 import helper.entity.*;
+import helper.entity.model.DummyPayload;
+import helper.entity.model.DummySession;
+import helper.entity.model.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.Resource;

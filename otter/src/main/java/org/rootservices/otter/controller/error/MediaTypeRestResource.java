@@ -1,6 +1,7 @@
 package org.rootservices.otter.controller.error;
 
 import org.rootservices.otter.controller.RestResource;
+import org.rootservices.otter.controller.builder.ClientErrorBuilder;
 import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -15,14 +16,14 @@ import java.util.stream.Collectors;
 public class MediaTypeRestResource<U extends DefaultUser> extends RestResource<U, ClientError> {
 
     protected ClientError to(RestRequest<U, ClientError> from) {
-        ClientError to = new ClientError(
-                ClientError.Source.HEADER,
-                Header.CONTENT_TYPE.toString(),
-                from.getContentType().toString(),
-                from.getPossibleContentTypes().stream()
-                    .map( Object::toString )
-                    .collect(Collectors.toList())
-        );
+        ClientError to = new ClientErrorBuilder()
+                .source(ClientError.Source.HEADER)
+                .key(Header.CONTENT_TYPE.toString())
+                .actual(from.getContentType().toString())
+                .expected(from.getPossibleContentTypes().stream()
+                        .map( Object::toString )
+                        .collect(Collectors.toList()))
+                .build();
         return to;
     }
 

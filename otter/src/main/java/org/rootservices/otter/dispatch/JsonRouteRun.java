@@ -90,14 +90,18 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
         RestBtwnRequest<U> btwnRequest = restBtwnRequestTranslator.to(ask);
         RestBtwnResponse btwnResponse = restBtwnResponseTranslator.to(answer);
 
-        RestReponseEither<U, P> runResponseEither = executeResourceMethod(restRoute, btwnRequest, btwnResponse, entity);
+        RestReponseEither<U, P> runResponse = executeResourceMethod(restRoute, btwnRequest, btwnResponse, entity);
 
-        if (runResponseEither.getRight().isPresent()) {
-            answer = handleErrors(runResponseEither.getRight().get(), ask, answer);
+        if (runResponse.getRight().isPresent()) {
+            answer = handleErrors(runResponse.getRight().get(), ask, answer);
+        } else if (runResponse.getLeft().isPresent() && runResponse.getLeft().get().getRawPayload().isPresent()) {
+            LOGGER.debug("using raw payload");
+            answer = restResponseTranslator.from(answer, runResponse.getLeft().get());
+            answer.setPayload(runResponse.getLeft().get().getRawPayload());
         } else {
-            // response entity marshalling
-            answer = restResponseTranslator.from(answer, runResponseEither.getLeft().get());
-            Optional<byte[]> out = payloadToBytes(runResponseEither.getLeft().get().getPayload());
+            LOGGER.debug("using typed payload");
+            answer = restResponseTranslator.from(answer, runResponse.getLeft().get());
+            Optional<byte[]> out = payloadToBytes(runResponse.getLeft().get().getPayload());
             answer.setPayload(out);
         }
 
@@ -298,10 +302,13 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
 
     protected Optional<byte[]> payloadToBytes(Optional<P> payload) {
         Optional<byte[]> out = Optional.empty();
-        try {
-            out = Optional.of(jsonTranslator.to(payload));
-        } catch (ToJsonException e) {
-            LOGGER.error(e.getMessage(), e);
+
+        if (payload.isPresent()) {
+            try {
+                out = Optional.of(jsonTranslator.to(payload));
+            } catch (ToJsonException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
 
         return out;

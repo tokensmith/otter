@@ -1,8 +1,7 @@
 package helper.entity;
 
+import helper.entity.model.DummyUser;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.request.RestRequest;
-import org.rootservices.otter.controller.entity.response.RestResponse;
 import org.rootservices.otter.dispatch.entity.RestBtwnRequest;
 import org.rootservices.otter.dispatch.entity.RestBtwnResponse;
 import org.rootservices.otter.router.entity.Method;

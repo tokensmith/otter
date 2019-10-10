@@ -1,10 +1,12 @@
 package org.rootservices.otter.controller.error;
 
 
+import org.rootservices.otter.controller.builder.ClientErrorBuilder;
 import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.translator.exception.DeserializationException;
+import org.rootservices.otter.translator.exception.InvalidValueException;
 import org.rootservices.otter.translator.exception.Reason;
 
 import java.util.Optional;
@@ -18,26 +20,29 @@ public class BadRequestRestResource<U extends DefaultUser> extends RestErrorReso
         Optional<ClientError> to = Optional.empty();
 
         if (from.getCause() instanceof DeserializationException) {
-            ClientError toClientError = new ClientError();
-            toClientError.setSource(ClientError.Source.BODY);
+            ClientErrorBuilder builder = new ClientErrorBuilder();
+            builder.source(ClientError.Source.BODY);
             DeserializationException fromCasted = (DeserializationException) from.getCause();
 
             // 113: should the actual value be added here?
             if (Reason.DUPLICATE_KEY.equals(fromCasted.getReason())) {
-                toClientError.setKey(fromCasted.getKey().get());
-                toClientError.setReason("A key was duplicated in the request body.");
+                builder.key(fromCasted.getKey().get());
+                builder.reason("A key was duplicated in the request body.");
             } else if (Reason.INVALID_VALUE.equals(fromCasted.getReason())) {
-                toClientError.setKey(fromCasted.getKey().get());
-                toClientError.setReason("There was a invalid value for a key.");
+                builder.key(fromCasted.getKey().get());
+                if (fromCasted.getValue().isPresent()) {
+                    builder.actual(fromCasted.getValue().get());
+                }
+                builder.reason("There was a invalid value for a key.");
             } else if (Reason.UNKNOWN_KEY.equals(fromCasted.getReason())) {
-                toClientError.setKey(fromCasted.getKey().get());
-                toClientError.setReason("There was a unexpected key in the request body.");
+                builder.key(fromCasted.getKey().get());
+                builder.reason("There was a unexpected key in the request body.");
             } else if (Reason.INVALID_PAYLOAD.equals(fromCasted.getReason())) {
-                toClientError.setReason("The payload could not be parsed.");
+                builder.reason("The payload could not be parsed.");
             } else if (Reason.UNKNOWN.equals(fromCasted.getReason())) {
-                toClientError.setReason("A unknown problem occurred parsing request body.");
+                builder.reason("A unknown problem occurred parsing request body.");
             }
-            to = Optional.of(toClientError);
+            to = Optional.of(builder.build());
         }
 
         return to;

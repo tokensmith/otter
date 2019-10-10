@@ -1,7 +1,7 @@
 package org.rootservices.otter.router.builder;
 
-import helper.entity.DummySession;
-import helper.entity.DummyUser;
+import helper.entity.model.DummySession;
+import helper.entity.model.DummyUser;
 import helper.fake.FakeResource;
 import org.junit.Test;
 import org.rootservices.otter.router.entity.between.Between;

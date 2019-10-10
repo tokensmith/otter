@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 public class JsonTranslator<T> {
     private ObjectReader objectReader;
     private ObjectWriter objectWriter;
-    private Class<T> type;
 
     // For Specific Exceptions.
     private static final String DUPLICATE_NAME = "key";
@@ -45,21 +44,23 @@ public class JsonTranslator<T> {
     public JsonTranslator(ObjectReader objectReader, ObjectWriter objectWriter, Class<T> type) {
         this.objectReader = objectReader;
         this.objectWriter = objectWriter;
-        this.type = type;
     }
 
     public T from(byte[] json) throws DeserializationException {
         T entity;
 
-
         try{
             entity = fromWithSpecificCause(json);
         } catch (DuplicateKeyException e) {
-            throw new DeserializationException(DUPLICATE_KEY_GENERIC_MSG, e.getKey(), Reason.DUPLICATE_KEY, e);
+            throw new DeserializationException(DUPLICATE_KEY_GENERIC_MSG, e.getKey(), null, Reason.DUPLICATE_KEY, e);
         } catch (InvalidValueException e) {
-            throw new DeserializationException(INVALID_VALUE_GENERIC_MSG, e.getKey(), Reason.INVALID_VALUE, e);
+            Optional<String> value = Optional.empty();
+            if (e.getValue() != null) {
+                value = Optional.of(e.getValue());
+            }
+            throw new DeserializationException(INVALID_VALUE_GENERIC_MSG, e.getKey(), value, Reason.INVALID_VALUE, e);
         } catch (UnknownKeyException e) {
-            throw new DeserializationException(UNKNOWN_KEY_GENERIC_MSG, e.getKey(), Reason.UNKNOWN_KEY, e);
+            throw new DeserializationException(UNKNOWN_KEY_GENERIC_MSG, e.getKey(), null, Reason.UNKNOWN_KEY, e);
         } catch (InvalidPayloadException e) {
             throw new DeserializationException(INVALID_PAYLOAD_GENERIC_MSG, Reason.INVALID_PAYLOAD, e);
         }
@@ -88,7 +89,11 @@ public class JsonTranslator<T> {
         } catch (InvalidFormatException e) {
             String key = e.getPath().get(0).getFieldName();
             String msg = String.format(INVALID_VALUE_MSG, key);
-            throw new InvalidValueException(msg, e, key);
+            String value = null;
+            if (e.getValue() != null) {
+                value = e.getValue().toString();
+            }
+            throw new InvalidValueException(msg, e, key, value);
         } catch (JsonMappingException e) {
             throw new InvalidPayloadException(INVALID_PAYLOAD_MSG, e);
         } catch (IOException e) {
