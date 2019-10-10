@@ -2,6 +2,7 @@ package org.rootservices.otter.controller.error;
 
 
 import org.rootservices.otter.controller.RestResource;
+import org.rootservices.otter.controller.builder.ClientErrorBuilder;
 import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -15,12 +16,10 @@ import java.util.Optional;
 public class NotFoundRestResource<U extends DefaultUser> extends RestResource<U, ClientError> {
 
     protected ClientError to(RestRequest<U, ClientError> from) {
-        ClientError to = new ClientError(
-                ClientError.Source.URL,
-                null,
-                from.getPathWithParams(),
-                new ArrayList<>()
-        );
+        ClientError to = new ClientErrorBuilder()
+                .source(ClientError.Source.URL)
+                .actual(from.getPathWithParams())
+                .build();
         return to;
     }
     

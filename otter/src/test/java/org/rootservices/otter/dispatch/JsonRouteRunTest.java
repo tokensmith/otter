@@ -250,7 +250,7 @@ public class JsonRouteRunTest {
         ask.setBody(Optional.of(json.getBytes()));
 
 
-        byte[] response = "{\"source\":\"BODY\",\"key\":\"integer\",\"actual\":null,\"expected\":null,\"reason\":\"There was a invalid value for a key.\"}".getBytes();
+        byte[] response = "{\"source\":\"BODY\",\"key\":\"integer\",\"actual\":\"not a integer\",\"expected\":[],\"reason\":\"There was a invalid value for a key.\"}".getBytes();
         testRun(route, Method.POST, StatusCode.BAD_REQUEST, Optional.of(json.getBytes()), Optional.of(response));
     }
 

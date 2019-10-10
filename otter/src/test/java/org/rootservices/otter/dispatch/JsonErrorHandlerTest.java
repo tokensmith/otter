@@ -114,8 +114,8 @@ public class JsonErrorHandlerTest {
 
         RestErrorResponse response = FixtureFactory.makeRestErrorResponse();
 
-        InvalidValueException ive = new InvalidValueException("", null, "id");
-        DeserializationException cause = new DeserializationException("", "id", Reason.INVALID_VALUE, ive);
+        InvalidValueException ive = new InvalidValueException("", null, "id", "not and integer");
+        DeserializationException cause = new DeserializationException("", "id", null, Reason.INVALID_VALUE, ive);
 
         Answer actual = subject.run(request, response, cause);
 

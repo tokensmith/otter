@@ -25,6 +25,14 @@ public class ClientError implements Translatable {
         this.expected = expected;
     }
 
+    public ClientError(Source source, String key, String actual, List<String> expected, String reason) {
+        this.source = source;
+        this.key = key;
+        this.actual = actual;
+        this.expected = expected;
+        this.reason = reason;
+    }
+
     public Source getSource() {
         return source;
     }
