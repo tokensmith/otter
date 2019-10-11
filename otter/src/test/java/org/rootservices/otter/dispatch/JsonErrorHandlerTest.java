@@ -13,6 +13,7 @@ import org.rootservices.otter.dispatch.entity.RestErrorRequest;
 import org.rootservices.otter.dispatch.entity.RestErrorResponse;
 import org.rootservices.otter.dispatch.translator.rest.*;
 import org.rootservices.otter.router.entity.Method;
+import org.rootservices.otter.router.entity.RestRoute;
 import org.rootservices.otter.router.entity.io.Answer;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.config.TranslatorAppFactory;
@@ -131,5 +132,11 @@ public class JsonErrorHandlerTest {
         assertThat(actualPayload, is(notNullValue()));
         assertThat(actualPayload.getError(), is(notNullValue()));
         assertThat(actualPayload.getDescription(), is(notNullValue()));
+    }
+
+    @Test
+    public void payloadToBytesWhenNoPayloadShouldBeEmpty() {
+        Optional<byte[]> actual = subject.payloadToBytes(Optional.empty());
+        assertThat(actual.isPresent(), is(false));
     }
 }

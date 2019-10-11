@@ -78,12 +78,13 @@ public class JsonErrorHandler<U extends DefaultUser, P> implements RestErrorHand
 
     protected Optional<byte[]> payloadToBytes(Optional<P> payload) {
         Optional<byte[]> out = Optional.empty();
-        try {
-            out = Optional.of(jsonTranslator.to(payload));
-        } catch (ToJsonException e) {
-            LOGGER.error(e.getMessage(), e);
+        if (payload.isPresent()) {
+            try {
+                out = Optional.of(jsonTranslator.to(payload.get()));
+            } catch (ToJsonException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
-
         return out;
     }
 }

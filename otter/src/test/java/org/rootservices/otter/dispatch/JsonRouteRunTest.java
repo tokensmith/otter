@@ -36,7 +36,7 @@ public class JsonRouteRunTest {
 
 
     public RestRoute<DummyUser, DummyPayload> rawPayloadRestResource() {
-        JsonTranslator<DummyPayload> translator = appFactory.jsonTranslator(DummyPayload.class);
+        JsonTranslator<AlternatePayload> translator = appFactory.jsonTranslator(AlternatePayload.class);
         RawPayloadRestResource rawPayloadRestResource = new RawPayloadRestResource(translator);
         return new RestRoute<>(
                 rawPayloadRestResource, new ArrayList<>(), new ArrayList<>()

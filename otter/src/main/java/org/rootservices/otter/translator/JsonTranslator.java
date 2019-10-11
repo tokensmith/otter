@@ -102,7 +102,7 @@ public class JsonTranslator<T> {
         return entity;
     }
 
-    public byte[] to(Object object) throws ToJsonException {
+    public byte[] to(T object) throws ToJsonException {
         byte[] out;
 
         try {

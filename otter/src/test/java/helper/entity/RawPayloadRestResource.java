@@ -14,9 +14,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class RawPayloadRestResource extends RestResource<DummyUser, DummyPayload> {
-    private JsonTranslator<DummyPayload> translator;
+    private JsonTranslator<AlternatePayload> translator;
 
-    public RawPayloadRestResource(JsonTranslator<DummyPayload> translator) {
+    public RawPayloadRestResource(JsonTranslator<AlternatePayload> translator) {
         this.translator = translator;
     }
 
