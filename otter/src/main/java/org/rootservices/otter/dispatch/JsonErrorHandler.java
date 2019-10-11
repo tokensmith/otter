@@ -41,11 +41,15 @@ public class JsonErrorHandler<U extends DefaultUser, P> implements RestErrorHand
         RestResponse<P> responseToResource = restResponseTranslator.to(response);
         RestResponse<P> responseFromResource = execute(resource, requestToResource, responseToResource, cause);
 
-        // response entity marshalling
+        Optional<byte[]> out = Optional.empty();
         Answer answer = restResponseTranslator.from(responseFromResource);
-        Optional<byte[]> out = payloadToBytes(responseFromResource.getPayload());
+        if(responseFromResource.getPayload().isPresent()) {
+            out = payloadToBytes(responseFromResource.getPayload());
+            answer.setPayload(out);
+        } else if (responseFromResource.getRawPayload().isPresent()) {
+            out = responseFromResource.getRawPayload();
+        }
         answer.setPayload(out);
-
         return answer;
     }
 
@@ -78,12 +82,13 @@ public class JsonErrorHandler<U extends DefaultUser, P> implements RestErrorHand
 
     protected Optional<byte[]> payloadToBytes(Optional<P> payload) {
         Optional<byte[]> out = Optional.empty();
-        try {
-            out = Optional.of(jsonTranslator.to(payload));
-        } catch (ToJsonException e) {
-            LOGGER.error(e.getMessage(), e);
+        if (payload.isPresent()) {
+            try {
+                out = Optional.of(jsonTranslator.to(payload.get()));
+            } catch (ToJsonException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
-
         return out;
     }
 }

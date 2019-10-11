@@ -1,7 +1,8 @@
 package helper.entity;
 
 import helper.entity.model.AlternatePayload;
-import helper.entity.model.DummyPayload;
+import helper.entity.model.DummyErrorPayload;
+import helper.entity.model.DummyErrorPayload;
 import helper.entity.model.DummyUser;
 import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.StatusCode;
@@ -13,10 +14,10 @@ import org.rootservices.otter.translator.exception.ToJsonException;
 import java.util.Optional;
 import java.util.UUID;
 
-public class RawPayloadRestResource extends RestResource<DummyUser, DummyPayload> {
+public class RawPayloadErrorRestResource extends RestResource<DummyUser, DummyErrorPayload> {
     private JsonTranslator<AlternatePayload> translator;
 
-    public RawPayloadRestResource(JsonTranslator<AlternatePayload> translator) {
+    public RawPayloadErrorRestResource(JsonTranslator<AlternatePayload> translator) {
         this.translator = translator;
     }
 
@@ -33,8 +34,8 @@ public class RawPayloadRestResource extends RestResource<DummyUser, DummyPayload
     }
 
     @Override
-    public RestResponse<DummyPayload> get(RestRequest<DummyUser, DummyPayload> request, RestResponse<DummyPayload> response) {
-        response.setStatusCode(StatusCode.OK);
+    public RestResponse<DummyErrorPayload> get(RestRequest<DummyUser, DummyErrorPayload> request, RestResponse<DummyErrorPayload> response) {
+        response.setStatusCode(StatusCode.BAD_REQUEST);
 
         Optional<byte[]> payload = payload();
         response.setRawPayload(payload);
@@ -43,8 +44,8 @@ public class RawPayloadRestResource extends RestResource<DummyUser, DummyPayload
     }
 
     @Override
-    public RestResponse<DummyPayload> post(RestRequest<DummyUser, DummyPayload> request, RestResponse<DummyPayload> response) {
-        response.setStatusCode(StatusCode.CREATED);
+    public RestResponse<DummyErrorPayload> post(RestRequest<DummyUser, DummyErrorPayload> request, RestResponse<DummyErrorPayload> response) {
+        response.setStatusCode(StatusCode.BAD_REQUEST);
 
         Optional<byte[]> payload = payload();
         response.setRawPayload(payload);
@@ -53,8 +54,8 @@ public class RawPayloadRestResource extends RestResource<DummyUser, DummyPayload
     }
 
     @Override
-    public RestResponse<DummyPayload> put(RestRequest<DummyUser, DummyPayload> request, RestResponse<DummyPayload> response) {
-        response.setStatusCode(StatusCode.OK);
+    public RestResponse<DummyErrorPayload> put(RestRequest<DummyUser, DummyErrorPayload> request, RestResponse<DummyErrorPayload> response) {
+        response.setStatusCode(StatusCode.BAD_REQUEST);
 
         Optional<byte[]> payload = payload();
         response.setRawPayload(payload);
@@ -63,8 +64,8 @@ public class RawPayloadRestResource extends RestResource<DummyUser, DummyPayload
     }
 
     @Override
-    public RestResponse<DummyPayload> delete(RestRequest<DummyUser, DummyPayload> request, RestResponse<DummyPayload> response) {
-        response.setStatusCode(StatusCode.OK);
+    public RestResponse<DummyErrorPayload> delete(RestRequest<DummyUser, DummyErrorPayload> request, RestResponse<DummyErrorPayload> response) {
+        response.setStatusCode(StatusCode.BAD_REQUEST);
 
         Optional<byte[]> payload = payload();
         response.setRawPayload(payload);
@@ -73,8 +74,8 @@ public class RawPayloadRestResource extends RestResource<DummyUser, DummyPayload
     }
 
     @Override
-    public RestResponse<DummyPayload> connect(RestRequest<DummyUser, DummyPayload> request, RestResponse<DummyPayload> response) {
-        response.setStatusCode(StatusCode.OK);
+    public RestResponse<DummyErrorPayload> connect(RestRequest<DummyUser, DummyErrorPayload> request, RestResponse<DummyErrorPayload> response) {
+        response.setStatusCode(StatusCode.BAD_REQUEST);
 
         Optional<byte[]> payload = payload();
         response.setRawPayload(payload);
@@ -83,8 +84,8 @@ public class RawPayloadRestResource extends RestResource<DummyUser, DummyPayload
     }
 
     @Override
-    public RestResponse<DummyPayload> options(RestRequest<DummyUser, DummyPayload> request, RestResponse<DummyPayload> response) {
-        response.setStatusCode(StatusCode.OK);
+    public RestResponse<DummyErrorPayload> options(RestRequest<DummyUser, DummyErrorPayload> request, RestResponse<DummyErrorPayload> response) {
+        response.setStatusCode(StatusCode.BAD_REQUEST);
 
         Optional<byte[]> payload = payload();
         response.setRawPayload(payload);
@@ -93,8 +94,8 @@ public class RawPayloadRestResource extends RestResource<DummyUser, DummyPayload
     }
 
     @Override
-    public RestResponse<DummyPayload> trace(RestRequest<DummyUser, DummyPayload> request, RestResponse<DummyPayload> response) {
-        response.setStatusCode(StatusCode.OK);
+    public RestResponse<DummyErrorPayload> trace(RestRequest<DummyUser, DummyErrorPayload> request, RestResponse<DummyErrorPayload> response) {
+        response.setStatusCode(StatusCode.BAD_REQUEST);
 
         Optional<byte[]> payload = payload();
         response.setRawPayload(payload);
@@ -103,8 +104,8 @@ public class RawPayloadRestResource extends RestResource<DummyUser, DummyPayload
     }
 
     @Override
-    public RestResponse<DummyPayload> patch(RestRequest<DummyUser, DummyPayload> request, RestResponse<DummyPayload> response) {
-        response.setStatusCode(StatusCode.OK);
+    public RestResponse<DummyErrorPayload> patch(RestRequest<DummyUser, DummyErrorPayload> request, RestResponse<DummyErrorPayload> response) {
+        response.setStatusCode(StatusCode.BAD_REQUEST);
 
         Optional<byte[]> payload = payload();
         response.setRawPayload(payload);
@@ -113,8 +114,8 @@ public class RawPayloadRestResource extends RestResource<DummyUser, DummyPayload
     }
 
     @Override
-    public RestResponse<DummyPayload> head(RestRequest<DummyUser, DummyPayload> request, RestResponse<DummyPayload> response) {
-        response.setStatusCode(StatusCode.OK);
+    public RestResponse<DummyErrorPayload> head(RestRequest<DummyUser, DummyErrorPayload> request, RestResponse<DummyErrorPayload> response) {
+        response.setStatusCode(StatusCode.BAD_REQUEST);
 
         Optional<byte[]> payload = payload();
         response.setRawPayload(payload);

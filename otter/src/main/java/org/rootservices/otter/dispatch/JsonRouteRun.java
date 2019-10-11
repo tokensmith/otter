@@ -305,7 +305,7 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
 
         if (payload.isPresent()) {
             try {
-                out = Optional.of(jsonTranslator.to(payload));
+                out = Optional.of(jsonTranslator.to(payload.get()));
             } catch (ToJsonException e) {
                 LOGGER.error(e.getMessage(), e);
             }
