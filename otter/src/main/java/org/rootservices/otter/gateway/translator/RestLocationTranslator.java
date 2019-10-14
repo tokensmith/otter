@@ -63,12 +63,18 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
                 contentTypes = new ArrayList<>();
             }
 
+            List<MimeType> accepts = from.getAccepts().get(method);
+            if (accepts == null) {
+                accepts = new ArrayList<>();
+            }
+
             mergedRestErrors = mergeRestErrors(mergedRestErrors, from.getRestErrors());
             Map<StatusCode, RestErrorHandler<U>> errorHandlers = toErrorHandlers(mergedRestErrors);
 
             RestLocationBuilder<U, P> locationBuilder = new RestLocationBuilder<U, P>()
                     .path(from.getRegex())
                     .contentTypes(contentTypes)
+                    .accepts(accepts)
                     .restResource(from.getRestResource())
                     .payload(from.getPayload())
                     .before(

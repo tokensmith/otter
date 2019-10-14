@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 public class RestLocationBuilder<U extends DefaultUser, P> {
     private Pattern pattern;
     private List<MimeType> contentTypes = new ArrayList<>();
+    private List<MimeType> accepts = new ArrayList<>();
     private RestResource<U, P> restResource;
     private Class<P> payload;
     private List<RestBetween<U>> before = new ArrayList<>();
@@ -50,6 +51,16 @@ public class RestLocationBuilder<U extends DefaultUser, P> {
 
     public RestLocationBuilder<U, P> contentType(MimeType contentType) {
         this.contentTypes.add(contentType);
+        return this;
+    }
+
+    public RestLocationBuilder<U, P> accepts(List<MimeType> contentTypes) {
+        this.accepts = contentTypes;
+        return this;
+    }
+
+    public RestLocationBuilder<U, P> accept(MimeType contentType) {
+        this.accepts.add(contentType);
         return this;
     }
 
@@ -114,6 +125,6 @@ public class RestLocationBuilder<U extends DefaultUser, P> {
                 new RestErrorResponseTranslator()
         );
 
-        return new Location(pattern, contentTypes, routeRunner, errorRouteRunners);
+        return new Location(pattern, contentTypes, accepts, routeRunner, errorRouteRunners);
     }
 }

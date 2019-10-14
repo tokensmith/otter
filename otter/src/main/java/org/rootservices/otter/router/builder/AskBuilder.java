@@ -14,9 +14,11 @@ import java.util.regex.Matcher;
 public class AskBuilder {
     private Optional<Matcher> matcher;
     private List<MimeType> possibleContentTypes;
+    private List<MimeType> possibleAccepts;
     private Method method;
     private String pathWithParams;
     private MimeType contentType;
+    private MimeType accept;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
     private Map<String, List<String>> queryParams;
@@ -35,6 +37,11 @@ public class AskBuilder {
         return this;
     }
 
+    public AskBuilder possibleAccepts(List<MimeType> possibleAccepts) {
+        this.possibleAccepts = possibleAccepts;
+        return this;
+    }
+
     public AskBuilder method(Method method) {
         this.method = method;
         return this;
@@ -47,6 +54,11 @@ public class AskBuilder {
 
     public AskBuilder contentType(MimeType contentType) {
         this.contentType = contentType;
+        return this;
+    }
+
+    public AskBuilder accept(MimeType accept) {
+        this.accept = accept;
         return this;
     }
 
@@ -86,6 +98,6 @@ public class AskBuilder {
     }
 
     public Ask build() {
-        return new Ask(this.matcher, this.possibleContentTypes, this.method, this.pathWithParams, this.contentType, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge, this.ipAddress);
+        return new Ask(this.matcher, this.possibleContentTypes, this.possibleAccepts, this.method, this.pathWithParams, this.contentType, this.accept, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge, this.ipAddress);
     }
 }

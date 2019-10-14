@@ -35,6 +35,7 @@ public class TargetBuilderTest {
         Target<DummySession, DummyUser> actual = subject.build();
 
         assertThat(actual.getContentTypes().size(), is(0));
+        assertThat(actual.getAccepts().size(), is(0));
         assertThat(actual.getMethods().size(), is(0));
         assertThat(actual.getBefore().size(), is(0));
         assertThat(actual.getAfter().size(), is(0));
@@ -78,13 +79,14 @@ public class TargetBuilderTest {
                 .build();
 
         FakeResource fakeResource = new FakeResource();
-        MimeType json = new MimeTypeBuilder().json().build();
+        MimeType html = new MimeTypeBuilder().html().build();
 
         Target<DummySession, DummyUser> actual = subject
                 .regex("/foo")
                 .method(Method.GET)
                 .method(Method.POST)
-                .contentType(json)
+                .contentType(html)
+                .accept(html)
                 .resource(fakeResource)
                 .before(new DummyBetween<>())
                 .before(new DummyBetween<>())
@@ -98,8 +100,11 @@ public class TargetBuilderTest {
         assertThat(actual.getMethods().get(1), is(Method.POST));
         assertThat(actual.getResource(), is(fakeResource));
         assertThat(actual.getContentTypes().size(), is(9));
-        assertThat(actual.getContentTypes().get(Method.GET).get(0), is(json));
-        assertThat(actual.getContentTypes().get(Method.POST).get(0), is(json));
+        assertThat(actual.getContentTypes().get(Method.GET).get(0), is(html));
+        assertThat(actual.getContentTypes().get(Method.POST).get(0), is(html));
+        assertThat(actual.getAccepts().size(), is(9));
+        assertThat(actual.getAccepts().get(Method.GET).get(0), is(html));
+        assertThat(actual.getAccepts().get(Method.POST).get(0), is(html));
         assertThat(actual.getBefore().size(), is(2));
         assertThat(actual.getAfter().size(), is(2));
 
@@ -114,7 +119,7 @@ public class TargetBuilderTest {
     }
 
     @Test
-    public void buildWhenMethodContentTypeShouldBeOk() {
+    public void buildWhenMethodContentAndAcceptTypeShouldBeOk() {
         TargetBuilder<DummySession, DummyUser> subject = subject();
 
         FakeResource notFoundResource = new FakeResource();
@@ -130,8 +135,10 @@ public class TargetBuilderTest {
                 .regex("/foo")
                 .method(Method.GET)
                 .method(Method.POST)
-                .contentType(Method.GET, jwt)
-                .contentType(json)
+                .contentType(Method.GET, json)
+                .contentType(Method.POST, json)
+                .accept(Method.GET, jwt)
+                .accept(Method.POST, json)
                 .resource(fakeResource)
                 .before(new DummyBetween<>())
                 .before(new DummyBetween<>())
@@ -142,10 +149,12 @@ public class TargetBuilderTest {
                 .build();
 
 
-        assertThat(actual.getContentTypes().size(), is(9));
-        assertThat(actual.getContentTypes().get(Method.GET).get(0), is(jwt));
-        assertThat(actual.getContentTypes().get(Method.GET).get(1), is(json));
+        assertThat(actual.getContentTypes().size(), is(2));
+        assertThat(actual.getContentTypes().get(Method.GET).get(0), is(json));
         assertThat(actual.getContentTypes().get(Method.POST).get(0), is(json));
+
+        assertThat(actual.getAccepts().get(Method.GET).get(0), is(jwt));
+        assertThat(actual.getAccepts().get(Method.POST).get(0), is(json));
     }
 
     @Test

@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 public class LocationBuilder<S extends DefaultSession, U extends DefaultUser> {
     private Pattern pattern;
     private List<MimeType> contentTypes = new ArrayList<>();
+    private List<MimeType> accepts = new ArrayList<>();
     private Resource<S, U> resource;
     private List<Between<S, U>> before = new ArrayList<>();
     private List<Between<S, U>> after = new ArrayList<>();
@@ -46,6 +47,16 @@ public class LocationBuilder<S extends DefaultSession, U extends DefaultUser> {
 
     public LocationBuilder<S, U> contentType(MimeType contentType) {
         this.contentTypes.add(contentType);
+        return this;
+    }
+
+    public LocationBuilder<S, U> accepts(List<MimeType> contentTypes) {
+        this.accepts = contentTypes;
+        return this;
+    }
+
+    public LocationBuilder<S, U> accept(MimeType contentType) {
+        this.accepts.add(contentType);
         return this;
     }
 
@@ -102,6 +113,6 @@ public class LocationBuilder<S extends DefaultSession, U extends DefaultUser> {
 
 
         RouteRunner routeRunner = new RouteRun<S, U>(route, requestTranslator, answerTranslator, errorResources);
-        return new Location(pattern, contentTypes, routeRunner, errorRouteRunners);
+        return new Location(pattern, contentTypes, accepts, routeRunner, errorRouteRunners);
     }
 }

@@ -22,6 +22,7 @@ public class RequestBuilder<S, U>  {
     private Method method;
     private String pathWithParams;
     private MimeType contentType;
+    private MimeType accept;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
     private Map<String, List<String>> queryParams;
@@ -47,6 +48,11 @@ public class RequestBuilder<S, U>  {
 
     public RequestBuilder<S, U> contentType(MimeType contentType) {
         this.contentType = contentType;
+        return this;
+    }
+
+    public RequestBuilder<S, U> accept(MimeType accept) {
+        this.accept = accept;
         return this;
     }
 
@@ -86,6 +92,6 @@ public class RequestBuilder<S, U>  {
     }
 
     public Request<S, U> build() {
-        return new Request<S, U>(this.matcher, this.method, this.pathWithParams, this.contentType, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge, this.ipAddress);
+        return new Request<S, U>(this.matcher, this.method, this.pathWithParams, this.contentType, this.accept, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge, this.ipAddress);
     }
 }

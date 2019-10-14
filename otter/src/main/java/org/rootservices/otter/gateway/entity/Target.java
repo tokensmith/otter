@@ -17,6 +17,7 @@ public class Target<S extends DefaultSession, U extends DefaultUser> {
     private String regex;
     private Resource<S, U> resource;
     private Map<Method, List<MimeType>> contentTypes;
+    private Map<Method, List<MimeType>> accepts;
     private List<Label> labels;
     private List<Between<S, U>> before;
     private List<Between<S, U>> after;
@@ -24,11 +25,12 @@ public class Target<S extends DefaultSession, U extends DefaultUser> {
     private Map<StatusCode, Resource<S, U>> errorResources;
     private String groupName;
 
-    public Target(List<Method> methods, String regex, Resource<S, U> resource, Map<Method, List<MimeType>> contentTypes, List<Label> labels, List<Between<S, U>> before, List<Between<S, U>> after, Map<StatusCode, ErrorTarget<S, U>> errorTargets, Map<StatusCode, Resource<S, U>> errorResources, String groupName) {
+    public Target(List<Method> methods, String regex, Resource<S, U> resource, Map<Method, List<MimeType>> contentTypes, Map<Method, List<MimeType>> accepts, List<Label> labels, List<Between<S, U>> before, List<Between<S, U>> after, Map<StatusCode, ErrorTarget<S, U>> errorTargets, Map<StatusCode, Resource<S, U>> errorResources, String groupName) {
         this.methods = methods;
         this.regex = regex;
         this.resource = resource;
         this.contentTypes = contentTypes;
+        this.accepts = accepts;
         this.labels = labels;
         this.before = before;
         this.after = after;
@@ -51,6 +53,10 @@ public class Target<S extends DefaultSession, U extends DefaultUser> {
 
     public Map<Method, List<MimeType>> getContentTypes() {
         return contentTypes;
+    }
+
+    public Map<Method, List<MimeType>> getAccepts() {
+        return accepts;
     }
 
     public List<Label> getLabels() {

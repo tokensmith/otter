@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.translator.config.TranslatorAppFactory;
 import suite.IntegrationTestSuite;
@@ -48,7 +49,8 @@ public class HelloRestResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(helloURI)
-                .addHeader("Content-Type", "application/json; charset=utf-8;")
+                .addHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
+                .addHeader(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
                 .execute();
 
         Response response = f.get();
@@ -72,7 +74,8 @@ public class HelloRestResourceTest {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(helloURI))
                 .timeout(Duration.ofSeconds(2))
-                .header("Content-Type", "application/json; charset=utf-8;")
+                .header(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
+                .header(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
                 .build();
         HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
 
@@ -95,7 +98,8 @@ public class HelloRestResourceTest {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(helloURI))
                 .timeout(Duration.ofSeconds(2))
-                .header("Content-Type", "application/json; charset=utf-8;")
+                .header(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
+                .header(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
                 .header("Accept-Encoding", "gzip")
                 .build();
 
@@ -127,7 +131,8 @@ public class HelloRestResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(helloURI)
-                .addHeader("Content-Type", "application/json; charset=utf-8;")
+                .addHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
+                .addHeader(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
                 .setBody(om.writeValueAsString(hello))
                 .execute();
 
@@ -147,7 +152,8 @@ public class HelloRestResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(helloURI)
-                .addHeader("Content-Type", "application/json; charset=utf-8;")
+                .addHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
+                .addHeader(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
                 .execute();
 
         Response response = f.get();
@@ -193,7 +199,8 @@ public class HelloRestResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(helloURI)
-                .addHeader("Content-Type", "application/json; charset=utf-8;")
+                .addHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
+                .addHeader(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
                 .execute();
 
         Response response = f.get();

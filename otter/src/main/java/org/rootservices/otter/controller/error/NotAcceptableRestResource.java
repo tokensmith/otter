@@ -13,18 +13,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 
-public class MediaTypeRestResource<U extends DefaultUser> extends RestResource<U, ClientError> {
+public class NotAcceptableRestResource<U extends DefaultUser> extends RestResource<U, ClientError> {
 
     protected StatusCode statusCode() {
-        return statusCode();
+        return StatusCode.NOT_ACCEPTABLE;
     }
-    
+
     protected ClientError to(RestRequest<U, ClientError> from) {
         ClientError to = new ClientErrorBuilder()
                 .source(ClientError.Source.HEADER)
                 .key(Header.CONTENT_TYPE.toString())
-                .actual(from.getContentType().toString())
-                .expected(from.getPossibleContentTypes().stream()
+                .actual(from.getAccept().toString())
+                .expected(from.getPossibleAccepts().stream()
                         .map( Object::toString )
                         .collect(Collectors.toList()))
                 .build();

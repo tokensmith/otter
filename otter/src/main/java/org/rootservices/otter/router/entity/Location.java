@@ -17,12 +17,14 @@ import java.util.regex.Pattern;
 public class Location {
     private Pattern pattern;
     private List<MimeType> contentTypes;
+    private List<MimeType> accepts;
     private RouteRunner routeRunner;
     private Map<StatusCode, RouteRunner> errorRouteRunners = new HashMap<>();
 
-    public Location(Pattern pattern, List<MimeType> contentTypes, RouteRunner routeRunner, Map<StatusCode, RouteRunner> errorRouteRunners) {
+    public Location(Pattern pattern, List<MimeType> contentTypes, List<MimeType> accepts, RouteRunner routeRunner, Map<StatusCode, RouteRunner> errorRouteRunners) {
         this.pattern = pattern;
         this.contentTypes = contentTypes;
+        this.accepts = accepts;
         this.routeRunner = routeRunner;
         this.errorRouteRunners = errorRouteRunners;
     }
@@ -41,6 +43,14 @@ public class Location {
 
     public void setContentTypes(List<MimeType> contentTypes) {
         this.contentTypes = contentTypes;
+    }
+
+    public List<MimeType> getAccepts() {
+        return accepts;
+    }
+
+    public void setAccepts(List<MimeType> accepts) {
+        this.accepts = accepts;
     }
 
     public RouteRunner getRouteRunner() {

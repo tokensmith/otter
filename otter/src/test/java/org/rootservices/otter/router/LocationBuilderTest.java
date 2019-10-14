@@ -63,6 +63,7 @@ public class LocationBuilderTest {
 
         Location actual = subject.path(regex)
                 .contentTypes(contentTypes)
+                .accepts(contentTypes)
                 .resource(resource)
                 .build();
 
@@ -72,6 +73,8 @@ public class LocationBuilderTest {
         assertThat(actual.getPattern().pattern(), is(regex));
         assertThat(actual.getContentTypes(), is(notNullValue()));
         assertThat(actual.getContentTypes().size(), is(0));
+        assertThat(actual.getAccepts(), is(notNullValue()));
+        assertThat(actual.getAccepts().size(), is(0));
 
         assertThat(actual.getErrorRouteRunners(), is(notNullValue()));
         assertThat(actual.getErrorRouteRunners().size(), is(0));
@@ -80,11 +83,12 @@ public class LocationBuilderTest {
     @Test
     public void pathAndResourceAndContentTypeShouldBeOK() {
         String regex = "/foo/(.*)";
-        MimeType json = new MimeTypeBuilder().json().build();
+        MimeType html = new MimeTypeBuilder().html().build();
         FakeResource resource = new FakeResource();
 
         Location actual = subject.path(regex)
-                .contentType(json)
+                .contentType(html)
+                .accept(html)
                 .resource(resource)
                 .build();
 
@@ -94,6 +98,8 @@ public class LocationBuilderTest {
         assertThat(actual.getPattern().pattern(), is(regex));
         assertThat(actual.getContentTypes(), is(notNullValue()));
         assertThat(actual.getContentTypes().size(), is(1));
+        assertThat(actual.getAccepts(), is(notNullValue()));
+        assertThat(actual.getAccepts().size(), is(1));
 
         assertThat(actual.getErrorRouteRunners(), is(notNullValue()));
         assertThat(actual.getErrorRouteRunners().size(), is(0));
@@ -109,6 +115,7 @@ public class LocationBuilderTest {
 
         Location actual = subject.path(regex)
                 .contentTypes(contentTypes)
+                .accepts(contentTypes)
                 .resource(resource)
                 .errorRouteRunner(StatusCode.NOT_FOUND, errorResource)
                 .build();
@@ -127,6 +134,7 @@ public class LocationBuilderTest {
 
         Location actual = subject.path(regex)
                 .contentTypes(contentTypes)
+                .accepts(contentTypes)
                 .resource(resource)
                 .errorRouteRunners(errorRoutes)
                 .build();

@@ -15,9 +15,11 @@ public class RestBtwnRequestTranslator<U, P> {
 
         to.setMatcher(from.getMatcher());
         to.setPossibleContentTypes(from.getPossibleContentTypes());
+        to.setPossibleAccepts(from.getPossibleAccepts());
         to.setMethod(from.getMethod());
         to.setPathWithParams(from.getPathWithParams());
         to.setContentType(from.getContentType());
+        to.setAccept(from.getAccept());
         to.setHeaders(from.getHeaders());
         to.setCookies(from.getCookies());
         to.setQueryParams(from.getQueryParams());
@@ -36,9 +38,11 @@ public class RestBtwnRequestTranslator<U, P> {
 
         to.setMatcher(from.getMatcher());
         to.setPossibleContentTypes(from.getPossibleContentTypes());
+        to.setPossibleAccepts(from.getPossibleAccepts());
         to.setMethod(from.getMethod());
         to.setPathWithParams(from.getPathWithParams());
         to.setContentType(from.getContentType());
+        to.setAccept(from.getAccept());
         to.setHeaders(from.getHeaders());
         to.setCookies(from.getCookies());
         to.setQueryParams(from.getQueryParams());

@@ -72,6 +72,7 @@ public class RestLocationBuilderTest {
                 .payload(DummyPayload.class)
                 .path(regex)
                 .contentTypes(contentTypes)
+                .accepts(contentTypes)
                 .restResource(resource)
                 .build();
 
@@ -81,6 +82,8 @@ public class RestLocationBuilderTest {
         assertThat(actual.getPattern().pattern(), is(regex));
         assertThat(actual.getContentTypes(), is(notNullValue()));
         assertThat(actual.getContentTypes().size(), is(0));
+        assertThat(actual.getAccepts(), is(notNullValue()));
+        assertThat(actual.getAccepts().size(), is(0));
 
         assertThat(actual.getErrorRouteRunners(), is(notNullValue()));
         assertThat(actual.getErrorRouteRunners().size(), is(0));
@@ -96,6 +99,7 @@ public class RestLocationBuilderTest {
                 .payload(DummyPayload.class)
                 .path(regex)
                 .contentType(json)
+                .accept(json)
                 .restResource(resource)
                 .build();
 
@@ -105,6 +109,8 @@ public class RestLocationBuilderTest {
         assertThat(actual.getPattern().pattern(), is(regex));
         assertThat(actual.getContentTypes(), is(notNullValue()));
         assertThat(actual.getContentTypes().size(), is(1));
+        assertThat(actual.getAccepts(), is(notNullValue()));
+        assertThat(actual.getAccepts().size(), is(1));
 
         assertThat(actual.getErrorRouteRunners(), is(notNullValue()));
         assertThat(actual.getErrorRouteRunners().size(), is(0));
@@ -122,6 +128,7 @@ public class RestLocationBuilderTest {
                 .payload(DummyPayload.class)
                 .path(regex)
                 .contentTypes(contentTypes)
+                .accepts(contentTypes)
                 .restResource(resource)
                 .errorRouteRunner(StatusCode.NOT_FOUND, errorRouteRunner)
                 .build();
@@ -142,6 +149,7 @@ public class RestLocationBuilderTest {
             .payload(DummyPayload.class)
             .path(regex)
             .contentTypes(contentTypes)
+            .accepts(contentTypes)
             .restResource(resource)
             .restErrorHandlers(errorHandlers)
             .build();

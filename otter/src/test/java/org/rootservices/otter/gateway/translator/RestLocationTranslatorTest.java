@@ -160,6 +160,8 @@ public class RestLocationTranslatorTest {
         assertThat(actual.get(Method.GET).getPattern(), Is.is(notNullValue()));
         assertThat(actual.get(Method.GET).getContentTypes(), Is.is(notNullValue()));
         assertThat(actual.get(Method.GET).getContentTypes().size(), Is.is(1));
+        assertThat(actual.get(Method.GET).getAccepts(), Is.is(notNullValue()));
+        assertThat(actual.get(Method.GET).getAccepts().size(), Is.is(1));
 
         assertThat(actual.get(Method.GET).getErrorRouteRunners(), Is.is(notNullValue()));
         assertThat(actual.get(Method.GET).getErrorRouteRunners().size(), Is.is(1));
@@ -182,6 +184,8 @@ public class RestLocationTranslatorTest {
         assertThat(actual.get(Method.POST).getPattern(), Is.is(notNullValue()));
         assertThat(actual.get(Method.POST).getContentTypes(), Is.is(notNullValue()));
         assertThat(actual.get(Method.POST).getContentTypes().size(), Is.is(1));
+        assertThat(actual.get(Method.GET).getAccepts(), Is.is(notNullValue()));
+        assertThat(actual.get(Method.GET).getAccepts().size(), Is.is(1));
 
         assertThat(actual.get(Method.POST).getErrorRouteRunners(), Is.is(notNullValue()));
         assertThat(actual.get(Method.POST).getErrorRouteRunners().size(), Is.is(1));

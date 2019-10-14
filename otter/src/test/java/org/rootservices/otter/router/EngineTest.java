@@ -44,12 +44,14 @@ public class EngineTest {
         subject = new Engine(mockDispatcher, mockNotFoundDispatcher);
     }
 
-    public Ask askForEngineTests(Method method, String url, MimeType mimeType) {
+    public Ask askForEngineTests(Method method, String url, MimeType contentType, MimeType accept) {
         Ask ask = FixtureFactory.makeAsk();
         ask.setMethod(method);
         ask.setPathWithParams(url);
-        ask.setContentType(mimeType);
+        ask.setContentType(contentType);
+        ask.setAccept(accept);
         ask.setPossibleContentTypes(new ArrayList<>()); // empty list to make sure it gets assigned.
+        ask.setPossibleAccepts(new ArrayList<>()); // empty list to make sure it gets assigned.
         return ask;
     }
 
@@ -60,7 +62,7 @@ public class EngineTest {
         Optional<MatchedLocation> match = FixtureFactory.makeMatch(url);
 
         MimeType json = new MimeTypeBuilder().json().build();
-        Ask ask = askForEngineTests(method, url, json);
+        Ask ask = askForEngineTests(method, url, json, json);
         Answer answer = FixtureFactory.makeAnswer();
 
         RouteRunner mockRouteRunner = mock(RouteRunner.class);
@@ -71,6 +73,7 @@ public class EngineTest {
 
         Location location = new LocationBuilder<DummySession, DummyUser>()
                 .contentTypes(contentTypes)
+                .accepts(contentTypes)
                 .build();
 
         location.setRouteRunner(mockRouteRunner);
@@ -87,6 +90,8 @@ public class EngineTest {
         // these should have been assigned.
         assertThat(ask.getPossibleContentTypes().size(), is(1));
         assertThat(ask.getPossibleContentTypes(), is(contentTypes));
+        assertThat(ask.getPossibleAccepts().size(), is(1));
+        assertThat(ask.getPossibleAccepts(), is(contentTypes));
         assertThat(ask.getMatcher(), is(notNullValue()));
     }
 
@@ -139,6 +144,7 @@ public class EngineTest {
 
         Location location = new LocationBuilder<DummySession, DummyUser>()
                 .contentTypes(contentTypes)
+                .accepts(contentTypes)
                 .build();
 
         match.get().setLocation(location);
@@ -151,7 +157,7 @@ public class EngineTest {
         String url = "foo";
 
         MimeType json = new MimeTypeBuilder().json().build();
-        Ask ask = askForEngineTests(method, url, json);
+        Ask ask = askForEngineTests(method, url, json, json);
         Answer answer = FixtureFactory.makeAnswer();
 
         // dispatcher will return an empty response
@@ -179,29 +185,42 @@ public class EngineTest {
     }
 
     @Test
-    public void unsupportedMediaTypeWhenNotPresentShouldBeTrue() {
-        Optional<MatchedLocation> match = Optional.empty();
-        MimeType json = new MimeTypeBuilder().json().build();
-
-        Boolean actual = subject.unsupportedMediaType(match, json);
-
-        assertThat(actual, is(true));
-    }
-
-    @Test
-    public void unsupportedMediaTypeWhenNoContentTypesShouldBeTrue() {
+    public void toShouldBeOK() {
         String url = "foo";
         Optional<MatchedLocation> match = FixtureFactory.makeMatch(url);
-        match.get().getLocation().setContentTypes(new ArrayList<>()); // empty them out.
-        MimeType json = new MimeTypeBuilder().json().build();
 
-        Boolean actual = subject.unsupportedMediaType(match, json);
+        // location to html.
+        List<MimeType> contentTypes = new ArrayList<>();
+        MimeType form = new MimeTypeBuilder().form().build();
+        contentTypes.add(form);
+        match.get().getLocation().setContentTypes(contentTypes);
 
-        assertThat(actual, is(true));
+        // accepts
+        List<MimeType> accepts = new ArrayList<>();
+        MimeType html = new MimeTypeBuilder().html().build();
+        accepts.add(html);
+        match.get().getLocation().setAccepts(accepts);
+
+        Ask ask = askForEngineTests(Method.GET, url, form, html);
+
+        StatusCode actual = subject.to(match, ask);
+
+        assertThat(actual, is(StatusCode.OK));
     }
 
     @Test
-    public void unsupportedMediaTypeWhenContentTypesDoNotMatchShouldBeTrue() {
+    public void toShouldBeNotFound() {
+        MimeType json = new MimeTypeBuilder().json().build();
+        Optional<MatchedLocation> match = Optional.empty();
+        Ask ask = askForEngineTests(Method.GET, "foo", json, json);
+
+        StatusCode actual = subject.to(match, ask);
+
+        assertThat(actual, is(StatusCode.NOT_FOUND));
+    }
+
+    @Test
+    public void toShouldBeUnsupportedMediaType() {
         String url = "foo";
         Optional<MatchedLocation> match = FixtureFactory.makeMatch(url);
 
@@ -211,28 +230,37 @@ public class EngineTest {
         contentTypes.add(html);
         match.get().getLocation().setContentTypes(contentTypes);
 
-        // actual is json
-        MimeType json = new MimeTypeBuilder().json().build();
+        MimeType form = new MimeTypeBuilder().form().build();
+        Ask ask = askForEngineTests(Method.GET, url, form, form);
 
-        Boolean actual = subject.unsupportedMediaType(match, json);
+        StatusCode actual = subject.to(match, ask);
 
-        assertThat(actual, is(true));
+        assertThat(actual, is(StatusCode.UNSUPPORTED_MEDIA_TYPE));
     }
 
     @Test
-    public void unsupportedMediaTypeShouldBeFalse() {
+    public void toShouldBeNotAcceptable() {
         String url = "foo";
         Optional<MatchedLocation> match = FixtureFactory.makeMatch(url);
 
-        MimeType json = new MimeTypeBuilder().json().build();
-
-        // location to json.
+        // location to html.
         List<MimeType> contentTypes = new ArrayList<>();
-        contentTypes.add(json);
+        MimeType form = new MimeTypeBuilder().form().build();
+        contentTypes.add(form);
         match.get().getLocation().setContentTypes(contentTypes);
 
-        Boolean actual = subject.unsupportedMediaType(match, json);
+        // accepts
+        List<MimeType> accepts = new ArrayList<>();
+        MimeType html = new MimeTypeBuilder().html().build();
+        accepts.add(html);
+        match.get().getLocation().setAccepts(accepts);
 
-        assertThat(actual, is(false));
+        // wonky but it will make the result to not accepted.
+        MimeType json = new MimeTypeBuilder().json().build();
+        Ask ask = askForEngineTests(Method.GET, url, form, json);
+
+        StatusCode actual = subject.to(match, ask);
+
+        assertThat(actual, is(StatusCode.NOT_ACCEPTABLE));
     }
 }

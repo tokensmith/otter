@@ -8,6 +8,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.header.ContentType;
+import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.translator.config.TranslatorAppFactory;
 import suite.IntegrationTestSuite;
 import suite.ServletContainerTest;
@@ -42,7 +44,8 @@ public class BrokenRestResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(helloURI)
-                .addHeader("Content-Type", "application/json; charset=utf-8;")
+                .addHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
+                .addHeader(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
                 .execute();
 
         Response response = f.get();
@@ -59,7 +62,8 @@ public class BrokenRestResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(helloURI)
-                .addHeader("Content-Type", "application/json; charset=utf-8;")
+                .addHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
+                .addHeader(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
                 .execute();
 
         Response response = f.get();
@@ -76,7 +80,8 @@ public class BrokenRestResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(helloURI)
-                .addHeader("Content-Type", "application/json; charset=utf-8;")
+                .addHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
+                .addHeader(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
                 .execute();
 
         Response response = f.get();
@@ -93,7 +98,8 @@ public class BrokenRestResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(helloURI)
-                .addHeader("Content-Type", "application/json; charset=utf-8;")
+                .addHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
+                .addHeader(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
                 .execute();
 
         Response response = f.get();
@@ -110,7 +116,8 @@ public class BrokenRestResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(helloURI)
-                .addHeader("Content-Type", "application/json; charset=utf-8;")
+                .addHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
+                .addHeader(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
                 .execute();
 
         Response response = f.get();

@@ -7,6 +7,7 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.QueryStringToMap;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.io.Ask;
 import org.rootservices.otter.translator.MimeTypeTranslator;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
@@ -46,7 +48,7 @@ public class HttpServletRequestTranslatorTest {
     }
 
     @Test
-    public void fromWhenPostAndContentTypeIsJsonShouldTranslateOk() throws Exception {
+    public void fromWhenPostAndContentTypeIsJsonAndAcceptIsJsonShouldTranslateOk() throws Exception {
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         when(mockContainerRequest.getMethod()).thenReturn("POST");
         when(mockContainerRequest.getRequestURI()).thenReturn("/foo");
@@ -67,6 +69,7 @@ public class HttpServletRequestTranslatorTest {
         when(mockMimeTypeTranslator.to(json.toString())).thenReturn(json);
 
         when(mockContainerRequest.getContentType()).thenReturn(json.toString());
+        when(mockContainerRequest.getHeader(Header.ACCEPT.getValue())).thenReturn(json.toString());
 
         String body = "{\"integer\": 5, \"integer\": \"4\", \"local_date\": \"2019-01-01\"}";
         Ask actual = subject.from(mockContainerRequest, body.getBytes());
@@ -77,6 +80,8 @@ public class HttpServletRequestTranslatorTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getContentType(), is(notNullValue()));
         assertThat(actual.getContentType(), is(json));
+        assertThat(actual.getAccept(), is(notNullValue()));
+        assertThat(actual.getAccept(), is(json));
         assertThat(actual.getBody().isPresent(), is(true));
         assertThat(actual.getBody().get(), is(body.getBytes()));
         assertThat(actual.getQueryParams(), is(notNullValue()));
@@ -130,6 +135,7 @@ public class HttpServletRequestTranslatorTest {
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getContentType(), is(notNullValue()));
         assertThat(actual.getContentType(), is(form));
+        assertThat(actual.getAccept(), is(nullValue()));
         assertThat(actual.getBody().isPresent(), is(false));
         assertThat(actual.getQueryParams(), is(notNullValue()));
         assertThat(actual.getQueryParams(), is(queryParams));
