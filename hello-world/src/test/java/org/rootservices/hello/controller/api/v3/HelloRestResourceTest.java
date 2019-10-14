@@ -9,8 +9,10 @@ import org.asynchttpclient.Response;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.translator.config.TranslatorAppFactory;
@@ -27,6 +29,7 @@ import java.util.zip.GZIPInputStream;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @Category(ServletContainerTest.class)
 public class HelloRestResourceTest {
@@ -187,6 +190,31 @@ public class HelloRestResourceTest {
         assertThat(clientError.getSource(), is(ClientError.Source.HEADER));
         assertThat(clientError.getKey(), is(Header.CONTENT_TYPE.toString()));
         assertThat(clientError.getActual(), is("application/xml; charset=utf-8;"));
+        assertThat(clientError.getExpected(), is(notNullValue()));
+        assertThat(clientError.getExpected().size(), is(1));
+        assertThat(clientError.getExpected().get(0), is("application/json; charset=utf-8;"));
+        assertThat(clientError.getReason(), is(nullValue()));
+    }
+
+    @Test
+    public void getWhenNoAcceptHeaderShouldReturnDefault406() throws Exception {
+        String helloURI = getUri();
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .prepareGet(helloURI)
+                .addHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(StatusCode.NOT_ACCEPTABLE.getCode()));
+
+        ObjectMapper om = appFactory.objectMapper();
+        ClientError clientError = om.readValue(response.getResponseBody(), ClientError.class);
+        assertThat(clientError, is(notNullValue()));
+        assertThat(clientError.getSource(), is(ClientError.Source.HEADER));
+        assertThat(clientError.getKey(), is(Header.ACCEPT.toString()));
+        assertThat(clientError.getActual(), is(nullValue()));
         assertThat(clientError.getExpected(), is(notNullValue()));
         assertThat(clientError.getExpected().size(), is(1));
         assertThat(clientError.getExpected().get(0), is("application/json; charset=utf-8;"));

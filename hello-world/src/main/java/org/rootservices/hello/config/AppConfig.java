@@ -171,6 +171,7 @@ public class AppConfig implements Configure {
                 .regex(helloRestResourceV3.URL)
                 .authenticate()
                 .contentType(json)
+                .accept(json)
                 .payload(Hello.class)
                 .build();
 

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class MediaTypeRestResource<U extends DefaultUser> extends RestResource<U, ClientError> {
 
     protected StatusCode statusCode() {
-        return statusCode();
+        return StatusCode.UNSUPPORTED_MEDIA_TYPE;
     }
     
     protected ClientError to(RestRequest<U, ClientError> from) {

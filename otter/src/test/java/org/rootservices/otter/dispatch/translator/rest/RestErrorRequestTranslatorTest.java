@@ -31,9 +31,11 @@ public class RestErrorRequestTranslatorTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMatcher(), is(from.getMatcher()));
         assertThat(actual.getPossibleContentTypes(), is(from.getPossibleContentTypes()));
+        assertThat(actual.getPossibleAccept(), is(from.getPossibleAccepts()));
         assertThat(actual.getMethod(), is(from.getMethod()));
         assertThat(actual.getPathWithParams(), is(from.getPathWithParams()));
         assertThat(actual.getContentType(), is(from.getContentType()));
+        assertThat(actual.getAccept(), is(from.getAccept()));
         assertThat(actual.getHeaders(), is(from.getHeaders()));
         assertThat(actual.getCookies(), is(from.getCookies()));
         assertThat(actual.getQueryParams(), is(from.getQueryParams()));
@@ -55,9 +57,11 @@ public class RestErrorRequestTranslatorTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMatcher(), is(from.getMatcher()));
         assertThat(actual.getPossibleContentTypes(), is(from.getPossibleContentTypes()));
+        assertThat(actual.getPossibleAccept(), is(from.getPossibleAccepts()));
         assertThat(actual.getMethod(), is(from.getMethod()));
         assertThat(actual.getPathWithParams(), is(from.getPathWithParams()));
         assertThat(actual.getContentType(), is(from.getContentType()));
+        assertThat(actual.getAccept(), is(from.getAccept()));
         assertThat(actual.getHeaders(), is(from.getHeaders()));
         assertThat(actual.getCookies(), is(from.getCookies()));
         assertThat(actual.getQueryParams(), is(from.getQueryParams()));

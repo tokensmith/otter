@@ -299,14 +299,17 @@ public class FixtureFactory {
     public static RestBtwnRequest<DummyUser> makeRestBtwnRequest() {
         RestBtwnRequest<DummyUser> request =  new RestBtwnRequest<DummyUser>();
 
+        MimeType json = new MimeTypeBuilder().json().build();
         List<MimeType> contentTypes = new ArrayList<>();
-        contentTypes.add(new MimeTypeBuilder().json().build());
+        contentTypes.add(json);
 
         request.setMatcher(Optional.empty());
         request.setPossibleContentTypes(contentTypes);
+        request.setPossibleAccepts(contentTypes);
         request.setMethod(Method.GET);
         request.setPathWithParams("");
-        request.setContentType(new MimeTypeBuilder().json().build());
+        request.setContentType(json);
+        request.setAccept(json);
         request.setHeaders(new HashMap<>());
         request.setCookies(makeCookies());
         request.setQueryParams(new HashMap<>());

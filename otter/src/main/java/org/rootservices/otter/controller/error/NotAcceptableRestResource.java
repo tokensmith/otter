@@ -20,10 +20,15 @@ public class NotAcceptableRestResource<U extends DefaultUser> extends RestResour
     }
 
     protected ClientError to(RestRequest<U, ClientError> from) {
+        String actual = null;
+        if (from.getAccept() != null && from.getAccept().getType() != null) {
+            actual = from.getAccept().toString();
+        }
+
         ClientError to = new ClientErrorBuilder()
                 .source(ClientError.Source.HEADER)
-                .key(Header.CONTENT_TYPE.toString())
-                .actual(from.getAccept().toString())
+                .key(Header.ACCEPT.toString())
+                .actual(actual)
                 .expected(from.getPossibleAccepts().stream()
                         .map( Object::toString )
                         .collect(Collectors.toList()))
