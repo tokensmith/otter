@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.dispatch.JsonRouteRun;
+import org.rootservices.otter.dispatch.json.JsonRouteRun;
 import org.rootservices.otter.gateway.entity.rest.RestError;
 import org.rootservices.otter.gateway.entity.rest.RestErrorTarget;
 import org.rootservices.otter.gateway.entity.rest.RestTarget;

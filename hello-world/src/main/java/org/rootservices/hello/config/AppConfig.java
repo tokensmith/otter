@@ -252,6 +252,19 @@ public class AppConfig implements Configure {
 
         gateway.add(protectedTarget);
 
+        // content type and accepts are required
+        MimeType html = new MimeTypeBuilder().html().build();
+        Target<TokenSession, User> goodByeTarget = new TargetBuilder<TokenSession, User>()
+                .groupName(WEB_SITE_GROUP)
+                .method(Method.GET)
+                .accept(Method.GET, html)
+                .contentType(Method.GET, html)
+                .resource(new GoodByeResource())
+                .regex(GoodByeResource.URL)
+                .build();
+
+        gateway.add(goodByeTarget);
+
         // should be handled by server error resource.
         Target<TokenSession, User> exceptionTarget = new TargetBuilder<TokenSession, User>()
                 .groupName(WEB_SITE_GROUP)
@@ -267,6 +280,8 @@ public class AppConfig implements Configure {
     public void notFoundTargets(Gateway gateway) {
 
         // rest
+        // 151 need to instruct gateway this is a not found resource so it wont attempt to
+        // serialize the request body.
         var restNotFoundResource = new NotFoundRestResource<ApiUser>();
         RestTarget<ApiUser, ClientError> notFoundV2 = new RestTargetBuilder<ApiUser, ClientError>()
                 .groupName(API_GROUP_V2)

@@ -11,6 +11,8 @@ import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.request.Request;
 import org.rootservices.otter.controller.error.rest.BadRequestRestResource;
+import org.rootservices.otter.dispatch.json.JsonErrorHandler;
+import org.rootservices.otter.dispatch.json.JsonRouteRun;
 import org.rootservices.otter.dispatch.translator.RestErrorHandler;
 import org.rootservices.otter.dispatch.translator.rest.*;
 import org.rootservices.otter.router.entity.Method;

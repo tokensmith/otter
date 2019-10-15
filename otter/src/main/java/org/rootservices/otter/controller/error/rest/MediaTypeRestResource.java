@@ -20,10 +20,14 @@ public class MediaTypeRestResource<U extends DefaultUser> extends RestResource<U
     }
     
     protected ClientError to(RestRequest<U, ClientError> from) {
+        String actual = null;
+        if (from.getContentType() != null && from.getContentType().getType() != null) {
+            actual = from.getContentType().toString();
+        }
         ClientError to = new ClientErrorBuilder()
                 .source(ClientError.Source.HEADER)
                 .key(Header.CONTENT_TYPE.toString())
-                .actual(from.getContentType().toString())
+                .actual(actual)
                 .expected(from.getPossibleContentTypes().stream()
                         .map( Object::toString )
                         .collect(Collectors.toList()))

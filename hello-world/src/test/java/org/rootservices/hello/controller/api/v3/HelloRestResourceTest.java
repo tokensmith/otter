@@ -43,7 +43,11 @@ public class HelloRestResourceTest {
     }
 
     public String getUri() {
-        return BASE_URI.toString() + "rest/v3/hello";
+        return getUri("hello");
+    }
+
+    public String getUri(String context) {
+        return BASE_URI.toString() + "rest/v3/" + context;
     }
 
     @Test
@@ -170,6 +174,82 @@ public class HelloRestResourceTest {
         assertThat(actual.getMessage(), is("bad request"));
         assertThat(actual.getKey(), is(nullValue()));
         assertThat(actual.getReason(), is("The payload could not be parsed."));
+    }
+
+    @Test
+    public void postWhenNoContentTypeAndBodyInvalidShouldReturn415() throws Exception {
+        String helloURI = getUri();
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .preparePost(helloURI)
+                .addHeader(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
+                .setBody("invalid json")
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(StatusCode.UNSUPPORTED_MEDIA_TYPE.getCode()));
+
+        ObjectMapper om = appFactory.objectMapper();
+        ClientError actual = om.readValue(response.getResponseBody(), ClientError.class);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getSource(), is(ClientError.Source.HEADER));
+        assertThat(actual.getKey(), is(Header.CONTENT_TYPE.toString()));
+        assertThat(actual.getActual(), is(nullValue()));
+        assertThat(actual.getExpected().size(), is(1));
+        assertThat(actual.getExpected().get(0), is(ContentType.JSON_UTF_8.getValue()));
+    }
+
+    @Test
+    public void postWhenNoAcceptAndBodyInvalidShouldReturn415() throws Exception {
+        String helloURI = getUri();
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .preparePost(helloURI)
+                .addHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
+                .setBody("invalid json")
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(StatusCode.NOT_ACCEPTABLE.getCode()));
+
+        ObjectMapper om = appFactory.objectMapper();
+        ClientError actual = om.readValue(response.getResponseBody(), ClientError.class);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getSource(), is(ClientError.Source.HEADER));
+        assertThat(actual.getKey(), is(Header.ACCEPT.toString()));
+        assertThat(actual.getActual(), is(nullValue()));
+        assertThat(actual.getExpected().size(), is(1));
+        assertThat(actual.getExpected().get(0), is(ContentType.JSON_UTF_8.getValue()));
+    }
+
+    @Test
+    public void postWhenNotFoundAndBodyInvalidShouldReturn415() throws Exception {
+        String helloURI = getUri("not-wired-up");
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .preparePost(helloURI)
+                .addHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
+                .addHeader(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
+                .setBody("invalid json")
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(StatusCode.NOT_FOUND.getCode()));
+
+        ObjectMapper om = appFactory.objectMapper();
+        ClientError actual = om.readValue(response.getResponseBody(), ClientError.class);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getSource(), is(ClientError.Source.HEADER));
+        assertThat(actual.getKey(), is(Header.ACCEPT.toString()));
+        assertThat(actual.getActual(), is(nullValue()));
+        assertThat(actual.getExpected().size(), is(1));
+        assertThat(actual.getExpected().get(0), is(ContentType.JSON_UTF_8.getValue()));
     }
 
     @Test

@@ -38,6 +38,7 @@ import static org.asynchttpclient.Dsl.asyncHttpClient;
         BrokenRestResourceTest.class,
         NotFoundResourceTest.class,
         HelloResourceTest.class,
+        GoodByeResourceTest.class,
         LoginResourceTest.class,
         LoginSessionResourceTest.class,
         LoginSetSessionResourceTest.class,

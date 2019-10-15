@@ -6,7 +6,7 @@ import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
-import org.rootservices.otter.dispatch.RouteRun;
+import org.rootservices.otter.dispatch.html.RouteRun;
 import org.rootservices.otter.dispatch.RouteRunner;
 import org.rootservices.otter.dispatch.translator.AnswerTranslator;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;

@@ -5,7 +5,7 @@ import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
-import org.rootservices.otter.dispatch.JsonRouteRun;
+import org.rootservices.otter.dispatch.json.JsonRouteRun;
 import org.rootservices.otter.dispatch.RouteRunner;
 import org.rootservices.otter.dispatch.translator.RestErrorHandler;
 import org.rootservices.otter.dispatch.translator.rest.*;

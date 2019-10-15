@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.dispatch.RouteRun;
+import org.rootservices.otter.dispatch.html.RouteRun;
 import org.rootservices.otter.gateway.entity.ErrorTarget;
 import org.rootservices.otter.gateway.entity.Target;
 import org.rootservices.otter.router.entity.Location;
