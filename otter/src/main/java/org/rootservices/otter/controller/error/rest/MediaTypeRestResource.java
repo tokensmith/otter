@@ -1,4 +1,4 @@
-package org.rootservices.otter.controller.error;
+package org.rootservices.otter.controller.error.rest;
 
 import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.builder.ClientErrorBuilder;
@@ -13,23 +13,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 
-public class NotAcceptableRestResource<U extends DefaultUser> extends RestResource<U, ClientError> {
+public class MediaTypeRestResource<U extends DefaultUser> extends RestResource<U, ClientError> {
 
     protected StatusCode statusCode() {
-        return StatusCode.NOT_ACCEPTABLE;
+        return StatusCode.UNSUPPORTED_MEDIA_TYPE;
     }
-
+    
     protected ClientError to(RestRequest<U, ClientError> from) {
-        String actual = null;
-        if (from.getAccept() != null && from.getAccept().getType() != null) {
-            actual = from.getAccept().toString();
-        }
-
         ClientError to = new ClientErrorBuilder()
                 .source(ClientError.Source.HEADER)
-                .key(Header.ACCEPT.toString())
-                .actual(actual)
-                .expected(from.getPossibleAccepts().stream()
+                .key(Header.CONTENT_TYPE.toString())
+                .actual(from.getContentType().toString())
+                .expected(from.getPossibleContentTypes().stream()
                         .map( Object::toString )
                         .collect(Collectors.toList()))
                 .build();

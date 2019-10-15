@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.rootservices.otter.controller.entity.ServerError;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.error.ServerErrorRestResource;
+import org.rootservices.otter.controller.error.rest.ServerErrorRestResource;
 import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.translator.config.TranslatorAppFactory;
