@@ -1,4 +1,4 @@
-package org.rootservices.otter.dispatch;
+package org.rootservices.otter.dispatch.html;
 
 import helper.FixtureFactory;
 import helper.entity.*;
