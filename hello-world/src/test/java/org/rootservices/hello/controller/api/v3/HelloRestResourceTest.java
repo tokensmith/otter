@@ -228,7 +228,6 @@ public class HelloRestResourceTest {
     }
 
     @Test
-    @Ignore
     public void postWhenNotFoundAndBodyInvalidShouldReturn415() throws Exception {
         String helloURI = getUri("not-wired-up");
 
