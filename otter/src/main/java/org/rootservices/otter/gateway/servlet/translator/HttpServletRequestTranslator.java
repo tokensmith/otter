@@ -6,6 +6,7 @@ import org.rootservices.otter.controller.entity.Cookie;
 import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.controller.entity.mime.SubType;
 import org.rootservices.otter.controller.entity.mime.TopLevelType;
+import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.router.builder.AskBuilder;
 import org.rootservices.otter.router.entity.Method;
 import org.rootservices.otter.router.entity.io.Ask;
@@ -60,6 +61,9 @@ public class HttpServletRequestTranslator  {
         Map<String, List<String>> queryParams = queryStringToMap.run(queryString);
 
         MimeType contentType = mimeTypeTranslator.to(containerRequest.getContentType());
+        String acceptFrom = containerRequest.getHeader(Header.ACCEPT.getValue());
+        MimeType acceptTo = mimeTypeTranslator.to(acceptFrom);
+
 
         Map<String, List<String>> formData = new HashMap<>();
         Optional<byte[]> body = Optional.empty();
@@ -77,6 +81,7 @@ public class HttpServletRequestTranslator  {
                 .method(method)
                 .pathWithParams(pathWithParams)
                 .contentType(contentType)
+                .accept(acceptTo)
                 .cookies(otterCookies)
                 .headers(headers)
                 .queryParams(queryParams)

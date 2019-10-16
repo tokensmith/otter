@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.dispatch.RouteRun;
+import org.rootservices.otter.dispatch.html.RouteRun;
 import org.rootservices.otter.gateway.entity.ErrorTarget;
 import org.rootservices.otter.gateway.entity.Target;
 import org.rootservices.otter.router.entity.Location;
@@ -60,6 +60,8 @@ public class LocationTranslatorTest {
         assertThat(actual.get(Method.GET).getPattern(), Is.is(notNullValue()));
         assertThat(actual.get(Method.GET).getContentTypes(), Is.is(notNullValue()));
         assertThat(actual.get(Method.GET).getContentTypes().size(), Is.is(1));
+        assertThat(actual.get(Method.GET).getAccepts(), Is.is(notNullValue()));
+        assertThat(actual.get(Method.GET).getAccepts().size(), Is.is(1));
 
         assertThat(actual.get(Method.GET).getErrorRouteRunners(), Is.is(notNullValue()));
         assertThat(actual.get(Method.GET).getErrorRouteRunners().size(), Is.is(1));
@@ -82,6 +84,8 @@ public class LocationTranslatorTest {
         assertThat(actual.get(Method.POST).getPattern(), Is.is(notNullValue()));
         assertThat(actual.get(Method.POST).getContentTypes(), Is.is(notNullValue()));
         assertThat(actual.get(Method.POST).getContentTypes().size(), Is.is(1));
+        assertThat(actual.get(Method.GET).getAccepts(), Is.is(notNullValue()));
+        assertThat(actual.get(Method.GET).getAccepts().size(), Is.is(1));
 
         assertThat(actual.get(Method.POST).getErrorRouteRunners(), Is.is(notNullValue()));
         assertThat(actual.get(Method.POST).getErrorRouteRunners().size(), Is.is(1));

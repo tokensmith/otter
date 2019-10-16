@@ -1,23 +1,20 @@
-package org.rootservices.otter.dispatch;
+package org.rootservices.otter.dispatch.json;
 
-import com.fasterxml.jackson.databind.ObjectReader;
 import helper.FixtureFactory;
 import helper.entity.ClientErrorRestResource;
 import helper.entity.RawPayloadErrorRestResource;
-import helper.entity.RawPayloadRestResource;
 import helper.entity.model.AlternatePayload;
 import helper.entity.model.DummyErrorPayload;
 import helper.entity.model.DummyPayload;
 import helper.entity.model.DummyUser;
-import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.dispatch.entity.RestErrorRequest;
 import org.rootservices.otter.dispatch.entity.RestErrorResponse;
+import org.rootservices.otter.dispatch.json.JsonErrorHandler;
 import org.rootservices.otter.dispatch.translator.rest.*;
 import org.rootservices.otter.router.entity.Method;
-import org.rootservices.otter.router.entity.RestRoute;
 import org.rootservices.otter.router.entity.io.Answer;
 import org.rootservices.otter.translator.JsonTranslator;
 import org.rootservices.otter.translator.config.TranslatorAppFactory;
@@ -26,7 +23,6 @@ import org.rootservices.otter.translator.exception.InvalidValueException;
 import org.rootservices.otter.translator.exception.Reason;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;

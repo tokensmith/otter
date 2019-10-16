@@ -2,6 +2,7 @@ package org.rootservices.otter.gateway.builder;
 
 
 import org.rootservices.otter.controller.RestResource;
+import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
@@ -14,6 +15,7 @@ import org.rootservices.otter.router.entity.between.RestBetween;
 import org.rootservices.otter.translatable.Translatable;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 
 public class RestTargetBuilder<U extends DefaultUser, P> {
@@ -22,6 +24,7 @@ public class RestTargetBuilder<U extends DefaultUser, P> {
     private RestResource<U, P> restResource;
     private Class<P> payload;
     private Map<Method, List<MimeType>> contentTypes = new HashMap<>();
+    private Map<Method, List<MimeType>> accepts = new HashMap<>();
 
     // always default to optional authentication.
     private List<Label> labels = new ArrayList<>(Arrays.asList(Label.AUTH_OPTIONAL));
@@ -38,11 +41,11 @@ public class RestTargetBuilder<U extends DefaultUser, P> {
     }
 
     public RestTargetBuilder<U, P> crud() {
-        this.method(Method.GET)
-            .method(Method.POST)
-            .method(Method.PUT)
-            .method(Method.PATCH)
-            .method(Method.DELETE);
+
+        MimeType json = new MimeTypeBuilder().json().build();
+        Stream.of(Method.GET, Method.POST, Method.PUT, Method.PATCH, Method.DELETE)
+                .forEach(s -> this.method(s).contentType(s, json).accept(s, json));
+
         return this;
     }
 
@@ -75,6 +78,23 @@ public class RestTargetBuilder<U extends DefaultUser, P> {
         }
         mimeTypes.add(contentType);
         this.contentTypes.put(method, mimeTypes);
+        return this;
+    }
+
+    public RestTargetBuilder<U, P> accept(MimeType contentType) {
+        for(Method method: Method.values()) {
+            accept(method, contentType);
+        }
+        return this;
+    }
+
+    public RestTargetBuilder<U, P> accept(Method method, MimeType contentType) {
+        List<MimeType> mimeTypes = this.accepts.get(method);
+        if (mimeTypes == null) {
+            mimeTypes = new ArrayList<>();
+        }
+        mimeTypes.add(contentType);
+        this.accepts.put(method, mimeTypes);
         return this;
     }
 
@@ -124,6 +144,6 @@ public class RestTargetBuilder<U extends DefaultUser, P> {
     }
 
     public RestTarget<U, P> build() {
-        return new RestTarget<U, P>(methods, regex, restResource, payload, contentTypes, labels, before, after, errorTargets, restErrors, groupName);
+        return new RestTarget<U, P>(methods, regex, restResource, payload, contentTypes, accepts, labels, before, after, errorTargets, restErrors, groupName);
     }
 }

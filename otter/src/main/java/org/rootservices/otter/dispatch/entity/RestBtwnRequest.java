@@ -12,9 +12,11 @@ import java.util.regex.Matcher;
 public class RestBtwnRequest<U> {
     private Optional<Matcher> matcher;
     private List<MimeType> possibleContentTypes;
+    private List<MimeType> possibleAccepts;
     private Method method;
     private String pathWithParams;
     private MimeType contentType;
+    private MimeType accept;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
     private Map<String, List<String>> queryParams;
@@ -41,6 +43,14 @@ public class RestBtwnRequest<U> {
         this.possibleContentTypes = possibleContentTypes;
     }
 
+    public List<MimeType> getPossibleAccepts() {
+        return possibleAccepts;
+    }
+
+    public void setPossibleAccepts(List<MimeType> possibleAccepts) {
+        this.possibleAccepts = possibleAccepts;
+    }
+
     public Method getMethod() {
         return method;
     }
@@ -63,6 +73,14 @@ public class RestBtwnRequest<U> {
 
     public void setContentType(MimeType contentType) {
         this.contentType = contentType;
+    }
+
+    public MimeType getAccept() {
+        return accept;
+    }
+
+    public void setAccept(MimeType accept) {
+        this.accept = accept;
     }
 
     public Map<String, String> getHeaders() {

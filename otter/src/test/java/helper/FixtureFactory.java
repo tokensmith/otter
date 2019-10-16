@@ -28,7 +28,7 @@ import org.rootservices.otter.controller.entity.mime.MimeType;
 import org.rootservices.otter.controller.entity.response.RestResponse;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.controller.header.HeaderValue;
-import org.rootservices.otter.dispatch.RouteRun;
+import org.rootservices.otter.dispatch.html.RouteRun;
 import org.rootservices.otter.dispatch.RouteRunner;
 import org.rootservices.otter.dispatch.entity.RestBtwnRequest;
 import org.rootservices.otter.dispatch.entity.RestBtwnResponse;
@@ -171,7 +171,7 @@ public class FixtureFactory {
                 .build();
 
         FakeResource fakeResource = new FakeResource();
-        MimeType json = new MimeTypeBuilder().json().build();
+        MimeType html = new MimeTypeBuilder().html().build();
 
         TargetBuilder<DummySession, DummyUser> targetBuilder = new TargetBuilder<DummySession, DummyUser>();
 
@@ -179,7 +179,8 @@ public class FixtureFactory {
                 .regex("/foo")
                 .method(Method.GET)
                 .method(Method.POST)
-                .contentType(json)
+                .contentType(html)
+                .accept(html)
                 .resource(fakeResource)
                 .before(new DummyBetween<>())
                 .before(new DummyBetween<>())
@@ -215,6 +216,7 @@ public class FixtureFactory {
                 .method(Method.GET)
                 .method(Method.POST)
                 .contentType(json)
+                .accept(json)
                 .restResource(okRestResource)
                 .payload(DummyPayload.class)
                 .before(new DummyRestBetween<>())
@@ -240,15 +242,19 @@ public class FixtureFactory {
     }
 
     public static Ask makeAsk() {
+        MimeType html = new MimeTypeBuilder().html().build();
+
         List<MimeType> contentTypes = new ArrayList<>();
-        contentTypes.add(new MimeTypeBuilder().html().build());
+        contentTypes.add(html);
 
         Ask ask = new AskBuilder()
             .matcher(Optional.empty())
             .possibleContentTypes(contentTypes)
+            .possibleAccepts(contentTypes)
             .method(Method.GET)
             .pathWithParams("")
-            .contentType(new MimeTypeBuilder().html().build())
+            .contentType(html)
+            .accept(html)
             .headers(new HashMap<>())
             .cookies(new HashMap<>())
             .queryParams(new HashMap<>())
@@ -293,14 +299,17 @@ public class FixtureFactory {
     public static RestBtwnRequest<DummyUser> makeRestBtwnRequest() {
         RestBtwnRequest<DummyUser> request =  new RestBtwnRequest<DummyUser>();
 
+        MimeType json = new MimeTypeBuilder().json().build();
         List<MimeType> contentTypes = new ArrayList<>();
-        contentTypes.add(new MimeTypeBuilder().json().build());
+        contentTypes.add(json);
 
         request.setMatcher(Optional.empty());
         request.setPossibleContentTypes(contentTypes);
+        request.setPossibleAccepts(contentTypes);
         request.setMethod(Method.GET);
         request.setPathWithParams("");
-        request.setContentType(new MimeTypeBuilder().json().build());
+        request.setContentType(json);
+        request.setAccept(json);
         request.setHeaders(new HashMap<>());
         request.setCookies(makeCookies());
         request.setQueryParams(new HashMap<>());

@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.translator.config.TranslatorAppFactory;
 import suite.IntegrationTestSuite;
@@ -40,7 +41,8 @@ public class HelloRestResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(helloURI)
-                .addHeader("Content-Type", "application/json; charset=utf-8;")
+                .addHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
+                .addHeader(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
                 .execute();
 
         Response response = f.get();
@@ -64,7 +66,8 @@ public class HelloRestResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(helloURI)
-                .addHeader("Content-Type", "application/json; charset=utf-8;")
+                .addHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
+                .addHeader(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
                 .setBody(om.writeValueAsString(hello))
                 .execute();
 
@@ -86,7 +89,8 @@ public class HelloRestResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(helloURI)
-                .addHeader("Content-Type", "application/json; charset=utf-8;")
+                .addHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
+                .addHeader(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
                 .setBody("foo: bar")
                 .execute();
 
@@ -129,7 +133,8 @@ public class HelloRestResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(helloURI)
-                .addHeader("Content-Type", "application/json; charset=utf-8;")
+                .addHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
+                .addHeader(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
                 .execute();
 
         Response response = f.get();

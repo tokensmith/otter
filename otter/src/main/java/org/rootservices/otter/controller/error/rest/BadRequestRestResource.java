@@ -1,4 +1,4 @@
-package org.rootservices.otter.controller.error;
+package org.rootservices.otter.controller.error.rest;
 
 
 import org.rootservices.otter.controller.builder.ClientErrorBuilder;
@@ -6,7 +6,6 @@ import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.translator.exception.DeserializationException;
-import org.rootservices.otter.translator.exception.InvalidValueException;
 import org.rootservices.otter.translator.exception.Reason;
 
 import java.util.Optional;

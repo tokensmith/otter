@@ -2,7 +2,7 @@ package helper.entity;
 
 import helper.entity.model.DummyErrorPayload;
 import helper.entity.model.DummyUser;
-import org.rootservices.otter.controller.error.RestErrorResource;
+import org.rootservices.otter.controller.error.rest.RestErrorResource;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.translator.exception.DeserializationException;
 import org.rootservices.otter.translator.exception.Reason;

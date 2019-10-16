@@ -1,5 +1,4 @@
-package org.rootservices.otter.controller.error;
-
+package org.rootservices.otter.controller.error.rest;
 
 import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.builder.ClientErrorBuilder;
@@ -8,23 +7,33 @@ import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.request.RestRequest;
 import org.rootservices.otter.controller.entity.response.RestResponse;
+import org.rootservices.otter.controller.header.Header;
 
-import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
-public class NotFoundRestResource<U extends DefaultUser> extends RestResource<U, ClientError> {
+public class NotAcceptableRestResource<U extends DefaultUser> extends RestResource<U, ClientError> {
+
+    protected StatusCode statusCode() {
+        return StatusCode.NOT_ACCEPTABLE;
+    }
 
     protected ClientError to(RestRequest<U, ClientError> from) {
+        String actual = null;
+        if (from.getAccept() != null && from.getAccept().getType() != null) {
+            actual = from.getAccept().toString();
+        }
+
         ClientError to = new ClientErrorBuilder()
-                .source(ClientError.Source.URL)
-                .actual(from.getPathWithParams())
+                .source(ClientError.Source.HEADER)
+                .key(Header.ACCEPT.toString())
+                .actual(actual)
+                .expected(from.getPossibleAccepts().stream()
+                        .map( Object::toString )
+                        .collect(Collectors.toList()))
                 .build();
         return to;
-    }
-    
-    protected StatusCode statusCode() {
-        return StatusCode.NOT_FOUND;
     }
 
     @Override
@@ -89,5 +98,4 @@ public class NotFoundRestResource<U extends DefaultUser> extends RestResource<U,
         response.setPayload(Optional.of(to(request)));
         return response;
     }
-
 }

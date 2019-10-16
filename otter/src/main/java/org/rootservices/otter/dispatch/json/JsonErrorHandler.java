@@ -1,4 +1,4 @@
-package org.rootservices.otter.dispatch;
+package org.rootservices.otter.dispatch.json;
 
 
 import org.slf4j.Logger;

@@ -2,8 +2,9 @@ package org.rootservices.otter.dispatch.config;
 
 
 import org.rootservices.otter.controller.entity.DefaultUser;
-import org.rootservices.otter.dispatch.JsonErrorHandler;
-import org.rootservices.otter.dispatch.JsonRouteRun;
+import org.rootservices.otter.dispatch.json.JsonDispatchErrorRouteRun;
+import org.rootservices.otter.dispatch.json.JsonErrorHandler;
+import org.rootservices.otter.dispatch.json.JsonRouteRun;
 import org.rootservices.otter.dispatch.RouteRunner;
 import org.rootservices.otter.dispatch.translator.RestErrorHandler;
 import org.rootservices.otter.dispatch.translator.rest.*;
@@ -29,7 +30,7 @@ public class DispatchAppFactory {
                 .build();
     }
 
-    public <U extends DefaultUser, P extends Translatable> RouteRunner makeJsonRouteRun(RestRoute<U, ? extends Translatable> restRoute, Class<? extends Translatable> payload) {
+    public <U extends DefaultUser, P extends Translatable> RouteRunner makeJsonDispatchErrorRouteRun(RestRoute<U, ? extends Translatable> restRoute, Class<? extends Translatable> payload) {
 
         Class<P> castedPayload = toPayload(payload);
         JsonTranslator<P> jsonTranslator = translatorAppFactory.jsonTranslator(castedPayload);
@@ -41,7 +42,7 @@ public class DispatchAppFactory {
 
         RestRoute<U, P> castedRestRoute = toRestRoute(restRoute);
 
-        return new JsonRouteRun<U, P>(
+        return new JsonDispatchErrorRouteRun<>(
                 castedRestRoute,
                 restResponseTranslator,
                 restRequestTranslator,

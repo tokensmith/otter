@@ -33,6 +33,7 @@ public class RestTargetBuilderTest {
         RestTarget<DummyUser, DummyPayload> actual = subject.build();
 
         assertThat(actual.getContentTypes().size(), is(0));
+        assertThat(actual.getAccepts().size(), is(0));
         assertThat(actual.getMethods().size(), is(0));
         assertThat(actual.getLabels().size(), is(1));
         assertTrue(actual.getLabels().contains(Label.AUTH_OPTIONAL));
@@ -49,6 +50,7 @@ public class RestTargetBuilderTest {
                 .build();
 
         assertThat(actual.getContentTypes().size(), is(0));
+        assertThat(actual.getAccepts().size(), is(0));
         assertThat(actual.getMethods().size(), is(0));
         assertThat(actual.getLabels().size(), is(0));
         assertThat(actual.getBefore().size(), is(0));
@@ -92,7 +94,6 @@ public class RestTargetBuilderTest {
         RestTarget<DummyUser, DummyPayload> actual = subject
                 .regex("/foo")
                 .crud()
-                .contentType(json)
                 .restResource(okRestResource)
                 .authenticate()
                 .build();
@@ -106,6 +107,29 @@ public class RestTargetBuilderTest {
         assertTrue(actual.getMethods().contains(Method.POST));
         assertTrue(actual.getMethods().contains(Method.DELETE));
 
+        assertThat(actual.getContentTypes().size(), is(5));
+        assertThat(actual.getContentTypes().get(Method.GET).size(), is(1));
+        assertThat(actual.getContentTypes().get(Method.GET).get(0), is(json));
+        assertThat(actual.getContentTypes().get(Method.PUT).size(), is(1));
+        assertThat(actual.getContentTypes().get(Method.PUT).get(0), is(json));
+        assertThat(actual.getContentTypes().get(Method.PATCH).size(), is(1));
+        assertThat(actual.getContentTypes().get(Method.PATCH).get(0), is(json));
+        assertThat(actual.getContentTypes().get(Method.POST).size(), is(1));
+        assertThat(actual.getContentTypes().get(Method.POST).get(0), is(json));
+        assertThat(actual.getContentTypes().get(Method.DELETE).size(), is(1));
+        assertThat(actual.getContentTypes().get(Method.DELETE).get(0), is(json));
+
+        assertThat(actual.getAccepts().size(), is(5));
+        assertThat(actual.getAccepts().get(Method.GET).size(), is(1));
+        assertThat(actual.getAccepts().get(Method.GET).get(0), is(json));
+        assertThat(actual.getAccepts().get(Method.PUT).size(), is(1));
+        assertThat(actual.getAccepts().get(Method.PUT).get(0), is(json));
+        assertThat(actual.getAccepts().get(Method.PATCH).size(), is(1));
+        assertThat(actual.getAccepts().get(Method.PATCH).get(0), is(json));
+        assertThat(actual.getAccepts().get(Method.POST).size(), is(1));
+        assertThat(actual.getAccepts().get(Method.POST).get(0), is(json));
+        assertThat(actual.getAccepts().get(Method.DELETE).size(), is(1));
+        assertThat(actual.getAccepts().get(Method.DELETE).get(0), is(json));
     }
 
     @Test
@@ -125,6 +149,7 @@ public class RestTargetBuilderTest {
                 .method(Method.GET)
                 .method(Method.POST)
                 .contentType(json)
+                .accept(json)
                 .restResource(okRestResource)
                 .before(new DummyRestBetween<>())
                 .before(new DummyRestBetween<>())
@@ -141,6 +166,9 @@ public class RestTargetBuilderTest {
         assertThat(actual.getContentTypes().size(), is(9));
         assertThat(actual.getContentTypes().get(Method.GET).get(0), is(json));
         assertThat(actual.getContentTypes().get(Method.POST).get(0), is(json));
+        assertThat(actual.getAccepts().size(), is(9));
+        assertThat(actual.getAccepts().get(Method.GET).get(0), is(json));
+        assertThat(actual.getAccepts().get(Method.POST).get(0), is(json));
         assertThat(actual.getBefore().size(), is(2));
         assertThat(actual.getAfter().size(), is(2));
         assertThat(actual.getLabels().size(), is(1));
@@ -150,7 +178,7 @@ public class RestTargetBuilderTest {
     }
 
     @Test
-    public void buildWhenMethodContentTypeShouldBeOk() {
+    public void buildWhenMethodContentTypeAndAcceptShouldBeOk() {
         RestTargetBuilder<DummyUser, DummyPayload> subject = subject();
 
         OkRestResource notFoundResource = new OkRestResource();
@@ -167,8 +195,9 @@ public class RestTargetBuilderTest {
                 .regex("/foo")
                 .method(Method.GET)
                 .method(Method.POST)
-                .contentType(Method.GET, jwt)
-                .contentType(json)
+                .contentType(Method.GET, json)
+                .contentType(Method.POST, json)
+                .accept(Method.GET, jwt)
                 .restResource(okRestResource)
                 .before(new DummyRestBetween<>())
                 .before(new DummyRestBetween<>())
@@ -178,9 +207,12 @@ public class RestTargetBuilderTest {
                 .build();
 
 
-        assertThat(actual.getContentTypes().size(), is(9));
-        assertThat(actual.getContentTypes().get(Method.GET).get(0), is(jwt));
-        assertThat(actual.getContentTypes().get(Method.GET).get(1), is(json));
+        assertThat(actual.getContentTypes().size(), is(2));
+        assertThat(actual.getContentTypes().get(Method.GET).get(0), is(json));
         assertThat(actual.getContentTypes().get(Method.POST).get(0), is(json));
+
+        assertThat(actual.getAccepts().size(), is(1));
+        assertThat(actual.getAccepts().get(Method.GET).size(), is(1));
+        assertThat(actual.getAccepts().get(Method.GET).get(0), is(jwt));
     }
 }

@@ -19,6 +19,7 @@ public class RestTarget<U extends DefaultUser, P> {
     private RestResource<U, P> restResource;
     private Class<P> payload;
     private Map<Method, List<MimeType>> contentTypes;
+    private Map<Method, List<MimeType>> accepts;
     private List<Label> labels;
     private List<RestBetween<U>> before;
     private List<RestBetween<U>> after;
@@ -26,12 +27,13 @@ public class RestTarget<U extends DefaultUser, P> {
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors;
     private String groupName;
 
-    public RestTarget(List<Method> methods, String regex, RestResource<U, P> restResource, Class<P> payload, Map<Method, List<MimeType>> contentTypes, List<Label> labels, List<RestBetween<U>> before, List<RestBetween<U>> after, Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> errorTargets, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, String groupName) {
+    public RestTarget(List<Method> methods, String regex, RestResource<U, P> restResource, Class<P> payload, Map<Method, List<MimeType>> contentTypes, Map<Method, List<MimeType>> accepts, List<Label> labels, List<RestBetween<U>> before, List<RestBetween<U>> after, Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> errorTargets, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, String groupName) {
         this.methods = methods;
         this.regex = regex;
         this.restResource = restResource;
         this.payload = payload;
         this.contentTypes = contentTypes;
+        this.accepts = accepts;
         this.labels = labels;
         this.before = before;
         this.after = after;
@@ -78,6 +80,10 @@ public class RestTarget<U extends DefaultUser, P> {
 
     public void setContentTypes(Map<Method, List<MimeType>> contentTypes) {
         this.contentTypes = contentTypes;
+    }
+
+    public Map<Method, List<MimeType>> getAccepts() {
+        return accepts;
     }
 
     public List<Label> getLabels() {

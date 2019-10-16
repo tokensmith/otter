@@ -1,4 +1,4 @@
-package org.rootservices.otter.dispatch;
+package org.rootservices.otter.dispatch.html;
 
 import helper.FixtureFactory;
 import helper.entity.*;
@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.request.Request;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.dispatch.html.RouteRun;
 import org.rootservices.otter.dispatch.translator.AnswerTranslator;
 import org.rootservices.otter.dispatch.translator.RequestTranslator;
 import org.rootservices.otter.router.entity.Method;

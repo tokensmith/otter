@@ -13,11 +13,13 @@ public class Ask {
     // these are assigned in Engine when a match is found.
     private Optional<Matcher> matcher;
     private List<MimeType> possibleContentTypes;
+    private List<MimeType> possibleAccepts;
 
     // these are assigned in Gateway.
     private Method method;
     private String pathWithParams;
     private MimeType contentType;
+    private MimeType accept;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
     private Map<String, List<String>> queryParams;
@@ -29,12 +31,14 @@ public class Ask {
     public Ask() {
     }
 
-    public Ask(Optional<Matcher> matcher, List<MimeType> possibleContentTypes, Method method, String pathWithParams, MimeType contentType, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<byte[]> body, Optional<String> csrfChallenge, String ipAddress) {
+    public Ask(Optional<Matcher> matcher, List<MimeType> possibleContentTypes,List<MimeType> possibleAccepts, Method method, String pathWithParams, MimeType contentType, MimeType accept, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<byte[]> body, Optional<String> csrfChallenge, String ipAddress) {
         this.matcher = matcher;
         this.possibleContentTypes = possibleContentTypes;
+        this.possibleAccepts = possibleAccepts;
         this.method = method;
         this.pathWithParams = pathWithParams;
         this.contentType = contentType;
+        this.accept = accept;
         this.headers = headers;
         this.cookies = cookies;
         this.queryParams = queryParams;
@@ -74,6 +78,14 @@ public class Ask {
 
     public void setContentType(MimeType contentType) {
         this.contentType = contentType;
+    }
+
+    public MimeType getAccept() {
+        return accept;
+    }
+
+    public void setAccept(MimeType accept) {
+        this.accept = accept;
     }
 
     public Map<String, String> getHeaders() {
@@ -138,5 +150,13 @@ public class Ask {
 
     public void setPossibleContentTypes(List<MimeType> possibleContentTypes) {
         this.possibleContentTypes = possibleContentTypes;
+    }
+
+    public List<MimeType> getPossibleAccepts() {
+        return possibleAccepts;
+    }
+
+    public void setPossibleAccepts(List<MimeType> possibleAccepts) {
+        this.possibleAccepts = possibleAccepts;
     }
 }

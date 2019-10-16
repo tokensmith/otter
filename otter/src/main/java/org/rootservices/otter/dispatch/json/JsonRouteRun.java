@@ -1,6 +1,7 @@
-package org.rootservices.otter.dispatch;
+package org.rootservices.otter.dispatch.json;
 
 
+import org.rootservices.otter.dispatch.RouteRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.rootservices.otter.controller.RestResource;
@@ -30,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
+public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner {
     protected static Logger LOGGER = LoggerFactory.getLogger(JsonRouteRun.class);
     private RestRoute<U, P> restRoute;
     private RestResponseTranslator<P> restResponseTranslator;
@@ -76,7 +77,7 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
 
         Optional<P> entity;
         try {
-            entity = makeEntity(ask.getBody());
+            entity = to(ask.getBody());
         } catch (DeserializationException e) {
             // May want to consider an alternative to prevent duplicate returns in this method.
             ClientException clientException = new ClientException("Could not serialize request body", e);
@@ -106,6 +107,17 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner  {
         }
 
         return answer;
+    }
+
+    /**
+     * Modularized so it can be overloaded for the dispatch error runner.
+     *
+     * @param body
+     * @return Optional<P>
+     * @throws DeserializationException
+     */
+    protected Optional<P> to(Optional<byte[]> body) throws DeserializationException {
+        return makeEntity(body);
     }
 
     protected Optional<P> makeEntity(Optional<byte[]> body) throws DeserializationException {

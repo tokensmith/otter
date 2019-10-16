@@ -55,7 +55,6 @@ public class MimeType {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(getType(), getSubType(), getParameters());
     }
 

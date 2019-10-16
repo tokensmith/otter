@@ -4,9 +4,10 @@ package org.rootservices.otter.config;
 import org.rootservices.otter.QueryStringToMap;
 import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.*;
-import org.rootservices.otter.controller.error.BadRequestRestResource;
-import org.rootservices.otter.controller.error.MediaTypeRestResource;
-import org.rootservices.otter.controller.error.ServerErrorRestResource;
+import org.rootservices.otter.controller.error.rest.BadRequestRestResource;
+import org.rootservices.otter.controller.error.rest.MediaTypeRestResource;
+import org.rootservices.otter.controller.error.rest.NotAcceptableRestResource;
+import org.rootservices.otter.controller.error.rest.ServerErrorRestResource;
 import org.rootservices.otter.gateway.LocationTranslatorFactory;
 import org.rootservices.otter.gateway.RestLocationTranslatorFactory;
 import org.rootservices.otter.gateway.entity.Group;
@@ -155,13 +156,15 @@ public class OtterAppFactory {
 
         // Server Error - a bit unlikely
 
-
         // Unsupported Media Type.
         RestResource<U, P> mediaType = (RestResource<U, P>) new MediaTypeRestResource<U>();
         RestErrorTarget<U, P> mediaTypeTarget = new RestErrorTarget<>((Class<P>)ClientError.class, mediaType, new ArrayList<>(), new ArrayList<>());
-
         defaultDispatchErrors.put(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaTypeTarget);
 
+        // Not Acceptable
+        RestResource<U, P> notAcceptable = (RestResource<U, P>) new NotAcceptableRestResource<U>();
+        RestErrorTarget<U, P> notAcceptableTarget = new RestErrorTarget<>((Class<P>)ClientError.class, notAcceptable, new ArrayList<>(), new ArrayList<>());
+        defaultDispatchErrors.put(StatusCode.NOT_ACCEPTABLE, notAcceptableTarget);
 
         return defaultDispatchErrors;
     }

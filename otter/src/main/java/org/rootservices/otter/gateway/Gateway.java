@@ -3,11 +3,6 @@ package org.rootservices.otter.gateway;
 
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
-import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.dispatch.RouteRun;
-import org.rootservices.otter.dispatch.RouteRunner;
-import org.rootservices.otter.dispatch.translator.AnswerTranslator;
-import org.rootservices.otter.dispatch.translator.RequestTranslator;
 import org.rootservices.otter.gateway.entity.rest.RestTarget;
 import org.rootservices.otter.gateway.entity.Target;
 import org.rootservices.otter.gateway.translator.LocationTranslator;
@@ -16,10 +11,8 @@ import org.rootservices.otter.router.Dispatcher;
 import org.rootservices.otter.router.Engine;
 import org.rootservices.otter.router.entity.Location;
 import org.rootservices.otter.router.entity.Method;
-import org.rootservices.otter.router.entity.Route;
 
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -114,6 +107,8 @@ public class Gateway {
     public <U extends DefaultUser, P> void notFound(RestTarget<U, P> notFound) {
         RestLocationTranslator<U, P> restLocationTranslator = restLocationTranslator(notFound.getGroupName());
 
+        // 157: may need a specific restLocationTranslator that will build the location
+        // with a JsonDispatchErrorRouteRun
         Map<Method, Location> locations = restLocationTranslator.to(notFound);
         for(Map.Entry<Method, Location> location: locations.entrySet()) {
             add(engine.getNotFoundDispatcher(), location.getKey(), location.getValue());

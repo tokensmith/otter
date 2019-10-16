@@ -50,6 +50,10 @@ public class LocationTranslator<S extends DefaultSession, U extends DefaultUser>
             if (contentTypes == null) {
                 contentTypes = new ArrayList<>();
             }
+            List<MimeType> accepts = from.getAccepts().get(method);
+            if (accepts == null) {
+                accepts = new ArrayList<>();
+            }
 
             Map<StatusCode, ErrorTarget<S, U>> dispatchErrors = mergeDispatchErrors(mergedDispatchErrors, from.getErrorTargets());
 
@@ -57,6 +61,7 @@ public class LocationTranslator<S extends DefaultSession, U extends DefaultUser>
             Location location = new LocationBuilder<S, U>()
                 .path(from.getRegex())
                 .contentTypes(contentTypes)
+                .accepts(accepts)
                 .resource(from.getResource())
                 .before(
                     Stream.of(betweens.getBefore(), from.getBefore())

@@ -18,6 +18,7 @@ public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
     private String regex;
     private Resource<S, U> resource;
     private Map<Method, List<MimeType>> contentTypes = new HashMap<>();
+    private Map<Method, List<MimeType>> accepts = new HashMap<>();
 
     // always default to optional session and optional authentication.
     private List<Label> labels = new ArrayList<>(Arrays.asList(Label.SESSION_OPTIONAL, Label.AUTH_OPTIONAL));
@@ -75,6 +76,23 @@ public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
         return this;
     }
 
+    public TargetBuilder<S, U> accept(MimeType contentType) {
+        for(Method method: Method.values()) {
+            accept(method, contentType);
+        }
+        return this;
+    }
+
+    public TargetBuilder<S, U> accept(Method method, MimeType contentType) {
+        List<MimeType> mimeTypes = this.accepts.get(method);
+        if (mimeTypes == null) {
+            mimeTypes = new ArrayList<>();
+        }
+        mimeTypes.add(contentType);
+        this.accepts.put(method, mimeTypes);
+        return this;
+    }
+
     public TargetBuilder<S, U> authenticate() {
 
         this.labels.remove(Label.SESSION_OPTIONAL);
@@ -120,6 +138,6 @@ public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
     }
 
     public Target<S, U> build() {
-        return new Target<S, U>(methods, regex, resource, contentTypes, labels, before, after, errorTargets, errorResources, groupName);
+        return new Target<S, U>(methods, regex, resource, contentTypes, accepts, labels, before, after, errorTargets, errorResources, groupName);
     }
 }

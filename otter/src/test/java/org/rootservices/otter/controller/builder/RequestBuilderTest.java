@@ -62,6 +62,17 @@ public class RequestBuilderTest {
     }
 
     @Test
+    public void buildWhenAcceptShouldBeOk() {
+
+        MimeType contentType = new MimeType();
+        Request<DummySession, DummyUser> actual = subject.accept(contentType).build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getAccept(), is(notNullValue()));
+        assertThat(actual.getAccept(), is(contentType));
+    }
+
+    @Test
     public void buildWhenHeadersShouldBeOk() {
         Map<String, String> headers = FixtureFactory.makeHeaders();
 

@@ -26,8 +26,11 @@ import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
-import org.rootservices.otter.controller.error.MediaTypeRestResource;
-import org.rootservices.otter.controller.error.NotFoundRestResource;
+import org.rootservices.otter.controller.error.html.MediaTypeResource;
+import org.rootservices.otter.controller.error.html.NotAcceptableResource;
+import org.rootservices.otter.controller.error.html.ServerErrorResource;
+import org.rootservices.otter.controller.error.rest.MediaTypeRestResource;
+import org.rootservices.otter.controller.error.rest.NotFoundRestResource;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
 import org.rootservices.otter.gateway.builder.*;
@@ -69,10 +72,14 @@ public class AppConfig implements Configure {
     public List<Group<? extends DefaultSession, ? extends DefaultUser>> groups() {
         List<Group<? extends DefaultSession, ? extends DefaultUser>> groups = new ArrayList<>();
 
-        var serverErrorResource = new ServerErrorResource();
+        var serverErrorResource = new ServerErrorResource<TokenSession, User>("/WEB-INF/jsp/500.jsp");
 
         ErrorTarget<TokenSession, User> mediaType = new ErrorTargetBuilder<TokenSession, User>()
-                .resource(new MediaTypeResource())
+                .resource(new MediaTypeResource<TokenSession, User>("/WEB-INF/jsp/415.jsp"))
+                .build();
+
+        ErrorTarget<TokenSession, User> notAcceptable = new ErrorTargetBuilder<TokenSession, User>()
+                .resource(new NotAcceptableResource<TokenSession, User>("/WEB-INF/jsp/406.jsp"))
                 .build();
 
         Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
@@ -82,6 +89,7 @@ public class AppConfig implements Configure {
                 .authRequired(new AuthBetween())
                 .onError(StatusCode.SERVER_ERROR, serverErrorResource)
                 .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaType)
+                .onDispatchError(StatusCode.NOT_ACCEPTABLE, notAcceptable)
                 .build();
 
         groups.add(webSiteGroup);
@@ -171,6 +179,7 @@ public class AppConfig implements Configure {
                 .regex(helloRestResourceV3.URL)
                 .authenticate()
                 .contentType(json)
+                .accept(json)
                 .payload(Hello.class)
                 .build();
 
@@ -243,6 +252,19 @@ public class AppConfig implements Configure {
 
         gateway.add(protectedTarget);
 
+        // content type and accepts are required
+        MimeType html = new MimeTypeBuilder().html().build();
+        Target<TokenSession, User> goodByeTarget = new TargetBuilder<TokenSession, User>()
+                .groupName(WEB_SITE_GROUP)
+                .method(Method.GET)
+                .accept(Method.GET, html)
+                .contentType(Method.GET, html)
+                .resource(new GoodByeResource())
+                .regex(GoodByeResource.URL)
+                .build();
+
+        gateway.add(goodByeTarget);
+
         // should be handled by server error resource.
         Target<TokenSession, User> exceptionTarget = new TargetBuilder<TokenSession, User>()
                 .groupName(WEB_SITE_GROUP)
@@ -257,7 +279,8 @@ public class AppConfig implements Configure {
 
     public void notFoundTargets(Gateway gateway) {
 
-        // rest
+        // 157 need to instruct gateway this is a not found resource so it wont attempt to
+        // serialize the request body.
         var restNotFoundResource = new NotFoundRestResource<ApiUser>();
         RestTarget<ApiUser, ClientError> notFoundV2 = new RestTargetBuilder<ApiUser, ClientError>()
                 .groupName(API_GROUP_V2)

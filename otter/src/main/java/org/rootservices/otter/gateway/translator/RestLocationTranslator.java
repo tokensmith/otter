@@ -63,12 +63,18 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
                 contentTypes = new ArrayList<>();
             }
 
+            List<MimeType> accepts = from.getAccepts().get(method);
+            if (accepts == null) {
+                accepts = new ArrayList<>();
+            }
+
             mergedRestErrors = mergeRestErrors(mergedRestErrors, from.getRestErrors());
             Map<StatusCode, RestErrorHandler<U>> errorHandlers = toErrorHandlers(mergedRestErrors);
 
             RestLocationBuilder<U, P> locationBuilder = new RestLocationBuilder<U, P>()
                     .path(from.getRegex())
                     .contentTypes(contentTypes)
+                    .accepts(accepts)
                     .restResource(from.getRestResource())
                     .payload(from.getPayload())
                     .before(
@@ -90,8 +96,8 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
             // add the error routes to be used in engine.
             for(Map.Entry<StatusCode, RestErrorTarget<U, ? extends Translatable>> entry: dispatchErrors.entrySet()) {
                 RestRoute<U, ? extends Translatable> restRoute = dispatchAppFactory.makeRestRoute(entry.getValue());
-                RouteRunner restRouteRunner = dispatchAppFactory.makeJsonRouteRun(restRoute, entry.getValue().getPayload());
 
+                RouteRunner restRouteRunner = dispatchAppFactory.makeJsonDispatchErrorRouteRun(restRoute, entry.getValue().getPayload());
                 locationBuilder = locationBuilder.errorRouteRunner(
                         entry.getKey(),
                         restRouteRunner

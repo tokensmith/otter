@@ -1,4 +1,4 @@
-package org.rootservices.otter.controller.error;
+package org.rootservices.otter.controller.error.rest;
 
 import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.DefaultUser;

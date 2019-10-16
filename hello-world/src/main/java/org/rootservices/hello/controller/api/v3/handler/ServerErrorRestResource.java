@@ -2,7 +2,7 @@ package org.rootservices.hello.controller.api.v3.handler;
 
 import org.rootservices.hello.controller.api.model.ApiUser;
 import org.rootservices.hello.controller.api.v3.model.ServerErrorPayload;
-import org.rootservices.otter.controller.error.RestErrorResource;
+import org.rootservices.otter.controller.error.rest.RestErrorResource;
 import org.rootservices.otter.controller.entity.StatusCode;
 
 

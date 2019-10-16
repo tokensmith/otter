@@ -12,9 +12,11 @@ import java.util.regex.Matcher;
 public class RestErrorRequest<U> {
     private Optional<Matcher> matcher;
     private List<MimeType> possibleContentTypes;
+    private List<MimeType> possibleAccept;
     private Method method;
     private String pathWithParams;
     private MimeType contentType;
+    private MimeType accept;
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
     private Map<String, List<String>> queryParams;
@@ -39,6 +41,14 @@ public class RestErrorRequest<U> {
         this.possibleContentTypes = possibleContentTypes;
     }
 
+    public List<MimeType> getPossibleAccept() {
+        return possibleAccept;
+    }
+
+    public void setPossibleAccept(List<MimeType> possibleAccept) {
+        this.possibleAccept = possibleAccept;
+    }
+
     public Method getMethod() {
         return method;
     }
@@ -61,6 +71,14 @@ public class RestErrorRequest<U> {
 
     public void setContentType(MimeType contentType) {
         this.contentType = contentType;
+    }
+
+    public MimeType getAccept() {
+        return accept;
+    }
+
+    public void setAccept(MimeType accept) {
+        this.accept = accept;
     }
 
     public Map<String, String> getHeaders() {
