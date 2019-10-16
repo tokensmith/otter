@@ -107,6 +107,8 @@ public class Gateway {
     public <U extends DefaultUser, P> void notFound(RestTarget<U, P> notFound) {
         RestLocationTranslator<U, P> restLocationTranslator = restLocationTranslator(notFound.getGroupName());
 
+        // 157: may need a specific restLocationTranslator that will build the location
+        // with a JsonDispatchErrorRouteRun
         Map<Method, Location> locations = restLocationTranslator.to(notFound);
         for(Map.Entry<Method, Location> location: locations.entrySet()) {
             add(engine.getNotFoundDispatcher(), location.getKey(), location.getValue());

@@ -279,8 +279,7 @@ public class AppConfig implements Configure {
 
     public void notFoundTargets(Gateway gateway) {
 
-        // rest
-        // 151 need to instruct gateway this is a not found resource so it wont attempt to
+        // 157 need to instruct gateway this is a not found resource so it wont attempt to
         // serialize the request body.
         var restNotFoundResource = new NotFoundRestResource<ApiUser>();
         RestTarget<ApiUser, ClientError> notFoundV2 = new RestTargetBuilder<ApiUser, ClientError>()

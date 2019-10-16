@@ -113,6 +113,7 @@ public class RestLocationBuilder<U extends DefaultUser, P> {
         RestBtwnRequestTranslator<U, P> restBtwnRequestTranslator = new RestBtwnRequestTranslator<>();
         RestBtwnResponseTranslator<P> restBtwnResponseTranslator = new RestBtwnResponseTranslator<>();
 
+        // 157: not founds need JsonDispatchErrorRouteRun
         RouteRunner routeRunner = new JsonRouteRun<U, P>(
                 restRoute,
                 restResponseTranslator,

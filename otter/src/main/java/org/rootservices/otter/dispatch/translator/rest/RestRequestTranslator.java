@@ -63,10 +63,11 @@ public class RestRequestTranslator<U, P> {
 
         to.setMatcher(from.getMatcher());
         to.setPossibleContentTypes(from.getPossibleContentTypes());
-        // 151
+        to.setPossibleAccepts(from.getPossibleAccept());
         to.setMethod(from.getMethod());
         to.setPathWithParams(from.getPathWithParams());
         to.setContentType(from.getContentType());
+        to.setAccept(from.getAccept());
         to.setHeaders(from.getHeaders());
         to.setCookies(from.getCookies());
         to.setQueryParams(from.getQueryParams());

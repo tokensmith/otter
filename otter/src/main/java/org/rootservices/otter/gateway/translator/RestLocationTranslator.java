@@ -97,9 +97,7 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
             for(Map.Entry<StatusCode, RestErrorTarget<U, ? extends Translatable>> entry: dispatchErrors.entrySet()) {
                 RestRoute<U, ? extends Translatable> restRoute = dispatchAppFactory.makeRestRoute(entry.getValue());
 
-                // 151: these should not marshal the request body.
                 RouteRunner restRouteRunner = dispatchAppFactory.makeJsonDispatchErrorRouteRun(restRoute, entry.getValue().getPayload());
-
                 locationBuilder = locationBuilder.errorRouteRunner(
                         entry.getKey(),
                         restRouteRunner
