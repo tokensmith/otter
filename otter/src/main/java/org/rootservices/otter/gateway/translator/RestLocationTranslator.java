@@ -10,6 +10,7 @@ import org.rootservices.otter.dispatch.translator.RestErrorHandler;
 import org.rootservices.otter.gateway.entity.rest.RestError;
 import org.rootservices.otter.gateway.entity.rest.RestErrorTarget;
 import org.rootservices.otter.gateway.entity.rest.RestTarget;
+import org.rootservices.otter.router.builder.LocationBuilder;
 import org.rootservices.otter.router.builder.RestLocationBuilder;
 import org.rootservices.otter.dispatch.config.DispatchAppFactory;
 import org.rootservices.otter.router.entity.Location;
@@ -49,64 +50,82 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
     }
 
     public Map<Method, Location> to(RestTarget<U, P> from) {
+        Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> mergedDispatchErrors = mergeDispatchErrors(defaultDispatchErrors, dispatchErrors);
+        Map<StatusCode, RestErrorHandler<U>> errorHandlers = toErrorHandlers(from.getRestErrors());
+
+        Map<Method, Location> to;
+        to = to(from, false, errorHandlers, mergedDispatchErrors);
+        return to;
+    }
+
+    public Map<Method, Location> toNotFound(RestTarget<U, P> from) {
+        Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> mergedDispatchErrors = mergeDispatchErrors(defaultDispatchErrors, dispatchErrors);
+        Map<StatusCode, RestErrorHandler<U>> errorHandlers = toErrorHandlers(from.getRestErrors());
+
+        Map<Method, Location> to;
+        to = to(from, true, errorHandlers, mergedDispatchErrors);
+        return to;
+    }
+
+    protected Map<Method, Location> to(RestTarget<U, P> from, Boolean isDispatchError, Map<StatusCode, RestErrorHandler<U>> errorHandlers, Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> mergedDispatchErrors) {
         Map<Method, Location> to = new HashMap<>();
 
-        Map<StatusCode, RestError<U, ? extends Translatable>> mergedRestErrors = mergeRestErrors(defaultErrors, restErrors);
-        Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> mergedDispatchErrors = mergeDispatchErrors(defaultDispatchErrors, dispatchErrors);
-
         for(Method method: from.getMethods()) {
-
-            RestBetweens<U> betweens = restBetweenFlyweight.make(method, from.getLabels());
-
-            List<MimeType> contentTypes = from.getContentTypes().get(method);
-            if (contentTypes == null) {
-                contentTypes = new ArrayList<>();
-            }
-
-            List<MimeType> accepts = from.getAccepts().get(method);
-            if (accepts == null) {
-                accepts = new ArrayList<>();
-            }
-
-            mergedRestErrors = mergeRestErrors(mergedRestErrors, from.getRestErrors());
-            Map<StatusCode, RestErrorHandler<U>> errorHandlers = toErrorHandlers(mergedRestErrors);
-
-            RestLocationBuilder<U, P> locationBuilder = new RestLocationBuilder<U, P>()
-                    .path(from.getRegex())
-                    .contentTypes(contentTypes)
-                    .accepts(accepts)
-                    .restResource(from.getRestResource())
-                    .payload(from.getPayload())
-                    .before(
-                            Stream.of(betweens.getBefore(), from.getBefore())
-                                    .flatMap(Collection::stream)
-                                    .collect(Collectors.toList())
-                    )
-                    .after(
-                            Stream.of(betweens.getAfter(), from.getAfter())
-                                    .flatMap(Collection::stream)
-                                    .collect(Collectors.toList())
-                    )
-                    // these are used in JsonRouteRun
-                    .restErrorHandlers(errorHandlers);
-
-            // merge dispatch errors
-            Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> dispatchErrors = mergeDispatchErrors(mergedDispatchErrors, from.getErrorTargets());
-
-            // add the error routes to be used in engine.
-            for(Map.Entry<StatusCode, RestErrorTarget<U, ? extends Translatable>> entry: dispatchErrors.entrySet()) {
-                RestRoute<U, ? extends Translatable> restRoute = dispatchAppFactory.makeRestRoute(entry.getValue());
-
-                RouteRunner restRouteRunner = dispatchAppFactory.makeJsonDispatchErrorRouteRun(restRoute, entry.getValue().getPayload());
-                locationBuilder = locationBuilder.errorRouteRunner(
-                        entry.getKey(),
-                        restRouteRunner
-                );
-            }
-
+            RestLocationBuilder<U, P> locationBuilder = makeLocationBuilder(
+                method, from, errorHandlers, mergedDispatchErrors
+            );
+            locationBuilder.isDispatchError(isDispatchError);
             to.put(method, locationBuilder.build());
         }
         return to;
+    }
+
+    protected RestLocationBuilder<U, P> makeLocationBuilder(Method method, RestTarget<U, P> from, Map<StatusCode, RestErrorHandler<U>> errorHandlers, Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> mergedDispatchErrors) {
+        RestBetweens<U> betweens = restBetweenFlyweight.make(method, from.getLabels());
+
+        List<MimeType> contentTypes = from.getContentTypes().get(method);
+        if (contentTypes == null) {
+            contentTypes = new ArrayList<>();
+        }
+
+        List<MimeType> accepts = from.getAccepts().get(method);
+        if (accepts == null) {
+            accepts = new ArrayList<>();
+        }
+
+        RestLocationBuilder<U, P> locationBuilder = new RestLocationBuilder<U, P>()
+                .path(from.getRegex())
+                .contentTypes(contentTypes)
+                .accepts(accepts)
+                .restResource(from.getRestResource())
+                .payload(from.getPayload())
+                .before(
+                        Stream.of(betweens.getBefore(), from.getBefore())
+                                .flatMap(Collection::stream)
+                                .collect(Collectors.toList())
+                )
+                .after(
+                        Stream.of(betweens.getAfter(), from.getAfter())
+                                .flatMap(Collection::stream)
+                                .collect(Collectors.toList())
+                )
+                // these are used in JsonRouteRun
+                .restErrorHandlers(errorHandlers);
+
+        // merge dispatch errors with overrides on from.
+        Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> dispatchErrors = mergeDispatchErrors(mergedDispatchErrors, from.getErrorTargets());
+
+        // add the error routes to be used in engine.
+        for(Map.Entry<StatusCode, RestErrorTarget<U, ? extends Translatable>> entry: dispatchErrors.entrySet()) {
+            RestRoute<U, ? extends Translatable> restRoute = dispatchAppFactory.makeRestRoute(entry.getValue());
+
+            RouteRunner restRouteRunner = dispatchAppFactory.makeJsonDispatchErrorRouteRun(restRoute, entry.getValue().getPayload());
+            locationBuilder = locationBuilder.errorRouteRunner(
+                    entry.getKey(),
+                    restRouteRunner
+            );
+        }
+        return locationBuilder;
     }
 
     /**
@@ -133,7 +152,11 @@ public class RestLocationTranslator<U extends DefaultUser, P> {
 
     protected Map<StatusCode, RestErrorHandler<U>> toErrorHandlers(Map<StatusCode, RestError<U, ? extends Translatable>> from) {
         Map<StatusCode, RestErrorHandler<U>> to = new HashMap<>();
-        for(Map.Entry<StatusCode, RestError<U, ? extends Translatable>> entry: from.entrySet()) {
+
+        Map<StatusCode, RestError<U, ? extends Translatable>> mergedRestErrors = mergeRestErrors(defaultErrors, restErrors);
+        Map<StatusCode, RestError<U, ? extends Translatable>> fromMerged = mergeRestErrors(mergedRestErrors, from);
+
+        for(Map.Entry<StatusCode, RestError<U, ? extends Translatable>> entry: fromMerged.entrySet()) {
             to.put(entry.getKey(), dispatchAppFactory.restErrorHandler(entry.getValue()));
         }
         return to;

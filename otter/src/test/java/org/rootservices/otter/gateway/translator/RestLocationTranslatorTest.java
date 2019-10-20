@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.dispatch.json.JsonDispatchErrorRouteRun;
 import org.rootservices.otter.dispatch.json.JsonRouteRun;
 import org.rootservices.otter.gateway.entity.rest.RestError;
 import org.rootservices.otter.gateway.entity.rest.RestErrorTarget;
@@ -191,6 +192,67 @@ public class RestLocationTranslatorTest {
         assertThat(actual.get(Method.POST).getErrorRouteRunners().size(), Is.is(1));
 
         JsonRouteRun<DummyUser, DummyPayload> postRouteRunner = (JsonRouteRun<DummyUser, DummyPayload>) actual.get(Method.POST).getRouteRunner();
+
+        // ordering of before.
+        assertThat(postRouteRunner.getRestRoute().getBefore().get(0), is(betweens.getBefore().get(0)));
+        assertThat(postRouteRunner.getRestRoute().getBefore().get(1), is(target.getBefore().get(0)));
+        assertThat(postRouteRunner.getRestRoute().getBefore().get(2), is(target.getBefore().get(1)));
+
+        // ordering of after.
+        assertThat(postRouteRunner.getRestRoute().getAfter().get(0), is(betweens.getAfter().get(0)));
+        assertThat(postRouteRunner.getRestRoute().getAfter().get(1), is(target.getAfter().get(0)));
+        assertThat(postRouteRunner.getRestRoute().getAfter().get(2), is(target.getAfter().get(1)));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void toNotFoundShouldBeOk() {
+        RestBetweens<DummyUser> betweens = FixtureFactory.makeRestBetweens();
+        when(mockRestBetweenFlyweight.make(any(), any())).thenReturn(betweens);
+
+        RestTarget<DummyUser, DummyPayload> target = FixtureFactory.makeRestTarget();
+
+        Map<Method, Location> actual =  subject.toNotFound(target);
+
+        assertThat(actual.size(), is(2));
+
+        // GET
+        assertThat(actual.get(Method.GET).getRouteRunner(), Is.is(notNullValue()));
+
+        assertThat(actual.get(Method.GET).getPattern(), Is.is(notNullValue()));
+        assertThat(actual.get(Method.GET).getContentTypes(), Is.is(notNullValue()));
+        assertThat(actual.get(Method.GET).getContentTypes().size(), Is.is(1));
+        assertThat(actual.get(Method.GET).getAccepts(), Is.is(notNullValue()));
+        assertThat(actual.get(Method.GET).getAccepts().size(), Is.is(1));
+
+        assertThat(actual.get(Method.GET).getErrorRouteRunners(), Is.is(notNullValue()));
+        assertThat(actual.get(Method.GET).getErrorRouteRunners().size(), Is.is(1));
+
+        JsonDispatchErrorRouteRun<DummyUser, DummyPayload> getRouteRunner = (JsonDispatchErrorRouteRun<DummyUser, DummyPayload>) actual.get(Method.GET).getRouteRunner();
+
+        // ordering of before.
+        assertThat(getRouteRunner.getRestRoute().getBefore().get(0), is(betweens.getBefore().get(0)));
+        assertThat(getRouteRunner.getRestRoute().getBefore().get(1), is(target.getBefore().get(0)));
+        assertThat(getRouteRunner.getRestRoute().getBefore().get(2), is(target.getBefore().get(1)));
+
+        // ordering of after
+        assertThat(getRouteRunner.getRestRoute().getAfter().get(0), is(betweens.getAfter().get(0)));
+        assertThat(getRouteRunner.getRestRoute().getAfter().get(1), is(target.getAfter().get(0)));
+        assertThat(getRouteRunner.getRestRoute().getAfter().get(2), is(target.getAfter().get(1)));
+
+        // POST
+        assertThat(actual.get(Method.POST).getRouteRunner(), Is.is(notNullValue()));
+
+        assertThat(actual.get(Method.POST).getPattern(), Is.is(notNullValue()));
+        assertThat(actual.get(Method.POST).getContentTypes(), Is.is(notNullValue()));
+        assertThat(actual.get(Method.POST).getContentTypes().size(), Is.is(1));
+        assertThat(actual.get(Method.GET).getAccepts(), Is.is(notNullValue()));
+        assertThat(actual.get(Method.GET).getAccepts().size(), Is.is(1));
+
+        assertThat(actual.get(Method.POST).getErrorRouteRunners(), Is.is(notNullValue()));
+        assertThat(actual.get(Method.POST).getErrorRouteRunners().size(), Is.is(1));
+
+        JsonDispatchErrorRouteRun<DummyUser, DummyPayload> postRouteRunner = (JsonDispatchErrorRouteRun<DummyUser, DummyPayload>) actual.get(Method.POST).getRouteRunner();
 
         // ordering of before.
         assertThat(postRouteRunner.getRestRoute().getBefore().get(0), is(betweens.getBefore().get(0)));

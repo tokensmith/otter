@@ -5,6 +5,7 @@ import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.dispatch.json.JsonDispatchErrorRouteRun;
 import org.rootservices.otter.dispatch.json.JsonRouteRun;
 import org.rootservices.otter.dispatch.RouteRunner;
 import org.rootservices.otter.dispatch.translator.RestErrorHandler;
@@ -30,6 +31,7 @@ public class RestLocationBuilder<U extends DefaultUser, P> {
     private Class<P> payload;
     private List<RestBetween<U>> before = new ArrayList<>();
     private List<RestBetween<U>> after = new ArrayList<>();
+    private Boolean isDispatchError = false;
 
     // error route runners that are called from engine.
     private Map<StatusCode, RouteRunner> errorRouteRunners = new HashMap<>();
@@ -99,6 +101,11 @@ public class RestLocationBuilder<U extends DefaultUser, P> {
         return this;
     }
 
+    public RestLocationBuilder<U, P> isDispatchError(Boolean isDispatchError) {
+        this.isDispatchError = isDispatchError;
+        return this;
+    }
+
     public Location build() {
         RestRoute<U, P> restRoute = new RestRouteBuilder<U, P>()
                 .restResource(restResource)
@@ -113,18 +120,33 @@ public class RestLocationBuilder<U extends DefaultUser, P> {
         RestBtwnRequestTranslator<U, P> restBtwnRequestTranslator = new RestBtwnRequestTranslator<>();
         RestBtwnResponseTranslator<P> restBtwnResponseTranslator = new RestBtwnResponseTranslator<>();
 
-        // 157: not founds need JsonDispatchErrorRouteRun
-        RouteRunner routeRunner = new JsonRouteRun<U, P>(
-                restRoute,
-                restResponseTranslator,
-                restRequestTranslator,
-                restBtwnRequestTranslator,
-                restBtwnResponseTranslator,
-                jsonTranslator,
-                errorHandlers,
-                new RestErrorRequestTranslator<>(),
-                new RestErrorResponseTranslator()
-        );
+        RouteRunner routeRunner;
+        if (isDispatchError) {
+            routeRunner = new JsonDispatchErrorRouteRun<>(
+                    restRoute,
+                    restResponseTranslator,
+                    restRequestTranslator,
+                    restBtwnRequestTranslator,
+                    restBtwnResponseTranslator,
+                    jsonTranslator,
+                    errorHandlers,
+                    new RestErrorRequestTranslator<>(),
+                    new RestErrorResponseTranslator()
+            );
+
+        } else {
+            routeRunner = new JsonRouteRun<U, P>(
+                    restRoute,
+                    restResponseTranslator,
+                    restRequestTranslator,
+                    restBtwnRequestTranslator,
+                    restBtwnResponseTranslator,
+                    jsonTranslator,
+                    errorHandlers,
+                    new RestErrorRequestTranslator<>(),
+                    new RestErrorResponseTranslator()
+            );
+        }
 
         return new Location(pattern, contentTypes, accepts, routeRunner, errorRouteRunners);
     }

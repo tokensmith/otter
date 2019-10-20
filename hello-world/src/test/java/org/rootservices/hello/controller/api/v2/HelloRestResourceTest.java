@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.error.rest.NotFoundRestResource;
 import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.translator.config.TranslatorAppFactory;
@@ -149,6 +150,6 @@ public class HelloRestResourceTest {
         assertThat(clientError.getActual(), is("/rest/v2/notFound"));
         assertThat(clientError.getExpected(), is(notNullValue()));
         assertThat(clientError.getExpected().size(), is(0));
-        assertThat(clientError.getReason(), is(nullValue()));
+        assertThat(clientError.getReason(), is(NotFoundRestResource.REASON));
     }
 }

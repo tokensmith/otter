@@ -14,6 +14,7 @@ import org.rootservices.otter.controller.builder.MimeTypeBuilder;
 import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.controller.error.rest.NotFoundRestResource;
 import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.translator.config.TranslatorAppFactory;
@@ -228,7 +229,7 @@ public class HelloRestResourceTest {
     }
 
     @Test
-    public void postWhenNotFoundAndBodyInvalidShouldReturn415() throws Exception {
+    public void postWhenNotFoundAndBodyInvalidShouldReturn404() throws Exception {
         String helloURI = getUri("not-wired-up");
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
@@ -246,11 +247,10 @@ public class HelloRestResourceTest {
         ClientError actual = om.readValue(response.getResponseBody(), ClientError.class);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getSource(), is(ClientError.Source.HEADER));
-        assertThat(actual.getKey(), is(Header.ACCEPT.toString()));
-        assertThat(actual.getActual(), is(nullValue()));
-        assertThat(actual.getExpected().size(), is(1));
-        assertThat(actual.getExpected().get(0), is(ContentType.JSON_UTF_8.getValue()));
+        assertThat(actual.getSource(), is(ClientError.Source.URL));
+
+        assertThat(actual.getActual(), is("/rest/v3/not-wired-up"));
+        assertThat(actual.getExpected().size(), is(0));
     }
 
     @Test
@@ -324,6 +324,6 @@ public class HelloRestResourceTest {
         assertThat(clientError.getActual(), is("/rest/v3/notFound"));
         assertThat(clientError.getExpected(), is(notNullValue()));
         assertThat(clientError.getExpected().size(), is(0));
-        assertThat(clientError.getReason(), is(nullValue()));
+        assertThat(clientError.getReason(), is(NotFoundRestResource.REASON));
     }
 }
