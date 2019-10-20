@@ -14,11 +14,13 @@ import java.util.Optional;
 
 
 public class NotFoundRestResource<U extends DefaultUser> extends RestResource<U, ClientError> {
+    public static String REASON = "URL was not found";
 
     protected ClientError to(RestRequest<U, ClientError> from) {
         ClientError to = new ClientErrorBuilder()
                 .source(ClientError.Source.URL)
                 .actual(from.getPathWithParams())
+                .reason(REASON)
                 .build();
         return to;
     }
