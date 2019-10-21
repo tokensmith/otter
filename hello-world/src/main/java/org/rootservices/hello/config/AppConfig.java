@@ -30,6 +30,7 @@ import org.rootservices.otter.controller.error.html.MediaTypeResource;
 import org.rootservices.otter.controller.error.html.NotAcceptableResource;
 import org.rootservices.otter.controller.error.html.ServerErrorResource;
 import org.rootservices.otter.controller.error.rest.MediaTypeRestResource;
+import org.rootservices.otter.controller.error.rest.NotAcceptableRestResource;
 import org.rootservices.otter.controller.error.rest.NotFoundRestResource;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
@@ -115,6 +116,12 @@ public class AppConfig implements Configure {
         BadRequestResource badRequestResource = new BadRequestResource();
         ServerErrorRestResource serverErrorResource = new ServerErrorRestResource();
 
+        RestResource<ApiUser, ClientError> notAcceptableRestResource = new NotAcceptableRestResource<>();
+        RestErrorTarget<ApiUser, ClientError> notAcceptableTarget = new RestErrorTargetBuilder<ApiUser, ClientError>()
+                .payload(ClientError.class)
+                .resource(notAcceptableRestResource)
+                .build();
+
         RestResource<ApiUser, ClientError> mediaTypeResource = new MediaTypeRestResource<>();
         RestErrorTarget<ApiUser, ClientError> mediaTypeTarget = new RestErrorTargetBuilder<ApiUser, ClientError>()
                 .payload(ClientError.class)
@@ -128,6 +135,7 @@ public class AppConfig implements Configure {
                 .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
                 .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
                 .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaTypeTarget)
+                .onDispatchError(StatusCode.NOT_ACCEPTABLE, notAcceptableTarget)
                 .build();
 
         restGroups.add(apiGroupV3);

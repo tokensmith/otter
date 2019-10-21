@@ -1,3 +1,6 @@
+project.version = '1.5.0-SNAPSHOT'
+project.group 'org.rootservices'
+
 allprojects {
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
