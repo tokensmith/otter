@@ -2,10 +2,10 @@ package helper.entity;
 
 import helper.entity.model.DummyErrorPayload;
 import helper.entity.model.DummyUser;
-import org.rootservices.otter.controller.error.rest.RestErrorResource;
-import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.translator.exception.DeserializationException;
-import org.rootservices.otter.translator.exception.Reason;
+import net.tokensmith.otter.controller.error.rest.RestErrorResource;
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.translator.exception.DeserializationException;
+import net.tokensmith.otter.translator.exception.Reason;
 
 import java.util.Optional;
 

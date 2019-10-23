@@ -274,7 +274,7 @@ Use `anonymous()` to not require authentication or optionally authenticate.
 Then, to require authentication for a Resource use, `.authenticate()`.
 
 ```java
-    var helloRestResourceV3 = new org.rootservices.hello.controller.api.v3.HelloRestResource();
+    var helloRestResourceV3 = new HelloRestResource();
     RestTarget<ApiUser, Hello> helloApiV3 = new RestTargetBuilder<ApiUser, Hello>()
             .groupName(API_GROUP_V3)
             .method(Method.GET)

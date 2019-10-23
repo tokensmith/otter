@@ -2,14 +2,13 @@ package helper.entity;
 
 import helper.entity.model.AlternatePayload;
 import helper.entity.model.DummyErrorPayload;
-import helper.entity.model.DummyErrorPayload;
 import helper.entity.model.DummyUser;
-import org.rootservices.otter.controller.RestResource;
-import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.request.RestRequest;
-import org.rootservices.otter.controller.entity.response.RestResponse;
-import org.rootservices.otter.translator.JsonTranslator;
-import org.rootservices.otter.translator.exception.ToJsonException;
+import net.tokensmith.otter.controller.RestResource;
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.request.RestRequest;
+import net.tokensmith.otter.controller.entity.response.RestResponse;
+import net.tokensmith.otter.translator.JsonTranslator;
+import net.tokensmith.otter.translator.exception.ToJsonException;
 
 import java.util.Optional;
 import java.util.UUID;

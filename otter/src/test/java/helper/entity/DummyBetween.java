@@ -1,10 +1,10 @@
 package helper.entity;
 
-import org.rootservices.otter.controller.entity.request.Request;
-import org.rootservices.otter.controller.entity.response.Response;
-import org.rootservices.otter.router.entity.between.Between;
-import org.rootservices.otter.router.entity.Method;
-import org.rootservices.otter.router.exception.HaltException;
+import net.tokensmith.otter.controller.entity.request.Request;
+import net.tokensmith.otter.controller.entity.response.Response;
+import net.tokensmith.otter.router.entity.between.Between;
+import net.tokensmith.otter.router.entity.Method;
+import net.tokensmith.otter.router.exception.HaltException;
 
 public class DummyBetween<S, U> implements Between<S, U> {
 

@@ -107,7 +107,7 @@ publishing {
                     developer {
                         id = 'tmackenzie'
                         name = 'Tom MacKenzie'
-                        email = 'tom@rootservices.org'
+                        email = 'tom@tokensmith.net'
                     }
                 }
             }
