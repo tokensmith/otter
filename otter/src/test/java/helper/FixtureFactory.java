@@ -2,6 +2,9 @@ package helper;
 
 
 import helper.entity.*;
+import helper.entity.model.DummyPayload;
+import helper.entity.model.DummySession;
+import helper.entity.model.DummyUser;
 import helper.fake.FakeResource;
 import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
@@ -14,44 +17,44 @@ import org.rootservices.jwt.jws.serialization.SecureJwtSerializer;
 import org.rootservices.jwt.serialization.JwtSerde;
 import org.rootservices.jwt.serialization.exception.JsonToJwtException;
 import org.rootservices.jwt.serialization.exception.JwtToJsonException;
-import org.rootservices.otter.controller.builder.MimeTypeBuilder;
-import org.rootservices.otter.controller.builder.ResponseBuilder;
-import org.rootservices.otter.controller.entity.Cookie;
-import org.rootservices.otter.controller.entity.request.Request;
-import org.rootservices.otter.controller.entity.request.RestRequest;
-import org.rootservices.otter.controller.entity.response.Response;
-import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.mime.MimeType;
-import org.rootservices.otter.controller.entity.response.RestResponse;
-import org.rootservices.otter.controller.header.Header;
-import org.rootservices.otter.controller.header.HeaderValue;
-import org.rootservices.otter.dispatch.RouteRun;
-import org.rootservices.otter.dispatch.RouteRunner;
-import org.rootservices.otter.dispatch.entity.RestBtwnRequest;
-import org.rootservices.otter.dispatch.entity.RestBtwnResponse;
-import org.rootservices.otter.dispatch.entity.RestErrorRequest;
-import org.rootservices.otter.dispatch.entity.RestErrorResponse;
-import org.rootservices.otter.dispatch.translator.AnswerTranslator;
-import org.rootservices.otter.dispatch.translator.RequestTranslator;
-import org.rootservices.otter.gateway.builder.ErrorTargetBuilder;
-import org.rootservices.otter.gateway.builder.RestTargetBuilder;
-import org.rootservices.otter.gateway.builder.ShapeBuilder;
-import org.rootservices.otter.gateway.builder.TargetBuilder;
-import org.rootservices.otter.gateway.entity.*;
-import org.rootservices.otter.gateway.entity.rest.RestErrorTarget;
-import org.rootservices.otter.gateway.entity.rest.RestTarget;
-import org.rootservices.otter.router.builder.AnswerBuilder;
-import org.rootservices.otter.router.builder.AskBuilder;
-import org.rootservices.otter.router.builder.LocationBuilder;
-import org.rootservices.otter.router.builder.RouteBuilder;
-import org.rootservices.otter.router.entity.*;
-import org.rootservices.otter.router.entity.between.Between;
-import org.rootservices.otter.router.entity.between.RestBetween;
-import org.rootservices.otter.router.entity.io.Answer;
-import org.rootservices.otter.router.entity.io.Ask;
-import org.rootservices.otter.security.builder.entity.Betweens;
-import org.rootservices.otter.security.builder.entity.RestBetweens;
-import org.rootservices.otter.security.csrf.CsrfClaims;
+import net.tokensmith.otter.controller.builder.MimeTypeBuilder;
+import net.tokensmith.otter.controller.builder.ResponseBuilder;
+import net.tokensmith.otter.controller.entity.Cookie;
+import net.tokensmith.otter.controller.entity.request.Request;
+import net.tokensmith.otter.controller.entity.request.RestRequest;
+import net.tokensmith.otter.controller.entity.response.Response;
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.mime.MimeType;
+import net.tokensmith.otter.controller.entity.response.RestResponse;
+import net.tokensmith.otter.controller.header.Header;
+import net.tokensmith.otter.controller.header.HeaderValue;
+import net.tokensmith.otter.dispatch.html.RouteRun;
+import net.tokensmith.otter.dispatch.RouteRunner;
+import net.tokensmith.otter.dispatch.entity.RestBtwnRequest;
+import net.tokensmith.otter.dispatch.entity.RestBtwnResponse;
+import net.tokensmith.otter.dispatch.entity.RestErrorRequest;
+import net.tokensmith.otter.dispatch.entity.RestErrorResponse;
+import net.tokensmith.otter.dispatch.translator.AnswerTranslator;
+import net.tokensmith.otter.dispatch.translator.RequestTranslator;
+import net.tokensmith.otter.gateway.builder.ErrorTargetBuilder;
+import net.tokensmith.otter.gateway.builder.RestTargetBuilder;
+import net.tokensmith.otter.gateway.builder.ShapeBuilder;
+import net.tokensmith.otter.gateway.builder.TargetBuilder;
+import net.tokensmith.otter.gateway.entity.*;
+import net.tokensmith.otter.gateway.entity.rest.RestErrorTarget;
+import net.tokensmith.otter.gateway.entity.rest.RestTarget;
+import net.tokensmith.otter.router.builder.AnswerBuilder;
+import net.tokensmith.otter.router.builder.AskBuilder;
+import net.tokensmith.otter.router.builder.LocationBuilder;
+import net.tokensmith.otter.router.builder.RouteBuilder;
+import net.tokensmith.otter.router.entity.*;
+import net.tokensmith.otter.router.entity.between.Between;
+import net.tokensmith.otter.router.entity.between.RestBetween;
+import net.tokensmith.otter.router.entity.io.Answer;
+import net.tokensmith.otter.router.entity.io.Ask;
+import net.tokensmith.otter.security.builder.entity.Betweens;
+import net.tokensmith.otter.security.builder.entity.RestBetweens;
+import net.tokensmith.otter.security.csrf.CsrfClaims;
 
 import java.time.OffsetDateTime;
 import java.util.*;
@@ -168,7 +171,7 @@ public class FixtureFactory {
                 .build();
 
         FakeResource fakeResource = new FakeResource();
-        MimeType json = new MimeTypeBuilder().json().build();
+        MimeType html = new MimeTypeBuilder().html().build();
 
         TargetBuilder<DummySession, DummyUser> targetBuilder = new TargetBuilder<DummySession, DummyUser>();
 
@@ -176,7 +179,8 @@ public class FixtureFactory {
                 .regex("/foo")
                 .method(Method.GET)
                 .method(Method.POST)
-                .contentType(json)
+                .contentType(html)
+                .accept(html)
                 .resource(fakeResource)
                 .before(new DummyBetween<>())
                 .before(new DummyBetween<>())
@@ -212,6 +216,7 @@ public class FixtureFactory {
                 .method(Method.GET)
                 .method(Method.POST)
                 .contentType(json)
+                .accept(json)
                 .restResource(okRestResource)
                 .payload(DummyPayload.class)
                 .before(new DummyRestBetween<>())
@@ -237,15 +242,19 @@ public class FixtureFactory {
     }
 
     public static Ask makeAsk() {
+        MimeType html = new MimeTypeBuilder().html().build();
+
         List<MimeType> contentTypes = new ArrayList<>();
-        contentTypes.add(new MimeTypeBuilder().html().build());
+        contentTypes.add(html);
 
         Ask ask = new AskBuilder()
             .matcher(Optional.empty())
             .possibleContentTypes(contentTypes)
+            .possibleAccepts(contentTypes)
             .method(Method.GET)
             .pathWithParams("")
-            .contentType(new MimeTypeBuilder().html().build())
+            .contentType(html)
+            .accept(html)
             .headers(new HashMap<>())
             .cookies(new HashMap<>())
             .queryParams(new HashMap<>())
@@ -290,14 +299,17 @@ public class FixtureFactory {
     public static RestBtwnRequest<DummyUser> makeRestBtwnRequest() {
         RestBtwnRequest<DummyUser> request =  new RestBtwnRequest<DummyUser>();
 
+        MimeType json = new MimeTypeBuilder().json().build();
         List<MimeType> contentTypes = new ArrayList<>();
-        contentTypes.add(new MimeTypeBuilder().json().build());
+        contentTypes.add(json);
 
         request.setMatcher(Optional.empty());
         request.setPossibleContentTypes(contentTypes);
+        request.setPossibleAccepts(contentTypes);
         request.setMethod(Method.GET);
         request.setPathWithParams("");
-        request.setContentType(new MimeTypeBuilder().json().build());
+        request.setContentType(json);
+        request.setAccept(json);
         request.setHeaders(new HashMap<>());
         request.setCookies(makeCookies());
         request.setQueryParams(new HashMap<>());
@@ -339,7 +351,7 @@ public class FixtureFactory {
 
     public static RestBtwnResponse makeRestBtwnResponse() {
         return new RestBtwnResponse(
-                StatusCode.OK, new HashMap<>(), new HashMap<>(), Optional.empty()
+                StatusCode.OK, new HashMap<>(), new HashMap<>(), Optional.empty(), Optional.empty()
         );
     }
 

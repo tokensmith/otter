@@ -1,8 +1,10 @@
 package helper.entity;
 
-import org.rootservices.otter.controller.Resource;
-import org.rootservices.otter.controller.entity.request.Request;
-import org.rootservices.otter.controller.entity.response.Response;
+import helper.entity.model.DummySession;
+import helper.entity.model.DummyUser;
+import net.tokensmith.otter.controller.Resource;
+import net.tokensmith.otter.controller.entity.request.Request;
+import net.tokensmith.otter.controller.entity.response.Response;
 
 public class RuntimeExceptionResource extends Resource<DummySession, DummyUser> {
     @Override

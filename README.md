@@ -24,16 +24,16 @@ example application. Only 5 files to get started.
 ```xml
 <dependencies>
     <dependency>
-        <groupId>org.rootservices</groupId>
+        <groupId>net.tokensmith</groupId>
         <artifactId>otter</artifactId>
-        <version>1.4</version>
+        <version>1.5.0</version>
     </dependency>
 </dependencies>
 ```
 
 #### Gradle
 ```groovy
-compile group: 'org.rootservices', name: 'otter', version: '1.4'
+compile group: 'net.tokensmith', name: 'otter', version: '1.5.0'
 ```
 
 ## Documentation

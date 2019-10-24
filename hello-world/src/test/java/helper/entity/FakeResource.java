@@ -1,7 +1,7 @@
 package helper.entity;
 
 
-import org.rootservices.otter.controller.Resource;
+import net.tokensmith.otter.controller.Resource;
 
 
 public class FakeResource extends Resource {

@@ -120,6 +120,7 @@ A [RestTarget](https://github.com/RootServices/otter/blob/development/otter/src/
             .regex(helloRestResourceV3.URL)
             .authenticate()
             .contentType(json)
+            .accept(json)
             .payload(Hello.class)
             .build();
 ```
@@ -151,6 +152,7 @@ To share a `RestGroup's` feature with a `RestTarget` set the `.groupName(..)` to
             .regex(helloRestResourceV3.URL)
             .authenticate()
             .contentType(json)
+            .accept(json)
             .payload(Hello.class)
             .build();
 ```
@@ -274,7 +276,7 @@ Use `anonymous()` to not require authentication or optionally authenticate.
 Then, to require authentication for a Resource use, `.authenticate()`.
 
 ```java
-    var helloRestResourceV3 = new org.rootservices.hello.controller.api.v3.HelloRestResource();
+    var helloRestResourceV3 = new HelloRestResource();
     RestTarget<ApiUser, Hello> helloApiV3 = new RestTargetBuilder<ApiUser, Hello>()
             .groupName(API_GROUP_V3)
             .method(Method.GET)
@@ -283,6 +285,7 @@ Then, to require authentication for a Resource use, `.authenticate()`.
             .regex(helloRestResourceV3.URL)
             .authenticate()
             .contentType(json)
+            .accept(json)
             .payload(Hello.class)
             .build();
 ```
@@ -298,6 +301,7 @@ Use `anonymous()` to not require authentication or optionally authenticate.
 The errors that can be recovered from are:
  - Server Error `500`
  - Unsuppored Media Type `415`
+ - Not Acceptable `406`
  
 Everything else should be able to be handled with in a `Resource`.
 
@@ -305,10 +309,14 @@ Otter does not have default error handling when an error occurs attempting to re
 
 To configure a `Group` to apply error handlers to all its related `Targets`.
 ```java
-    var serverErrorResource = new org.rootservices.hello.controller.html.ServerErrorResource();
-
+    var serverErrorResource = new ServerErrorResource<TokenSession, User>("/WEB-INF/jsp/500.jsp");
+    
     ErrorTarget<TokenSession, User> mediaType = new ErrorTargetBuilder<TokenSession, User>()
-            .resource(new MediaTypeResource())
+            .resource(new MediaTypeResource<TokenSession, User>("/WEB-INF/jsp/415.jsp"))
+            .build();
+
+    ErrorTarget<TokenSession, User> notAcceptable = new ErrorTargetBuilder<TokenSession, User>()
+            .resource(new NotAcceptableResource<TokenSession, User>("/WEB-INF/jsp/406.jsp"))
             .build();
 
     Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
@@ -318,16 +326,21 @@ To configure a `Group` to apply error handlers to all its related `Targets`.
             .authRequired(new AuthBetween())
             .onError(StatusCode.SERVER_ERROR, serverErrorResource)
             .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaType)
+            .onDispatchError(StatusCode.NOT_ACCEPTABLE, notAcceptable)
             .build();
 ```
 
 To override or add error handling to a `Target`.
 ```java
-    var serverErrorResource = new org.rootservices.hello.controller.html.ServerErrorResource();
+    var serverErrorResource = new ServerErrorResource<TokenSession, User>("/WEB-INF/jsp/500.jsp");
     
     ErrorTarget<TokenSession, User> mediaType = new ErrorTargetBuilder<TokenSession, User>()
-        .resource(new MediaTypeResource())
-        .build();
+            .resource(new MediaTypeResource<TokenSession, User>("/WEB-INF/jsp/415.jsp"))
+            .build();
+
+    ErrorTarget<TokenSession, User> notAcceptable = new ErrorTargetBuilder<TokenSession, User>()
+            .resource(new NotAcceptableResource<TokenSession, User>("/WEB-INF/jsp/406.jsp"))
+            .build();
 
     Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
         .groupName(WEB_SITE_GROUP)
@@ -336,15 +349,35 @@ To override or add error handling to a `Target`.
         .regex(HelloResource.URL)
         .onError(StatusCode.SERVER_ERROR, serverErrorResource)
         .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaType)
+        .onDispatchError(StatusCode.NOT_ACCEPTABLE, notAcceptable)
         .build();
 ```
 
 #### RestResource
-Otter will use it's own default handling for Bad Request, Server Error, and UnSupported Media Type.
+Otter will use it's own default handling for:
+ - Server Error `500`
+ - Bad Request `400`
+ - Not Acceptable `406`
+ - UnSupported Media Type `415`
+
+Server Error `500`
+```bash
+$ curl -H "Content-Type: application/json; charset=utf-8" -i http://localhost:8080/rest/v2/broken
+```
+
+```json
+HTTP/1.1 500 Server Error
+Date: Sat, 17 Aug 2019 16:38:53 GMT
+Content-Length: 43
+
+{
+  "message": "An unexpected error occurred."
+}
+```
 
 Bad Request `400`
 ```bash
-$ curl -X POST -H "Content-Type: application/json; charset=utf-8" -i http://localhost:8080/rest/v2/hello
+$ curl -X POST -H "Content-Type: application/json; charset=utf-8" -H "Accept: application/json; charset=utf-8;" -i http://localhost:8080/rest/v3/hello
 ```
 
 ```json
@@ -361,18 +394,23 @@ Content-Length: 102
 }
 ```
 
-Server Error `500`
+Not Supported `406`
 ```bash
-$ curl -H "Content-Type: application/json; charset=utf-8" -i http://localhost:8080/rest/v2/broken
+$ curl -X GET -H "Content-Type: application/json; charset=utf-8" -i http://localhost:8080/rest/v2/hello
 ```
 
 ```json
-HTTP/1.1 500 Server Error
-Date: Sat, 17 Aug 2019 16:38:53 GMT
-Content-Length: 43
+HTTP/1.1 406 Not Acceptable
+Date: Mon, 21 Oct 2019 11:53:29 GMT
+Content-Length: 110
 
 {
-  "message": "An unexpected error occurred."
+  "source": "HEADER",
+  "key": "ACCEPT",
+  "actual": null,
+  "expected":
+    ["application/json; charset=utf-8;"],
+  "reason":null
 }
 ```
 
@@ -398,23 +436,31 @@ Content-Length: 124
 ```
 
 The errors that can be recovered from are:
- - Bad Request `400`
  - Server Error `500`
+ - Bad Request `400`
+ - Not Supported `406`
  - Unsuppored Media Type `415`
  
 Everything else should be able to be handled with in a `RestResource`.
 
 To configure a `RestGroup` to apply error handlers to all its related `RestTargets`.
 ```java
+    // has overrides for error handling.
     BadRequestResource badRequestResource = new BadRequestResource();
-    ServerErrorResource serverErrorResource = new ServerErrorResource();
+    ServerErrorRestResource serverErrorResource = new ServerErrorRestResource();
 
+    RestResource<ApiUser, ClientError> notAcceptableRestResource = new NotAcceptableRestResource<>();
+    RestErrorTarget<ApiUser, ClientError> notAcceptableTarget = new RestErrorTargetBuilder<ApiUser, ClientError>()
+            .payload(ClientError.class)
+            .resource(notAcceptableRestResource)
+            .build();
+    
     RestResource<ApiUser, ClientError> mediaTypeResource = new MediaTypeRestResource<>();
     RestErrorTarget<ApiUser, ClientError> mediaTypeTarget = new RestErrorTargetBuilder<ApiUser, ClientError>()
             .payload(ClientError.class)
             .resource(mediaTypeResource)
             .build();
-    
+
     RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
             .name(API_GROUP_V3)
             .authRequired(authRestBetween)
@@ -422,6 +468,7 @@ To configure a `RestGroup` to apply error handlers to all its related `RestTarge
             .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
             .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
             .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaTypeTarget)
+            .onDispatchError(StatusCode.NOT_ACCEPTABLE, notAcceptableTarget)
             .build();
 ```
 
@@ -547,6 +594,6 @@ on the page.
 Done, it is CSRF protected.
 ### Static Assets
 
-Files that are placed in, `src/main/webapp/public` are public as long as they pass the entry filter [regex](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/servlet/EntryFilter.java#L18)
+Files that are placed in, `src/main/webapp/public` are public as long as they pass the entry filter [regex](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/servlet/EntryFilter.java#L18).
 
 For example, `src/main/webapp/public/assets/js/jquery-3.3.1.min.js` can be retrieved from, `assets/js/jquery-3.3.1.min.js`
