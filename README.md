@@ -26,14 +26,14 @@ example application. Only 5 files to get started.
     <dependency>
         <groupId>net.tokensmith</groupId>
         <artifactId>otter</artifactId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.5.0</version>
     </dependency>
 </dependencies>
 ```
 
 #### Gradle
 ```groovy
-compile group: 'net.tokensmith', name: 'otter', version: '1.5.0-SNAPSHOT'
+compile group: 'net.tokensmith', name: 'otter', version: '1.5.0'
 ```
 
 ## Documentation
