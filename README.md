@@ -24,9 +24,9 @@ example application. Only 5 files to get started.
 ```xml
 <dependencies>
     <dependency>
-        <groupId>org.rootservices</groupId>
+        <groupId>net.tokensmith</groupId>
         <artifactId>otter</artifactId>
-        <version>1.4.1</version>
+        <version>1.5.0-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
