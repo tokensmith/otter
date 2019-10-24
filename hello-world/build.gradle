@@ -1,4 +1,4 @@
-group 'org.rootservices'
+group 'net.tokensmith'
 
 description = """an example project that uses otter"""
 
@@ -22,11 +22,11 @@ repositories {
 
 ext {
     log4jVersion = '2.12.0'
-    mainClass = 'org.rootservices.hello.server.HelloServer'
+    mainClass = 'net.tokensmith.hello.server.HelloServer'
     pathToJavaMain = "$buildDir/classes/java/main/"
     mainClassAsFilePath = "org/rootservices/hello/server/HelloServer.class"
     absolutePathToMain = "${pathToJavaMain}${mainClassAsFilePath}"
-    neededInRoot = ["org.rootservices.otter", "org.slf4j", "org.apache.logging.log4j"]
+    neededInRoot = ["net.tokensmith.otter", "org.slf4j", "org.apache.logging.log4j"]
 }
 
 dependencies {

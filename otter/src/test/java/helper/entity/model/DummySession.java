@@ -2,7 +2,7 @@ package helper.entity.model;
 
 
 
-import org.rootservices.otter.controller.entity.DefaultSession;
+import net.tokensmith.otter.controller.entity.DefaultSession;
 
 import java.util.Objects;
 

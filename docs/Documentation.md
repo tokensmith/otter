@@ -120,6 +120,7 @@ A [RestTarget](https://github.com/RootServices/otter/blob/development/otter/src/
             .regex(helloRestResourceV3.URL)
             .authenticate()
             .contentType(json)
+            .accept(json)
             .payload(Hello.class)
             .build();
 ```
@@ -151,6 +152,7 @@ To share a `RestGroup's` feature with a `RestTarget` set the `.groupName(..)` to
             .regex(helloRestResourceV3.URL)
             .authenticate()
             .contentType(json)
+            .accept(json)
             .payload(Hello.class)
             .build();
 ```
@@ -274,7 +276,7 @@ Use `anonymous()` to not require authentication or optionally authenticate.
 Then, to require authentication for a Resource use, `.authenticate()`.
 
 ```java
-    var helloRestResourceV3 = new org.rootservices.hello.controller.api.v3.HelloRestResource();
+    var helloRestResourceV3 = new HelloRestResource();
     RestTarget<ApiUser, Hello> helloApiV3 = new RestTargetBuilder<ApiUser, Hello>()
             .groupName(API_GROUP_V3)
             .method(Method.GET)
@@ -283,6 +285,7 @@ Then, to require authentication for a Resource use, `.authenticate()`.
             .regex(helloRestResourceV3.URL)
             .authenticate()
             .contentType(json)
+            .accept(json)
             .payload(Hello.class)
             .build();
 ```
@@ -591,6 +594,6 @@ on the page.
 Done, it is CSRF protected.
 ### Static Assets
 
-Files that are placed in, `src/main/webapp/public` are public as long as they pass the entry filter [regex](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/servlet/EntryFilter.java#L18)
+Files that are placed in, `src/main/webapp/public` are public as long as they pass the entry filter [regex](https://github.com/RootServices/otter/blob/development/otter/src/main/java/org/rootservices/otter/servlet/EntryFilter.java#L18).
 
 For example, `src/main/webapp/public/assets/js/jquery-3.3.1.min.js` can be retrieved from, `assets/js/jquery-3.3.1.min.js`

@@ -2,10 +2,10 @@ package helper.entity;
 
 import helper.entity.model.DummyPayload;
 import helper.entity.model.DummyUser;
-import org.rootservices.otter.controller.RestResource;
-import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.request.RestRequest;
-import org.rootservices.otter.controller.entity.response.RestResponse;
+import net.tokensmith.otter.controller.RestResource;
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.request.RestRequest;
+import net.tokensmith.otter.controller.entity.response.RestResponse;
 
 public class OkRestResource extends RestResource<DummyUser, DummyPayload> {
 

@@ -2,13 +2,12 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-group = "org.rootservices"
-
+group = "net.tokensmith"
+version = "1.5.0-SNAPSHOT"
 description = """Otter"""
 
 sourceCompatibility = 12
 targetCompatibility = 12
-
 
 buildscript {
     repositories {
@@ -107,7 +106,7 @@ publishing {
                     developer {
                         id = 'tmackenzie'
                         name = 'Tom MacKenzie'
-                        email = 'tom@rootservices.org'
+                        email = 'tom@tokensmith.net'
                     }
                 }
             }
@@ -122,10 +121,11 @@ publishing {
             if(!project.ext.properties.containsKey("ossrhUser")) {
                 project.ext.ossrhUser = 'wrongUser'
                 project.ext.ossrhPassword = 'wrongPassword'
+                print "no ossrh user or password"
             }
             credentials {
-                username = ossrhUser
-                password =ossrhPassword
+                username = project.ext.ossrhUser
+                password = project.ext.ossrhPassword
             }
         }
     }
@@ -139,8 +139,4 @@ javadoc {
     if(JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption('html5', true)
     }
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '5.5.1'
 }

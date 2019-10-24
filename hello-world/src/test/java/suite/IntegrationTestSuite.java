@@ -1,10 +1,10 @@
 package suite;
 
 
+import net.tokensmith.hello.controller.*;
+import net.tokensmith.hello.controller.api.v2.BrokenRestResourceTest;
 import org.apache.tomcat.util.descriptor.web.ErrorPage;
-import org.rootservices.hello.controller.*;
-import org.rootservices.hello.controller.api.v2.HelloRestResourceTest;
-import org.rootservices.hello.controller.api.v3.BrokenRestResourceTest;
+import net.tokensmith.hello.controller.api.v2.HelloRestResourceTest;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 import org.junit.AfterClass;
@@ -12,15 +12,11 @@ import org.junit.BeforeClass;
 import org.junit.experimental.categories.Categories;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.rootservices.hello.controller.html.HelloResource;
-import org.rootservices.hello.server.HelloServer;
-import org.rootservices.otter.config.OtterAppFactory;
-import org.rootservices.otter.server.container.ServletContainer;
-import org.rootservices.otter.server.container.ServletContainerFactory;
+import net.tokensmith.hello.controller.html.HelloResource;
+import net.tokensmith.otter.config.OtterAppFactory;
+import net.tokensmith.otter.server.container.ServletContainer;
+import net.tokensmith.otter.server.container.ServletContainerFactory;
 
-import java.net.Authenticator;
-import java.net.InetSocketAddress;
-import java.net.ProxySelector;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.util.ArrayList;
@@ -33,9 +29,9 @@ import static org.asynchttpclient.Dsl.asyncHttpClient;
 @Categories.IncludeCategory(ServletContainerTest.class)
 @Suite.SuiteClasses(value = {
         HelloRestResourceTest.class,
-        org.rootservices.hello.controller.api.v2.BrokenRestResourceTest.class,
-        org.rootservices.hello.controller.api.v3.HelloRestResourceTest.class,
         BrokenRestResourceTest.class,
+        net.tokensmith.hello.controller.api.v3.HelloRestResourceTest.class,
+        net.tokensmith.hello.controller.api.v3.BrokenRestResourceTest.class,
         NotFoundResourceTest.class,
         HelloResourceTest.class,
         GoodByeResourceTest.class,

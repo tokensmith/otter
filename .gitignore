@@ -24,5 +24,6 @@ target/*
 .gradle
 /build/
 */build/
+gradle.properties
 
 logs
