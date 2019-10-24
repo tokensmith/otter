@@ -3,7 +3,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group = "net.tokensmith"
-version = "1.5.0-SNAPSHOT"
+version = "1.5.0"
 description = """Otter"""
 
 sourceCompatibility = 12

@@ -1,4 +1,4 @@
-project.version = '1.5.0-SNAPSHOT'
+project.version = '1.5.0'
 project.group 'net.tokensmith'
 
 allprojects {
