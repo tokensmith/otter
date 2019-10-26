@@ -112,9 +112,9 @@ public class JsonRouteRun<U extends DefaultUser, P> implements RouteRunner {
     /**
      * Modularized so it can be overloaded for the dispatch error runner.
      *
-     * @param body
-     * @return Optional<P>
-     * @throws DeserializationException
+     * @param body the optional request body
+     * @return Optional<P> an optional for the expected payload
+     * @throws DeserializationException if there was an issue serializing the body to the expected payload
      */
     protected Optional<P> to(Optional<byte[]> body) throws DeserializationException {
         return makeEntity(body);
