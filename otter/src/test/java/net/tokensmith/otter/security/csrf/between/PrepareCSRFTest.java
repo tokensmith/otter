@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.rootservices.jwt.entity.jwt.JsonWebToken;
+import net.tokensmith.jwt.entity.jwt.JsonWebToken;
 import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.request.Request;

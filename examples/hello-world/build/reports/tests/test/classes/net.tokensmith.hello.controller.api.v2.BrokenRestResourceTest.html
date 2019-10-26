@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - Class net.tokensmith.hello.controller.api.v2.BrokenRestResourceTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>Class net.tokensmith.hello.controller.api.v2.BrokenRestResourceTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/net.tokensmith.hello.controller.api.v2.html">net.tokensmith.hello.controller.api.v2</a> &gt; BrokenRestResourceTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">5</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.021s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard error</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">deleteShouldBeDefaultServerError</td>
+<td class="success">0.004s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">getShouldBeDefaultServerError</td>
+<td class="success">0.004s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">patchShouldBeDefaultServerError</td>
+<td class="success">0.004s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">postShouldBeDefaultServerError</td>
+<td class="success">0.004s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">putShouldBeDefaultServerError</td>
+<td class="success">0.005s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard error</h2>
+<span class="code">
+<pre>[qtp857025988-18] ERROR net.tokensmith.otter.controller.error.rest.ServerErrorRestResource - 
+net.tokensmith.otter.dispatch.exception.ServerException: 
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.executeResourceMethod(JsonRouteRun.java:231)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.process(JsonRouteRun.java:94)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.run(JsonRouteRun.java:69)
+	at net.tokensmith.otter.router.Engine.found(Engine.java:82)
+	at net.tokensmith.otter.router.Engine.route(Engine.java:43)
+	at net.tokensmith.otter.gateway.servlet.ServletGateway.processRequest(ServletGateway.java:64)
+	at net.tokensmith.otter.servlet.async.ReadListenerImpl.onAllDataRead(ReadListenerImpl.java:53)
+	at org.eclipse.jetty.server.HttpInput.run(HttpInput.java:895)
+	at org.eclipse.jetty.server.handler.ContextHandler.handle(ContextHandler.java:1392)
+	at org.eclipse.jetty.server.HttpChannel.handle(HttpChannel.java:476)
+	at org.eclipse.jetty.server.HttpConnection.onFillable(HttpConnection.java:268)
+	at org.eclipse.jetty.io.AbstractConnection$ReadCallback.succeeded(AbstractConnection.java:311)
+	at org.eclipse.jetty.io.FillInterest.fillable(FillInterest.java:103)
+	at org.eclipse.jetty.io.ChannelEndPoint$2.run(ChannelEndPoint.java:117)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.runTask(EatWhatYouKill.java:336)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:313)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:171)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.run(EatWhatYouKill.java:129)
+	at org.eclipse.jetty.util.thread.ReservedThreadExecutor$ReservedThread.run(ReservedThreadExecutor.java:367)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:782)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:918)
+	at java.base/java.lang.Thread.run(Thread.java:835)
+Caused by: java.lang.RuntimeException: unexpected error
+	at net.tokensmith.hello.controller.api.v2.BrokenRestResourceV2.get(BrokenRestResourceV2.java:14)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.execute(JsonRouteRun.java:257)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.executeResourceMethod(JsonRouteRun.java:205)
+	... 21 more
+[qtp857025988-19] ERROR net.tokensmith.otter.controller.error.rest.ServerErrorRestResource - 
+net.tokensmith.otter.dispatch.exception.ServerException: 
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.executeResourceMethod(JsonRouteRun.java:231)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.process(JsonRouteRun.java:94)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.run(JsonRouteRun.java:69)
+	at net.tokensmith.otter.router.Engine.found(Engine.java:82)
+	at net.tokensmith.otter.router.Engine.route(Engine.java:43)
+	at net.tokensmith.otter.gateway.servlet.ServletGateway.processRequest(ServletGateway.java:64)
+	at net.tokensmith.otter.servlet.async.ReadListenerImpl.onAllDataRead(ReadListenerImpl.java:53)
+	at org.eclipse.jetty.server.HttpInput.run(HttpInput.java:895)
+	at org.eclipse.jetty.server.handler.ContextHandler.handle(ContextHandler.java:1392)
+	at org.eclipse.jetty.server.HttpChannel.handle(HttpChannel.java:476)
+	at org.eclipse.jetty.server.HttpConnection.onFillable(HttpConnection.java:268)
+	at org.eclipse.jetty.io.AbstractConnection$ReadCallback.succeeded(AbstractConnection.java:311)
+	at org.eclipse.jetty.io.FillInterest.fillable(FillInterest.java:103)
+	at org.eclipse.jetty.io.ChannelEndPoint$2.run(ChannelEndPoint.java:117)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.runTask(EatWhatYouKill.java:336)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:313)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:171)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.run(EatWhatYouKill.java:129)
+	at org.eclipse.jetty.util.thread.ReservedThreadExecutor$ReservedThread.run(ReservedThreadExecutor.java:367)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:782)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:918)
+	at java.base/java.lang.Thread.run(Thread.java:835)
+Caused by: java.lang.RuntimeException: unexpected error
+	at net.tokensmith.hello.controller.api.v2.BrokenRestResourceV2.get(BrokenRestResourceV2.java:14)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.execute(JsonRouteRun.java:257)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.executeResourceMethod(JsonRouteRun.java:205)
+	... 21 more
+[qtp857025988-18] ERROR net.tokensmith.otter.controller.error.rest.ServerErrorRestResource - 
+net.tokensmith.otter.dispatch.exception.ServerException: 
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.executeResourceMethod(JsonRouteRun.java:231)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.process(JsonRouteRun.java:94)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.run(JsonRouteRun.java:69)
+	at net.tokensmith.otter.router.Engine.found(Engine.java:82)
+	at net.tokensmith.otter.router.Engine.route(Engine.java:43)
+	at net.tokensmith.otter.gateway.servlet.ServletGateway.processRequest(ServletGateway.java:64)
+	at net.tokensmith.otter.servlet.async.ReadListenerImpl.onAllDataRead(ReadListenerImpl.java:53)
+	at org.eclipse.jetty.server.HttpInput.run(HttpInput.java:895)
+	at org.eclipse.jetty.server.handler.ContextHandler.handle(ContextHandler.java:1392)
+	at org.eclipse.jetty.server.HttpChannel.handle(HttpChannel.java:476)
+	at org.eclipse.jetty.server.HttpConnection.onFillable(HttpConnection.java:268)
+	at org.eclipse.jetty.io.AbstractConnection$ReadCallback.succeeded(AbstractConnection.java:311)
+	at org.eclipse.jetty.io.FillInterest.fillable(FillInterest.java:103)
+	at org.eclipse.jetty.io.ChannelEndPoint$2.run(ChannelEndPoint.java:117)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.runTask(EatWhatYouKill.java:336)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:313)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:171)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.run(EatWhatYouKill.java:129)
+	at org.eclipse.jetty.util.thread.ReservedThreadExecutor$ReservedThread.run(ReservedThreadExecutor.java:367)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:782)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:918)
+	at java.base/java.lang.Thread.run(Thread.java:835)
+Caused by: java.lang.RuntimeException: unexpected error
+	at net.tokensmith.hello.controller.api.v2.BrokenRestResourceV2.get(BrokenRestResourceV2.java:14)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.execute(JsonRouteRun.java:257)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.executeResourceMethod(JsonRouteRun.java:205)
+	... 21 more
+[qtp857025988-19] ERROR net.tokensmith.otter.controller.error.rest.ServerErrorRestResource - 
+net.tokensmith.otter.dispatch.exception.ServerException: 
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.executeResourceMethod(JsonRouteRun.java:231)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.process(JsonRouteRun.java:94)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.run(JsonRouteRun.java:69)
+	at net.tokensmith.otter.router.Engine.found(Engine.java:82)
+	at net.tokensmith.otter.router.Engine.route(Engine.java:43)
+	at net.tokensmith.otter.gateway.servlet.ServletGateway.processRequest(ServletGateway.java:64)
+	at net.tokensmith.otter.servlet.async.ReadListenerImpl.onAllDataRead(ReadListenerImpl.java:53)
+	at org.eclipse.jetty.server.HttpInput.run(HttpInput.java:895)
+	at org.eclipse.jetty.server.handler.ContextHandler.handle(ContextHandler.java:1392)
+	at org.eclipse.jetty.server.HttpChannel.handle(HttpChannel.java:476)
+	at org.eclipse.jetty.server.HttpConnection.onFillable(HttpConnection.java:268)
+	at org.eclipse.jetty.io.AbstractConnection$ReadCallback.succeeded(AbstractConnection.java:311)
+	at org.eclipse.jetty.io.FillInterest.fillable(FillInterest.java:103)
+	at org.eclipse.jetty.io.ChannelEndPoint$2.run(ChannelEndPoint.java:117)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.runTask(EatWhatYouKill.java:336)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:313)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:171)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.run(EatWhatYouKill.java:129)
+	at org.eclipse.jetty.util.thread.ReservedThreadExecutor$ReservedThread.run(ReservedThreadExecutor.java:367)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:782)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:918)
+	at java.base/java.lang.Thread.run(Thread.java:835)
+Caused by: java.lang.RuntimeException: unexpected error
+	at net.tokensmith.hello.controller.api.v2.BrokenRestResourceV2.get(BrokenRestResourceV2.java:14)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.execute(JsonRouteRun.java:257)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.executeResourceMethod(JsonRouteRun.java:205)
+	... 21 more
+[qtp857025988-18] ERROR net.tokensmith.otter.controller.error.rest.ServerErrorRestResource - 
+net.tokensmith.otter.dispatch.exception.ServerException: 
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.executeResourceMethod(JsonRouteRun.java:231)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.process(JsonRouteRun.java:94)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.run(JsonRouteRun.java:69)
+	at net.tokensmith.otter.router.Engine.found(Engine.java:82)
+	at net.tokensmith.otter.router.Engine.route(Engine.java:43)
+	at net.tokensmith.otter.gateway.servlet.ServletGateway.processRequest(ServletGateway.java:64)
+	at net.tokensmith.otter.servlet.async.ReadListenerImpl.onAllDataRead(ReadListenerImpl.java:53)
+	at org.eclipse.jetty.server.HttpInput.run(HttpInput.java:895)
+	at org.eclipse.jetty.server.handler.ContextHandler.handle(ContextHandler.java:1392)
+	at org.eclipse.jetty.server.HttpChannel.handle(HttpChannel.java:476)
+	at org.eclipse.jetty.server.HttpConnection.onFillable(HttpConnection.java:268)
+	at org.eclipse.jetty.io.AbstractConnection$ReadCallback.succeeded(AbstractConnection.java:311)
+	at org.eclipse.jetty.io.FillInterest.fillable(FillInterest.java:103)
+	at org.eclipse.jetty.io.ChannelEndPoint$2.run(ChannelEndPoint.java:117)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.runTask(EatWhatYouKill.java:336)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:313)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:171)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.run(EatWhatYouKill.java:129)
+	at org.eclipse.jetty.util.thread.ReservedThreadExecutor$ReservedThread.run(ReservedThreadExecutor.java:367)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:782)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:918)
+	at java.base/java.lang.Thread.run(Thread.java:835)
+Caused by: java.lang.RuntimeException: unexpected error
+	at net.tokensmith.hello.controller.api.v2.BrokenRestResourceV2.get(BrokenRestResourceV2.java:14)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.execute(JsonRouteRun.java:257)
+	at net.tokensmith.otter.dispatch.json.JsonRouteRun.executeResourceMethod(JsonRouteRun.java:205)
+	... 21 more
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 5.6.3</a> at Oct 26, 2019, 11:34:56 AM</p>
+</div>
+</div>
+</body>
+</html>

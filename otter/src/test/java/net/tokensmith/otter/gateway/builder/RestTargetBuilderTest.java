@@ -12,7 +12,7 @@ import net.tokensmith.otter.gateway.entity.*;
 import net.tokensmith.otter.gateway.entity.rest.RestErrorTarget;
 import net.tokensmith.otter.gateway.entity.rest.RestTarget;
 import net.tokensmith.otter.router.entity.Method;
-import org.rootservices.otter.translatable.Translatable;
+import net.tokensmith.otter.translatable.Translatable;
 
 import java.util.ArrayList;
 

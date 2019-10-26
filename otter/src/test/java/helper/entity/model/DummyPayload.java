@@ -2,7 +2,7 @@ package helper.entity.model;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.rootservices.otter.translatable.Translatable;
+import net.tokensmith.otter.translatable.Translatable;
 
 
 import java.time.LocalDate;

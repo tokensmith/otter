@@ -8,7 +8,7 @@ import net.tokensmith.otter.controller.entity.mime.MimeType;
 import net.tokensmith.otter.gateway.entity.Label;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.entity.between.RestBetween;
-import org.rootservices.otter.translatable.Translatable;
+import net.tokensmith.otter.translatable.Translatable;
 
 import java.util.List;
 import java.util.Map;

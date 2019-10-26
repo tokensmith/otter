@@ -7,7 +7,7 @@ import net.tokensmith.otter.gateway.entity.rest.RestErrorTarget;
 import net.tokensmith.otter.gateway.translator.RestLocationTranslator;
 import net.tokensmith.otter.router.entity.between.RestBetween;
 import net.tokensmith.otter.router.factory.RestBetweenFlyweight;
-import org.rootservices.otter.translatable.Translatable;
+import net.tokensmith.otter.translatable.Translatable;
 
 import java.util.Map;
 import java.util.Optional;
