@@ -1,8 +1,8 @@
 package net.tokensmith.hello.config;
 
 
-import org.rootservices.jwt.entity.jwk.SymmetricKey;
-import org.rootservices.jwt.entity.jwk.Use;
+import net.tokensmith.jwt.entity.jwk.SymmetricKey;
+import net.tokensmith.jwt.entity.jwk.Use;
 import net.tokensmith.otter.config.OtterAppFactory;
 
 import java.util.Optional;

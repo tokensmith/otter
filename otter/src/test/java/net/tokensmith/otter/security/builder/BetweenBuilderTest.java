@@ -4,7 +4,7 @@ import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import org.junit.Test;
-import org.rootservices.jwt.entity.jwk.SymmetricKey;
+import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.security.builder.entity.Betweens;
 import net.tokensmith.otter.security.csrf.between.CheckCSRF;
 import net.tokensmith.otter.security.csrf.between.PrepareCSRF;

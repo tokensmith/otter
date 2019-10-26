@@ -1,7 +1,7 @@
 package net.tokensmith.otter.security.csrf;
 
 
-import org.rootservices.jwt.entity.jwt.Claims;
+import net.tokensmith.jwt.entity.jwt.Claims;
 
 public class CsrfClaims extends Claims {
     private String challengeToken;

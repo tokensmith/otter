@@ -2,7 +2,7 @@ package helper;
 
 
 import io.netty.handler.codec.http.cookie.DefaultCookie;
-import org.rootservices.jwt.config.JwtAppFactory;
+import net.tokensmith.jwt.config.JwtAppFactory;
 
 
 public class FixtureFactory {

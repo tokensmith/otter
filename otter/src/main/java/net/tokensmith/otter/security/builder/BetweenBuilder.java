@@ -2,8 +2,8 @@ package net.tokensmith.otter.security.builder;
 
 
 import com.fasterxml.jackson.databind.ObjectReader;
-import org.rootservices.jwt.config.JwtAppFactory;
-import org.rootservices.jwt.entity.jwk.SymmetricKey;
+import net.tokensmith.jwt.config.JwtAppFactory;
+import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.router.entity.between.Between;
 import net.tokensmith.otter.security.RandomString;

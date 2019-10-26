@@ -1,6 +1,6 @@
 package net.tokensmith.otter.security.config;
 
-import org.rootservices.jwt.config.JwtAppFactory;
+import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.otter.security.RandomString;
 import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
 

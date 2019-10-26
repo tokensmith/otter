@@ -1,8 +1,8 @@
 package net.tokensmith.quick.config;
 
 import net.tokensmith.quick.controller.HelloResource;
-import org.rootservices.jwt.entity.jwk.SymmetricKey;
-import org.rootservices.jwt.entity.jwk.Use;
+import net.tokensmith.jwt.entity.jwk.SymmetricKey;
+import net.tokensmith.jwt.entity.jwk.Use;
 import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.gateway.Configure;

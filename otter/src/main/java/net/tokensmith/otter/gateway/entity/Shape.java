@@ -1,6 +1,6 @@
 package net.tokensmith.otter.gateway.entity;
 
-import org.rootservices.jwt.entity.jwk.SymmetricKey;
+import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 
 import java.util.Map;
 
