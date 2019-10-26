@@ -13,4 +13,4 @@ the application.
 
 
 ### Looking for Docs?
-They are [here](/docs/Documentation.md)
+They are [here](../docs/Documentation.md)

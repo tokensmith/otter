@@ -8,7 +8,7 @@ It demonstrates:
  - `applicaton/json` Content-Type
 
 ### Looking for Docs?
-They are [here](/docs/Documentation.md)
+They are [here](../docs/Documentation.md)
 
 ## Run in IDE
 To run this app in a IDE use it's [main method](https://github.com/RootServices/otter/blob/development/examples/hello-world/src/main/java/org/rootservices/hello/server/HelloServer.java)
