@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="net.tokensmith.hello.controller.LoginResourceTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2019-10-26T16:34:55" hostname="Toms-MBP" time="0.121">
+  <properties/>
+  <testcase name="postShouldReturn200" classname="net.tokensmith.hello.controller.LoginResourceTest" time="0.114"/>
+  <testcase name="getShouldReturn200" classname="net.tokensmith.hello.controller.LoginResourceTest" time="0.005"/>
+  <testcase name="postWhenNoCSRFCookieShouldReturn403" classname="net.tokensmith.hello.controller.LoginResourceTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

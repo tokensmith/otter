@@ -9,7 +9,7 @@ import org.junit.Test;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.gateway.entity.rest.RestErrorTarget;
 import net.tokensmith.otter.gateway.entity.rest.RestGroup;
-import org.rootservices.otter.translatable.Translatable;
+import net.tokensmith.otter.translatable.Translatable;
 
 import java.util.ArrayList;
 

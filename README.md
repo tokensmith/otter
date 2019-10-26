@@ -12,11 +12,11 @@ Otter is a micro web framework that sits on top of the servlet api 4.0.1
 [Contribute!](/docs/Contribute.md)  
 
 ## Hello World Application
-If you want to get started with all the details head over to the [hello world](/hello-world) 
+If you want to get started with all the details head over to the [hello world](/examples/hello-world) 
 example application.
 
 ## Quick Start Application
-If you want to get started quickly head over to the [quick start](/quick-start) 
+If you want to get started quickly head over to the [quick start](/examples/quick-start) 
 example application. Only 5 files to get started.
 
 ## Dependency coordinates
@@ -26,14 +26,14 @@ example application. Only 5 files to get started.
     <dependency>
         <groupId>net.tokensmith</groupId>
         <artifactId>otter</artifactId>
-        <version>1.5.0</version>
+        <version>1.5.1-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
 
 #### Gradle
 ```groovy
-compile group: 'net.tokensmith', name: 'otter', version: '1.5.0'
+compile group: 'net.tokensmith', name: 'otter', version: '1.5.1-SNAPSHOT'
 ```
 
 ## Documentation

@@ -3,7 +3,7 @@ package net.tokensmith.otter.gateway.entity.rest;
 
 import net.tokensmith.otter.controller.RestResource;
 import net.tokensmith.otter.controller.entity.DefaultUser;
-import org.rootservices.otter.translatable.Translatable;
+import net.tokensmith.otter.translatable.Translatable;
 
 public class RestError<U extends DefaultUser, P extends Translatable> {
     private Class<P> payload;

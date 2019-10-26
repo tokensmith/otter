@@ -1,6 +1,6 @@
 package helper.entity.model;
 
-import org.rootservices.otter.translatable.Translatable;
+import net.tokensmith.otter.translatable.Translatable;
 
 public class DummyErrorPayload implements Translatable {
     private String error;

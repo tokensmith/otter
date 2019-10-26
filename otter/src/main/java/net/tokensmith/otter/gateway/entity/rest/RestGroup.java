@@ -4,7 +4,7 @@ package net.tokensmith.otter.gateway.entity.rest;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.router.entity.between.RestBetween;
-import org.rootservices.otter.translatable.Translatable;
+import net.tokensmith.otter.translatable.Translatable;
 
 import java.util.Map;
 import java.util.Optional;

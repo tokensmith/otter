@@ -29,7 +29,7 @@ import net.tokensmith.otter.security.exception.SessionCtorException;
 import net.tokensmith.otter.server.container.ServletContainerFactory;
 import net.tokensmith.otter.server.path.CompiledClassPath;
 import net.tokensmith.otter.server.path.WebAppPath;
-import org.rootservices.otter.translatable.Translatable;
+import net.tokensmith.otter.translatable.Translatable;
 import net.tokensmith.otter.translator.MimeTypeTranslator;
 
 import java.util.*;
