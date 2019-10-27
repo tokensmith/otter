@@ -2,7 +2,7 @@ package net.tokensmith.otter.gateway.builder;
 
 import helper.FixtureFactory;
 import org.junit.Test;
-import org.rootservices.jwt.entity.jwk.SymmetricKey;
+import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.gateway.entity.Shape;
 
 import java.util.Map;

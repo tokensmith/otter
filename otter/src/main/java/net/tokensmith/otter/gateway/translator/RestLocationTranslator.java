@@ -17,7 +17,7 @@ import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.entity.RestRoute;
 import net.tokensmith.otter.router.factory.RestBetweenFlyweight;
 import net.tokensmith.otter.security.builder.entity.RestBetweens;
-import org.rootservices.otter.translatable.Translatable;
+import net.tokensmith.otter.translatable.Translatable;
 
 import java.util.*;
 import java.util.stream.Collectors;

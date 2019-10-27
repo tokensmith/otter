@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="net.tokensmith.hello.controller.api.v3.HelloRestResourceTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2019-10-26T16:34:54" hostname="Toms-MBP" time="0.169">
+  <properties/>
+  <testcase name="getWhenH2ShouldReturn200" classname="net.tokensmith.hello.controller.api.v3.HelloRestResourceTest" time="0.132"/>
+  <testcase name="getWhenWrongContentTypeShouldReturnDefault415" classname="net.tokensmith.hello.controller.api.v3.HelloRestResourceTest" time="0.002"/>
+  <testcase name="getWhenH2AndAcceptGZipThenReturnGzipBody" classname="net.tokensmith.hello.controller.api.v3.HelloRestResourceTest" time="0.012"/>
+  <testcase name="getWhenNoAcceptHeaderShouldReturnDefault406" classname="net.tokensmith.hello.controller.api.v3.HelloRestResourceTest" time="0.002"/>
+  <testcase name="postShouldReturn201" classname="net.tokensmith.hello.controller.api.v3.HelloRestResourceTest" time="0.004"/>
+  <testcase name="postWhenNotFoundAndBodyInvalidShouldReturn404" classname="net.tokensmith.hello.controller.api.v3.HelloRestResourceTest" time="0.002"/>
+  <testcase name="postWhenNoContentTypeAndBodyInvalidShouldReturn415" classname="net.tokensmith.hello.controller.api.v3.HelloRestResourceTest" time="0.003"/>
+  <testcase name="postWhenNoAcceptAndBodyInvalidShouldReturn415" classname="net.tokensmith.hello.controller.api.v3.HelloRestResourceTest" time="0.002"/>
+  <testcase name="getShouldReturn200" classname="net.tokensmith.hello.controller.api.v3.HelloRestResourceTest" time="0.003"/>
+  <testcase name="getShouldReturn404" classname="net.tokensmith.hello.controller.api.v3.HelloRestResourceTest" time="0.003"/>
+  <testcase name="postWhenBodyEmptyShouldReturn400" classname="net.tokensmith.hello.controller.api.v3.HelloRestResourceTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

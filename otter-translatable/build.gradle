@@ -1,0 +1,102 @@
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+group = "net.tokensmith"
+description = """Otter-Translatable"""
+
+sourceCompatibility = 12
+targetCompatibility = 12
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url "https://oss.sonatype.org/content/repositories/releases" }
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'otter-translatable'
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+
+            pom {
+                name = 'otter-translatable'
+                packaging = 'jar'
+                description = 'interface to assist with serializing POJOs to and from JSON'
+                url = 'https://github.com/RootServices/otter'
+
+                scm {
+                    connection = 'git@github.com:RootServices/otter.git'
+                    developerConnection = 'git@github.com:RootServices/otter.git'
+                    url = 'https://github.com/RootServices/otter/otter-translatable'
+                }
+
+                licenses {
+                    license {
+                        name = 'The MIT License (MIT)'
+                        url = 'https://github.com/RootServices/otter/blob/development/LICENSE'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'tmackenzie'
+                        name = 'Tom MacKenzie'
+                        email = 'tom@tokensmith.net'
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+            if(!project.ext.properties.containsKey("ossrhUser")) {
+                project.ext.ossrhUser = 'wrongUser'
+                project.ext.ossrhPassword = 'wrongPassword'
+                print "no ossrh user or password"
+            }
+            credentials {
+                username = project.ext.ossrhUser
+                password = project.ext.ossrhPassword
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}

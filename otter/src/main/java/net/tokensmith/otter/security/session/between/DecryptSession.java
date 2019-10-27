@@ -4,16 +4,16 @@ package net.tokensmith.otter.security.session.between;
 import com.fasterxml.jackson.databind.ObjectReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.rootservices.jwt.config.JwtAppFactory;
-import org.rootservices.jwt.entity.jwk.SymmetricKey;
-import org.rootservices.jwt.exception.InvalidJWT;
-import org.rootservices.jwt.jwe.entity.JWE;
-import org.rootservices.jwt.jwe.factory.exception.CipherException;
-import org.rootservices.jwt.jwe.serialization.JweDeserializer;
-import org.rootservices.jwt.jwe.serialization.exception.KeyException;
-import org.rootservices.jwt.serialization.HeaderDeserializer;
-import org.rootservices.jwt.serialization.exception.DecryptException;
-import org.rootservices.jwt.serialization.exception.JsonToJwtException;
+import net.tokensmith.jwt.config.JwtAppFactory;
+import net.tokensmith.jwt.entity.jwk.SymmetricKey;
+import net.tokensmith.jwt.exception.InvalidJWT;
+import net.tokensmith.jwt.jwe.entity.JWE;
+import net.tokensmith.jwt.jwe.factory.exception.CipherException;
+import net.tokensmith.jwt.jwe.serialization.JweDeserializer;
+import net.tokensmith.jwt.jwe.serialization.exception.KeyException;
+import net.tokensmith.jwt.serialization.HeaderDeserializer;
+import net.tokensmith.jwt.serialization.exception.DecryptException;
+import net.tokensmith.jwt.serialization.exception.JsonToJwtException;
 import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.controller.entity.response.Response;
@@ -150,7 +150,7 @@ public class DecryptSession<S, U> implements Between<S, U> {
 
         // extract the header to figure out what key to use as cek.
         HeaderDeserializer headerDeserializer = jwtAppFactory.headerDeserializer();
-        org.rootservices.jwt.entity.jwt.header.Header sessionHeader;
+        net.tokensmith.jwt.entity.jwt.header.Header sessionHeader;
         try {
             sessionHeader = headerDeserializer.toHeader(encryptedSession);
         } catch (JsonToJwtException e) {

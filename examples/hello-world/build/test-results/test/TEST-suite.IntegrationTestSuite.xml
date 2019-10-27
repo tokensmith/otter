@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="suite.IntegrationTestSuite" tests="0" skipped="0" failures="0" errors="0" timestamp="1970-01-01T00:00:00" hostname="Toms-MBP" time="0.0">
+  <properties/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[[Test worker] INFO org.eclipse.jetty.util.log - Logging initialized @540ms to org.eclipse.jetty.util.log.Slf4jLog
+[Test worker] INFO org.eclipse.jetty.server.Server - jetty-9.4.20.v20190813; built: 2019-08-13T21:28:18.144Z; git: 84700530e645e812b336747464d6fbbf370c9a20; jvm 12.0.1+12
+[Test worker] INFO org.eclipse.jetty.annotations.AnnotationConfiguration - Scanning elapsed time=45ms
+[Test worker] INFO org.eclipse.jetty.server.handler.ContextHandler.ROOT - Warning: No org.apache.tomcat.JarScanner set in ServletContext. Falling back to default JarScanner implementation.
+[Test worker] INFO org.apache.jasper.servlet.TldScanner - At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+[Test worker] INFO org.eclipse.jetty.server.session - DefaultSessionIdManager workerName=node0
+[Test worker] INFO org.eclipse.jetty.server.session - No SessionScavenger set, using defaults
+[Test worker] INFO org.eclipse.jetty.server.session - node0 Scavenging every 600000ms
+[Test worker] INFO net.tokensmith.otter.servlet.OtterEntryServlet - Initializing Otter - Starting
+[Test worker] INFO net.tokensmith.otter.servlet.OtterEntryServlet - Initializing Otter - Done - 5536 ms
+[Test worker] INFO org.eclipse.jetty.server.handler.ContextHandler - Started o.e.j.w.WebAppContext@67d5742b{/,file:///Users/tom/Documents/workspace/otter/hello-world/src/main/webapp/,AVAILABLE}
+[Test worker] INFO org.eclipse.jetty.server.RequestLogWriter - Opened /Users/tom/Documents/workspace/otter/hello-world/logs/jetty/jetty-test-2019_10_26.request.log
+[Test worker] INFO org.eclipse.jetty.server.AbstractConnector - Started ServerConnector@1d0bbadc{HTTP/1.1,[http/1.1, h2c]}{0.0.0.0:56084}
+Server@2b9ebdc8{STARTING}[9.4.20.v20190813] - STARTING
++= QueuedThreadPool[qtp857025988]@33152dc4{STARTED,8<=8<=200,i=3,r=8,q=0}[ReservedThreadExecutor@2aa3eaf2{s=0/8,p=0}] - STARTED
+|  += ReservedThreadExecutor@2aa3eaf2{s=0/8,p=0} - STARTED
+|  +> threads size=8
+|     +> 18 qtp857025988-18 IDLE TIMED_WAITING @ java.base@12.0.1/jdk.internal.misc.Unsafe.park(Native Method)
+|     +> 20 qtp857025988-20 SELECTING RUNNABLE @ java.base@12.0.1/sun.nio.ch.KQueue.poll(Native Method)
+|     +> 23 qtp857025988-23 SELECTING RUNNABLE @ java.base@12.0.1/sun.nio.ch.KQueue.poll(Native Method)
+|     +> 21 qtp857025988-21 SELECTING RUNNABLE @ java.base@12.0.1/sun.nio.ch.KQueue.poll(Native Method)
+|     +> 16 qtp857025988-16 IDLE TIMED_WAITING @ java.base@12.0.1/jdk.internal.misc.Unsafe.park(Native Method)
+|     +> 17 qtp857025988-17-acceptor-0@5fd52d49-ServerConnector@1d0bbadc{HTTP/1.1,[http/1.1, h2c]}{0.0.0.0:56084} ACCEPTING RUNNABLE @ java.base@12.0.1/sun.nio.ch.ServerSocketChannelImpl.accept0(Native Method) prio=3
+|     +> 19 qtp857025988-19 IDLE TIMED_WAITING @ java.base@12.0.1/jdk.internal.misc.Unsafe.park(Native Method)
+|     +> 22 qtp857025988-22 SELECTING RUNNABLE @ java.base@12.0.1/sun.nio.ch.KQueue.poll(Native Method)
++= AttributeContainerMap@5e2fa7d1{size=0} - STARTED
++= o.e.j.w.WebAppContext@67d5742b{/,file:///Users/tom/Documents/workspace/otter/hello-world/src/main/webapp/,AVAILABLE} - STARTED
+|  += ErrorPageErrorHandler@269439d2{STARTED} - STARTED
+|  += org.eclipse.jetty.server.session.SessionHandler731468574==dftMaxIdleSec=1800 - STARTED
+|  |  += ConstraintSecurityHandler@2c6c4d0d{STARTED} - STARTED
+|  |  |  +- org.eclipse.jetty.security.DefaultAuthenticatorFactory@19add608
+|  |  |  += GzipHandler@3a9ffbc3{STARTED} - STARTED
+|  |  |  |  += ServletHandler@3d421feb{STARTED} - STARTED
+|  |  |  |     +> listeners ServletHandler@3d421feb{STARTED} size=2
+|  |  |  |     |  +> ListenerHolder@7388396b{STARTED}: org.eclipse.jetty.servlet.listener.ELContextCleaner - STARTED
+|  |  |  |     |  +> ListenerHolder@462ac84{STARTED}: org.eclipse.jetty.servlet.listener.IntrospectorCleaner - STARTED
+|  |  |  |     +> filters ServletHandler@3d421feb{STARTED} size=1
+|  |  |  |     |  +> net.tokensmith.otter.servlet.EntryFilter-6a8c6bd8@6a8c6bd8==net.tokensmith.otter.servlet.EntryFilter,inst=true,async=true - STARTED
+|  |  |  |     |     +> net.tokensmith.otter.servlet.EntryFilter@41660e28
+|  |  |  |     +> filterMappings ServletHandler@3d421feb{STARTED} size=1
+|  |  |  |     |  +> [/*]/[]/[REQUEST]=>net.tokensmith.otter.servlet.EntryFilter-6a8c6bd8
+|  |  |  |     +> servlets ServletHandler@3d421feb{STARTED} size=3
+|  |  |  |     |  +> jsp@19c47==org.eclipse.jetty.jsp.JettyJspServlet,jsp=null,order=0,inst=true,async=true - STARTED
+|  |  |  |     |  |  +> org.eclipse.jetty.jsp.JettyJspServlet@488aeebc
+|  |  |  |     |  |  +> initParams size=7
+|  |  |  |     |  |     +> fork=false
+|  |  |  |     |  |     +> logVerbosityLevel=DEBUG
+|  |  |  |     |  |     +> xpoweredBy=false
+|  |  |  |     |  |     +> compilerSourceVM=1.7
+|  |  |  |     |  |     +> compilerTargetVM=1.7
+|  |  |  |     |  |     +> async-supported=true
+|  |  |  |     |  |     +> scratchdir=/private/var/folders/fb/4qnsgd7n47xgs98j_hph85500000gn/T/jetty-0_0_0_0-0-webapp-_-any-10793751426763273604.dir/jsp
+|  |  |  |     |  +> default@5c13d641==org.eclipse.jetty.servlet.DefaultServlet,jsp=null,order=0,inst=true,async=true - STARTED
+|  |  |  |     |  |  +> org.eclipse.jetty.servlet.DefaultServlet@46e1105f
+|  |  |  |     |  |  +> initParams size=10
+|  |  |  |     |  |     +> resourceBase=file:///Users/tom/Documents/workspace/otter/hello-world/src/main/webapp//public/
+|  |  |  |     |  |     +> dirAllowed=true
+|  |  |  |     |  |     +> maxCacheSize=256000000
+|  |  |  |     |  |     +> maxCachedFileSize=200000000
+|  |  |  |     |  |     +> welcomeServlets=false
+|  |  |  |     |  |     +> useFileMappedBuffer=true
+|  |  |  |     |  |     +> acceptRanges=true
+|  |  |  |     |  |     +> etags=false
+|  |  |  |     |  |     +> maxCachedFiles=2048
+|  |  |  |     |  |     +> redirectWelcome=false
+|  |  |  |     |  +> AppEntryServlet@b2e2ba14==net.tokensmith.hello.config.AppEntryServlet,jsp=null,order=1,inst=true,async=true - STARTED
+|  |  |  |     |     +> net.tokensmith.hello.config.AppEntryServlet@561a89c3
+|  |  |  |     +> servletMappings ServletHandler@3d421feb{STARTED} size=3
+|  |  |  |        +> [/]=>default
+|  |  |  |        +> [*.jsp, *.jspf, *.jspx, *.xsp, *.JSP, *.JSPF, *.JSPX, *.XSP]=>jsp
+|  |  |  |        +> [/app/*]=>AppEntryServlet
+|  |  |  +> roles size=1
+|  |  |  |  +> java.util.concurrent.CopyOnWriteArraySet@0(size=0)
+|  |  |  +> constraints size=1
+|  |  |     +> java.util.HashMap$EntrySet@d10e7d56(size=1)
+|  |  |        +: /={TRACE={RoleInfo,F,C[],None}, TRACE.omission={RoleInfo[],None}}
+|  |  += org.eclipse.jetty.server.session.DefaultSessionCache@24a7970[evict=-1,removeUnloadable=false,saveOnCreate=false,saveOnInactiveEvict=false] - STARTED
+|  |  |  += org.eclipse.jetty.server.session.NullSessionDataStore@9cac6b[passivating=false,graceSec=3600] - STARTED
+|  |  +~ DefaultSessionIdManager@6b747739{STARTED}[worker=node0] - STARTED
+|  +> jdk.internal.loader.ClassLoaders$AppClassLoader@55054057
+|  |  +> jdk.internal.loader.ClassLoaders$PlatformClassLoader@3ef8f80f
+|  +> Systemclasses file:///Users/tom/Documents/workspace/otter/hello-world/src/main/webapp/@67d5742b size=15
+|  |  +> java.
+|  |  +> javax.
+|  |  +> org.eclipse.jetty.continuation.
+|  |  +> org.eclipse.jetty.jaas.
+|  |  +> org.eclipse.jetty.jmx.
+|  |  +> org.eclipse.jetty.jndi.
+|  |  +> org.eclipse.jetty.jsp.JettyJspServlet
+|  |  +> org.eclipse.jetty.servlet.DefaultServlet
+|  |  +> org.eclipse.jetty.servlets.PushCacheFilter
+|  |  +> org.eclipse.jetty.servlets.PushSessionCacheFilter
+|  |  +> org.eclipse.jetty.util.annotation.
+|  |  +> org.eclipse.jetty.util.log.
+|  |  +> org.eclipse.jetty.websocket.
+|  |  +> org.w3c.
+|  |  +> org.xml.
+|  +> Serverclasses file:///Users/tom/Documents/workspace/otter/hello-world/src/main/webapp/@67d5742b size=18
+|  |  +> -org.eclipse.jetty.alpn.
+|  |  +> -org.eclipse.jetty.apache.
+|  |  +> -org.eclipse.jetty.continuation.
+|  |  +> -org.eclipse.jetty.jaas.
+|  |  +> -org.eclipse.jetty.jmx.
+|  |  +> -org.eclipse.jetty.jndi.
+|  |  +> -org.eclipse.jetty.jsp.
+|  |  +> -org.eclipse.jetty.server.session.SessionData
+|  |  +> -org.eclipse.jetty.servlet.DefaultServlet
+|  |  +> -org.eclipse.jetty.servlet.NoJspServlet
+|  |  +> -org.eclipse.jetty.servlet.listener.
+|  |  +> -org.eclipse.jetty.servlets.
+|  |  +> -org.eclipse.jetty.util.annotation.
+|  |  +> -org.eclipse.jetty.util.log.
+|  |  +> -org.eclipse.jetty.websocket.
+|  |  +> org.eclipse.jdt.
+|  |  +> org.eclipse.jetty.
+|  |  +> org.objectweb.asm.
+|  +> Configurations file:///Users/tom/Documents/workspace/otter/hello-world/src/main/webapp/@67d5742b size=3
+|  |  +> org.eclipse.jetty.webapp.WebInfConfiguration@183a742f
+|  |  +> org.eclipse.jetty.webapp.WebXmlConfiguration@496a1fa1
+|  |  +> org.eclipse.jetty.annotations.AnnotationConfiguration@2c701d13
+|  +> Handler attributes file:///Users/tom/Documents/workspace/otter/hello-world/src/main/webapp/@67d5742b size=3
+|  |  +> javax.servlet.context.tempdir=/private/var/folders/fb/4qnsgd7n47xgs98j_hph85500000gn/T/jetty-0_0_0_0-0-webapp-_-any-10793751426763273604.dir
+|  |  +> org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern=.*/[^/]*servlet-api-[^/]*\.jar$|.*/javax.servlet.jsp.jstl-.*\.jar$|.*/[^/]*taglibs.*\.jar$
+|  |  +> org.eclipse.jetty.server.Executor=QueuedThreadPool[qtp857025988]@33152dc4{STARTED,8<=8<=200,i=3,r=8,q=0}[ReservedThreadExecutor@2aa3eaf2{s=0/8,p=0}]
+|  +> Context attributes file:///Users/tom/Documents/workspace/otter/hello-world/src/main/webapp/@67d5742b size=4
+|  |  +> org.eclipse.jetty.util.DecoratedObjectFactory=org.eclipse.jetty.util.DecoratedObjectFactory[decorators=2]
+|  |  +> resourceCache=ResourceCache[null,org.eclipse.jetty.servlet.DefaultServlet@46e1105f]@791015846
+|  |  +> org.apache.tomcat.InstanceManager=org.apache.tomcat.SimpleInstanceManager@36ab64f4
+|  |  +> org.apache.jasper.compiler.TldCache=org.apache.jasper.compiler.TldCache@1a1f6fb7
+|  +> EventListeners o.e.j.w.WebAppContext@67d5742b{/,file:///Users/tom/Documents/workspace/otter/hello-world/src/main/webapp/,AVAILABLE} size=2
+|  |  +> org.eclipse.jetty.servlet.listener.ELContextCleaner@5575fb4d
+|  |  +> org.eclipse.jetty.servlet.listener.IntrospectorCleaner@555d8884
+|  +> Initparams file:///Users/tom/Documents/workspace/otter/hello-world/src/main/webapp/@67d5742b size=1
+|     +> org.eclipse.jetty.servlet.Default.dirAllowed=false
++= ServerConnector@1d0bbadc{HTTP/1.1,[http/1.1, h2c]}{0.0.0.0:56084} - STARTED
+|  +~ Server@2b9ebdc8{STARTING}[9.4.20.v20190813] - STARTING
+|  +~ QueuedThreadPool[qtp857025988]@33152dc4{STARTED,8<=8<=200,i=3,r=8,q=0}[ReservedThreadExecutor@2aa3eaf2{s=0/8,p=0}] - STARTED
+|  += ScheduledExecutorScheduler@383cca1f{STARTED} - STARTED
+|  +- org.eclipse.jetty.io.ArrayByteBufferPool@593f6878
+|  += HttpConnectionFactory@13b0fada[HTTP/1.1] - STARTED
+|  |  +- HttpConfiguration@23ea4f81{32768/8192,8192/8192,https://:0,[]}
+|  |     +> customizers size=0
+|  |     +> formEncodedMethods size=2
+|  |     |  +> POST
+|  |     |  +> PUT
+|  |     +> outputBufferSize=32768
+|  |     +> outputAggregationSize=8192
+|  |     +> requestHeaderSize=8192
+|  |     +> responseHeaderSize=8192
+|  |     +> headerCacheSize=4096
+|  |     +> secureScheme=https
+|  |     +> securePort=0
+|  |     +> idleTimeout=-1
+|  |     +> blockingTimeout=-1
+|  |     +> sendDateHeader=true
+|  |     +> sendServerVersion=false
+|  |     +> sendXPoweredBy=false
+|  |     +> delayDispatchUntilContent=true
+|  |     +> persistentConnectionsEnabled=true
+|  |     +> maxErrorDispatches=10
+|  |     +> minRequestDataRate=0
+|  |     +> minResponseDataRate=0
+|  |     +> cookieCompliance=RFC6265
+|  |     +> setRequestCookieCompliance=RFC6265
+|  |     +> notifyRemoteAsyncErrors=true
+|  += HTTP2CServerConnectionFactory@7f493498[h2c] - STARTED
+|  |  +- HTTP2SessionContainer@1a4aead0[size=0]
+|  |  |  +> java.util.concurrent.ConcurrentHashMap$KeySetView@0(size=0)
+|  |  +- HttpConfiguration@23ea4f81{32768/8192,8192/8192,https://:0,[]}
+|  |     +> customizers size=0
+|  |     +> formEncodedMethods size=2
+|  |     |  +> POST
+|  |     |  +> PUT
+|  |     +> outputBufferSize=32768
+|  |     +> outputAggregationSize=8192
+|  |     +> requestHeaderSize=8192
+|  |     +> responseHeaderSize=8192
+|  |     +> headerCacheSize=4096
+|  |     +> secureScheme=https
+|  |     +> securePort=0
+|  |     +> idleTimeout=-1
+|  |     +> blockingTimeout=-1
+|  |     +> sendDateHeader=true
+|  |     +> sendServerVersion=false
+|  |     +> sendXPoweredBy=false
+|  |     +> delayDispatchUntilContent=true
+|  |     +> persistentConnectionsEnabled=true
+|  |     +> maxErrorDispatches=10
+|  |     +> minRequestDataRate=0
+|  |     +> minResponseDataRate=0
+|  |     +> cookieCompliance=RFC6265
+|  |     +> setRequestCookieCompliance=RFC6265
+|  |     +> notifyRemoteAsyncErrors=true
+|  += SelectorManager@ServerConnector@1d0bbadc{HTTP/1.1,[http/1.1, h2c]}{0.0.0.0:56084} - STARTED
+|  |  += ManagedSelector@5a10d2bb{STARTED} id=0 keys=0 selected=0 updates=0 - STARTED
+|  |  |  += EatWhatYouKill@5b541b5a/SelectorProducer@e785ae8/PRODUCING/p=false/QueuedThreadPool[qtp857025988]@33152dc4{STARTED,8<=8<=200,i=3,r=8,q=0}[ReservedThreadExecutor@2aa3eaf2{s=0/8,p=0}][pc=0,pic=0,pec=0,epc=0]@2019-10-26T11:34:54.443069-05:00 - STARTED
+|  |  |  |  +- SelectorProducer@e785ae8
+|  |  |  |  +~ QueuedThreadPool[qtp857025988]@33152dc4{STARTED,8<=8<=200,i=3,r=8,q=0}[ReservedThreadExecutor@2aa3eaf2{s=0/8,p=0}] - STARTED
+|  |  |  +> updates @ 2019-10-26T11:34:54.438595-05:00 size=0
+|  |  |  +> keys @ 2019-10-26T11:34:54.441988-05:00 size=0
+|  |  += ManagedSelector@14145330{STARTED} id=1 keys=0 selected=0 updates=0 - STARTED
+|  |  |  += EatWhatYouKill@48cdce03/SelectorProducer@33b8928b/PRODUCING/p=false/QueuedThreadPool[qtp857025988]@33152dc4{STARTED,8<=8<=200,i=3,r=8,q=0}[ReservedThreadExecutor@2aa3eaf2{s=0/8,p=0}][pc=0,pic=0,pec=0,epc=0]@2019-10-26T11:34:54.444815-05:00 - STARTED
+|  |  |  |  +- SelectorProducer@33b8928b
+|  |  |  |  +~ QueuedThreadPool[qtp857025988]@33152dc4{STARTED,8<=8<=200,i=3,r=8,q=0}[ReservedThreadExecutor@2aa3eaf2{s=0/8,p=0}] - STARTED
+|  |  |  +> updates @ 2019-10-26T11:34:54.443807-05:00 size=0
+|  |  |  +> keys @ 2019-10-26T11:34:54.444136-05:00 size=0
+|  |  += ManagedSelector@7fdb210e{STARTED} id=2 keys=0 selected=0 updates=0 - STARTED
+|  |  |  += EatWhatYouKill@49606016/SelectorProducer@6f7b12ef/PRODUCING/p=false/QueuedThreadPool[qtp857025988]@33152dc4{STARTED,8<=8<=200,i=3,r=8,q=0}[ReservedThreadExecutor@2aa3eaf2{s=0/8,p=0}][pc=0,pic=0,pec=0,epc=0]@2019-10-26T11:34:54.446836-05:00 - STARTED
+|  |  |  |  +- SelectorProducer@6f7b12ef
+|  |  |  |  +~ QueuedThreadPool[qtp857025988]@33152dc4{STARTED,8<=8<=200,i=3,r=8,q=0}[ReservedThreadExecutor@2aa3eaf2{s=0/8,p=0}] - STARTED
+|  |  |  +> updates @ 2019-10-26T11:34:54.44577-05:00 size=0
+|  |  |  +> keys @ 2019-10-26T11:34:54.446173-05:00 size=0
+|  |  += ManagedSelector@18a0f941{STARTED} id=3 keys=0 selected=0 updates=0 - STARTED
+|  |     += EatWhatYouKill@3e55680a/SelectorProducer@74ffcf06/PRODUCING/p=false/QueuedThreadPool[qtp857025988]@33152dc4{STARTED,8<=8<=200,i=3,r=8,q=0}[ReservedThreadExecutor@2aa3eaf2{s=0/8,p=0}][pc=0,pic=0,pec=0,epc=0]@2019-10-26T11:34:54.449144-05:00 - STARTED
+|  |     |  +- SelectorProducer@74ffcf06
+|  |     |  +~ QueuedThreadPool[qtp857025988]@33152dc4{STARTED,8<=8<=200,i=3,r=8,q=0}[ReservedThreadExecutor@2aa3eaf2{s=0/8,p=0}] - STARTED
+|  |     +> updates @ 2019-10-26T11:34:54.447624-05:00 size=0
+|  |     +> keys @ 2019-10-26T11:34:54.448036-05:00 size=0
+|  +- sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:56084]
+|  +- qtp857025988-17-acceptor-0@5fd52d49-ServerConnector@1d0bbadc{HTTP/1.1,[http/1.1, h2c]}{0.0.0.0:56084}
++= CustomRequestLog@43a4471c{STARTED} - STARTED
+|  += RequestLogWriter@5c51c4d8{STARTED} - STARTED
++= ErrorHandler@4951e260{STARTED} - STARTED
++= DefaultSessionIdManager@6b747739{STARTED}[worker=node0] - STARTED
+|  += HouseKeeper@615bf49d{STARTED}[interval=600000, ownscheduler=true] - STARTED
++> jdk.internal.loader.ClassLoaders$AppClassLoader@55054057
+   +> jdk.internal.loader.ClassLoaders$PlatformClassLoader@3ef8f80f
+key: +- bean, += managed, +~ unmanaged, +? auto, +: iterable, +] array, +@ map, +> undefined
+[Test worker] INFO org.eclipse.jetty.server.Server - Started @6735ms
+[Test worker] INFO org.eclipse.jetty.server.AbstractConnector - Stopped ServerConnector@1d0bbadc{HTTP/1.1,[http/1.1, h2c]}{0.0.0.0:0}
+[Test worker] INFO org.eclipse.jetty.server.session - node0 Stopped scavenging
+[Test worker] INFO net.tokensmith.otter.servlet.OtterEntryServlet - destroying servlet
+[Test worker] INFO org.eclipse.jetty.server.handler.ContextHandler - Stopped o.e.j.w.WebAppContext@67d5742b{/,file:///Users/tom/Documents/workspace/otter/hello-world/src/main/webapp/,UNAVAILABLE}
+]]></system-err>
+</testsuite>

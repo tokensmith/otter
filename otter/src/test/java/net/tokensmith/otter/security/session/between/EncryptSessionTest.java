@@ -7,7 +7,7 @@ import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.jwt.entity.jwk.SymmetricKey;
+import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.request.Request;

@@ -11,7 +11,7 @@ import net.tokensmith.otter.gateway.entity.rest.RestError;
 import net.tokensmith.otter.gateway.entity.rest.RestErrorTarget;
 import net.tokensmith.otter.router.builder.RestRouteBuilder;
 import net.tokensmith.otter.router.entity.RestRoute;
-import org.rootservices.otter.translatable.Translatable;
+import net.tokensmith.otter.translatable.Translatable;
 import net.tokensmith.otter.translator.JsonTranslator;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
 

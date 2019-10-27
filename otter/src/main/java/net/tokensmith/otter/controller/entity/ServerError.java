@@ -1,6 +1,6 @@
 package net.tokensmith.otter.controller.entity;
 
-import org.rootservices.otter.translatable.Translatable;
+import net.tokensmith.otter.translatable.Translatable;
 
 public class ServerError implements Translatable {
     private String message;

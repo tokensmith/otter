@@ -2,7 +2,7 @@ package net.tokensmith.otter.security.csrf.between;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.rootservices.jwt.entity.jwt.JsonWebToken;
+import net.tokensmith.jwt.entity.jwt.JsonWebToken;
 import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.request.Request;
