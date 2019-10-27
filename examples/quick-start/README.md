@@ -13,4 +13,4 @@ the application.
 
 
 ### Looking for Docs?
-They are [here](../docs/Documentation.md)
+They are [here](https://github.com/RootServices/otter/blob/development/docs/Documentation.md)
