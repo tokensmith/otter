@@ -3,8 +3,10 @@ package net.tokensmith.otter.security.csrf.between;
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.security.entity.ChallengeToken;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import net.tokensmith.jwt.entity.jwt.JsonWebToken;
@@ -19,6 +21,7 @@ import net.tokensmith.otter.security.csrf.exception.CsrfException;
 
 import java.io.ByteArrayOutputStream;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -78,10 +81,17 @@ public class PrepareCSRFTest {
         // set up the csrf cookie value which is a jwt.
         CsrfClaims csrfClaims = new CsrfClaims();
         csrfClaims.setChallengeToken(challengeToken);
+        csrfClaims.setNoise("cookie-noise");
         JsonWebToken csrfJwt = new JsonWebToken();
         csrfJwt.setClaims(csrfClaims);
 
+        // create the value to assign to the request.
         when(mockDoubleSubmitCSRF.csrfToJwt(cookie.getValue())).thenReturn(csrfJwt);
+        ByteArrayOutputStream formValueJwt = new ByteArrayOutputStream();
+        formValueJwt.write("formValueJwt".getBytes());
+        when(mockDoubleSubmitCSRF.makeChallengeToken()).thenReturn("form-noise");
+        ArgumentCaptor<ChallengeToken> inputsForRequestJwt = ArgumentCaptor.forClass(ChallengeToken.class);
+        when(mockDoubleSubmitCSRF.toJwt(inputsForRequestJwt.capture())).thenReturn(formValueJwt);
 
         subject.process(Method.GET, request, response);
 
@@ -89,10 +99,15 @@ public class PrepareCSRFTest {
         assertThat(response.getCookies().get(COOKIE_NAME), is(cookie));
         assertThat(request.getCsrfChallenge(), is(notNullValue()));
         assertThat(request.getCsrfChallenge().isPresent(), is(true));
-        assertThat(request.getCsrfChallenge().get(), is(challengeToken));
+        assertThat(request.getCsrfChallenge().get(), is("formValueJwt"));
 
-        verify(mockDoubleSubmitCSRF, never()).makeChallengeToken();
+        verify(mockDoubleSubmitCSRF, times(1)).makeChallengeToken();
         verify(mockDoubleSubmitCSRF, never()).makeCsrfCookie(eq(COOKIE_NAME), any(), eq(false), eq(-1), eq(true));
+
+        // inputs to make the request's jwt.
+        assertThat(inputsForRequestJwt.getValue().getNoise(), is("form-noise"));
+        assertThat(inputsForRequestJwt.getValue().getToken(), is(notNullValue()));
+        assertThat(inputsForRequestJwt.getValue().getToken(), is(challengeToken));
     }
 
     @Test
