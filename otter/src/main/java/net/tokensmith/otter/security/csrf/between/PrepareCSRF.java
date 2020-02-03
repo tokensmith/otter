@@ -71,8 +71,16 @@ public class PrepareCSRF<S, U> implements Between<S, U> {
             } catch (CsrfException e) {
                 LOGGER.error(e.getMessage(), e);
             }
+            String formNoise = doubleSubmitCSRF.makeChallengeToken();
             CsrfClaims claims = (CsrfClaims) csrfJwt.getClaims();
-            request.setCsrfChallenge(Optional.of(claims.getChallengeToken()));
+            ChallengeToken formChallengeToken = new ChallengeToken(claims.getChallengeToken(), formNoise);
+            ByteArrayOutputStream formValue = null;
+            try {
+                formValue = doubleSubmitCSRF.toJwt(formChallengeToken);
+            } catch (CsrfException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+            request.setCsrfChallenge(Optional.of(formValue.toString()));
         }
     }
 
