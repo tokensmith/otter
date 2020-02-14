@@ -58,14 +58,18 @@ public class DecryptSession<S, U> implements Between<S, U> {
     private Map<String, SymmetricKey> rotationKeys;
     private ObjectReader objectReader;
     private Boolean required;
+    private StatusCode failStatusCode;
+    private Optional<String> failTemplate;
 
-    public DecryptSession(Constructor<S> ctor, String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectReader objectReader, Boolean required) {
+    public DecryptSession(Constructor<S> ctor, String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectReader objectReader, StatusCode failStatusCode, Optional<String> failTemplate, Boolean required) {
         this.ctor = ctor;
         this.sessionCookieName = sessionCookieName;
         this.jwtAppFactory = jwtAppFactory;
         this.preferredKey = preferredKey;
         this.rotationKeys = rotationKeys;
         this.objectReader = objectReader;
+        this.failStatusCode = failStatusCode;
+        this.failTemplate = failTemplate;
         this.required = required;
     }
 
@@ -142,7 +146,8 @@ public class DecryptSession<S, U> implements Between<S, U> {
      * @param response a Response
      */
     protected void onHalt(HaltException e, Response response) {
-        response.setStatusCode(StatusCode.UNAUTHORIZED);
+        response.setStatusCode(failStatusCode);
+        response.setTemplate(failTemplate);
         response.getCookies().remove(sessionCookieName);
     }
 

@@ -19,15 +19,19 @@ public class CheckCSRF<S, U> implements Between<S, U> {
     private String formFieldName;
     private DoubleSubmitCSRF doubleSubmitCSRF;
     private static String HALT_MSG = "CSRF failed.";
+    private StatusCode failStatusCode;
+    private Optional<String> failTemplate;
 
     public CheckCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
         this.doubleSubmitCSRF = doubleSubmitCSRF;
     }
 
-    public CheckCSRF(String cookieName, String formFieldName, DoubleSubmitCSRF doubleSubmitCSRF) {
+    public CheckCSRF(String cookieName, String formFieldName, DoubleSubmitCSRF doubleSubmitCSRF, StatusCode failStatusCode, Optional<String> failTemplate) {
         this.cookieName = cookieName;
         this.formFieldName = formFieldName;
         this.doubleSubmitCSRF = doubleSubmitCSRF;
+        this.failStatusCode = failStatusCode;
+        this.failTemplate = failTemplate;
     }
 
     @Override
@@ -60,7 +64,8 @@ public class CheckCSRF<S, U> implements Between<S, U> {
      * @param response a Response
      */
     protected void onHalt(HaltException e, Response response) {
-        response.setStatusCode(StatusCode.FORBIDDEN);
+        response.setStatusCode(failStatusCode);
+        response.setTemplate(failTemplate);
     }
 
     public String getCookieName() {
