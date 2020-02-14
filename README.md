@@ -26,7 +26,7 @@ example application. Only 5 files to get started.
     <dependency>
         <groupId>net.tokensmith</groupId>
         <artifactId>otter</artifactId>
-        <version>1.5.1-SNAPSHOT</version>
+        <version>1.5.3-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
