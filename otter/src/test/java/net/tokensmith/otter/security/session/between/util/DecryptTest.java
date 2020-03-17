@@ -72,7 +72,7 @@ public class DecryptTest {
     }
 
     @Test
-    public void decryptWhenBadKeyShouldBeOk() throws Exception {
+    public void decryptWhenBadKeyShouldThrowSessionDecryptException() throws Exception {
         Decrypt<DummySession> subject = subject();
 
         SymmetricKey veryBadKey = FixtureFactory.encKey("1234");
