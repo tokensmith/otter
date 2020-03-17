@@ -1,19 +1,9 @@
 package net.tokensmith.otter.security.session.between;
 
 
-import com.fasterxml.jackson.databind.ObjectReader;
+import net.tokensmith.otter.security.session.between.util.Decrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.tokensmith.jwt.config.JwtAppFactory;
-import net.tokensmith.jwt.entity.jwk.SymmetricKey;
-import net.tokensmith.jwt.exception.InvalidJWT;
-import net.tokensmith.jwt.jwe.entity.JWE;
-import net.tokensmith.jwt.jwe.factory.exception.CipherException;
-import net.tokensmith.jwt.jwe.serialization.JweDeserializer;
-import net.tokensmith.jwt.jwe.serialization.exception.KeyException;
-import net.tokensmith.jwt.serialization.HeaderDeserializer;
-import net.tokensmith.jwt.serialization.exception.DecryptException;
-import net.tokensmith.jwt.serialization.exception.JsonToJwtException;
 import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.controller.entity.response.Response;
@@ -25,11 +15,9 @@ import net.tokensmith.otter.router.entity.between.Between;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.exception.HaltException;
 
-import java.io.IOException;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
 import java.util.Optional;
 
 
@@ -40,11 +28,6 @@ import java.util.Optional;
  * @param <U> User object, intended to be a authenticated user.
  */
 public class DecryptSession<S, U> implements Between<S, U> {
-    public static final String NOT_A_JWT = "Session cookie was not a JWE: %s";
-    public static final String COULD_NOT_GET_HEADER_JWE = "Session cookie did have a header member: %s";
-    public static final String COULD_NOT_DESERIALIZE_JWE = "Session cookie could not be de-serialized to JSON: %s";
-    public static final String COULD_NOT_DECRYPT_JWE = "Session cookie could not be decrypted: %s";
-    public static final String COULD_NOT_DESERIALIZE = "decrypted payload could be deserialized to session: %s";
     public static final String INVALID_SESSION_COOKIE = "Invalid value for the session cookie";
     public static final String COOKIE_NOT_PRESENT = "session cookie not present.";
     public static final String FAILED_TO_COPY_REQUEST_SESSION = "failed to copy request session";
@@ -53,24 +36,18 @@ public class DecryptSession<S, U> implements Between<S, U> {
 
     private Constructor<S> ctor;
     private String sessionCookieName;
-    private JwtAppFactory jwtAppFactory;
-    private SymmetricKey preferredKey;
-    private Map<String, SymmetricKey> rotationKeys;
-    private ObjectReader objectReader;
     private Boolean required;
     private StatusCode failStatusCode;
     private Optional<String> failTemplate;
+    private Decrypt<S> decrypt;
 
-    public DecryptSession(Constructor<S> ctor, String sessionCookieName, JwtAppFactory jwtAppFactory, SymmetricKey preferredKey, Map<String, SymmetricKey> rotationKeys, ObjectReader objectReader, StatusCode failStatusCode, Optional<String> failTemplate, Boolean required) {
+    public DecryptSession(Constructor<S> ctor, String sessionCookieName, StatusCode failStatusCode, Optional<String> failTemplate, Boolean required, Decrypt<S> decrypt) {
         this.ctor = ctor;
         this.sessionCookieName = sessionCookieName;
-        this.jwtAppFactory = jwtAppFactory;
-        this.preferredKey = preferredKey;
-        this.rotationKeys = rotationKeys;
-        this.objectReader = objectReader;
         this.failStatusCode = failStatusCode;
         this.failTemplate = failTemplate;
         this.required = required;
+        this.decrypt = decrypt;
     }
 
     @Override
@@ -89,7 +66,8 @@ public class DecryptSession<S, U> implements Between<S, U> {
         }
 
         try {
-            session = Optional.of(decrypt(sessionCookie.getValue()));
+
+            session = Optional.of(decrypt.decrypt(sessionCookie.getValue()));
         } catch (InvalidSessionException e) {
             LOGGER.error(e.getMessage(), e);
             HaltException halt = new HaltException(INVALID_SESSION_COOKIE, e);
@@ -149,68 +127,6 @@ public class DecryptSession<S, U> implements Between<S, U> {
         response.setStatusCode(failStatusCode);
         response.setTemplate(failTemplate);
         response.getCookies().remove(sessionCookieName);
-    }
-
-    protected S decrypt(String encryptedSession) throws InvalidSessionException, SessionDecryptException {
-
-        // extract the header to figure out what key to use as cek.
-        HeaderDeserializer headerDeserializer = jwtAppFactory.headerDeserializer();
-        net.tokensmith.jwt.entity.jwt.header.Header sessionHeader;
-        try {
-            sessionHeader = headerDeserializer.toHeader(encryptedSession);
-        } catch (JsonToJwtException e) {
-            String msg = String.format(NOT_A_JWT, encryptedSession);
-            throw new InvalidSessionException(msg, e);
-        } catch (InvalidJWT e) {
-            String msg = String.format(COULD_NOT_GET_HEADER_JWE, encryptedSession);
-            throw new InvalidSessionException(msg, e);
-        }
-
-        // get the cek.
-        SymmetricKey key = getKey(sessionHeader.getKeyId().get());
-
-        // decrypt the session
-        JweDeserializer deserializer = jwtAppFactory.jweDirectDesializer();
-        JWE sessionPayload;
-        try {
-            sessionPayload = deserializer.stringToJWE(encryptedSession, key);
-        } catch (JsonToJwtException e) {
-            String msg = String.format(COULD_NOT_DESERIALIZE_JWE, encryptedSession);
-            throw new InvalidSessionException(msg, e);
-        } catch (DecryptException | CipherException | KeyException e) {
-            String msg = String.format(COULD_NOT_DECRYPT_JWE, encryptedSession);
-            throw new SessionDecryptException(msg, e);
-        }
-
-        return toSession(sessionPayload.getPayload());
-    }
-
-    protected S toSession(byte[] json) {
-        S session = null;
-        //ObjectReader localReader = objectReader.forType(clazz);
-        try {
-            session = objectReader.readValue(json);
-        } catch (IOException e) {
-            String msg = String.format(COULD_NOT_DESERIALIZE, new String(json, StandardCharsets.UTF_8));
-            LOGGER.error(msg);
-            LOGGER.error(e.getMessage(), e);
-        }
-        return session;
-    }
-
-
-    protected SymmetricKey getKey(String keyId) {
-        SymmetricKey key;
-        if (preferredKey.getKeyId().get().equals(keyId)) {
-            key = preferredKey;
-        } else {
-            key = rotationKeys.get(keyId);
-        }
-        return key;
-    }
-
-    protected void setPreferredKey(SymmetricKey preferredKey) {
-        this.preferredKey = preferredKey;
     }
 
     public Boolean getRequired() {

@@ -13,6 +13,7 @@ import net.tokensmith.otter.security.exception.SessionCtorException;
 import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
 import net.tokensmith.otter.security.csrf.between.CheckCSRF;
 import net.tokensmith.otter.security.csrf.between.PrepareCSRF;
+import net.tokensmith.otter.security.session.between.util.Decrypt;
 import net.tokensmith.otter.security.session.between.DecryptSession;
 import net.tokensmith.otter.security.session.between.EncryptSession;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
@@ -97,7 +98,6 @@ public class BetweenBuilder<S, U> {
         return this;
     }
 
-
     public BetweenBuilder<S, U> encKey(SymmetricKey encKey) {
         this.encKey = encKey;
         return this;
@@ -133,7 +133,8 @@ public class BetweenBuilder<S, U> {
             throw new SessionCtorException(COULD_NOT_ACCESS_SESSION_CTORS, e);
         }
 
-        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, SESSION_NAME, new JwtAppFactory(), encKey, rotationEncKeys, sessionObjectReader, sessionFailStatusCode, sessionFailTemplate, true);
+        Decrypt<S> decrypt = new Decrypt<S>(new JwtAppFactory(), sessionObjectReader, encKey, rotationEncKeys);
+        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, SESSION_NAME, sessionFailStatusCode, sessionFailTemplate, true, decrypt);
         before.add(decryptSession);
 
         Between<S,U> encryptSession = new EncryptSession<S, U>(sessionCookieConfig, encKey, appFactory.objectWriter());
@@ -151,7 +152,8 @@ public class BetweenBuilder<S, U> {
             throw new SessionCtorException(COULD_NOT_ACCESS_SESSION_CTORS, e);
         }
 
-        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, SESSION_NAME, new JwtAppFactory(), encKey, rotationEncKeys, sessionObjectReader, sessionFailStatusCode, sessionFailTemplate, false);
+        Decrypt<S> decrypt = new Decrypt<S>(new JwtAppFactory(), sessionObjectReader, encKey, rotationEncKeys);
+        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, SESSION_NAME, sessionFailStatusCode, sessionFailTemplate, false, decrypt);
         before.add(decryptSession);
 
         Between<S,U> encryptSession = new EncryptSession<S, U>(sessionCookieConfig, encKey, appFactory.objectWriter());
