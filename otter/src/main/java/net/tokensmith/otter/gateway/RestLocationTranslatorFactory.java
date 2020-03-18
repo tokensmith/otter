@@ -46,8 +46,10 @@ public class RestLocationTranslatorFactory {
      * that is translated will use the same flyweight to add authentication betweens to a Location.
      * Therefore many Locations will use the same betweens instead of creating many identical ones.
      *
+     * @param sessionClazz The session class to be used when configuring object reader
      * @param authRequired The between that requires authentication
      * @param authOptional The between that optionally authenticates.
+     * @param <S> Session
      * @param <U> User
      * @return RestBetweenFlyweight that will be used in the RestLocationTranslator.
      */

@@ -86,6 +86,7 @@ public class Gateway {
      * https://docs.oracle.com/javase/tutorial/java/generics/subtyping.html
      *
      * @param groupName the name of the group. Used as a lookup key for the translator.
+     * @param <S> Session
      * @param <U> User
      * @param <P> Payload
      * @return the restLocationTranslator for the group
