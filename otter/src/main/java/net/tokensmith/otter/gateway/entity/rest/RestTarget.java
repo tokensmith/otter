@@ -2,6 +2,7 @@ package net.tokensmith.otter.gateway.entity.rest;
 
 
 import net.tokensmith.otter.controller.RestResource;
+import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.mime.MimeType;
@@ -13,7 +14,7 @@ import net.tokensmith.otter.translatable.Translatable;
 import java.util.List;
 import java.util.Map;
 
-public class RestTarget<U extends DefaultUser, P> {
+public class RestTarget<S extends DefaultSession, U extends DefaultUser, P> {
     private List<Method> methods;
     private String regex;
     private RestResource<U, P> restResource;
@@ -21,13 +22,13 @@ public class RestTarget<U extends DefaultUser, P> {
     private Map<Method, List<MimeType>> contentTypes;
     private Map<Method, List<MimeType>> accepts;
     private List<Label> labels;
-    private List<RestBetween<U>> before;
-    private List<RestBetween<U>> after;
-    private Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> errorTargets; // dispatch errors
+    private List<RestBetween<S, U>> before;
+    private List<RestBetween<S, U>> after;
+    private Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> errorTargets; // dispatch errors
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors;
     private String groupName;
 
-    public RestTarget(List<Method> methods, String regex, RestResource<U, P> restResource, Class<P> payload, Map<Method, List<MimeType>> contentTypes, Map<Method, List<MimeType>> accepts, List<Label> labels, List<RestBetween<U>> before, List<RestBetween<U>> after, Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> errorTargets, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, String groupName) {
+    public RestTarget(List<Method> methods, String regex, RestResource<U, P> restResource, Class<P> payload, Map<Method, List<MimeType>> contentTypes, Map<Method, List<MimeType>> accepts, List<Label> labels, List<RestBetween<S, U>> before, List<RestBetween<S, U>> after, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> errorTargets, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, String groupName) {
         this.methods = methods;
         this.regex = regex;
         this.restResource = restResource;
@@ -94,28 +95,28 @@ public class RestTarget<U extends DefaultUser, P> {
         this.labels = labels;
     }
 
-    public List<RestBetween<U>> getBefore() {
+    public List<RestBetween<S, U>> getBefore() {
         return before;
     }
 
-    public void setBefore(List<RestBetween<U>> before) {
+    public void setBefore(List<RestBetween<S, U>> before) {
         this.before = before;
     }
 
-    public List<RestBetween<U>> getAfter() {
+    public List<RestBetween<S, U>> getAfter() {
         return after;
     }
 
-    public void setAfter(List<RestBetween<U>> after) {
+    public void setAfter(List<RestBetween<S, U>> after) {
         this.after = after;
     }
 
     // dispatch errors.
-    public Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> getErrorTargets() {
+    public Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> getErrorTargets() {
         return errorTargets;
     }
 
-    public void setErrorTargets(Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> errorTargets) {
+    public void setErrorTargets(Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> errorTargets) {
         this.errorTargets = errorTargets;
     }
 

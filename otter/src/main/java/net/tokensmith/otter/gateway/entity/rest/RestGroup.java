@@ -1,6 +1,7 @@
 package net.tokensmith.otter.gateway.entity.rest;
 
 
+import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.router.entity.between.RestBetween;
@@ -10,18 +11,18 @@ import java.util.Map;
 import java.util.Optional;
 
 
-public class RestGroup<U extends DefaultUser> {
+public class RestGroup<S extends DefaultSession, U extends DefaultUser> {
     private String name;
-    private Optional<RestBetween<U>> authRequired;
-    private Optional<RestBetween<U>> authOptional;
+    private Optional<RestBetween<S, U>> authRequired;
+    private Optional<RestBetween<S, U>> authOptional;
 
     // for route run to handle errors.
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors;
     // for engine to handle errors
-    private Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> dispatchErrors;
+    private Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors;
 
 
-    public RestGroup(String name, Optional<RestBetween<U>> authRequired, Optional<RestBetween<U>> authOptional, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> dispatchErrors) {
+    public RestGroup(String name, Optional<RestBetween<S, U>> authRequired, Optional<RestBetween<S, U>> authOptional, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors) {
         this.name = name;
         this.authRequired = authRequired;
         this.authOptional = authOptional;
@@ -37,19 +38,19 @@ public class RestGroup<U extends DefaultUser> {
         this.name = name;
     }
 
-    public Optional<RestBetween<U>> getAuthRequired() {
+    public Optional<RestBetween<S, U>> getAuthRequired() {
         return authRequired;
     }
 
-    public void setAuthRequired(Optional<RestBetween<U>> authRequired) {
+    public void setAuthRequired(Optional<RestBetween<S, U>> authRequired) {
         this.authRequired = authRequired;
     }
 
-    public Optional<RestBetween<U>> getAuthOptional() {
+    public Optional<RestBetween<S, U>> getAuthOptional() {
         return authOptional;
     }
 
-    public void setAuthOptional(Optional<RestBetween<U>> authOptional) {
+    public void setAuthOptional(Optional<RestBetween<S, U>> authOptional) {
         this.authOptional = authOptional;
     }
 
@@ -61,11 +62,11 @@ public class RestGroup<U extends DefaultUser> {
         this.restErrors = restErrors;
     }
 
-    public Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> getDispatchErrors() {
+    public Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> getDispatchErrors() {
         return dispatchErrors;
     }
 
-    public void setDispatchErrors(Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> dispatchErrors) {
+    public void setDispatchErrors(Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors) {
         this.dispatchErrors = dispatchErrors;
     }
 }

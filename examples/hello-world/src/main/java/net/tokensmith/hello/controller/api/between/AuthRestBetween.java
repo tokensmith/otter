@@ -1,6 +1,7 @@
 package net.tokensmith.hello.controller.api.between;
 
 import net.tokensmith.hello.controller.api.model.ApiUser;
+import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.dispatch.entity.RestBtwnRequest;
 import net.tokensmith.otter.dispatch.entity.RestBtwnResponse;
 import net.tokensmith.otter.router.entity.Method;
@@ -17,7 +18,7 @@ import java.util.UUID;
  * wherever you want. If authentication fails then throw a HaltException. That will stop the request from reaching its
  * intended Resource.
  */
-public class AuthRestBetween implements RestBetween<ApiUser> {
+public class AuthRestBetween implements RestBetween<DefaultSession, ApiUser> {
     @Override
     public void process(Method method, RestBtwnRequest<ApiUser> request, RestBtwnResponse response) throws HaltException {
         ApiUser apiUser = new ApiUser(UUID.randomUUID(), "Obi-Wan", "Kenobi");

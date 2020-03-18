@@ -1,6 +1,7 @@
 package net.tokensmith.otter.gateway.builder;
 
 import net.tokensmith.otter.controller.RestResource;
+import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.gateway.entity.rest.RestError;
@@ -13,43 +14,43 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class RestGroupBuilder<U extends DefaultUser> {
+public class RestGroupBuilder<S extends DefaultSession, U extends DefaultUser> {
     private String name;
-    private Optional<RestBetween<U>> authRequired = Optional.empty();
-    private Optional<RestBetween<U>> authOptional = Optional.empty();
+    private Optional<RestBetween<S, U>> authRequired = Optional.empty();
+    private Optional<RestBetween<S, U>> authOptional = Optional.empty();
 
     // for route run to handle errors.
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors = new HashMap<>();
     // for engine to handle errors
-    private Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> dispatchErrors = new HashMap<>();
+    private Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors = new HashMap<>();
 
-    public RestGroupBuilder<U> name(String name) {
+    public RestGroupBuilder<S, U> name(String name) {
         this.name = name;
         return this;
     }
 
-    public RestGroupBuilder<U> authRequired(RestBetween<U> authRequired) {
+    public RestGroupBuilder<S, U> authRequired(RestBetween<S, U> authRequired) {
         this.authRequired = Optional.of(authRequired);
         return this;
     }
 
-    public RestGroupBuilder<U> authOptional(RestBetween<U> authOptional) {
+    public RestGroupBuilder<S, U> authOptional(RestBetween<S, U> authOptional) {
         this.authOptional = Optional.of(authOptional);
         return this;
     }
 
-    public <P extends Translatable> RestGroupBuilder<U> onError(StatusCode statusCode, RestResource<U, P> restResource, Class<P> errorPayload) {
+    public <P extends Translatable> RestGroupBuilder<S, U> onError(StatusCode statusCode, RestResource<U, P> restResource, Class<P> errorPayload) {
         RestError<U, P> restError = new RestError<>(errorPayload, restResource);
         restErrors.put(statusCode, restError);
         return this;
     }
 
-    public <P extends Translatable> RestGroupBuilder<U> onDispatchError(StatusCode statusCode, RestErrorTarget<U, P> dispatchError) {
+    public <P extends Translatable> RestGroupBuilder<S, U> onDispatchError(StatusCode statusCode, RestErrorTarget<S, U, P> dispatchError) {
         this.dispatchErrors.put(statusCode, dispatchError);
         return this;
     }
 
-    public RestGroup<U> build() {
+    public RestGroup<S, U> build() {
         return new RestGroup<>(name, authRequired, authOptional, restErrors, dispatchErrors);
     }
 }

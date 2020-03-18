@@ -26,7 +26,7 @@ public class Decrypt<S> {
     public static final String COULD_NOT_GET_HEADER_JWE = "Session cookie did have a header member: %s";
     public static final String COULD_NOT_DESERIALIZE_JWE = "Session cookie could not be de-serialized to JSON: %s";
     public static final String COULD_NOT_DECRYPT_JWE = "Session cookie could not be decrypted: %s";
-    public static final String COULD_NOT_DESERIALIZE = "decrypted payload could be deserialized to session: %s";
+    public static final String COULD_NOT_DESERIALIZE = "decrypted payload not could be deserialized to session: %s";
 
     private JwtAppFactory jwtAppFactory;
     private ObjectReader objectReader;

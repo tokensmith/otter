@@ -26,4 +26,7 @@ target/*
 */build/
 gradle.properties
 
+/reports/
+examples/hello-world/build
+
 logs

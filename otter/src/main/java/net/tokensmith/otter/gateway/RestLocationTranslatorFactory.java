@@ -1,5 +1,6 @@
 package net.tokensmith.otter.gateway;
 
+import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.gateway.entity.rest.RestError;
@@ -18,8 +19,8 @@ import java.util.Optional;
  */
 public class RestLocationTranslatorFactory {
 
-    public <U extends DefaultUser, P> RestLocationTranslator<U, P> make(Optional<RestBetween<U>> authRequired, Optional<RestBetween<U>> authOptional, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors, Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> dispatchErrors, Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> defaultDispatchErrors) {
-        return new RestLocationTranslator<U, P>(
+    public <S extends DefaultSession, U extends DefaultUser, P> RestLocationTranslator<S, U, P> make(Optional<RestBetween<S, U>> authRequired, Optional<RestBetween<S, U>> authOptional, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> defaultDispatchErrors) {
+        return new RestLocationTranslator<S, U, P>(
                 restBetweenFlyweight(authRequired, authOptional),
                 restErrors,
                 defaultErrors,
@@ -38,7 +39,7 @@ public class RestLocationTranslatorFactory {
      * @param <U> User
      * @return RestBetweenFlyweight that will be used in the RestLocationTranslator.
      */
-    public <U> RestBetweenFlyweight<U> restBetweenFlyweight(Optional<RestBetween<U>> authRequired, Optional<RestBetween<U>> authOptional) {
+    public <S extends DefaultSession, U> RestBetweenFlyweight<S, U> restBetweenFlyweight(Optional<RestBetween<S, U>> authRequired, Optional<RestBetween<S, U>> authOptional) {
         return new RestBetweenFlyweight<>(authRequired, authOptional);
     }
 }

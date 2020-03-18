@@ -1,6 +1,7 @@
 package net.tokensmith.otter.gateway.servlet;
 
 import helper.FixtureFactory;
+import helper.entity.model.DummySession;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -56,7 +57,7 @@ public class ServletGatewayTest {
         Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators;
         locationTranslators = new HashMap<>();
 
-        Map<String, RestLocationTranslator<? extends DefaultUser, ?>> restLocationTranslators = new HashMap<>();
+        Map<String, RestLocationTranslator<? extends DefaultSession, ? extends DefaultUser, ?>> restLocationTranslators = new HashMap<>();
 
         subject = new ServletGateway(
                 mockHttpServletRequestTranslator,

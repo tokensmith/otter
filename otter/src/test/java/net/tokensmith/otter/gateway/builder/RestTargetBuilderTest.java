@@ -3,6 +3,7 @@ package net.tokensmith.otter.gateway.builder;
 import helper.entity.*;
 import helper.entity.model.DummyErrorPayload;
 import helper.entity.model.DummyPayload;
+import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import org.junit.Test;
 import net.tokensmith.otter.controller.builder.MimeTypeBuilder;
@@ -22,15 +23,15 @@ import static org.junit.Assert.*;
 
 public class RestTargetBuilderTest {
 
-    public RestTargetBuilder<DummyUser, DummyPayload> subject() {
+    public RestTargetBuilder<DummySession, DummyUser, DummyPayload> subject() {
         return  new RestTargetBuilder<>();
     }
 
     @Test
     public void buildShouldHaveEmptyLists() {
-        RestTargetBuilder<DummyUser, DummyPayload> subject = subject();
+        RestTargetBuilder<DummySession, DummyUser, DummyPayload> subject = subject();
 
-        RestTarget<DummyUser, DummyPayload> actual = subject.build();
+        RestTarget<DummySession, DummyUser, DummyPayload> actual = subject.build();
 
         assertThat(actual.getContentTypes().size(), is(0));
         assertThat(actual.getAccepts().size(), is(0));
@@ -43,9 +44,9 @@ public class RestTargetBuilderTest {
 
     @Test
     public void buildWhenAnonymousShouldHaveNoLabels() {
-        RestTargetBuilder<DummyUser, DummyPayload> subject = subject();
+        RestTargetBuilder<DummySession, DummyUser, DummyPayload> subject = subject();
 
-        RestTarget<DummyUser, DummyPayload> actual = subject
+        RestTarget<DummySession, DummyUser, DummyPayload> actual = subject
                 .anonymous()
                 .build();
 
@@ -62,8 +63,8 @@ public class RestTargetBuilderTest {
 
         ClientErrorRestResource errorRestResource = new ClientErrorRestResource();
 
-        RestTargetBuilder<DummyUser, DummyPayload> subject = subject();
-        RestTarget<DummyUser, DummyPayload> actual = subject
+        RestTargetBuilder<DummySession, DummyUser, DummyPayload> subject = subject();
+        RestTarget<DummySession, DummyUser, DummyPayload> actual = subject
                 .onError(StatusCode.BAD_REQUEST, errorRestResource, DummyErrorPayload.class)
                 .build();
 
@@ -86,12 +87,12 @@ public class RestTargetBuilderTest {
 
     @Test
     public void buildCrudShouldAddMethods() {
-        RestTargetBuilder<DummyUser, DummyPayload> subject = subject();
+        RestTargetBuilder<DummySession, DummyUser, DummyPayload> subject = subject();
 
         MimeType json = new MimeTypeBuilder().json().build();
         OkRestResource okRestResource = new OkRestResource();
 
-        RestTarget<DummyUser, DummyPayload> actual = subject
+        RestTarget<DummySession, DummyUser, DummyPayload> actual = subject
                 .regex("/foo")
                 .crud()
                 .restResource(okRestResource)
@@ -134,17 +135,17 @@ public class RestTargetBuilderTest {
 
     @Test
     public void buildShouldBeOk() {
-        RestTargetBuilder<DummyUser, DummyPayload> subject = subject();
+        RestTargetBuilder<DummySession, DummyUser, DummyPayload> subject = subject();
 
         OkRestResource notFoundResource = new OkRestResource();
-        RestErrorTarget<DummyUser, DummyPayload> notFound = new RestErrorTarget<>(
+        RestErrorTarget<DummySession, DummyUser, DummyPayload> notFound = new RestErrorTarget<>(
                 DummyPayload.class, notFoundResource, new ArrayList<>(), new ArrayList<>()
         );
 
         OkRestResource okRestResource = new OkRestResource();
         MimeType json = new MimeTypeBuilder().json().build();
 
-        RestTarget<DummyUser, DummyPayload> actual = subject
+        RestTarget<DummySession, DummyUser, DummyPayload> actual = subject
                 .regex("/foo")
                 .method(Method.GET)
                 .method(Method.POST)
@@ -179,10 +180,10 @@ public class RestTargetBuilderTest {
 
     @Test
     public void buildWhenMethodContentTypeAndAcceptShouldBeOk() {
-        RestTargetBuilder<DummyUser, DummyPayload> subject = subject();
+        RestTargetBuilder<DummySession, DummyUser, DummyPayload> subject = subject();
 
         OkRestResource notFoundResource = new OkRestResource();
-        RestErrorTarget<DummyUser, DummyPayload> notFound = new RestErrorTarget<>(
+        RestErrorTarget<DummySession, DummyUser, DummyPayload> notFound = new RestErrorTarget<>(
                 DummyPayload.class, notFoundResource, new ArrayList<>(), new ArrayList<>()
         );
 
@@ -191,7 +192,7 @@ public class RestTargetBuilderTest {
         MimeType json = new MimeTypeBuilder().json().build();
         MimeType jwt = new MimeTypeBuilder().jwt().build();
 
-        RestTarget<DummyUser, DummyPayload> actual = subject
+        RestTarget<DummySession, DummyUser, DummyPayload> actual = subject
                 .regex("/foo")
                 .method(Method.GET)
                 .method(Method.POST)

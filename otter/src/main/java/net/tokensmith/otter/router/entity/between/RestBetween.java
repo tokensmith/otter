@@ -1,6 +1,7 @@
 package net.tokensmith.otter.router.entity.between;
 
 
+import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.dispatch.entity.RestBtwnRequest;
 import net.tokensmith.otter.dispatch.entity.RestBtwnResponse;
 import net.tokensmith.otter.router.entity.Method;
@@ -13,6 +14,6 @@ import net.tokensmith.otter.router.exception.HaltException;
  *
  * @param <U> User object, intended to be a authenticated user.
  */
-public interface RestBetween<U> {
+public interface RestBetween<S extends DefaultSession, U> {
     void process(Method method, RestBtwnRequest<U> request, RestBtwnResponse response) throws HaltException;
 }

@@ -1,6 +1,7 @@
 package net.tokensmith.otter.security.session.between;
 
 import net.tokensmith.otter.controller.entity.Cookie;
+import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.dispatch.entity.RestBtwnRequest;
 import net.tokensmith.otter.dispatch.entity.RestBtwnResponse;
@@ -23,7 +24,7 @@ import java.util.Optional;
  * @param <S> Session to decrypt
  * @param <U> The User to pass along to the RestResource
  */
-public class RestReadSession<S, U> implements RestBetween<U> {
+public class RestReadSession<S extends DefaultSession, U> implements RestBetween<S, U> {
     protected static Logger LOGGER = LoggerFactory.getLogger(RestReadSession.class);
     public static final String COOKIE_NOT_PRESENT = "session cookie not present.";
     public static final String INVALID_SESSION_COOKIE = "Invalid value for the session cookie";

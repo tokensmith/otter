@@ -1,5 +1,6 @@
 package net.tokensmith.otter.dispatch.json;
 
+import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.dispatch.translator.RestErrorHandler;
@@ -18,9 +19,9 @@ import java.util.Optional;
  * @param <U> The user
  * @param <P> The Payload.
  */
-public class JsonDispatchErrorRouteRun<U extends DefaultUser, P> extends JsonRouteRun<U, P> {
+public class JsonDispatchErrorRouteRun<S extends DefaultSession, U extends DefaultUser, P> extends JsonRouteRun<S, U, P> {
 
-    public JsonDispatchErrorRouteRun(RestRoute<U, P> restRoute, RestResponseTranslator<P> restResponseTranslator, RestRequestTranslator<U, P> restRequestTranslator, RestBtwnRequestTranslator<U, P> restBtwnRequestTranslator, RestBtwnResponseTranslator<P> restBtwnResponseTranslator, JsonTranslator<P> jsonTranslator, Map<StatusCode, RestErrorHandler<U>> errorHandlers, RestErrorRequestTranslator<U> errorRequestTranslator, RestErrorResponseTranslator errorResponseTranslator) {
+    public JsonDispatchErrorRouteRun(RestRoute<S, U, P> restRoute, RestResponseTranslator<P> restResponseTranslator, RestRequestTranslator<U, P> restRequestTranslator, RestBtwnRequestTranslator<U, P> restBtwnRequestTranslator, RestBtwnResponseTranslator<P> restBtwnResponseTranslator, JsonTranslator<P> jsonTranslator, Map<StatusCode, RestErrorHandler<U>> errorHandlers, RestErrorRequestTranslator<U> errorRequestTranslator, RestErrorResponseTranslator errorResponseTranslator) {
         super(restRoute, restResponseTranslator, restRequestTranslator, restBtwnRequestTranslator, restBtwnResponseTranslator, jsonTranslator, errorHandlers, errorRequestTranslator, errorResponseTranslator);
     }
 

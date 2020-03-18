@@ -4,6 +4,7 @@ package net.tokensmith.otter.gateway.builder;
 import helper.entity.*;
 import helper.entity.model.DummyErrorPayload;
 import helper.entity.model.DummyPayload;
+import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import org.junit.Test;
 import net.tokensmith.otter.controller.entity.StatusCode;
@@ -22,7 +23,7 @@ public class RestGroupBuilderTest {
     @Test
     public void buildShouldHaveEmptyAuthBetweens() {
 
-        RestGroup<DummyUser> actual = new RestGroupBuilder<DummyUser>()
+        RestGroup<DummySession, DummyUser> actual = new RestGroupBuilder<DummySession, DummyUser>()
                 .name("API")
                 .build();
 
@@ -39,10 +40,10 @@ public class RestGroupBuilderTest {
     @Test
     public void buildShouldHaveAuthBetweens() {
 
-        DummyRestBetween<DummyUser> authRequired = new DummyRestBetween<DummyUser>();
-        DummyRestBetween<DummyUser> authOptional = new DummyRestBetween<DummyUser>();
+        DummyRestBetween<DummySession, DummyUser> authRequired = new DummyRestBetween<DummySession, DummyUser>();
+        DummyRestBetween<DummySession, DummyUser> authOptional = new DummyRestBetween<DummySession, DummyUser>();
 
-        RestGroup<DummyUser> actual = new RestGroupBuilder<DummyUser>()
+        RestGroup<DummySession, DummyUser> actual = new RestGroupBuilder<DummySession, DummyUser>()
                 .name("API")
                 .authRequired(authRequired)
                 .authOptional(authOptional)
@@ -64,7 +65,7 @@ public class RestGroupBuilderTest {
     public void buildShouldHaveRestErrors() {
 
         ClientErrorRestResource errorRestResource = new ClientErrorRestResource();
-        RestGroup<DummyUser> actual = new RestGroupBuilder<DummyUser>()
+        RestGroup<DummySession, DummyUser> actual = new RestGroupBuilder<DummySession, DummyUser>()
                 .name("API")
                 .onError(StatusCode.BAD_REQUEST, errorRestResource, DummyErrorPayload.class)
                 .build();
@@ -97,11 +98,11 @@ public class RestGroupBuilderTest {
         ClientErrorRestResource errorRestResource = new ClientErrorRestResource();
 
         OkRestResource notFoundResource = new OkRestResource();
-        RestErrorTarget<DummyUser, DummyPayload> dispatchError = new RestErrorTarget<>(
+        RestErrorTarget<DummySession, DummyUser, DummyPayload> dispatchError = new RestErrorTarget<>(
                 DummyPayload.class, notFoundResource, new ArrayList<>(), new ArrayList<>()
         );
 
-        RestGroup<DummyUser> actual = new RestGroupBuilder<DummyUser>()
+        RestGroup<DummySession, DummyUser> actual = new RestGroupBuilder<DummySession, DummyUser>()
                 .name("API")
                 .onError(StatusCode.BAD_REQUEST, errorRestResource, DummyErrorPayload.class)
                 .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, dispatchError)

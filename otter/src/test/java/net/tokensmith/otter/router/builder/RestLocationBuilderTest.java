@@ -2,6 +2,7 @@ package net.tokensmith.otter.router.builder;
 
 import helper.entity.*;
 import helper.entity.model.DummyPayload;
+import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,11 +29,11 @@ import static org.junit.Assert.*;
 
 
 public class RestLocationBuilderTest {
-    private RestLocationBuilder<DummyUser, DummyPayload> subject;
+    private RestLocationBuilder<DummySession, DummyUser, DummyPayload> subject;
 
     @Before
     public void setUp() {
-        subject = new RestLocationBuilder<DummyUser, DummyPayload>();
+        subject = new RestLocationBuilder<DummySession, DummyUser, DummyPayload>();
     }
 
     @Test
@@ -131,7 +132,7 @@ public class RestLocationBuilderTest {
         List<MimeType> contentTypes = new ArrayList<>();
         OkRestResource resource = new OkRestResource();
 
-        RouteRunner errorRouteRunner = new JsonRouteRun<DummyUser, DummyPayload>();
+        RouteRunner errorRouteRunner = new JsonRouteRun<DummySession, DummyUser, DummyPayload>();
 
         Location actual = subject
                 .payload(DummyPayload.class)
@@ -172,7 +173,7 @@ public class RestLocationBuilderTest {
 
     @Test
     public void dispatchErrorShouldMakeJsonDispatchErrorRouteRun() {
-        RestLocationBuilder<DummyUser, ClientError> subject = new RestLocationBuilder<DummyUser, ClientError>();;
+        RestLocationBuilder<DummySession, DummyUser, ClientError> subject = new RestLocationBuilder<DummySession, DummyUser, ClientError>();;
         NotFoundRestResource<DummyUser> resource = new NotFoundRestResource<DummyUser>();
 
         Location actual = subject

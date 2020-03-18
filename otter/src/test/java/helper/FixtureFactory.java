@@ -93,9 +93,9 @@ public class FixtureFactory {
                 .build();
     }
 
-    public static RestRoute<DummyUser, DummyPayload> makeRestRoute() {
+    public static RestRoute<DummySession, DummyUser, DummyPayload> makeRestRoute() {
         OkRestResource okRestResource = new OkRestResource();
-        return new RestRoute<DummyUser, DummyPayload>(
+        return new RestRoute<DummySession, DummyUser, DummyPayload>(
                 okRestResource, new ArrayList<>(), new ArrayList<>()
         );
     }
@@ -203,17 +203,17 @@ public class FixtureFactory {
         );
     }
 
-    public static RestTarget<DummyUser, DummyPayload> makeRestTarget() {
+    public static RestTarget<DummySession, DummyUser, DummyPayload> makeRestTarget() {
 
         OkRestResource okRestResource = new OkRestResource();
         OkRestResource notFoundResource = new OkRestResource();
-        RestErrorTarget<DummyUser, DummyPayload> notFound = new RestErrorTarget<DummyUser, DummyPayload>(
+        RestErrorTarget<DummySession, DummyUser, DummyPayload> notFound = new RestErrorTarget<DummySession, DummyUser, DummyPayload>(
                 DummyPayload.class, notFoundResource, new ArrayList<>(), new ArrayList<>()
         );
 
         MimeType json = new MimeTypeBuilder().json().build();
 
-        RestTargetBuilder<DummyUser, DummyPayload> builder = new RestTargetBuilder<>();
+        RestTargetBuilder<DummySession, DummyUser, DummyPayload> builder = new RestTargetBuilder<>();
 
         return builder
                 .regex("/foo")
@@ -232,9 +232,9 @@ public class FixtureFactory {
                 .build();
     }
 
-    public static RestBetweens<DummyUser> makeRestBetweens() {
-        RestBetween<DummyUser> before = new DummyRestBetween<>();
-        RestBetween<DummyUser> after = new DummyRestBetween<>();
+    public static RestBetweens<DummySession, DummyUser> makeRestBetweens() {
+        RestBetween<DummySession, DummyUser> before = new DummyRestBetween<>();
+        RestBetween<DummySession, DummyUser> after = new DummyRestBetween<>();
         return new RestBetweens<>(
                 Arrays.asList(before), Arrays.asList(after)
         );
