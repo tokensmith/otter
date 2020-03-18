@@ -6,6 +6,7 @@ import helper.entity.RawPayloadErrorRestResource;
 import helper.entity.model.AlternatePayload;
 import helper.entity.model.DummyErrorPayload;
 import helper.entity.model.DummyPayload;
+import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import org.junit.Test;
 import net.tokensmith.otter.controller.RestResource;
@@ -41,10 +42,10 @@ public class JsonErrorHandlerTest {
         return new ClientErrorRestResource();
     }
 
-    public JsonErrorHandler<DummyUser, DummyErrorPayload> subject(RestResource<DummyUser, DummyErrorPayload> restResource) {
+    public JsonErrorHandler<DummySession, DummyUser, DummyErrorPayload> subject(RestResource<DummyUser, DummyErrorPayload> restResource) {
         JsonTranslator<DummyErrorPayload> jsonTranslator = appFactory.jsonTranslator(DummyErrorPayload.class);
 
-        JsonErrorHandler<DummyUser, DummyErrorPayload> subject = new JsonErrorHandler<>(
+        JsonErrorHandler<DummySession, DummyUser, DummyErrorPayload> subject = new JsonErrorHandler<>(
                 jsonTranslator,
                 restResource,
                 new RestRequestTranslator<>(),
@@ -227,7 +228,7 @@ public class JsonErrorHandlerTest {
         InvalidValueException ive = new InvalidValueException("", null, "id", "not and integer");
         DeserializationException cause = new DeserializationException("", "id", null, Reason.INVALID_VALUE, ive);
 
-        JsonErrorHandler<DummyUser, DummyErrorPayload> subject = subject(restResource);
+        JsonErrorHandler<DummySession, DummyUser, DummyErrorPayload> subject = subject(restResource);
         Answer actual = subject.run(request, response, cause);
 
         assertThat(actual.getStatusCode(), is(statusCode));
@@ -244,7 +245,7 @@ public class JsonErrorHandlerTest {
     @Test
     public void payloadToBytesWhenNoPayloadShouldBeEmpty() {
         RestResource<DummyUser, DummyErrorPayload> restResource = clientErrorRestResource();
-        JsonErrorHandler<DummyUser, DummyErrorPayload> subject = subject(restResource);
+        JsonErrorHandler<DummySession, DummyUser, DummyErrorPayload> subject = subject(restResource);
 
         Optional<byte[]> actual = subject.payloadToBytes(Optional.empty());
         assertThat(actual.isPresent(), is(false));

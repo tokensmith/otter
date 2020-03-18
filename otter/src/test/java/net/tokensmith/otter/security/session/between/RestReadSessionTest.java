@@ -53,7 +53,7 @@ public class RestReadSessionTest {
         Cookie sessionCookie = FixtureFactory.makeCookie("session");
         sessionCookie.setValue(encryptedSession);
 
-        RestBtwnRequest<DummyUser> request = FixtureFactory.makeRestBtwnRequest();
+        RestBtwnRequest<DummySession, DummyUser> request = FixtureFactory.makeRestBtwnRequest();
         request.getCookies().put("session", sessionCookie);
 
         RestBtwnResponse response = FixtureFactory.makeRestBtwnResponse();
@@ -79,7 +79,7 @@ public class RestReadSessionTest {
         Cookie sessionCookie = FixtureFactory.makeCookie("session");
         sessionCookie.setValue(encryptedSession);
 
-        RestBtwnRequest<DummyUser> request = FixtureFactory.makeRestBtwnRequest();
+        RestBtwnRequest<DummySession, DummyUser> request = FixtureFactory.makeRestBtwnRequest();
         request.getCookies().put("session", sessionCookie);
 
         RestBtwnResponse response = FixtureFactory.makeRestBtwnResponse();
@@ -95,7 +95,7 @@ public class RestReadSessionTest {
     public void readSessionWhenRequiredAndNoSessionThenThrowHalt() throws Exception {
         RestReadSession<DummySession, DummyUser> subject = subject(true);
 
-        RestBtwnRequest<DummyUser> request = FixtureFactory.makeRestBtwnRequest();
+        RestBtwnRequest<DummySession, DummyUser> request = FixtureFactory.makeRestBtwnRequest();
         RestBtwnResponse response = FixtureFactory.makeRestBtwnResponse();
 
         HaltException actual = null;
@@ -124,7 +124,7 @@ public class RestReadSessionTest {
         Cookie sessionCookie = FixtureFactory.makeCookie("session");
         sessionCookie.setValue(encryptedSession);
 
-        RestBtwnRequest<DummyUser> request = FixtureFactory.makeRestBtwnRequest();
+        RestBtwnRequest<DummySession, DummyUser> request = FixtureFactory.makeRestBtwnRequest();
         request.getCookies().put("session", sessionCookie);
 
         RestBtwnResponse response = FixtureFactory.makeRestBtwnResponse();
@@ -140,7 +140,7 @@ public class RestReadSessionTest {
     public void readSessionWhenNotRequiredAndNoSessionShouldBeOk() throws Exception {
         RestReadSession<DummySession, DummyUser> subject = subject(false);
 
-        RestBtwnRequest<DummyUser> request = FixtureFactory.makeRestBtwnRequest();
+        RestBtwnRequest<DummySession, DummyUser> request = FixtureFactory.makeRestBtwnRequest();
         RestBtwnResponse response = FixtureFactory.makeRestBtwnResponse();
 
         Optional<DummySession> actual = subject.readSession(request, response);

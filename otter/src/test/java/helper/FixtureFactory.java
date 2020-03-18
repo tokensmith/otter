@@ -300,8 +300,8 @@ public class FixtureFactory {
         return request;
     }
 
-    public static RestBtwnRequest<DummyUser> makeRestBtwnRequest() {
-        RestBtwnRequest<DummyUser> request =  new RestBtwnRequest<DummyUser>();
+    public static RestBtwnRequest<DummySession, DummyUser> makeRestBtwnRequest() {
+        RestBtwnRequest<DummySession, DummyUser> request =  new RestBtwnRequest<DummySession, DummyUser>();
 
         MimeType json = new MimeTypeBuilder().json().build();
         List<MimeType> contentTypes = new ArrayList<>();
@@ -320,6 +320,7 @@ public class FixtureFactory {
         request.setFormData(new HashMap<>());
         request.setBody(Optional.empty());
         request.setIpAddress("127.0.0.1");
+        request.setSession(Optional.empty());
 
         return request;
     }

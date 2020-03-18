@@ -1,6 +1,7 @@
 package net.tokensmith.otter.dispatch.json;
 
 
+import net.tokensmith.otter.controller.entity.DefaultSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.tokensmith.otter.controller.RestResource;
@@ -20,15 +21,15 @@ import net.tokensmith.otter.translator.exception.ToJsonException;
 import java.util.Optional;
 
 
-public class JsonErrorHandler<U extends DefaultUser, P> implements RestErrorHandler<U> {
+public class JsonErrorHandler<S extends DefaultSession, U extends DefaultUser, P> implements RestErrorHandler<U> {
     protected static Logger LOGGER = LoggerFactory.getLogger(JsonErrorHandler.class);
     private JsonTranslator<P> jsonTranslator;
     private RestResource<U, P> resource;
-    private RestRequestTranslator<U, P> restRequestTranslator;
+    private RestRequestTranslator<S, U, P> restRequestTranslator;
     private RestResponseTranslator<P> restResponseTranslator;
 
 
-    public JsonErrorHandler(JsonTranslator<P> jsonTranslator, RestResource<U, P> resource, RestRequestTranslator<U, P> restRequestTranslator, RestResponseTranslator<P> restResponseTranslator) {
+    public JsonErrorHandler(JsonTranslator<P> jsonTranslator, RestResource<U, P> resource, RestRequestTranslator<S, U, P> restRequestTranslator, RestResponseTranslator<P> restResponseTranslator) {
         this.jsonTranslator = jsonTranslator;
         this.resource = resource;
         this.restRequestTranslator = restRequestTranslator;

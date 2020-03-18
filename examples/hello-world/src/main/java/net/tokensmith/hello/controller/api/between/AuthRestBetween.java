@@ -20,7 +20,7 @@ import java.util.UUID;
  */
 public class AuthRestBetween implements RestBetween<DefaultSession, ApiUser> {
     @Override
-    public void process(Method method, RestBtwnRequest<ApiUser> request, RestBtwnResponse response) throws HaltException {
+    public void process(Method method, RestBtwnRequest<DefaultSession, ApiUser> request, RestBtwnResponse response) throws HaltException {
         ApiUser apiUser = new ApiUser(UUID.randomUUID(), "Obi-Wan", "Kenobi");
         request.setUser(Optional.of(apiUser));
     }

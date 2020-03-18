@@ -21,7 +21,7 @@ import java.util.Optional;
  */
 public class JsonDispatchErrorRouteRun<S extends DefaultSession, U extends DefaultUser, P> extends JsonRouteRun<S, U, P> {
 
-    public JsonDispatchErrorRouteRun(RestRoute<S, U, P> restRoute, RestResponseTranslator<P> restResponseTranslator, RestRequestTranslator<U, P> restRequestTranslator, RestBtwnRequestTranslator<U, P> restBtwnRequestTranslator, RestBtwnResponseTranslator<P> restBtwnResponseTranslator, JsonTranslator<P> jsonTranslator, Map<StatusCode, RestErrorHandler<U>> errorHandlers, RestErrorRequestTranslator<U> errorRequestTranslator, RestErrorResponseTranslator errorResponseTranslator) {
+    public JsonDispatchErrorRouteRun(RestRoute<S, U, P> restRoute, RestResponseTranslator<P> restResponseTranslator, RestRequestTranslator<S, U, P> restRequestTranslator, RestBtwnRequestTranslator<S, U, P> restBtwnRequestTranslator, RestBtwnResponseTranslator<P> restBtwnResponseTranslator, JsonTranslator<P> jsonTranslator, Map<StatusCode, RestErrorHandler<U>> errorHandlers, RestErrorRequestTranslator<S, U> errorRequestTranslator, RestErrorResponseTranslator errorResponseTranslator) {
         super(restRoute, restResponseTranslator, restRequestTranslator, restBtwnRequestTranslator, restBtwnResponseTranslator, jsonTranslator, errorHandlers, errorRequestTranslator, errorResponseTranslator);
     }
 

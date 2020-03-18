@@ -7,7 +7,7 @@ import net.tokensmith.otter.router.entity.io.Ask;
 
 import java.util.Optional;
 
-public class RestRequestTranslator<U, P> {
+public class RestRequestTranslator<S, U, P> {
 
     // inbound - when betweens are not present
     public RestRequest<U, P> to(Ask from) {
@@ -34,7 +34,7 @@ public class RestRequestTranslator<U, P> {
     }
 
     // inbound - when betweens are present
-    public RestRequest<U, P> to(RestBtwnRequest<U> from, Optional<P> entity) {
+    public RestRequest<U, P> to(RestBtwnRequest<S, U> from, Optional<P> entity) {
         RestRequest<U, P> to = new RestRequest<U, P>();
 
         to.setMatcher(from.getMatcher());

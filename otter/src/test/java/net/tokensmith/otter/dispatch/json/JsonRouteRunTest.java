@@ -49,8 +49,8 @@ public class JsonRouteRunTest {
 
     public JsonRouteRun<DummySession, DummyUser, DummyPayload> subject(RestRoute<DummySession, DummyUser, DummyPayload> route) {
         RestResponseTranslator<DummyPayload> restResponseTranslator = new RestResponseTranslator<>();
-        RestRequestTranslator<DummyUser, DummyPayload> restRequestTranslator = new RestRequestTranslator<>();
-        RestBtwnRequestTranslator<DummyUser, DummyPayload> restBtwnRequestTranslator = new RestBtwnRequestTranslator<>();
+        RestRequestTranslator<DummySession, DummyUser, DummyPayload> restRequestTranslator = new RestRequestTranslator<>();
+        RestBtwnRequestTranslator<DummySession, DummyUser, DummyPayload> restBtwnRequestTranslator = new RestBtwnRequestTranslator<>();
         RestBtwnResponseTranslator<DummyPayload> restBtwnResponseTranslator = new RestBtwnResponseTranslator<>();
         JsonTranslator<DummyPayload> jsonTranslator = appFactory.jsonTranslator(DummyPayload.class);
 

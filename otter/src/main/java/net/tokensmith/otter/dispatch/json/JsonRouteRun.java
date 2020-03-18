@@ -36,20 +36,20 @@ public class JsonRouteRun<S extends DefaultSession, U extends DefaultUser, P> im
     protected static Logger LOGGER = LoggerFactory.getLogger(JsonRouteRun.class);
     private RestRoute<S, U, P> restRoute;
     private RestResponseTranslator<P> restResponseTranslator;
-    private RestRequestTranslator<U, P> restRequestTranslator;
-    private RestBtwnRequestTranslator<U, P> restBtwnRequestTranslator;
+    private RestRequestTranslator<S, U, P> restRequestTranslator;
+    private RestBtwnRequestTranslator<S, U, P> restBtwnRequestTranslator;
     private RestBtwnResponseTranslator<P> restBtwnResponseTranslator;
     private JsonTranslator<P> jsonTranslator;
 
     // error handling dependencies
     private Map<StatusCode, RestErrorHandler<U>> errorHandlers;
-    private RestErrorRequestTranslator<U> errorRequestTranslator;
+    private RestErrorRequestTranslator<S, U> errorRequestTranslator;
     private RestErrorResponseTranslator errorResponseTranslator;
 
     public JsonRouteRun() {
     }
 
-    public JsonRouteRun(RestRoute<S, U, P> restRoute, RestResponseTranslator<P> restResponseTranslator, RestRequestTranslator<U, P> restRequestTranslator, RestBtwnRequestTranslator<U, P> restBtwnRequestTranslator, RestBtwnResponseTranslator<P> restBtwnResponseTranslator, JsonTranslator<P> jsonTranslator, Map<StatusCode, RestErrorHandler<U>> errorHandlers, RestErrorRequestTranslator<U> errorRequestTranslator, RestErrorResponseTranslator errorResponseTranslator) {
+    public JsonRouteRun(RestRoute<S, U, P> restRoute, RestResponseTranslator<P> restResponseTranslator, RestRequestTranslator<S, U, P> restRequestTranslator, RestBtwnRequestTranslator<S, U, P> restBtwnRequestTranslator, RestBtwnResponseTranslator<P> restBtwnResponseTranslator, JsonTranslator<P> jsonTranslator, Map<StatusCode, RestErrorHandler<U>> errorHandlers, RestErrorRequestTranslator<S, U> errorRequestTranslator, RestErrorResponseTranslator errorResponseTranslator) {
         this.restRoute = restRoute;
         this.restResponseTranslator = restResponseTranslator;
         this.restRequestTranslator = restRequestTranslator;
@@ -82,17 +82,17 @@ public class JsonRouteRun<S extends DefaultSession, U extends DefaultUser, P> im
         } catch (DeserializationException e) {
             // May want to consider an alternative to prevent duplicate returns in this method.
             ClientException clientException = new ClientException("Could not serialize request body", e);
-            RestResponseError<U, P> error = new RestResponseErrorBuilder<U, P>()
+            RestResponseError<S, U, P> error = new RestResponseErrorBuilder<S, U, P>()
                     .cause(clientException)
                     .errorType(RestResponseError.ErrorType.BAD_REQUEST)
                     .build();
             return handleErrors(error, ask, answer);
         }
 
-        RestBtwnRequest<U> btwnRequest = restBtwnRequestTranslator.to(ask);
+        RestBtwnRequest<S, U> btwnRequest = restBtwnRequestTranslator.to(ask);
         RestBtwnResponse btwnResponse = restBtwnResponseTranslator.to(answer);
 
-        RestReponseEither<U, P> runResponse = executeResourceMethod(restRoute, btwnRequest, btwnResponse, entity);
+        RestReponseEither<S, U, P> runResponse = executeResourceMethod(restRoute, btwnRequest, btwnResponse, entity);
 
         if (runResponse.getRight().isPresent()) {
             answer = handleErrors(runResponse.getRight().get(), ask, answer);
@@ -134,7 +134,7 @@ public class JsonRouteRun<S extends DefaultSession, U extends DefaultUser, P> im
         return entity;
     }
 
-    protected Answer handleErrors(RestResponseError<U, P> error, Ask ask, Answer answer) throws HaltException {
+    protected Answer handleErrors(RestResponseError<S, U, P> error, Ask ask, Answer answer) throws HaltException {
 
         RestResponseError.ErrorType errorType = error.getErrorType();
         if (RestResponseError.ErrorType.HALT.equals(errorType)) {
@@ -184,10 +184,10 @@ public class JsonRouteRun<S extends DefaultSession, U extends DefaultUser, P> im
      * @return A RestReponseEither, if left is present then it executed correctly. If right is present then an
      * error occurred and it should be handled.
      */
-    protected RestReponseEither<U, P> executeResourceMethod(RestRoute<S, U, P> route, RestBtwnRequest<U> btwnRequest, RestBtwnResponse btwnResponse, Optional<P> entity) {
+    protected RestReponseEither<S, U, P> executeResourceMethod(RestRoute<S, U, P> route, RestBtwnRequest<S, U> btwnRequest, RestBtwnResponse btwnResponse, Optional<P> entity) {
 
-        RestReponseEither<U, P> responseEither = new RestReponseEither<>();
-        RestResponseErrorBuilder<U, P> errorBuilder = new RestResponseErrorBuilder<>();
+        RestReponseEither<S, U, P> responseEither = new RestReponseEither<>();
+        RestResponseErrorBuilder<S, U, P> errorBuilder = new RestResponseErrorBuilder<>();
 
         RestRequest<U, P> requestForResource = null;
         RestResponse<P> responseForResource = null;
@@ -205,7 +205,7 @@ public class JsonRouteRun<S extends DefaultSession, U extends DefaultUser, P> im
 
             resourceResponse = execute(method, resource, requestForResource, responseForResource);
 
-            RestBtwnRequest<U> btwnRequestForAfter = restBtwnRequestTranslator.to(requestForResource);
+            RestBtwnRequest<S, U> btwnRequestForAfter = restBtwnRequestTranslator.to(requestForResource);
             Optional<byte[]> resourceResponsePayload = payloadToBytes(resourceResponse.getPayload());
             RestBtwnResponse btwnResponseForAfter = restBtwnResponseTranslator.to(resourceResponse, resourceResponsePayload);
 
@@ -235,7 +235,7 @@ public class JsonRouteRun<S extends DefaultSession, U extends DefaultUser, P> im
                 .errorType(RestResponseError.ErrorType.SERVER);;
         }
 
-        RestResponseError<U, P> error = errorBuilder
+        RestResponseError<S, U, P> error = errorBuilder
                 .btwnRequest(btwnRequest)
                 .btwnResponse(btwnResponse)
                 .requestForResource(requestForResource)
@@ -302,7 +302,7 @@ public class JsonRouteRun<S extends DefaultSession, U extends DefaultUser, P> im
         return isDirty;
     }
 
-    protected void executeBetween(List<RestBetween<S, U>> betweens, Method method, RestBtwnRequest<U> btwnRequest, RestBtwnResponse btwnResponse) throws HaltException {
+    protected void executeBetween(List<RestBetween<S, U>> betweens, Method method, RestBtwnRequest<S, U> btwnRequest, RestBtwnResponse btwnResponse) throws HaltException {
 
         for(RestBetween<S, U> between: betweens) {
             try {

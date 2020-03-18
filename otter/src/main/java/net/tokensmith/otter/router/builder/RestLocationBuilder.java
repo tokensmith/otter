@@ -116,9 +116,9 @@ public class RestLocationBuilder<S extends DefaultSession, U extends DefaultUser
 
         JsonTranslator<P> jsonTranslator = translatorAppFactory.jsonTranslator(payload);
 
-        RestRequestTranslator<U, P> restRequestTranslator = new RestRequestTranslator<U, P>();
+        RestRequestTranslator<S, U, P> restRequestTranslator = new RestRequestTranslator<S, U, P>();
         RestResponseTranslator<P> restResponseTranslator = new RestResponseTranslator<P>();
-        RestBtwnRequestTranslator<U, P> restBtwnRequestTranslator = new RestBtwnRequestTranslator<>();
+        RestBtwnRequestTranslator<S, U, P> restBtwnRequestTranslator = new RestBtwnRequestTranslator<>();
         RestBtwnResponseTranslator<P> restBtwnResponseTranslator = new RestBtwnResponseTranslator<>();
 
         RouteRunner routeRunner;

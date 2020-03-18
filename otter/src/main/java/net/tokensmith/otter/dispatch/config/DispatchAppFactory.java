@@ -35,9 +35,9 @@ public class DispatchAppFactory {
         Class<P> castedPayload = toPayload(payload);
         JsonTranslator<P> jsonTranslator = translatorAppFactory.jsonTranslator(castedPayload);
 
-        RestRequestTranslator<U, P> restRequestTranslator = new RestRequestTranslator<U, P>();
+        RestRequestTranslator<S, U, P> restRequestTranslator = new RestRequestTranslator<>();
         RestResponseTranslator<P> restResponseTranslator = new RestResponseTranslator<P>();
-        RestBtwnRequestTranslator<U, P> restBtwnRequestTranslator = new RestBtwnRequestTranslator<>();
+        RestBtwnRequestTranslator<S, U, P> restBtwnRequestTranslator = new RestBtwnRequestTranslator<>();
         RestBtwnResponseTranslator<P> restBtwnResponseTranslator = new RestBtwnResponseTranslator<>();
 
         RestRoute<S, U, P> castedRestRoute = toRestRoute(restRoute);
@@ -66,15 +66,15 @@ public class DispatchAppFactory {
     }
 
 
-    public <U extends DefaultUser, P extends Translatable> RestErrorHandler<U> restErrorHandler(RestError<U, ? extends P> restError) {
+    public <S extends DefaultSession, U extends DefaultUser, P extends Translatable> RestErrorHandler<U> restErrorHandler(RestError<U, ? extends P> restError) {
 
         RestError<U, P> castedRestErrorValue = toRestError(restError);
         JsonTranslator<P> jsonTranslator = translatorAppFactory.jsonTranslator(castedRestErrorValue.getPayload());
 
-        return new JsonErrorHandler<U, P>(
+        return new JsonErrorHandler<S, U, P>(
                 jsonTranslator,
                 castedRestErrorValue.getRestResource(),
-                new RestRequestTranslator<>(),
+                new RestRequestTranslator<S, U, P>(),
                 new RestResponseTranslator<>()
         );
     }

@@ -4,14 +4,14 @@ import net.tokensmith.otter.controller.entity.response.RestResponse;
 
 import java.util.Optional;
 
-public class RestReponseEither<U, P> {
+public class RestReponseEither<S, U, P> {
     private Optional<RestResponse<P>> left = Optional.empty();
-    private Optional<RestResponseError<U, P>> right = Optional.empty();
+    private Optional<RestResponseError<S, U, P>> right = Optional.empty();
 
     public RestReponseEither() {
     }
 
-    public RestReponseEither(Optional<RestResponse<P>> left, Optional<RestResponseError<U, P>> right) {
+    public RestReponseEither(Optional<RestResponse<P>> left, Optional<RestResponseError<S, U, P>> right) {
         this.left = left;
         this.right = right;
     }
@@ -24,11 +24,11 @@ public class RestReponseEither<U, P> {
         this.left = left;
     }
 
-    public Optional<RestResponseError<U, P>> getRight() {
+    public Optional<RestResponseError<S, U, P>> getRight() {
         return right;
     }
 
-    public void setRight(Optional<RestResponseError<U, P>> right) {
+    public void setRight(Optional<RestResponseError<S, U, P>> right) {
         this.right = right;
     }
 }

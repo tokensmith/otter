@@ -12,7 +12,7 @@ import net.tokensmith.otter.router.exception.HaltException;
 public class DummyRestBetween<S extends DummySession, U> implements RestBetween<S, U> {
 
     @Override
-    public void process(Method method, RestBtwnRequest<U> request, RestBtwnResponse response) throws HaltException {
+    public void process(Method method, RestBtwnRequest<S, U> request, RestBtwnResponse response) throws HaltException {
 
     }
 }

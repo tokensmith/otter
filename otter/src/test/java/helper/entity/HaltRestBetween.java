@@ -11,7 +11,7 @@ import net.tokensmith.otter.router.exception.HaltException;
 
 public class HaltRestBetween implements RestBetween<DummySession, DummyUser> {
     @Override
-    public void process(Method method, RestBtwnRequest<DummyUser> request, RestBtwnResponse response) throws HaltException {
+    public void process(Method method, RestBtwnRequest<DummySession, DummyUser> request, RestBtwnResponse response) throws HaltException {
         response.setStatusCode(StatusCode.UNAUTHORIZED);
         throw new HaltException("Test Halt");
     }
