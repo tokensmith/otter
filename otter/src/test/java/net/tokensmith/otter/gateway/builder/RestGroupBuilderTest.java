@@ -14,6 +14,7 @@ import net.tokensmith.otter.translatable.Translatable;
 
 import java.util.ArrayList;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.*;
@@ -25,6 +26,7 @@ public class RestGroupBuilderTest {
 
         RestGroup<DummySession, DummyUser> actual = new RestGroupBuilder<DummySession, DummyUser>()
                 .name("API")
+                .sessionClazz(DummySession.class)
                 .build();
 
         assertThat(actual, is(notNullValue()));
@@ -35,6 +37,7 @@ public class RestGroupBuilderTest {
         assertThat(actual.getAuthRequired().isPresent(), is(false));
         assertThat(actual.getRestErrors(), is(notNullValue()));
         assertThat(actual.getRestErrors().size(), is(0));
+        assertThat(actual.getSessionClazz(), is(notNullValue()));
     }
 
     @Test

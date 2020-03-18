@@ -3,12 +3,19 @@ package net.tokensmith.otter.gateway;
 import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.gateway.entity.rest.RestError;
 import net.tokensmith.otter.gateway.entity.rest.RestErrorTarget;
 import net.tokensmith.otter.gateway.translator.RestLocationTranslator;
 import net.tokensmith.otter.router.entity.between.RestBetween;
 import net.tokensmith.otter.router.factory.RestBetweenFlyweight;
+import net.tokensmith.otter.security.builder.BetweenBuilder;
+import net.tokensmith.otter.security.builder.RestBetweenBuilder;
+import net.tokensmith.otter.security.builder.entity.Betweens;
+import net.tokensmith.otter.security.builder.entity.RestBetweens;
+import net.tokensmith.otter.security.exception.SessionCtorException;
 import net.tokensmith.otter.translatable.Translatable;
+import net.tokensmith.otter.translator.config.TranslatorAppFactory;
 
 import java.util.Map;
 import java.util.Optional;
@@ -18,10 +25,15 @@ import java.util.Optional;
  * This is not in OtterAppFactory because it follows the same pattern as its sibling, LocationTranslatorFactory.
  */
 public class RestLocationTranslatorFactory {
+    private Shape shape;
 
-    public <S extends DefaultSession, U extends DefaultUser, P> RestLocationTranslator<S, U, P> make(Optional<RestBetween<S, U>> authRequired, Optional<RestBetween<S, U>> authOptional, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> defaultDispatchErrors) {
+    public RestLocationTranslatorFactory(Shape shape) {
+        this.shape = shape;
+    }
+
+    public <S extends DefaultSession, U extends DefaultUser, P> RestLocationTranslator<S, U, P> make(Class<S> sessionClazz, Optional<RestBetween<S, U>> authRequired, Optional<RestBetween<S, U>> authOptional, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> defaultDispatchErrors) {
         return new RestLocationTranslator<S, U, P>(
-                restBetweenFlyweight(authRequired, authOptional),
+                restBetweenFlyweight(sessionClazz, authRequired, authOptional),
                 restErrors,
                 defaultErrors,
                 dispatchErrors,
@@ -39,7 +51,38 @@ public class RestLocationTranslatorFactory {
      * @param <U> User
      * @return RestBetweenFlyweight that will be used in the RestLocationTranslator.
      */
-    public <S extends DefaultSession, U> RestBetweenFlyweight<S, U> restBetweenFlyweight(Optional<RestBetween<S, U>> authRequired, Optional<RestBetween<S, U>> authOptional) {
-        return new RestBetweenFlyweight<>(authRequired, authOptional);
+    public <S, U> RestBetweenFlyweight<S, U> restBetweenFlyweight(Class<S> sessionClazz, Optional<RestBetween<S, U>> authRequired, Optional<RestBetween<S, U>> authOptional) {
+        TranslatorAppFactory appFactory = new TranslatorAppFactory();
+
+        return new RestBetweenFlyweight<S, U>(
+                session(appFactory, sessionClazz),
+                sessionOptional(appFactory, sessionClazz),
+                authRequired,
+                authOptional
+        );
+    }
+
+    protected <S, U> RestBetweens<S, U> session(TranslatorAppFactory appFactory, Class<S> sessionClazz) {
+        return new RestBetweenBuilder<S, U>()
+                .routerAppFactory(appFactory)
+                .secure(shape.getSecure())
+                .encKey(shape.getEncKey())
+                .rotationEncKeys(shape.getRotationEncKeys())
+                .sessionClazz(sessionClazz)
+                .sessionFailStatusCode(shape.getSessionFailStatusCode())
+                .session()
+                .build();
+    }
+
+    protected <S, U> RestBetweens<S, U> sessionOptional(TranslatorAppFactory appFactory, Class<S> sessionClazz) {
+        return new RestBetweenBuilder<S, U>()
+                .routerAppFactory(appFactory)
+                .secure(shape.getSecure())
+                .encKey(shape.getEncKey())
+                .rotationEncKeys(shape.getRotationEncKeys())
+                .sessionClazz(sessionClazz)
+                .sessionFailStatusCode(shape.getSessionFailStatusCode())
+                .optionalSession()
+                .build();
     }
 }

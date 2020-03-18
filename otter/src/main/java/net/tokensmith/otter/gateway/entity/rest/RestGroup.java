@@ -13,6 +13,7 @@ import java.util.Optional;
 
 public class RestGroup<S extends DefaultSession, U extends DefaultUser> {
     private String name;
+    private Class<S> sessionClazz;
     private Optional<RestBetween<S, U>> authRequired;
     private Optional<RestBetween<S, U>> authOptional;
 
@@ -22,8 +23,9 @@ public class RestGroup<S extends DefaultSession, U extends DefaultUser> {
     private Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors;
 
 
-    public RestGroup(String name, Optional<RestBetween<S, U>> authRequired, Optional<RestBetween<S, U>> authOptional, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors) {
+    public RestGroup(String name, Class<S> sessionClazz, Optional<RestBetween<S, U>> authRequired, Optional<RestBetween<S, U>> authOptional, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors) {
         this.name = name;
+        this.sessionClazz = sessionClazz;
         this.authRequired = authRequired;
         this.authOptional = authOptional;
         this.restErrors = restErrors;
@@ -36,6 +38,14 @@ public class RestGroup<S extends DefaultSession, U extends DefaultUser> {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Class<S> getSessionClazz() {
+        return sessionClazz;
+    }
+
+    public void setSessionClazz(Class<S> sessionClazz) {
+        this.sessionClazz = sessionClazz;
     }
 
     public Optional<RestBetween<S, U>> getAuthRequired() {

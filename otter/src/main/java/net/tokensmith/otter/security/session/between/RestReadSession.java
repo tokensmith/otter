@@ -24,7 +24,7 @@ import java.util.Optional;
  * @param <S> Session to decrypt
  * @param <U> The User to pass along to the RestResource
  */
-public class RestReadSession<S extends DefaultSession, U> implements RestBetween<S, U> {
+public class RestReadSession<S, U> implements RestBetween<S, U> {
     protected static Logger LOGGER = LoggerFactory.getLogger(RestReadSession.class);
     public static final String COOKIE_NOT_PRESENT = "session cookie not present.";
     public static final String INVALID_SESSION_COOKIE = "Invalid value for the session cookie";
@@ -80,5 +80,9 @@ public class RestReadSession<S extends DefaultSession, U> implements RestBetween
     protected void onHalt(HaltException e, RestBtwnResponse response) {
         response.setStatusCode(failStatusCode);
         response.getCookies().remove(sessionCookieName);
+    }
+
+    public Boolean getRequired() {
+        return required;
     }
 }

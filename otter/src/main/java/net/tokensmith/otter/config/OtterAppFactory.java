@@ -59,7 +59,7 @@ public class OtterAppFactory {
 
     public ServletGateway servletGateway(Shape shape, List<Group<? extends DefaultSession,? extends DefaultUser>> groups, List<RestGroup<? extends DefaultSession, ? extends DefaultUser>> restGroups) throws SessionCtorException {
         LocationTranslatorFactory locationTranslatorFactory = locationTranslatorFactory(shape);
-        RestLocationTranslatorFactory restLocationTranslatorFactory = restLocationTranslatorFactory();
+        RestLocationTranslatorFactory restLocationTranslatorFactory = restLocationTranslatorFactory(shape);
 
         Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators = locationTranslators(locationTranslatorFactory, groups);
         Map<String, RestLocationTranslator<? extends DefaultSession, ? extends DefaultUser, ?>> restLocationTranslators = restLocationTranslators(restLocationTranslatorFactory, restGroups);
@@ -108,8 +108,8 @@ public class OtterAppFactory {
         return locationTranslators;
     }
 
-    public RestLocationTranslatorFactory restLocationTranslatorFactory() {
-        return new RestLocationTranslatorFactory();
+    public RestLocationTranslatorFactory restLocationTranslatorFactory(Shape shape) {
+        return new RestLocationTranslatorFactory(shape);
     }
 
     @SuppressWarnings("unchecked")
@@ -122,6 +122,7 @@ public class OtterAppFactory {
             restLocationTranslators.put(
                     castedGroup.getName(),
                     restLocationTranslatorFactory.make(
+                            castedGroup.getSessionClazz(),
                             castedGroup.getAuthRequired(),
                             castedGroup.getAuthOptional(),
                             castedGroup.getRestErrors(),

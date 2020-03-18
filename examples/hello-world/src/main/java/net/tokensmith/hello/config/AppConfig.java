@@ -107,6 +107,7 @@ public class AppConfig implements Configure {
         // uses default bad request handling.
         RestGroup<DefaultSession, ApiUser> apiGroupV2 = new RestGroupBuilder<DefaultSession, ApiUser>()
                 .name(API_GROUP_V2)
+                .sessionClazz(DefaultSession.class)
                 .authRequired(authRestBetween)
                 .build();
 
@@ -130,6 +131,7 @@ public class AppConfig implements Configure {
 
         RestGroup<DefaultSession, ApiUser> apiGroupV3 = new RestGroupBuilder<DefaultSession, ApiUser>()
                 .name(API_GROUP_V3)
+                .sessionClazz(DefaultSession.class)
                 .authRequired(authRestBetween)
                 .authOptional(authRestBetween)
                 .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)

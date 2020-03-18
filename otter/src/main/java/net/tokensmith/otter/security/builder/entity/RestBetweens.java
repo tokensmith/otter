@@ -5,7 +5,7 @@ import net.tokensmith.otter.router.entity.between.RestBetween;
 
 import java.util.List;
 
-public class RestBetweens<S extends DefaultSession, U> {
+public class RestBetweens<S, U> {
     private List<RestBetween<S, U>> before;
     private List<RestBetween<S, U>> after;
 

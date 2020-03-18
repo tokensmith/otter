@@ -16,6 +16,7 @@ import java.util.Optional;
 
 public class RestGroupBuilder<S extends DefaultSession, U extends DefaultUser> {
     private String name;
+    private Class<S> sessionClazz;
     private Optional<RestBetween<S, U>> authRequired = Optional.empty();
     private Optional<RestBetween<S, U>> authOptional = Optional.empty();
 
@@ -26,6 +27,11 @@ public class RestGroupBuilder<S extends DefaultSession, U extends DefaultUser> {
 
     public RestGroupBuilder<S, U> name(String name) {
         this.name = name;
+        return this;
+    }
+
+    public RestGroupBuilder<S, U> sessionClazz(Class<S> sessionClazz) {
+        this.sessionClazz = sessionClazz;
         return this;
     }
 
@@ -51,6 +57,6 @@ public class RestGroupBuilder<S extends DefaultSession, U extends DefaultUser> {
     }
 
     public RestGroup<S, U> build() {
-        return new RestGroup<>(name, authRequired, authOptional, restErrors, dispatchErrors);
+        return new RestGroup<>(name, sessionClazz, authRequired, authOptional, restErrors, dispatchErrors);
     }
 }

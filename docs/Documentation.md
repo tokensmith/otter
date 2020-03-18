@@ -131,8 +131,9 @@ A [RestGroup](https://github.com/RootServices/otter/blob/development/otter/src/m
 ```java
     BadRequestResource badRequestResource = new BadRequestResource();
     ServerErrorResource serverErrorResource = new ServerErrorResource();
-    RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
+    RestGroup<DummySession, ApiUser> apiGroupV3 = new RestGroupBuilder<DummySession, ApiUser>()
             .name(API_GROUP_V3)
+            .sessionClazz(DefaultSession.class)
             .authRequired(authRestBetween)
             .authOptional(authRestBetween)
             .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
@@ -266,8 +267,9 @@ Use `anonymous()` to not require authentication or optionally authenticate.
 ```java
     AuthRestBetween authRestBetween = new AuthRestBetween();
 
-    RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
+    RestGroup<DummySession, ApiUser> apiGroupV3 = new RestGroupBuilder<DummySession, ApiUser>()
             .name(API_GROUP_V3)
+            .sessionClazz(DefaultSession.class)
             .authRequired(authRestBetween)
             .authOptional(authRestBetween)
             .build();
@@ -461,8 +463,9 @@ To configure a `RestGroup` to apply error handlers to all its related `RestTarge
             .resource(mediaTypeResource)
             .build();
 
-    RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
+    RestGroup<DummySession, ApiUser> apiGroupV3 = new RestGroupBuilder<DummySession, ApiUser>()
             .name(API_GROUP_V3)
+            .sessionClazz(DefaultSession.class)
             .authRequired(authRestBetween)
             .authOptional(authRestBetween)
             .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
