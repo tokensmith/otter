@@ -60,8 +60,9 @@ public class RestReadSessionTest {
 
         subject.process(Method.GET, request, response);
 
-        // default method sets this so it can do a simple walk through test.
-        assertThat(response.getStatusCode(), is(StatusCode.ACCEPTED));
+        assertThat(request.getSession().isPresent(), is(true));
+        assertThat(request.getSession().get().getAccessToken(), is("123456789"));
+        assertThat(request.getSession().get().getRefreshToken(), is("101112131415"));
     }
 
     @Test

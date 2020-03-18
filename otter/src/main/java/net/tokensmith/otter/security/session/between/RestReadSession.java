@@ -44,14 +44,7 @@ public class RestReadSession<S extends DefaultSession, U> implements RestBetween
     @Override
     public void process(Method method, RestBtwnRequest<S, U> request, RestBtwnResponse response) throws HaltException {
         Optional<S> session = readSession(request, response);
-        process(method, request, response, session);
-    }
-
-    protected void process(Method method, RestBtwnRequest<S, U> request, RestBtwnResponse response, Optional<S> session) throws HaltException {
-        // override this method with what is needed with the session.
-
-        // this is only here so it can be tested.
-        response.setStatusCode(StatusCode.ACCEPTED);
+        request.setSession(session);
     }
 
     protected Optional<S> readSession(RestBtwnRequest<S, U> request, RestBtwnResponse response) throws HaltException {
