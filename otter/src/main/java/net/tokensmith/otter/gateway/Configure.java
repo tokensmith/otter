@@ -34,7 +34,7 @@ public interface Configure {
      *
      * @return a List of RestGroup
      */
-    List<RestGroup<? extends DefaultUser>> restGroups();
+    List<RestGroup<? extends DefaultSession, ? extends DefaultUser>> restGroups();
 
     /**
      * Add Routes and RestRoutes to the gateway here.

@@ -7,11 +7,11 @@ import net.tokensmith.otter.router.entity.io.Ask;
 
 import java.util.Optional;
 
-public class RestBtwnRequestTranslator<U, P> {
+public class RestBtwnRequestTranslator<S, U, P> {
 
     // inbound
-    public RestBtwnRequest<U> to(Ask from) {
-        RestBtwnRequest<U> to = new RestBtwnRequest<U>();
+    public RestBtwnRequest<S, U> to(Ask from) {
+        RestBtwnRequest<S, U> to = new RestBtwnRequest<S, U>();
 
         to.setMatcher(from.getMatcher());
         to.setPossibleContentTypes(from.getPossibleContentTypes());
@@ -28,13 +28,14 @@ public class RestBtwnRequestTranslator<U, P> {
         to.setIpAddress(from.getIpAddress());
         to.setUser(Optional.empty());
         to.setBody(from.getBody());
+        to.setSession(Optional.empty());
 
         return to;
     }
 
     // outbound
-    public RestBtwnRequest<U> to(RestRequest<U, P> from) {
-        RestBtwnRequest<U> to = new RestBtwnRequest<U>();
+    public RestBtwnRequest<S, U> to(RestRequest<U, P> from) {
+        RestBtwnRequest<S, U> to = new RestBtwnRequest<S, U>();
 
         to.setMatcher(from.getMatcher());
         to.setPossibleContentTypes(from.getPossibleContentTypes());
@@ -51,6 +52,7 @@ public class RestBtwnRequestTranslator<U, P> {
         to.setIpAddress(from.getIpAddress());
         to.setUser(from.getUser());
         to.setBody(from.getBody());
+        to.setSession(Optional.empty());
 
         return to;
     }

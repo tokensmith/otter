@@ -154,4 +154,106 @@ public class HttpServletRequestTranslatorTest {
         assertThat(actual.getFormData().get("form-field").size(), is(1));
         assertThat(actual.getFormData().get("form-field").get(0), is("form-value"));
     }
+
+    @Test
+    public void fromWhenPutAndContentTypeIsJsonAndAcceptIsJsonShouldTranslateOk() throws Exception {
+        HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
+        when(mockContainerRequest.getMethod()).thenReturn("PUT");
+        when(mockContainerRequest.getRequestURI()).thenReturn("/foo");
+        when(mockContainerRequest.getQueryString()).thenReturn("bar=bar-value");
+        when(mockContainerRequest.getCookies()).thenReturn(null);
+        when(mockHttpServletRequestHeaderTranslator.from(mockContainerRequest))
+                .thenReturn(new HashMap<>());
+        when(mockContainerRequest.getRemoteAddr()).thenReturn("127.0.0.1");
+
+        Map<String, List<String>> queryParams = new HashMap<>();
+        queryParams.put("bar", new ArrayList<>());
+        queryParams.get("bar").add("bar-value");
+
+        when(mockQueryStringToMap.run(Optional.of("bar=bar-value")))
+                .thenReturn(queryParams);
+
+        MimeType json = new MimeTypeBuilder().json().build();
+        when(mockMimeTypeTranslator.to(json.toString())).thenReturn(json);
+
+        when(mockContainerRequest.getContentType()).thenReturn(json.toString());
+        when(mockContainerRequest.getHeader(Header.ACCEPT.getValue())).thenReturn(json.toString());
+
+        String body = "{\"integer\": 5, \"integer\": \"4\", \"local_date\": \"2019-01-01\"}";
+        Ask actual = subject.from(mockContainerRequest, body.getBytes());
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getMethod(), is(Method.PUT));
+        assertThat(actual.getHeaders(), is(notNullValue()));
+        assertThat(actual.getHeaders().size(), is(0));
+        assertThat(actual.getContentType(), is(notNullValue()));
+        assertThat(actual.getContentType(), is(json));
+        assertThat(actual.getAccept(), is(notNullValue()));
+        assertThat(actual.getAccept(), is(json));
+        assertThat(actual.getBody().isPresent(), is(true));
+        assertThat(actual.getBody().get(), is(body.getBytes()));
+        assertThat(actual.getQueryParams(), is(notNullValue()));
+        assertThat(actual.getQueryParams(), is(queryParams));
+        assertThat(actual.getCookies(), is(notNullValue()));
+        assertThat(actual.getCookies().size(), is(0));
+        assertThat(actual.getPathWithParams(), is("/foo?bar=bar-value"));
+        assertThat(actual.getMatcher(), is(notNullValue()));
+        assertThat(actual.getMatcher().isPresent(), is(false));
+        assertThat(actual.getFormData(), is(notNullValue()));
+        assertThat(actual.getFormData().size(), is(0));
+        assertThat(actual.getCsrfChallenge().isPresent(), is(false));
+        assertThat(actual.getIpAddress(), is(notNullValue()));
+        assertThat(actual.getIpAddress(), is("127.0.0.1"));
+    }
+
+    @Test
+    public void fromWhenPatchAndContentTypeIsJsonAndAcceptIsJsonShouldTranslateOk() throws Exception {
+        HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
+        when(mockContainerRequest.getMethod()).thenReturn("PATCH");
+        when(mockContainerRequest.getRequestURI()).thenReturn("/foo");
+        when(mockContainerRequest.getQueryString()).thenReturn("bar=bar-value");
+        when(mockContainerRequest.getCookies()).thenReturn(null);
+        when(mockHttpServletRequestHeaderTranslator.from(mockContainerRequest))
+                .thenReturn(new HashMap<>());
+        when(mockContainerRequest.getRemoteAddr()).thenReturn("127.0.0.1");
+
+        Map<String, List<String>> queryParams = new HashMap<>();
+        queryParams.put("bar", new ArrayList<>());
+        queryParams.get("bar").add("bar-value");
+
+        when(mockQueryStringToMap.run(Optional.of("bar=bar-value")))
+                .thenReturn(queryParams);
+
+        MimeType json = new MimeTypeBuilder().json().build();
+        when(mockMimeTypeTranslator.to(json.toString())).thenReturn(json);
+
+        when(mockContainerRequest.getContentType()).thenReturn(json.toString());
+        when(mockContainerRequest.getHeader(Header.ACCEPT.getValue())).thenReturn(json.toString());
+
+        String body = "{\"integer\": 5, \"integer\": \"4\", \"local_date\": \"2019-01-01\"}";
+        Ask actual = subject.from(mockContainerRequest, body.getBytes());
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getMethod(), is(Method.PATCH));
+        assertThat(actual.getHeaders(), is(notNullValue()));
+        assertThat(actual.getHeaders().size(), is(0));
+        assertThat(actual.getContentType(), is(notNullValue()));
+        assertThat(actual.getContentType(), is(json));
+        assertThat(actual.getAccept(), is(notNullValue()));
+        assertThat(actual.getAccept(), is(json));
+        assertThat(actual.getBody().isPresent(), is(true));
+        assertThat(actual.getBody().get(), is(body.getBytes()));
+        assertThat(actual.getQueryParams(), is(notNullValue()));
+        assertThat(actual.getQueryParams(), is(queryParams));
+        assertThat(actual.getCookies(), is(notNullValue()));
+        assertThat(actual.getCookies().size(), is(0));
+        assertThat(actual.getPathWithParams(), is("/foo?bar=bar-value"));
+        assertThat(actual.getMatcher(), is(notNullValue()));
+        assertThat(actual.getMatcher().isPresent(), is(false));
+        assertThat(actual.getFormData(), is(notNullValue()));
+        assertThat(actual.getFormData().size(), is(0));
+        assertThat(actual.getCsrfChallenge().isPresent(), is(false));
+        assertThat(actual.getIpAddress(), is(notNullValue()));
+        assertThat(actual.getIpAddress(), is("127.0.0.1"));
+    }
 }

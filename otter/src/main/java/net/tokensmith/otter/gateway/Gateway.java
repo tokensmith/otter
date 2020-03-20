@@ -26,9 +26,9 @@ import java.util.Map;
 public class Gateway {
     protected Engine engine;
     protected Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators;
-    protected Map<String, RestLocationTranslator<? extends DefaultUser, ?>> restLocationTranslators;
+    protected Map<String, RestLocationTranslator<? extends DefaultSession, ? extends DefaultUser, ?>> restLocationTranslators;
 
-    public Gateway(Engine engine, Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators, Map<String, RestLocationTranslator<? extends DefaultUser, ?>> restLocationTranslators) {
+    public Gateway(Engine engine, Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators, Map<String, RestLocationTranslator<? extends DefaultSession, ? extends DefaultUser, ?>> restLocationTranslators) {
         this.engine = engine;
         this.locationTranslators = locationTranslators;
         this.restLocationTranslators = restLocationTranslators;
@@ -48,8 +48,8 @@ public class Gateway {
         }
     }
 
-    public <U extends DefaultUser, P> void add(RestTarget<U, P> restTarget) {
-        RestLocationTranslator<U, P> restLocationTranslator = restLocationTranslator(restTarget.getGroupName());
+    public <S extends DefaultSession, U extends DefaultUser, P> void add(RestTarget<S, U, P> restTarget) {
+        RestLocationTranslator<S, U, P> restLocationTranslator = restLocationTranslator(restTarget.getGroupName());
 
         Map<Method, Location> locations = restLocationTranslator.to(restTarget);
         for(Map.Entry<Method, Location> location: locations.entrySet()) {
@@ -86,13 +86,14 @@ public class Gateway {
      * https://docs.oracle.com/javase/tutorial/java/generics/subtyping.html
      *
      * @param groupName the name of the group. Used as a lookup key for the translator.
+     * @param <S> Session
      * @param <U> User
      * @param <P> Payload
      * @return the restLocationTranslator for the group
      */
     @SuppressWarnings("unchecked")
-    public <U extends DefaultUser, P> RestLocationTranslator<U, P> restLocationTranslator(String groupName) {
-        return (RestLocationTranslator<U, P>) restLocationTranslators.get(groupName);
+    public <S extends DefaultSession, U extends DefaultUser, P> RestLocationTranslator<S, U, P> restLocationTranslator(String groupName) {
+        return (RestLocationTranslator<S, U, P>) restLocationTranslators.get(groupName);
     }
 
     public <S extends DefaultSession, U extends DefaultUser> void notFound(Target<S, U> notFound) {
@@ -104,8 +105,8 @@ public class Gateway {
         }
     }
 
-    public <U extends DefaultUser, P> void notFound(RestTarget<U, P> notFound) {
-        RestLocationTranslator<U, P> restLocationTranslator = restLocationTranslator(notFound.getGroupName());
+    public <S extends DefaultSession, U extends DefaultUser, P> void notFound(RestTarget<S, U, P> notFound) {
+        RestLocationTranslator<S, U, P> restLocationTranslator = restLocationTranslator(notFound.getGroupName());
 
         Map<Method, Location> locations = restLocationTranslator.toNotFound(notFound);
         for(Map.Entry<Method, Location> location: locations.entrySet()) {

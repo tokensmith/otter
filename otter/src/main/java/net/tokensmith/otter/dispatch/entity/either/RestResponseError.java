@@ -6,8 +6,8 @@ import net.tokensmith.otter.dispatch.entity.RestBtwnRequest;
 import net.tokensmith.otter.dispatch.entity.RestBtwnResponse;
 
 
-public class RestResponseError<U, P> {
-    private RestBtwnRequest<U> btwnRequest;
+public class RestResponseError<S, U, P> {
+    private RestBtwnRequest<S, U> btwnRequest;
     private RestBtwnResponse btwnResponse;
     private RestRequest<U, P> requestForResource;
     private RestResponse<P> responseForResource;
@@ -17,7 +17,7 @@ public class RestResponseError<U, P> {
     private ErrorType errorType;
 
 
-    public RestResponseError(RestBtwnRequest<U> btwnRequest, RestBtwnResponse btwnResponse, RestRequest<U, P> requestForResource, RestResponse<P> responseForResource, RestResponse<P> resourceResponse, RestResponse<P> response, Throwable cause, ErrorType errorType) {
+    public RestResponseError(RestBtwnRequest<S, U> btwnRequest, RestBtwnResponse btwnResponse, RestRequest<U, P> requestForResource, RestResponse<P> responseForResource, RestResponse<P> resourceResponse, RestResponse<P> response, Throwable cause, ErrorType errorType) {
         this.btwnRequest = btwnRequest;
         this.btwnResponse = btwnResponse;
         this.requestForResource = requestForResource;
@@ -28,11 +28,11 @@ public class RestResponseError<U, P> {
         this.errorType = errorType;
     }
 
-    public RestBtwnRequest<U> getBtwnRequest() {
+    public RestBtwnRequest<S, U> getBtwnRequest() {
         return btwnRequest;
     }
 
-    public void setBtwnRequest(RestBtwnRequest<U> btwnRequest) {
+    public void setBtwnRequest(RestBtwnRequest<S, U> btwnRequest) {
         this.btwnRequest = btwnRequest;
     }
 

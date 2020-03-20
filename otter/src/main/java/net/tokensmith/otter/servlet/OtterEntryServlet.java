@@ -62,7 +62,7 @@ public abstract class OtterEntryServlet extends HttpServlet {
         Shape shape = configure.shape();
 
         List<Group<? extends DefaultSession, ? extends DefaultUser>> groups = configure.groups();
-        List<RestGroup<? extends DefaultUser>> restGroups = configure.restGroups();
+        List<RestGroup<? extends DefaultSession, ? extends DefaultUser>> restGroups = configure.restGroups();
 
         try {
             servletGateway = otterAppFactory.servletGateway(shape, groups, restGroups);

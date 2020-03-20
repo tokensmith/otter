@@ -2,6 +2,7 @@ package net.tokensmith.otter.dispatch.translator.rest;
 
 import helper.FixtureFactory;
 import helper.entity.model.DummyPayload;
+import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,18 +15,18 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
 
 public class RestBtwnRequestTranslatorTest {
-    private RestBtwnRequestTranslator<DummyUser, DummyPayload> subject;
+    private RestBtwnRequestTranslator<DummySession, DummyUser, DummyPayload> subject;
 
     @Before
     public void setUp() {
-        subject = new RestBtwnRequestTranslator<DummyUser, DummyPayload>();
+        subject = new RestBtwnRequestTranslator<DummySession, DummyUser, DummyPayload>();
     }
 
     @Test
     public void toWhenFromIsAsk() {
         Ask from = FixtureFactory.makeAsk();
 
-        RestBtwnRequest<DummyUser> actual = subject.to(from);
+        RestBtwnRequest<DummySession, DummyUser> actual = subject.to(from);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMatcher(), is(from.getMatcher()));
@@ -42,13 +43,14 @@ public class RestBtwnRequestTranslatorTest {
         assertThat(actual.getIpAddress(), is(from.getIpAddress()));
         assertThat(actual.getUser().isPresent(), is(false));
         assertThat(actual.getBody().isPresent(), is(false));
+        assertThat(actual.getSession().isPresent(), is(false));
     }
 
     @Test
     public void toWhenFromIsRestRequest() {
         RestRequest<DummyUser, DummyPayload> from = FixtureFactory.makeRestRequest();
 
-        RestBtwnRequest<DummyUser> actual = subject.to(from);
+        RestBtwnRequest<DummySession, DummyUser> actual = subject.to(from);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMatcher(), is(from.getMatcher()));
@@ -66,5 +68,6 @@ public class RestBtwnRequestTranslatorTest {
         assertThat(actual.getIpAddress(), is(from.getIpAddress()));
         assertThat(actual.getUser().isPresent(), is(false));
         assertThat(actual.getBody().isPresent(), is(false));
+        assertThat(actual.getSession().isPresent(), is(false));
     }
 }

@@ -1,6 +1,7 @@
 package net.tokensmith.otter.router.builder;
 
 import helper.entity.model.DummyPayload;
+import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import helper.entity.OkRestResource;
 import org.junit.Test;
@@ -21,7 +22,7 @@ public class RestRouteBuilderTest {
     public void buildShouldBeOk() {
         OkRestResource resource = new OkRestResource();
 
-        RestRoute<DummyUser, DummyPayload> actual = new RestRouteBuilder<DummyUser, DummyPayload>()
+        RestRoute<DummySession, DummyUser, DummyPayload> actual = new RestRouteBuilder<DummySession, DummyUser, DummyPayload>()
                 .restResource(resource)
                 .build();
 
@@ -35,10 +36,10 @@ public class RestRouteBuilderTest {
     @Test
     public void buildWhenBetweenShouldAssign() {
         OkRestResource resource = new OkRestResource();
-        List<RestBetween<DummyUser>> before = new ArrayList<>();
-        List<RestBetween<DummyUser>> after = new ArrayList<>();
+        List<RestBetween<DummySession, DummyUser>> before = new ArrayList<>();
+        List<RestBetween<DummySession, DummyUser>> after = new ArrayList<>();
 
-        RestRoute<DummyUser, DummyPayload> actual = new RestRouteBuilder<DummyUser, DummyPayload>()
+        RestRoute<DummySession, DummyUser, DummyPayload> actual = new RestRouteBuilder<DummySession, DummyUser, DummyPayload>()
                 .restResource(resource)
                 .before(after)
                 .after(before)

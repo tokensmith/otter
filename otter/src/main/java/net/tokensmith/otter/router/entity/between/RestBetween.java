@@ -13,6 +13,6 @@ import net.tokensmith.otter.router.exception.HaltException;
  *
  * @param <U> User object, intended to be a authenticated user.
  */
-public interface RestBetween<U> {
-    void process(Method method, RestBtwnRequest<U> request, RestBtwnResponse response) throws HaltException;
+public interface RestBetween<S, U> {
+    void process(Method method, RestBtwnRequest<S, U> request, RestBtwnResponse response) throws HaltException;
 }
