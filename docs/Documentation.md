@@ -60,7 +60,7 @@ Below is one approach to a project layout. Which can be observed in the [hello w
 A [Resource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/controller/Resource.java) handles an http request. it's typically used to accept `text/html`, however, It can accept any `Content-Type`.
 
 #### RestResource
-A [RestResource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/controller/RestResource.java) is designed to accept and reply `application/json`. Sorry, there is no support for `applicaiton/xml`.
+A [RestResource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/controller/RestResource.java) is designed to accept and reply `application/json`. Sorry, there is no support for `application/xml`.
 
 #### Between
 A [Between](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/router/entity/between/Between.java) allows a rule to be executed before a request reaches a Resource or after a Resource executes. Also referred to as a before and a after.
@@ -159,6 +159,31 @@ To share a `RestGroup's` feature with a `RestTarget` set the `.groupName(..)` to
 ```
 
 All `RestTargets` must relate to a `RestGroup`.
+
+#### Request Body Validation
+A request body that is intended to be delivered to a `RestResource` will be validated by 
+using `javax.validation` defined by `JSR 380`. To use it annotate a class implementation with constraints then if 
+there are any errors Otter will send the request to the configured `RestBadRequestResource`. 
+See [error handling](#error-handling) for how that works.
+
+If `javax.validation` is not your preference then it can be replaced by passing in an implementation of Otter's 
+`Validate` interface into the `RestTargetBuilder`.
+
+```java
+    Validate customValidate = new CustomValidate();
+    var helloRestResourceV3 = new HelloRestResource();
+    RestTarget<ApiUser, Hello> helloApiV3 = new RestTargetBuilder<ApiUser, Hello>()
+            .groupName(API_GROUP_V3)
+            .method(Method.GET)
+            .method(Method.POST)
+            .restResource(helloRestResourceV3)
+            .regex(helloRestResourceV3.URL)
+            .validate(customValidate) // your preferred validate implemention.
+            .contentType(json)
+            .accept(json)
+            .payload(Hello.class)
+            .build();
+```
 
 ### Authentication
 Authentication in otter is dependent on the value objects:
@@ -388,11 +413,15 @@ Date: Sat, 17 Aug 2019 16:35:54 GMT
 Content-Length: 102
 
 {
-  "source": "BODY",
-  "key": null,
-  "actual": null,
-  "expected": null,
-  "reason": "The payload could not be parsed."
+  "causes": [
+      {
+          "source": "BODY",
+          "key": null,
+          "actual": null,
+          "expected": null,
+          "reason": "The payload could not be parsed."
+      }
+  ]
 }
 ```
 

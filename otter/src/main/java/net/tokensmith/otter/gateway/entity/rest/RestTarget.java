@@ -6,6 +6,7 @@ import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.mime.MimeType;
+import net.tokensmith.otter.dispatch.json.validator.Validate;
 import net.tokensmith.otter.gateway.entity.Label;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.entity.between.RestBetween;
@@ -24,11 +25,12 @@ public class RestTarget<S extends DefaultSession, U extends DefaultUser, P> {
     private List<Label> labels;
     private List<RestBetween<S, U>> before;
     private List<RestBetween<S, U>> after;
+    private Validate validate;
     private Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> errorTargets; // dispatch errors
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors;
     private String groupName;
 
-    public RestTarget(List<Method> methods, String regex, RestResource<U, P> restResource, Class<P> payload, Map<Method, List<MimeType>> contentTypes, Map<Method, List<MimeType>> accepts, List<Label> labels, List<RestBetween<S, U>> before, List<RestBetween<S, U>> after, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> errorTargets, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, String groupName) {
+    public RestTarget(List<Method> methods, String regex, RestResource<U, P> restResource, Class<P> payload, Map<Method, List<MimeType>> contentTypes, Map<Method, List<MimeType>> accepts, List<Label> labels, List<RestBetween<S, U>> before, List<RestBetween<S, U>> after, Validate validate, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> errorTargets, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, String groupName) {
         this.methods = methods;
         this.regex = regex;
         this.restResource = restResource;
@@ -38,6 +40,7 @@ public class RestTarget<S extends DefaultSession, U extends DefaultUser, P> {
         this.labels = labels;
         this.before = before;
         this.after = after;
+        this.validate = validate;
         this.errorTargets = errorTargets; // dispatch errors
         this.restErrors = restErrors;
         this.groupName = groupName;
@@ -109,6 +112,14 @@ public class RestTarget<S extends DefaultSession, U extends DefaultUser, P> {
 
     public void setAfter(List<RestBetween<S, U>> after) {
         this.after = after;
+    }
+
+    public Validate getValidate() {
+        return validate;
+    }
+
+    public void setValidate(Validate validate) {
+        this.validate = validate;
     }
 
     // dispatch errors.

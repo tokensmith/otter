@@ -7,6 +7,7 @@ import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.mime.MimeType;
 import net.tokensmith.otter.dispatch.RouteRunner;
+import net.tokensmith.otter.dispatch.json.validator.Validate;
 import net.tokensmith.otter.dispatch.translator.RestErrorHandler;
 import net.tokensmith.otter.gateway.entity.rest.RestError;
 import net.tokensmith.otter.gateway.entity.rest.RestErrorTarget;
@@ -29,6 +30,9 @@ public class RestLocationTranslator<S extends DefaultSession, U extends DefaultU
 
     private RestBetweenFlyweight<S, U> restBetweenFlyweight;
 
+    // default payload validator.
+    private Validate restValidate;
+
     // for route run to handle errors.
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors;
 
@@ -41,12 +45,13 @@ public class RestLocationTranslator<S extends DefaultSession, U extends DefaultU
     // dispatch error defaults if not provided 415
     private Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> defaultDispatchErrors;
 
-    public RestLocationTranslator(RestBetweenFlyweight<S, U> restBetweenFlyweight, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> defaultDispatchErrors) {
+    public RestLocationTranslator(RestBetweenFlyweight<S, U> restBetweenFlyweight, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> defaultDispatchErrors, Validate restValidate) {
         this.restBetweenFlyweight = restBetweenFlyweight;
         this.restErrors = restErrors;
         this.defaultErrors = defaultErrors;
         this.dispatchErrors = dispatchErrors;
         this.defaultDispatchErrors = defaultDispatchErrors;
+        this.restValidate = restValidate;
     }
 
     public Map<Method, Location> to(RestTarget<S, U, P> from) {
@@ -93,12 +98,19 @@ public class RestLocationTranslator<S extends DefaultSession, U extends DefaultU
             accepts = new ArrayList<>();
         }
 
+        // use default payload valiate?
+        Validate validate = restValidate;
+        if (from.getValidate() != null) {
+            validate = from.getValidate();
+        }
+
         RestLocationBuilder<S, U, P> locationBuilder = new RestLocationBuilder<S, U, P>()
                 .path(from.getRegex())
                 .contentTypes(contentTypes)
                 .accepts(accepts)
                 .restResource(from.getRestResource())
                 .payload(from.getPayload())
+                .validate(validate)
                 .before(
                         Stream.of(betweens.getBefore(), from.getBefore())
                                 .flatMap(Collection::stream)
@@ -119,7 +131,11 @@ public class RestLocationTranslator<S extends DefaultSession, U extends DefaultU
         for(Map.Entry<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> entry: dispatchErrors.entrySet()) {
             RestRoute<S, U, ? extends Translatable> restRoute = dispatchAppFactory.makeRestRoute(entry.getValue());
 
-            RouteRunner restRouteRunner = dispatchAppFactory.makeJsonDispatchErrorRouteRun(restRoute, entry.getValue().getPayload());
+            RouteRunner restRouteRunner = dispatchAppFactory.makeJsonDispatchErrorRouteRun(
+                restRoute,
+                entry.getValue().getPayload(),
+                validate
+            );
             locationBuilder = locationBuilder.errorRouteRunner(
                     entry.getKey(),
                     restRouteRunner

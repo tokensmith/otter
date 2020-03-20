@@ -3,6 +3,7 @@ package net.tokensmith.otter.gateway;
 import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.dispatch.json.validator.Validate;
 import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.gateway.entity.rest.RestError;
 import net.tokensmith.otter.gateway.entity.rest.RestErrorTarget;
@@ -31,13 +32,14 @@ public class RestLocationTranslatorFactory {
         this.shape = shape;
     }
 
-    public <S extends DefaultSession, U extends DefaultUser, P> RestLocationTranslator<S, U, P> make(Class<S> sessionClazz, Optional<RestBetween<S, U>> authRequired, Optional<RestBetween<S, U>> authOptional, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> defaultDispatchErrors) {
+    public <S extends DefaultSession, U extends DefaultUser, P> RestLocationTranslator<S, U, P> make(Class<S> sessionClazz, Optional<RestBetween<S, U>> authRequired, Optional<RestBetween<S, U>> authOptional, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> defaultDispatchErrors, Validate restValidate) {
         return new RestLocationTranslator<S, U, P>(
                 restBetweenFlyweight(sessionClazz, authRequired, authOptional),
                 restErrors,
                 defaultErrors,
                 dispatchErrors,
-                defaultDispatchErrors
+                defaultDispatchErrors,
+                restValidate
         );
     }
 

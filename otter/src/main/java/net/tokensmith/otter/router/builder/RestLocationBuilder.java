@@ -9,6 +9,7 @@ import net.tokensmith.otter.controller.entity.mime.MimeType;
 import net.tokensmith.otter.dispatch.json.JsonDispatchErrorRouteRun;
 import net.tokensmith.otter.dispatch.json.JsonRouteRun;
 import net.tokensmith.otter.dispatch.RouteRunner;
+import net.tokensmith.otter.dispatch.json.validator.Validate;
 import net.tokensmith.otter.dispatch.translator.RestErrorHandler;
 import net.tokensmith.otter.dispatch.translator.rest.*;
 import net.tokensmith.otter.router.entity.Location;
@@ -30,9 +31,11 @@ public class RestLocationBuilder<S extends DefaultSession, U extends DefaultUser
     private List<MimeType> accepts = new ArrayList<>();
     private RestResource<U, P> restResource;
     private Class<P> payload;
+    private Validate validate;
     private List<RestBetween<S, U>> before = new ArrayList<>();
     private List<RestBetween<S, U>> after = new ArrayList<>();
     private Boolean isDispatchError = false;
+
 
     // error route runners that are called from engine.
     private Map<StatusCode, RouteRunner> errorRouteRunners = new HashMap<>();
@@ -74,6 +77,11 @@ public class RestLocationBuilder<S extends DefaultSession, U extends DefaultUser
 
     public RestLocationBuilder<S, U, P> payload(Class<P> payload) {
         this.payload = payload;
+        return this;
+    }
+
+    public RestLocationBuilder<S, U, P> validate(Validate validate) {
+        this.validate = validate;
         return this;
     }
 
@@ -130,6 +138,7 @@ public class RestLocationBuilder<S extends DefaultSession, U extends DefaultUser
                     restBtwnRequestTranslator,
                     restBtwnResponseTranslator,
                     jsonTranslator,
+                    validate,
                     errorHandlers,
                     new RestErrorRequestTranslator<>(),
                     new RestErrorResponseTranslator()
@@ -143,6 +152,7 @@ public class RestLocationBuilder<S extends DefaultSession, U extends DefaultUser
                     restBtwnRequestTranslator,
                     restBtwnResponseTranslator,
                     jsonTranslator,
+                    validate,
                     errorHandlers,
                     new RestErrorRequestTranslator<>(),
                     new RestErrorResponseTranslator()

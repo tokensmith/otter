@@ -8,6 +8,8 @@ import net.tokensmith.otter.controller.error.rest.BadRequestRestResource;
 import net.tokensmith.otter.controller.error.rest.MediaTypeRestResource;
 import net.tokensmith.otter.controller.error.rest.NotAcceptableRestResource;
 import net.tokensmith.otter.controller.error.rest.ServerErrorRestResource;
+import net.tokensmith.otter.dispatch.json.validator.RestValidate;
+import net.tokensmith.otter.dispatch.json.validator.Validate;
 import net.tokensmith.otter.gateway.LocationTranslatorFactory;
 import net.tokensmith.otter.gateway.RestLocationTranslatorFactory;
 import net.tokensmith.otter.gateway.entity.Group;
@@ -32,6 +34,9 @@ import net.tokensmith.otter.server.path.WebAppPath;
 import net.tokensmith.otter.translatable.Translatable;
 import net.tokensmith.otter.translator.MimeTypeTranslator;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.util.*;
 
 
@@ -112,9 +117,18 @@ public class OtterAppFactory {
         return new RestLocationTranslatorFactory(shape);
     }
 
+    public Validate restValidate() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        return new RestValidate(validator);
+    }
+
     @SuppressWarnings("unchecked")
     public <U extends DefaultUser, S extends DefaultSession, P> Map<String, RestLocationTranslator<? extends S, ? extends U, ? extends P>> restLocationTranslators(RestLocationTranslatorFactory restLocationTranslatorFactory, List<RestGroup<? extends S, ? extends U>> restGroups) throws SessionCtorException {
         Map<String, RestLocationTranslator<? extends S, ? extends U, ? extends P>> restLocationTranslators = new HashMap<>();
+
+        // bean validator
+        Validate restValidate = restValidate();
 
         for(RestGroup<? extends S, ? extends U> restGroup: restGroups) {
 
@@ -128,7 +142,8 @@ public class OtterAppFactory {
                             castedGroup.getRestErrors(),
                             defaultErrors(),
                             castedGroup.getDispatchErrors(),
-                            defaultDispatchErrors()
+                            defaultDispatchErrors(),
+                            restValidate
                     )
             );
         }

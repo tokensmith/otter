@@ -7,6 +7,7 @@ import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.mime.MimeType;
+import net.tokensmith.otter.dispatch.json.validator.Validate;
 import net.tokensmith.otter.gateway.entity.Label;
 import net.tokensmith.otter.gateway.entity.rest.RestError;
 import net.tokensmith.otter.gateway.entity.rest.RestErrorTarget;
@@ -24,6 +25,7 @@ public class RestTargetBuilder<S extends DefaultSession, U extends DefaultUser, 
     private String regex;
     private RestResource<U, P> restResource;
     private Class<P> payload;
+    private Validate validate;
     private Map<Method, List<MimeType>> contentTypes = new HashMap<>();
     private Map<Method, List<MimeType>> accepts = new HashMap<>();
 
@@ -62,6 +64,11 @@ public class RestTargetBuilder<S extends DefaultSession, U extends DefaultUser, 
 
     public RestTargetBuilder<S, U, P> payload(Class<P> payload) {
         this.payload = payload;
+        return this;
+    }
+    
+    public RestTargetBuilder<S, U, P> validate(Validate validate) {
+        this.validate = validate;
         return this;
     }
 
@@ -153,6 +160,6 @@ public class RestTargetBuilder<S extends DefaultSession, U extends DefaultUser, 
     }
 
     public RestTarget<S, U, P> build() {
-        return new RestTarget<S, U, P>(methods, regex, restResource, payload, contentTypes, accepts, labels, before, after, errorTargets, restErrors, groupName);
+        return new RestTarget<S, U, P>(methods, regex, restResource, payload, contentTypes, accepts, labels, before, after, validate, errorTargets, restErrors, groupName);
     }
 }
