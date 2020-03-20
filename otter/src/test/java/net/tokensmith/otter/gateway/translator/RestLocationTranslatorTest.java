@@ -6,6 +6,7 @@ import helper.entity.model.DummyErrorPayload;
 import helper.entity.model.DummyPayload;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.dispatch.json.validator.Validate;
 import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +37,8 @@ public class RestLocationTranslatorTest {
     private RestLocationTranslator<DummySession, DummyUser, DummyPayload> subject;
     @Mock
     private RestBetweenFlyweight<DummySession, DummyUser> mockRestBetweenFlyweight;
+    @Mock
+    private Validate mockValidate;
 
     @Before
     public void setUp() {
@@ -48,7 +51,7 @@ public class RestLocationTranslatorTest {
         Map<StatusCode, RestErrorTarget<DummySession, DummyUser, ? extends Translatable>> defaultDispatchTargets = new HashMap<>();
 
         subject = new RestLocationTranslator<DummySession, DummyUser, DummyPayload>(
-                mockRestBetweenFlyweight, restErrors, defaultErrors, dispatchErrors, defaultDispatchTargets
+                mockRestBetweenFlyweight, restErrors, defaultErrors, dispatchErrors, defaultDispatchTargets, mockValidate
         );
     }
 

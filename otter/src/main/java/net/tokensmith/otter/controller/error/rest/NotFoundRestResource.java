@@ -3,24 +3,32 @@ package net.tokensmith.otter.controller.error.rest;
 
 import net.tokensmith.otter.controller.RestResource;
 import net.tokensmith.otter.controller.builder.ClientErrorBuilder;
+import net.tokensmith.otter.controller.entity.Cause;
 import net.tokensmith.otter.controller.entity.ClientError;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.RestRequest;
 import net.tokensmith.otter.controller.entity.response.RestResponse;
+import net.tokensmith.otter.controller.header.Header;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 public class NotFoundRestResource<U extends DefaultUser> extends RestResource<U, ClientError> {
     public static String REASON = "URL was not found";
 
     protected ClientError to(RestRequest<U, ClientError> from) {
+        Cause cause = new Cause.Builder()
+            .source(Cause.Source.URL)
+            .actual(from.getPathWithParams())
+            .reason(REASON)
+            .build();
+
         ClientError to = new ClientErrorBuilder()
-                .source(ClientError.Source.URL)
-                .actual(from.getPathWithParams())
-                .reason(REASON)
-                .build();
+            .cause(cause)
+            .build();
+
         return to;
     }
     

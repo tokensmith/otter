@@ -6,6 +6,7 @@ import helper.entity.model.AlternatePayload;
 import helper.entity.model.DummyPayload;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.config.OtterAppFactory;
 import org.junit.Test;
 import net.tokensmith.otter.controller.entity.ClientError;
 import net.tokensmith.otter.controller.entity.StatusCode;
@@ -70,6 +71,7 @@ public class JsonRouteRunTest {
                 restBtwnRequestTranslator,
                 restBtwnResponseTranslator,
                 jsonTranslator,
+                new OtterAppFactory().restValidate(),
                 errorHandlers,
                 new RestErrorRequestTranslator<>(),
                 new RestErrorResponseTranslator()
@@ -250,7 +252,7 @@ public class JsonRouteRunTest {
         ask.setBody(Optional.of(json.getBytes()));
 
 
-        byte[] response = "{\"source\":\"BODY\",\"key\":\"integer\",\"actual\":\"not a integer\",\"expected\":[],\"reason\":\"There was a invalid value for a key.\"}".getBytes();
+        byte[] response = "{\"causes\":[{\"source\":\"BODY\",\"key\":\"integer\",\"actual\":\"not a integer\",\"expected\":[],\"reason\":\"There was a invalid value for a key.\"}]}".getBytes();
         testRun(route, Method.POST, StatusCode.BAD_REQUEST, Optional.of(json.getBytes()), Optional.of(response));
     }
 

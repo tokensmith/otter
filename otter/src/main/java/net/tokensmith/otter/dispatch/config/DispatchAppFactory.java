@@ -6,6 +6,7 @@ import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.dispatch.json.JsonDispatchErrorRouteRun;
 import net.tokensmith.otter.dispatch.json.JsonErrorHandler;
 import net.tokensmith.otter.dispatch.RouteRunner;
+import net.tokensmith.otter.dispatch.json.validator.Validate;
 import net.tokensmith.otter.dispatch.translator.RestErrorHandler;
 import net.tokensmith.otter.dispatch.translator.rest.*;
 import net.tokensmith.otter.gateway.entity.rest.RestError;
@@ -30,7 +31,7 @@ public class DispatchAppFactory {
                 .build();
     }
 
-    public <U extends DefaultUser, S extends DefaultSession, P extends Translatable> RouteRunner makeJsonDispatchErrorRouteRun(RestRoute<S, U, ? extends Translatable> restRoute, Class<? extends Translatable> payload) {
+    public <U extends DefaultUser, S extends DefaultSession, P extends Translatable> RouteRunner makeJsonDispatchErrorRouteRun(RestRoute<S, U, ? extends Translatable> restRoute, Class<? extends Translatable> payload, Validate validate) {
 
         Class<P> castedPayload = toPayload(payload);
         JsonTranslator<P> jsonTranslator = translatorAppFactory.jsonTranslator(castedPayload);
@@ -49,6 +50,7 @@ public class DispatchAppFactory {
                 restBtwnRequestTranslator,
                 restBtwnResponseTranslator,
                 jsonTranslator,
+                validate,
                 new HashMap<>(),
                 new RestErrorRequestTranslator<>(),
                 new RestErrorResponseTranslator()

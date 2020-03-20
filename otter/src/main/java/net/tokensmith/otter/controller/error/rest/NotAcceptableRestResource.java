@@ -2,6 +2,7 @@ package net.tokensmith.otter.controller.error.rest;
 
 import net.tokensmith.otter.controller.RestResource;
 import net.tokensmith.otter.controller.builder.ClientErrorBuilder;
+import net.tokensmith.otter.controller.entity.Cause;
 import net.tokensmith.otter.controller.entity.ClientError;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
@@ -25,13 +26,17 @@ public class NotAcceptableRestResource<U extends DefaultUser> extends RestResour
             actual = from.getAccept().toString();
         }
 
+        Cause cause = new Cause.Builder()
+            .source(Cause.Source.HEADER)
+            .key(Header.ACCEPT.toString())
+            .actual(actual)
+            .expected(from.getPossibleAccepts().stream()
+                    .map( Object::toString )
+                    .collect(Collectors.toList()))
+            .build();
+
         ClientError to = new ClientErrorBuilder()
-                .source(ClientError.Source.HEADER)
-                .key(Header.ACCEPT.toString())
-                .actual(actual)
-                .expected(from.getPossibleAccepts().stream()
-                        .map( Object::toString )
-                        .collect(Collectors.toList()))
+                .cause(cause)
                 .build();
         return to;
     }

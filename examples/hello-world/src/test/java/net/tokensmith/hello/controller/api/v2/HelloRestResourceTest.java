@@ -3,6 +3,7 @@ package net.tokensmith.hello.controller.api.v2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.tokensmith.hello.model.Hello;
+import net.tokensmith.otter.controller.entity.Cause;
 import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.Response;
 import org.junit.BeforeClass;
@@ -119,13 +120,16 @@ public class HelloRestResourceTest {
         ObjectMapper om = appFactory.objectMapper();
         ClientError clientError = om.readValue(response.getResponseBody(), ClientError.class);
         assertThat(clientError, is(notNullValue()));
-        assertThat(clientError.getSource(), is(ClientError.Source.HEADER));
-        assertThat(clientError.getKey(), is(Header.CONTENT_TYPE.toString()));
-        assertThat(clientError.getActual(), is("application/xml; charset=utf-8;"));
-        assertThat(clientError.getExpected(), is(notNullValue()));
-        assertThat(clientError.getExpected().size(), is(1));
-        assertThat(clientError.getExpected().get(0), is("application/json; charset=utf-8;"));
-        assertThat(clientError.getReason(), is(nullValue()));
+        assertThat(clientError.getCauses().size(), is(1));
+
+        Cause cause = clientError.getCauses().get(0);
+        assertThat(cause.getSource(), is(Cause.Source.HEADER));
+        assertThat(cause.getKey(), is(Header.CONTENT_TYPE.toString()));
+        assertThat(cause.getActual(), is("application/xml; charset=utf-8;"));
+        assertThat(cause.getExpected(), is(notNullValue()));
+        assertThat(cause.getExpected().size(), is(1));
+        assertThat(cause.getExpected().get(0), is("application/json; charset=utf-8;"));
+        assertThat(cause.getReason(), is(nullValue()));
     }
 
     @Test
@@ -145,11 +149,14 @@ public class HelloRestResourceTest {
         ObjectMapper om = appFactory.objectMapper();
         ClientError clientError = om.readValue(response.getResponseBody(), ClientError.class);
         assertThat(clientError, is(notNullValue()));
-        assertThat(clientError.getSource(), is(ClientError.Source.URL));
-        assertThat(clientError.getKey(), is(nullValue()));
-        assertThat(clientError.getActual(), is("/rest/v2/notFound"));
-        assertThat(clientError.getExpected(), is(notNullValue()));
-        assertThat(clientError.getExpected().size(), is(0));
-        assertThat(clientError.getReason(), is(NotFoundRestResource.REASON));
+        assertThat(clientError.getCauses().size(), is(1));
+
+        Cause cause = clientError.getCauses().get(0);
+        assertThat(cause.getSource(), is(Cause.Source.URL));
+        assertThat(cause.getKey(), is(nullValue()));
+        assertThat(cause.getActual(), is("/rest/v2/notFound"));
+        assertThat(cause.getExpected(), is(notNullValue()));
+        assertThat(cause.getExpected().size(), is(0));
+        assertThat(cause.getReason(), is(NotFoundRestResource.REASON));
     }
 }

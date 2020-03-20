@@ -3,6 +3,9 @@ package net.tokensmith.otter.dispatch.json;
 
 import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.dispatch.RouteRunner;
+import net.tokensmith.otter.dispatch.json.validator.Validate;
+import net.tokensmith.otter.dispatch.json.validator.ValidateError;
+import net.tokensmith.otter.dispatch.json.validator.exception.ValidateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.tokensmith.otter.controller.RestResource;
@@ -27,6 +30,7 @@ import net.tokensmith.otter.router.exception.HaltException;
 import net.tokensmith.otter.translator.JsonTranslator;
 import net.tokensmith.otter.translator.exception.*;
 
+import javax.validation.ValidationException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +44,7 @@ public class JsonRouteRun<S extends DefaultSession, U extends DefaultUser, P> im
     private RestBtwnRequestTranslator<S, U, P> restBtwnRequestTranslator;
     private RestBtwnResponseTranslator<P> restBtwnResponseTranslator;
     private JsonTranslator<P> jsonTranslator;
+    private Validate validate;
 
     // error handling dependencies
     private Map<StatusCode, RestErrorHandler<U>> errorHandlers;
@@ -49,13 +54,14 @@ public class JsonRouteRun<S extends DefaultSession, U extends DefaultUser, P> im
     public JsonRouteRun() {
     }
 
-    public JsonRouteRun(RestRoute<S, U, P> restRoute, RestResponseTranslator<P> restResponseTranslator, RestRequestTranslator<S, U, P> restRequestTranslator, RestBtwnRequestTranslator<S, U, P> restBtwnRequestTranslator, RestBtwnResponseTranslator<P> restBtwnResponseTranslator, JsonTranslator<P> jsonTranslator, Map<StatusCode, RestErrorHandler<U>> errorHandlers, RestErrorRequestTranslator<S, U> errorRequestTranslator, RestErrorResponseTranslator errorResponseTranslator) {
+    public JsonRouteRun(RestRoute<S, U, P> restRoute, RestResponseTranslator<P> restResponseTranslator, RestRequestTranslator<S, U, P> restRequestTranslator, RestBtwnRequestTranslator<S, U, P> restBtwnRequestTranslator, RestBtwnResponseTranslator<P> restBtwnResponseTranslator, JsonTranslator<P> jsonTranslator, Validate validate, Map<StatusCode, RestErrorHandler<U>> errorHandlers, RestErrorRequestTranslator<S, U> errorRequestTranslator, RestErrorResponseTranslator errorResponseTranslator) {
         this.restRoute = restRoute;
         this.restResponseTranslator = restResponseTranslator;
         this.restRequestTranslator = restRequestTranslator;
         this.restBtwnRequestTranslator = restBtwnRequestTranslator;
         this.restBtwnResponseTranslator = restBtwnResponseTranslator;
         this.jsonTranslator = jsonTranslator;
+        this.validate = validate;
 
         // error handling dependencies
         this.errorHandlers = errorHandlers;
@@ -82,6 +88,18 @@ public class JsonRouteRun<S extends DefaultSession, U extends DefaultUser, P> im
         } catch (DeserializationException e) {
             // May want to consider an alternative to prevent duplicate returns in this method.
             ClientException clientException = new ClientException("Could not serialize request body", e);
+            RestResponseError<S, U, P> error = new RestResponseErrorBuilder<S, U, P>()
+                    .cause(clientException)
+                    .errorType(RestResponseError.ErrorType.BAD_REQUEST)
+                    .build();
+            return handleErrors(error, ask, answer);
+        }
+
+        try {
+            validate(entity);
+        } catch (ValidateException e) {
+            // May want to consider an alternative to prevent duplicate returns in this method.
+            ClientException clientException = new ClientException("Payload violated constraints", e);
             RestResponseError<S, U, P> error = new RestResponseErrorBuilder<S, U, P>()
                     .cause(clientException)
                     .errorType(RestResponseError.ErrorType.BAD_REQUEST)
@@ -119,6 +137,15 @@ public class JsonRouteRun<S extends DefaultSession, U extends DefaultUser, P> im
      */
     protected Optional<P> to(Optional<byte[]> body) throws DeserializationException {
         return makeEntity(body);
+    }
+
+    protected void validate(Optional<P> entity) throws ValidateException {
+        if (entity.isPresent()) {
+            List<ValidateError> errors = validate.validate(entity.get());
+            if (errors.size() > 0) {
+                throw new ValidateException("Payload violated constraints", errors);
+            }
+        }
     }
 
     protected Optional<P> makeEntity(Optional<byte[]> body) throws DeserializationException {

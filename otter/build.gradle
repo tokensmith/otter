@@ -49,6 +49,12 @@ dependencies {
     compile "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${jacksonVersion}"
     compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
     compile "com.fasterxml.jackson.module:jackson-module-afterburner:${jacksonVersion}"
+
+    // bean validation - see RestValidate
+    compile "jakarta.validation:jakarta.validation-api:2.0.2"
+    compile 'org.hibernate.validator:hibernate-validator:6.1.2.Final'
+
+
     compile "org.slf4j:slf4j-simple:1.7.26"
     compile "org.apache.logging.log4j:log4j-1.2-api:${log4jVersion}"
     compile "org.apache.logging.log4j:log4j-api:${log4jVersion}"
