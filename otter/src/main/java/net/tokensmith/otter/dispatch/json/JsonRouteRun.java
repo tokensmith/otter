@@ -357,4 +357,9 @@ public class JsonRouteRun<S extends DefaultSession, U extends DefaultUser, P> im
     public RestRoute<S, U, P> getRestRoute() {
         return restRoute;
     }
+
+    // only used for tests to make sure it get built accurately.
+    public Validate getValidate() {
+        return validate;
+    }
 }

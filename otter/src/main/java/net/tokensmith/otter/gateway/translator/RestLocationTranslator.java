@@ -76,7 +76,6 @@ public class RestLocationTranslator<S extends DefaultSession, U extends DefaultU
         Map<Method, Location> to = new HashMap<>();
 
         for(Method method: from.getMethods()) {
-            // 179
             RestLocationBuilder<S, U, P> locationBuilder = makeLocationBuilder(
                 method, from, errorHandlers, mergedDispatchErrors
             );

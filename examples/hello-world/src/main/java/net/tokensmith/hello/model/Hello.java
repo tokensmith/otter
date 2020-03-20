@@ -1,8 +1,10 @@
 package net.tokensmith.hello.model;
 
 
+import javax.validation.constraints.NotNull;
 
 public class Hello {
+    @NotNull
     private String message;
 
     public Hello() {}

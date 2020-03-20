@@ -251,8 +251,20 @@ public class JsonRouteRunTest {
         ask.setMethod(Method.POST);
         ask.setBody(Optional.of(json.getBytes()));
 
-
         byte[] response = "{\"causes\":[{\"source\":\"BODY\",\"key\":\"integer\",\"actual\":\"not a integer\",\"expected\":[],\"reason\":\"There was a invalid value for a key.\"}]}".getBytes();
+        testRun(route, Method.POST, StatusCode.BAD_REQUEST, Optional.of(json.getBytes()), Optional.of(response));
+    }
+
+    @Test
+    public void whenPostAndValidationErrorsShouldReturnBadRequest() throws Exception {
+        RestRoute<DummySession, DummyUser, DummyPayload> route = okRestRoute();
+        // Invalid Key
+        String json = "{\"string\": \"foo\", \"local_date\": \"2019-01-01\"}";
+        Ask ask = FixtureFactory.makeAsk();
+        ask.setMethod(Method.POST);
+        ask.setBody(Optional.of(json.getBytes()));
+
+        byte[] response = "{\"causes\":[{\"source\":\"BODY\",\"key\":\"integer\",\"actual\":null,\"expected\":[],\"reason\":\"must not be null\"}]}".getBytes();
         testRun(route, Method.POST, StatusCode.BAD_REQUEST, Optional.of(json.getBytes()), Optional.of(response));
     }
 

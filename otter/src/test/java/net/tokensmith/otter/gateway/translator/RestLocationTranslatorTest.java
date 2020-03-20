@@ -192,10 +192,14 @@ public class RestLocationTranslatorTest {
         assertThat(actual.get(Method.GET).getAccepts(), Is.is(notNullValue()));
         assertThat(actual.get(Method.GET).getAccepts().size(), Is.is(1));
 
+
         assertThat(actual.get(Method.POST).getErrorRouteRunners(), Is.is(notNullValue()));
         assertThat(actual.get(Method.POST).getErrorRouteRunners().size(), Is.is(1));
 
         JsonRouteRun<DummySession, DummyUser, DummyPayload> postRouteRunner = (JsonRouteRun<DummySession, DummyUser, DummyPayload>) actual.get(Method.POST).getRouteRunner();
+
+        // should have the default mock validate.
+        assertThat(postRouteRunner.getValidate(), is(mockValidate));
 
         // ordering of before.
         assertThat(postRouteRunner.getRestRoute().getBefore().get(0), is(betweens.getBefore().get(0)));

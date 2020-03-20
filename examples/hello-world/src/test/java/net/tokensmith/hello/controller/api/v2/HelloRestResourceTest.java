@@ -105,6 +105,36 @@ public class HelloRestResourceTest {
     }
 
     @Test
+    public void postWhenInvalidValueShouldReturn400() throws Exception {
+        String helloURI = getUri();
+
+        ObjectMapper om = appFactory.objectMapper();
+        Hello hello = new Hello();
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .preparePost(helloURI)
+                .addHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
+                .addHeader(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
+                .setBody(om.writeValueAsString(hello))
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(StatusCode.BAD_REQUEST.getCode()));
+        ClientError clientError = om.reader().forType(ClientError.class).readValue(response.getResponseBody());
+
+        assertThat(clientError, is(notNullValue()));
+
+        Cause cause = clientError.getCauses().get(0);
+        assertThat(cause.getSource(), is(Cause.Source.BODY));
+        assertThat(cause.getKey(), is("message"));
+        assertThat(cause.getActual(), is(nullValue()));
+        assertThat(cause.getExpected(), is(notNullValue()));
+        assertThat(cause.getExpected().size(), is(0));
+        assertThat(cause.getReason(), is("must not be null"));
+    }
+
+    @Test
     public void getWhenWrongContentTypeShouldReturnDefault415() throws Exception {
         String helloURI = getUri();
 

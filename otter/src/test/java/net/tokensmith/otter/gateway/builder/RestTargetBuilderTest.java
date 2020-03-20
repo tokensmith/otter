@@ -5,6 +5,8 @@ import helper.entity.model.DummyErrorPayload;
 import helper.entity.model.DummyPayload;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import helper.fake.FakeValidate;
+import net.tokensmith.otter.dispatch.json.validator.Validate;
 import org.junit.Test;
 import net.tokensmith.otter.controller.builder.MimeTypeBuilder;
 import net.tokensmith.otter.controller.entity.StatusCode;
@@ -144,6 +146,7 @@ public class RestTargetBuilderTest {
 
         OkRestResource okRestResource = new OkRestResource();
         MimeType json = new MimeTypeBuilder().json().build();
+        Validate validate = new FakeValidate();
 
         RestTarget<DummySession, DummyUser, DummyPayload> actual = subject
                 .regex("/foo")
@@ -158,6 +161,7 @@ public class RestTargetBuilderTest {
                 .after(new DummyRestBetween<>())
                 .authenticate()
                 .onDispatchError(StatusCode.NOT_FOUND, notFound)
+                .validate(validate)
                 .build();
 
         assertThat(actual.getRegex(), is("/foo"));
@@ -176,6 +180,7 @@ public class RestTargetBuilderTest {
         assertTrue(actual.getLabels().contains(Label.AUTH_REQUIRED));
         assertThat(actual.getErrorTargets().size(), is(1));
         assertThat(actual.getErrorTargets().get(StatusCode.NOT_FOUND).getResource(), is(notFoundResource));
+        assertThat(actual.getValidate(), is(validate));
     }
 
     @Test

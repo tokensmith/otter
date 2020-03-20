@@ -66,8 +66,7 @@ public class RestTargetBuilder<S extends DefaultSession, U extends DefaultUser, 
         this.payload = payload;
         return this;
     }
-
-    // 179
+    
     public RestTargetBuilder<S, U, P> validate(Validate validate) {
         this.validate = validate;
         return this;

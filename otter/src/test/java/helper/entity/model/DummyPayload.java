@@ -5,11 +5,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import net.tokensmith.otter.translatable.Translatable;
 
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Optional;
 
 public class DummyPayload implements Translatable {
+    @NotNull
     private Integer integer;
+
     private String string;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate localDate;
