@@ -70,7 +70,7 @@ public class HttpServletRequestTranslator  {
         if (isForm(method, contentType)) {
             String form = new String(containerBody);
             formData = queryStringToMap.run(Optional.of(form));
-        } else if (method == Method.POST && !isForm(method, contentType)) {
+        } else if (method == Method.POST || method == Method.PUT || method == Method.PATCH && !isForm(method, contentType)) {
             body = Optional.of(containerBody);
         }
 

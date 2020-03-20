@@ -216,4 +216,26 @@ public class RestTargetBuilderTest {
         assertThat(actual.getAccepts().get(Method.GET).size(), is(1));
         assertThat(actual.getAccepts().get(Method.GET).get(0), is(jwt));
     }
+
+    @Test
+    public void buildCrudWhenSessionAndAuthenticateShouldAddLabels() {
+        RestTargetBuilder<DummySession, DummyUser, DummyPayload> subject = subject();
+
+
+        OkRestResource okRestResource = new OkRestResource();
+
+        RestTarget<DummySession, DummyUser, DummyPayload> actual = subject
+                .regex("/foo")
+                .crud()
+                .restResource(okRestResource)
+                .session()
+                .authenticate()
+                .build();
+
+        assertThat(actual, is(notNullValue()));
+
+        assertThat(actual.getLabels().size(), is(2));
+        assertThat(actual.getLabels().get(0), is(Label.SESSION_REQUIRED));
+        assertThat(actual.getLabels().get(1), is(Label.AUTH_REQUIRED));
+    }
 }

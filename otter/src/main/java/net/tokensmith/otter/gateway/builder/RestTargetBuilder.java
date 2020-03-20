@@ -109,6 +109,14 @@ public class RestTargetBuilder<S extends DefaultSession, U extends DefaultUser, 
         return this;
     }
 
+    public RestTargetBuilder<S, U, P> session() {
+        // just in-case
+        this.labels.remove(Label.SESSION_REQUIRED);
+
+        this.labels.add(Label.SESSION_REQUIRED);
+        return this;
+    }
+
     public RestTargetBuilder<S, U, P> anonymous() {
         // remove all session and auth labels.
         this.labels.remove(Label.SESSION_OPTIONAL);
