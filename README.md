@@ -20,20 +20,24 @@ If you want to get started quickly head over to the [quick start](/examples/quic
 example application. Only 5 files to get started.
 
 ## Dependency coordinates
+Latest pinned version is `1.5.3`
+
+Current development version is `1.5.4-SNAPHOT`
+
 #### Maven
 ```xml
 <dependencies>
     <dependency>
         <groupId>net.tokensmith</groupId>
         <artifactId>otter</artifactId>
-        <version>1.5.3-SNAPSHOT</version>
+        <version>1.5.4-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
 
 #### Gradle
 ```groovy
-compile group: 'net.tokensmith', name: 'otter', version: '1.5.1-SNAPSHOT'
+compile group: 'net.tokensmith', name: 'otter', version: '1.5.4-SNAPSHOT'
 ```
 
 ## Documentation
