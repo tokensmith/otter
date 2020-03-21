@@ -38,7 +38,7 @@ public class ServletGateway extends Gateway {
     private HttpServletResponseMerger httpServletResponseMerger;
     private Integer writeChunkSize;
 
-    public ServletGateway(HttpServletRequestTranslator httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger httpServletResponseMerger, Engine engine, Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators, Map<String, RestLocationTranslator<? extends DefaultUser, ?>> restLocationTranslators, Integer writeChunkSize) {
+    public ServletGateway(HttpServletRequestTranslator httpServletRequestTranslator, HttpServletRequestMerger httpServletRequestMerger, HttpServletResponseMerger httpServletResponseMerger, Engine engine, Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators, Map<String, RestLocationTranslator<? extends DefaultSession, ? extends DefaultUser, ?>> restLocationTranslators, Integer writeChunkSize) {
         super(engine, locationTranslators, restLocationTranslators);
         this.httpServletRequestTranslator = httpServletRequestTranslator;
         this.httpServletRequestMerger = httpServletRequestMerger;

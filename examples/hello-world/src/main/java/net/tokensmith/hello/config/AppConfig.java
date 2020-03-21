@@ -1,6 +1,10 @@
 package net.tokensmith.hello.config;
 
 
+import net.tokensmith.hello.controller.api.between.AuthSessionRestBetween;
+import net.tokensmith.hello.controller.api.between.AuthV3RestBetween;
+import net.tokensmith.hello.controller.api.v2.HelloCsrfRestResource;
+import net.tokensmith.hello.controller.api.v2.HelloSessionRestResource;
 import net.tokensmith.hello.controller.api.v3.BrokenRestResource;
 import net.tokensmith.hello.controller.api.v3.HelloRestResource;
 import net.tokensmith.hello.controller.html.*;
@@ -99,14 +103,15 @@ public class AppConfig implements Configure {
     }
 
     @Override
-    public List<RestGroup<? extends DefaultUser>> restGroups() {
-        List<RestGroup<? extends DefaultUser>> restGroups = new ArrayList<>();
+    public List<RestGroup<? extends DefaultSession, ? extends DefaultUser>> restGroups() {
+        List<RestGroup<? extends DefaultSession, ? extends DefaultUser>> restGroups = new ArrayList<>();
 
         AuthRestBetween authRestBetween = new AuthRestBetween();
 
         // uses default bad request handling.
-        RestGroup<ApiUser> apiGroupV2 = new RestGroupBuilder<ApiUser>()
+        RestGroup<TokenSession, ApiUser> apiGroupV2 = new RestGroupBuilder<TokenSession, ApiUser>()
                 .name(API_GROUP_V2)
+                .sessionClazz(TokenSession.class)
                 .authRequired(authRestBetween)
                 .build();
 
@@ -117,21 +122,25 @@ public class AppConfig implements Configure {
         ServerErrorRestResource serverErrorResource = new ServerErrorRestResource();
 
         RestResource<ApiUser, ClientError> notAcceptableRestResource = new NotAcceptableRestResource<>();
-        RestErrorTarget<ApiUser, ClientError> notAcceptableTarget = new RestErrorTargetBuilder<ApiUser, ClientError>()
+        RestErrorTarget<DefaultSession, ApiUser, ClientError> notAcceptableTarget = new RestErrorTargetBuilder<DefaultSession, ApiUser, ClientError>()
                 .payload(ClientError.class)
                 .resource(notAcceptableRestResource)
                 .build();
 
         RestResource<ApiUser, ClientError> mediaTypeResource = new MediaTypeRestResource<>();
-        RestErrorTarget<ApiUser, ClientError> mediaTypeTarget = new RestErrorTargetBuilder<ApiUser, ClientError>()
+        RestErrorTarget<DefaultSession, ApiUser, ClientError> mediaTypeTarget = new RestErrorTargetBuilder<DefaultSession, ApiUser, ClientError>()
                 .payload(ClientError.class)
                 .resource(mediaTypeResource)
                 .build();
 
-        RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
+        // version 3
+        AuthV3RestBetween authV3RestBetween = new AuthV3RestBetween();
+
+        RestGroup<DefaultSession, ApiUser> apiGroupV3 = new RestGroupBuilder<DefaultSession, ApiUser>()
                 .name(API_GROUP_V3)
-                .authRequired(authRestBetween)
-                .authOptional(authRestBetween)
+                .sessionClazz(DefaultSession.class)
+                .authRequired(authV3RestBetween)
+                .authOptional(authV3RestBetween)
                 .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
                 .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
                 .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaTypeTarget)
@@ -146,11 +155,15 @@ public class AppConfig implements Configure {
     @Override
     public void routes(Gateway gateway) {
         notFoundTargets(gateway);
+        apiRoutes(gateway);
+        htmlRoutes(gateway);
+    }
 
+    public void apiRoutes(Gateway gateway) {
         MimeType json = new MimeTypeBuilder().json().build();
 
         // resource for v2 api
-        RestTarget<ApiUser, Hello> helloApiV2 = new RestTargetBuilder<ApiUser, Hello>()
+        RestTarget<DefaultSession, ApiUser, Hello> helloApiV2 = new RestTargetBuilder<DefaultSession, ApiUser, Hello>()
                 .groupName(API_GROUP_V2)
                 .method(Method.GET)
                 .method(Method.POST)
@@ -163,9 +176,37 @@ public class AppConfig implements Configure {
 
         gateway.add(helloApiV2);
 
+        // this will use session to assist for auth
+        RestTarget<TokenSession, ApiUser, Hello> helloSessionApiV2 = new RestTargetBuilder<TokenSession, ApiUser, Hello>()
+                .groupName(API_GROUP_V2)
+                .method(Method.GET)
+                .restResource(new HelloSessionRestResource())
+                .regex(HelloSessionRestResource.URL)
+                .session() // <-- session is turned on here.
+                .before(new AuthSessionRestBetween()) // <-- session based auth between here.
+                .contentType(json)
+                .payload(Hello.class)
+                .build();
+
+        gateway.add(helloSessionApiV2);
+
+        // this will protect csrf.
+        RestTarget<TokenSession, ApiUser, Hello> helloCsrfApiV2 = new RestTargetBuilder<TokenSession, ApiUser, Hello>()
+                .groupName(API_GROUP_V2)
+                .method(Method.GET)
+                .restResource(new HelloCsrfRestResource())
+                .regex(HelloCsrfRestResource.URL)
+                .csrf() // <-- csrf protects all methods.
+                .authenticate()
+                .contentType(json)
+                .payload(Hello.class)
+                .build();
+
+        gateway.add(helloCsrfApiV2);
+
         // this will always throw a runtime exception and force the default error handler.
         BrokenRestResourceV2 brokenRestResourceV2 = new BrokenRestResourceV2();
-        RestTarget<ApiUser, BrokenPayload> brokenApiV2 = new RestTargetBuilder<ApiUser, BrokenPayload>()
+        RestTarget<DefaultSession, ApiUser, BrokenPayload> brokenApiV2 = new RestTargetBuilder<DefaultSession, ApiUser, BrokenPayload>()
                 .groupName(API_GROUP_V2)
                 .crud()
                 .restResource(brokenRestResourceV2)
@@ -179,7 +220,7 @@ public class AppConfig implements Configure {
 
         // resource for v3 api
         var helloRestResourceV3 = new HelloRestResource();
-        RestTarget<ApiUser, Hello> helloApiV3 = new RestTargetBuilder<ApiUser, Hello>()
+        RestTarget<DefaultSession, ApiUser, Hello> helloApiV3 = new RestTargetBuilder<DefaultSession, ApiUser, Hello>()
                 .groupName(API_GROUP_V3)
                 .method(Method.GET)
                 .method(Method.POST)
@@ -195,7 +236,7 @@ public class AppConfig implements Configure {
 
         // this will always throw a runtime exception and force the error handler.
         BrokenRestResource brokenRestResource = new BrokenRestResource();
-        RestTarget<ApiUser, BrokenPayload> brokenApiV3 = new RestTargetBuilder<ApiUser, BrokenPayload>()
+        RestTarget<DefaultSession, ApiUser, BrokenPayload> brokenApiV3 = new RestTargetBuilder<DefaultSession, ApiUser, BrokenPayload>()
                 .groupName(API_GROUP_V3)
                 .crud()
                 .restResource(brokenRestResource)
@@ -206,14 +247,17 @@ public class AppConfig implements Configure {
                 .build();
 
         gateway.add(brokenApiV3);
+    }
+
+    public void htmlRoutes(Gateway gateway) {
 
         // does not require content-type
         Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
-            .groupName(WEB_SITE_GROUP)
-            .method(Method.GET)
-            .resource(new HelloResource())
-            .regex(HelloResource.URL)
-            .build();
+                .groupName(WEB_SITE_GROUP)
+                .method(Method.GET)
+                .resource(new HelloResource())
+                .regex(HelloResource.URL)
+                .build();
 
         gateway.add(hello);
 
@@ -290,7 +334,7 @@ public class AppConfig implements Configure {
         // 157 need to instruct gateway this is a not found resource so it wont attempt to
         // serialize the request body.
         var restNotFoundResource = new NotFoundRestResource<ApiUser>();
-        RestTarget<ApiUser, ClientError> notFoundV2 = new RestTargetBuilder<ApiUser, ClientError>()
+        RestTarget<DefaultSession, ApiUser, ClientError> notFoundV2 = new RestTargetBuilder<DefaultSession, ApiUser, ClientError>()
                 .groupName(API_GROUP_V2)
                 .crud()
                 .restResource(restNotFoundResource)
@@ -300,7 +344,7 @@ public class AppConfig implements Configure {
 
         gateway.notFound(notFoundV2);
 
-        RestTarget<ApiUser, ClientError> notFoundV3 = new RestTargetBuilder<ApiUser, ClientError>()
+        RestTarget<DefaultSession, ApiUser, ClientError> notFoundV3 = new RestTargetBuilder<DefaultSession, ApiUser, ClientError>()
                 .groupName(API_GROUP_V3)
                 .crud()
                 .restResource(restNotFoundResource)

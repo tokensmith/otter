@@ -61,7 +61,7 @@ public class QuickConfig implements Configure {
     }
 
     @Override
-    public List<RestGroup<? extends DefaultUser>> restGroups() {
+    public List<RestGroup<? extends DefaultSession, ? extends DefaultUser>> restGroups() {
         return new ArrayList<>();
     }
 

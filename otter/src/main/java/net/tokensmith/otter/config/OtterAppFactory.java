@@ -8,6 +8,8 @@ import net.tokensmith.otter.controller.error.rest.BadRequestRestResource;
 import net.tokensmith.otter.controller.error.rest.MediaTypeRestResource;
 import net.tokensmith.otter.controller.error.rest.NotAcceptableRestResource;
 import net.tokensmith.otter.controller.error.rest.ServerErrorRestResource;
+import net.tokensmith.otter.dispatch.json.validator.RestValidate;
+import net.tokensmith.otter.dispatch.json.validator.Validate;
 import net.tokensmith.otter.gateway.LocationTranslatorFactory;
 import net.tokensmith.otter.gateway.RestLocationTranslatorFactory;
 import net.tokensmith.otter.gateway.entity.Group;
@@ -32,6 +34,9 @@ import net.tokensmith.otter.server.path.WebAppPath;
 import net.tokensmith.otter.translatable.Translatable;
 import net.tokensmith.otter.translator.MimeTypeTranslator;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.util.*;
 
 
@@ -57,12 +62,12 @@ public class OtterAppFactory {
         );
     }
 
-    public ServletGateway servletGateway(Shape shape, List<Group<? extends DefaultSession,? extends DefaultUser>> groups, List<RestGroup<? extends DefaultUser>> restGroups) throws SessionCtorException {
+    public ServletGateway servletGateway(Shape shape, List<Group<? extends DefaultSession,? extends DefaultUser>> groups, List<RestGroup<? extends DefaultSession, ? extends DefaultUser>> restGroups) throws SessionCtorException {
         LocationTranslatorFactory locationTranslatorFactory = locationTranslatorFactory(shape);
-        RestLocationTranslatorFactory restLocationTranslatorFactory = restLocationTranslatorFactory();
+        RestLocationTranslatorFactory restLocationTranslatorFactory = restLocationTranslatorFactory(shape);
 
         Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators = locationTranslators(locationTranslatorFactory, groups);
-        Map<String, RestLocationTranslator<? extends DefaultUser, ?>> restLocationTranslators = restLocationTranslators(restLocationTranslatorFactory, restGroups);
+        Map<String, RestLocationTranslator<? extends DefaultSession, ? extends DefaultUser, ?>> restLocationTranslators = restLocationTranslators(restLocationTranslatorFactory, restGroups);
 
         Integer writeChunkSize = (shape.getWriteChunkSize() != null) ? shape.getWriteChunkSize() : WRITE_CHUNK_SIZE;
 
@@ -108,26 +113,37 @@ public class OtterAppFactory {
         return locationTranslators;
     }
 
-    public RestLocationTranslatorFactory restLocationTranslatorFactory() {
-        return new RestLocationTranslatorFactory();
+    public RestLocationTranslatorFactory restLocationTranslatorFactory(Shape shape) {
+        return new RestLocationTranslatorFactory(shape);
+    }
+
+    public Validate restValidate() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        return new RestValidate(validator);
     }
 
     @SuppressWarnings("unchecked")
-    public <U extends DefaultUser, P> Map<String, RestLocationTranslator<? extends U, ? extends P>> restLocationTranslators(RestLocationTranslatorFactory restLocationTranslatorFactory, List<RestGroup<? extends U>> restGroups) throws SessionCtorException {
-        Map<String, RestLocationTranslator<? extends U, ? extends P>> restLocationTranslators = new HashMap<>();
+    public <U extends DefaultUser, S extends DefaultSession, P> Map<String, RestLocationTranslator<? extends S, ? extends U, ? extends P>> restLocationTranslators(RestLocationTranslatorFactory restLocationTranslatorFactory, List<RestGroup<? extends S, ? extends U>> restGroups) throws SessionCtorException {
+        Map<String, RestLocationTranslator<? extends S, ? extends U, ? extends P>> restLocationTranslators = new HashMap<>();
 
-        for(RestGroup<? extends U> restGroup: restGroups) {
+        // bean validator
+        Validate restValidate = restValidate();
 
-            RestGroup<U> castedGroup = (RestGroup<U>) restGroup;
+        for(RestGroup<? extends S, ? extends U> restGroup: restGroups) {
+
+            RestGroup<S, U> castedGroup = (RestGroup<S, U>) restGroup;
             restLocationTranslators.put(
                     castedGroup.getName(),
                     restLocationTranslatorFactory.make(
+                            castedGroup.getSessionClazz(),
                             castedGroup.getAuthRequired(),
                             castedGroup.getAuthOptional(),
                             castedGroup.getRestErrors(),
                             defaultErrors(),
                             castedGroup.getDispatchErrors(),
-                            defaultDispatchErrors()
+                            defaultDispatchErrors(),
+                            restValidate
                     )
             );
         }
@@ -150,20 +166,20 @@ public class OtterAppFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public <U extends DefaultUser, P extends Translatable> Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> defaultDispatchErrors() {
+    public < S extends DefaultSession, U extends DefaultUser, P extends Translatable> Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> defaultDispatchErrors() {
 
-        Map<StatusCode, RestErrorTarget<U, ? extends Translatable>> defaultDispatchErrors = new HashMap<>();
+        Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> defaultDispatchErrors = new HashMap<>();
 
         // Server Error - a bit unlikely
 
         // Unsupported Media Type.
         RestResource<U, P> mediaType = (RestResource<U, P>) new MediaTypeRestResource<U>();
-        RestErrorTarget<U, P> mediaTypeTarget = new RestErrorTarget<>((Class<P>)ClientError.class, mediaType, new ArrayList<>(), new ArrayList<>());
+        RestErrorTarget<S, U, P> mediaTypeTarget = new RestErrorTarget<>((Class<P>)ClientError.class, mediaType, new ArrayList<>(), new ArrayList<>());
         defaultDispatchErrors.put(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaTypeTarget);
 
         // Not Acceptable
         RestResource<U, P> notAcceptable = (RestResource<U, P>) new NotAcceptableRestResource<U>();
-        RestErrorTarget<U, P> notAcceptableTarget = new RestErrorTarget<>((Class<P>)ClientError.class, notAcceptable, new ArrayList<>(), new ArrayList<>());
+        RestErrorTarget<S, U, P> notAcceptableTarget = new RestErrorTarget<>((Class<P>)ClientError.class, notAcceptable, new ArrayList<>(), new ArrayList<>());
         defaultDispatchErrors.put(StatusCode.NOT_ACCEPTABLE, notAcceptableTarget);
 
         return defaultDispatchErrors;

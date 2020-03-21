@@ -1,17 +1,18 @@
 package net.tokensmith.otter.router.entity;
 
 import net.tokensmith.otter.controller.RestResource;
+import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.router.entity.between.RestBetween;
 
 import java.util.List;
 
-public class RestRoute<U extends DefaultUser, P> {
+public class RestRoute<S extends DefaultSession, U extends DefaultUser, P> {
     private RestResource<U, P> restResource;
-    private List<RestBetween<U>> before;
-    private List<RestBetween<U>> after;
+    private List<RestBetween<S, U>> before;
+    private List<RestBetween<S, U>> after;
 
-    public RestRoute(RestResource<U, P> restResource, List<RestBetween<U>> before, List<RestBetween<U>> after) {
+    public RestRoute(RestResource<U, P> restResource, List<RestBetween<S, U>> before, List<RestBetween<S, U>> after) {
         this.restResource = restResource;
         this.before = before;
         this.after = after;
@@ -25,19 +26,19 @@ public class RestRoute<U extends DefaultUser, P> {
         this.restResource = restResource;
     }
 
-    public List<RestBetween<U>> getBefore() {
+    public List<RestBetween<S, U>> getBefore() {
         return before;
     }
 
-    public void setBefore(List<RestBetween<U>> before) {
+    public void setBefore(List<RestBetween<S, U>> before) {
         this.before = before;
     }
 
-    public List<RestBetween<U>> getAfter() {
+    public List<RestBetween<S, U>> getAfter() {
         return after;
     }
 
-    public void setAfter(List<RestBetween<U>> after) {
+    public void setAfter(List<RestBetween<S, U>> after) {
         this.after = after;
     }
 }

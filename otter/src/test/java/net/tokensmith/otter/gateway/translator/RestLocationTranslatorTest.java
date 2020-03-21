@@ -4,7 +4,9 @@ import helper.FixtureFactory;
 import helper.entity.*;
 import helper.entity.model.DummyErrorPayload;
 import helper.entity.model.DummyPayload;
+import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.dispatch.json.validator.Validate;
 import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,9 +34,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class RestLocationTranslatorTest {
-    private RestLocationTranslator<DummyUser, DummyPayload> subject;
+    private RestLocationTranslator<DummySession, DummyUser, DummyPayload> subject;
     @Mock
-    private RestBetweenFlyweight<DummyUser> mockRestBetweenFlyweight;
+    private RestBetweenFlyweight<DummySession, DummyUser> mockRestBetweenFlyweight;
+    @Mock
+    private Validate mockValidate;
 
     @Before
     public void setUp() {
@@ -43,11 +47,11 @@ public class RestLocationTranslatorTest {
         restErrors.put(StatusCode.BAD_REQUEST, new RestError<>(DummyErrorPayload.class, new ClientErrorRestResource()));
 
         Map<StatusCode, RestError<DummyUser, ? extends Translatable>> defaultErrors = new HashMap<>();
-        Map<StatusCode, RestErrorTarget<DummyUser, ? extends Translatable>> dispatchErrors = new HashMap<>();
-        Map<StatusCode, RestErrorTarget<DummyUser, ? extends Translatable>> defaultDispatchTargets = new HashMap<>();
+        Map<StatusCode, RestErrorTarget<DummySession, DummyUser, ? extends Translatable>> dispatchErrors = new HashMap<>();
+        Map<StatusCode, RestErrorTarget<DummySession, DummyUser, ? extends Translatable>> defaultDispatchTargets = new HashMap<>();
 
-        subject = new RestLocationTranslator<DummyUser, DummyPayload>(
-                mockRestBetweenFlyweight, restErrors, defaultErrors, dispatchErrors, defaultDispatchTargets
+        subject = new RestLocationTranslator<DummySession, DummyUser, DummyPayload>(
+                mockRestBetweenFlyweight, restErrors, defaultErrors, dispatchErrors, defaultDispatchTargets, mockValidate
         );
     }
 
@@ -146,10 +150,10 @@ public class RestLocationTranslatorTest {
     @SuppressWarnings("unchecked")
     @Test
     public void toShouldBeOk() {
-        RestBetweens<DummyUser> betweens = FixtureFactory.makeRestBetweens();
+        RestBetweens<DummySession, DummyUser> betweens = FixtureFactory.makeRestBetweens();
         when(mockRestBetweenFlyweight.make(any(), any())).thenReturn(betweens);
 
-        RestTarget<DummyUser, DummyPayload> target = FixtureFactory.makeRestTarget();
+        RestTarget<DummySession, DummyUser, DummyPayload> target = FixtureFactory.makeRestTarget();
 
         Map<Method, Location> actual =  subject.to(target);
 
@@ -167,7 +171,7 @@ public class RestLocationTranslatorTest {
         assertThat(actual.get(Method.GET).getErrorRouteRunners(), Is.is(notNullValue()));
         assertThat(actual.get(Method.GET).getErrorRouteRunners().size(), Is.is(1));
 
-        JsonRouteRun<DummyUser, DummyPayload> getRouteRunner = (JsonRouteRun<DummyUser, DummyPayload>) actual.get(Method.GET).getRouteRunner();
+        JsonRouteRun<DummySession, DummyUser, DummyPayload> getRouteRunner = (JsonRouteRun<DummySession, DummyUser, DummyPayload>) actual.get(Method.GET).getRouteRunner();
 
         // ordering of before.
         assertThat(getRouteRunner.getRestRoute().getBefore().get(0), is(betweens.getBefore().get(0)));
@@ -188,10 +192,14 @@ public class RestLocationTranslatorTest {
         assertThat(actual.get(Method.GET).getAccepts(), Is.is(notNullValue()));
         assertThat(actual.get(Method.GET).getAccepts().size(), Is.is(1));
 
+
         assertThat(actual.get(Method.POST).getErrorRouteRunners(), Is.is(notNullValue()));
         assertThat(actual.get(Method.POST).getErrorRouteRunners().size(), Is.is(1));
 
-        JsonRouteRun<DummyUser, DummyPayload> postRouteRunner = (JsonRouteRun<DummyUser, DummyPayload>) actual.get(Method.POST).getRouteRunner();
+        JsonRouteRun<DummySession, DummyUser, DummyPayload> postRouteRunner = (JsonRouteRun<DummySession, DummyUser, DummyPayload>) actual.get(Method.POST).getRouteRunner();
+
+        // should have the default mock validate.
+        assertThat(postRouteRunner.getValidate(), is(mockValidate));
 
         // ordering of before.
         assertThat(postRouteRunner.getRestRoute().getBefore().get(0), is(betweens.getBefore().get(0)));
@@ -207,10 +215,10 @@ public class RestLocationTranslatorTest {
     @SuppressWarnings("unchecked")
     @Test
     public void toNotFoundShouldBeOk() {
-        RestBetweens<DummyUser> betweens = FixtureFactory.makeRestBetweens();
+        RestBetweens<DummySession, DummyUser> betweens = FixtureFactory.makeRestBetweens();
         when(mockRestBetweenFlyweight.make(any(), any())).thenReturn(betweens);
 
-        RestTarget<DummyUser, DummyPayload> target = FixtureFactory.makeRestTarget();
+        RestTarget<DummySession, DummyUser, DummyPayload> target = FixtureFactory.makeRestTarget();
 
         Map<Method, Location> actual =  subject.toNotFound(target);
 
@@ -228,7 +236,7 @@ public class RestLocationTranslatorTest {
         assertThat(actual.get(Method.GET).getErrorRouteRunners(), Is.is(notNullValue()));
         assertThat(actual.get(Method.GET).getErrorRouteRunners().size(), Is.is(1));
 
-        JsonDispatchErrorRouteRun<DummyUser, DummyPayload> getRouteRunner = (JsonDispatchErrorRouteRun<DummyUser, DummyPayload>) actual.get(Method.GET).getRouteRunner();
+        JsonDispatchErrorRouteRun<DummySession, DummyUser, DummyPayload> getRouteRunner = (JsonDispatchErrorRouteRun<DummySession, DummyUser, DummyPayload>) actual.get(Method.GET).getRouteRunner();
 
         // ordering of before.
         assertThat(getRouteRunner.getRestRoute().getBefore().get(0), is(betweens.getBefore().get(0)));
@@ -252,7 +260,7 @@ public class RestLocationTranslatorTest {
         assertThat(actual.get(Method.POST).getErrorRouteRunners(), Is.is(notNullValue()));
         assertThat(actual.get(Method.POST).getErrorRouteRunners().size(), Is.is(1));
 
-        JsonDispatchErrorRouteRun<DummyUser, DummyPayload> postRouteRunner = (JsonDispatchErrorRouteRun<DummyUser, DummyPayload>) actual.get(Method.POST).getRouteRunner();
+        JsonDispatchErrorRouteRun<DummySession, DummyUser, DummyPayload> postRouteRunner = (JsonDispatchErrorRouteRun<DummySession, DummyUser, DummyPayload>) actual.get(Method.POST).getRouteRunner();
 
         // ordering of before.
         assertThat(postRouteRunner.getRestRoute().getBefore().get(0), is(betweens.getBefore().get(0)));

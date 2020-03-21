@@ -6,7 +6,7 @@ import net.tokensmith.otter.router.entity.io.Ask;
 
 import java.util.Optional;
 
-public class RestErrorRequestTranslator<U> {
+public class RestErrorRequestTranslator<S, U> {
 
     public RestErrorRequest<U> to(Ask from) {
         RestErrorRequest<U> to = new RestErrorRequest<U>();
@@ -30,7 +30,7 @@ public class RestErrorRequestTranslator<U> {
         return to;
     }
 
-    public RestErrorRequest<U> to(RestBtwnRequest<U> from) {
+    public RestErrorRequest<U> to(RestBtwnRequest<S, U> from) {
         RestErrorRequest<U> to = new RestErrorRequest<U>();
 
         to.setMatcher(from.getMatcher());

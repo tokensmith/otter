@@ -9,15 +9,16 @@
     - [Target](#target)
     - [Group](#group)
     - [RestBetween](#restbetween)
-    - [RestTarget](#target)
-    - [RestGroup](#group)
+    - [RestTarget](#resttarget)
+    - [RestGroup](#restgroup)
+    - [Request Body Validation](#request-body-validation)
 - [Authentication](#authentication)
     - [Session](#session)
     - [User](#user)
     - [Required Authentication](#required-authentication-between)
     - [Optional Authentication](#optional-authentication-between)
     - [Resource Authentication](#resource-authentication)
-    - [RestRestource Authentication](#restresource-authentication)    
+    - [RestResource Authentication](#restresource-authentication)    
 - [Error Handling](#error-handling)
 - [Not Founds](#not-founds)
 - [Configuration](#configuration)
@@ -26,6 +27,8 @@
     - [Main Method](#main-method)
     - [Compression](#compression)
 - [CSRF protection](#csrf)
+    - [Resource](#resource-protection)
+    - [RestResource](#restresource-protection)
 - [Delivery of static assets](#static-assets)
 
 ### Scaffolding
@@ -60,7 +63,7 @@ Below is one approach to a project layout. Which can be observed in the [hello w
 A [Resource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/controller/Resource.java) handles an http request. it's typically used to accept `text/html`, however, It can accept any `Content-Type`.
 
 #### RestResource
-A [RestResource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/controller/RestResource.java) is designed to accept and reply `application/json`. Sorry, there is no support for `applicaiton/xml`.
+A [RestResource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/controller/RestResource.java) is designed to accept and reply `application/json`. Sorry, there is no support for `application/xml`.
 
 #### Between
 A [Between](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/router/entity/between/Between.java) allows a rule to be executed before a request reaches a Resource or after a Resource executes. Also referred to as a before and a after.
@@ -131,8 +134,9 @@ A [RestGroup](https://github.com/RootServices/otter/blob/development/otter/src/m
 ```java
     BadRequestResource badRequestResource = new BadRequestResource();
     ServerErrorResource serverErrorResource = new ServerErrorResource();
-    RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
+    RestGroup<DummySession, ApiUser> apiGroupV3 = new RestGroupBuilder<DummySession, ApiUser>()
             .name(API_GROUP_V3)
+            .sessionClazz(DefaultSession.class)
             .authRequired(authRestBetween)
             .authOptional(authRestBetween)
             .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
@@ -158,6 +162,31 @@ To share a `RestGroup's` feature with a `RestTarget` set the `.groupName(..)` to
 ```
 
 All `RestTargets` must relate to a `RestGroup`.
+
+#### Request Body Validation
+A request body that is intended to be delivered to a `RestResource` will be validated by 
+using `javax.validation` defined by `JSR 380`. To use it annotate a class implementation with constraints then if 
+there are any errors Otter will send the request to the configured `RestBadRequestResource`. 
+See [error handling](#error-handling) for how that works.
+
+If `javax.validation` is not your preference then it can be replaced by passing in an implementation of Otter's 
+`Validate` interface into the `RestTargetBuilder`.
+
+```java
+    Validate customValidate = new CustomValidate();
+    var helloRestResourceV3 = new HelloRestResource();
+    RestTarget<ApiUser, Hello> helloApiV3 = new RestTargetBuilder<ApiUser, Hello>()
+            .groupName(API_GROUP_V3)
+            .method(Method.GET)
+            .method(Method.POST)
+            .restResource(helloRestResourceV3)
+            .regex(helloRestResourceV3.URL)
+            .validate(customValidate) // your preferred validate implemention.
+            .contentType(json)
+            .accept(json)
+            .payload(Hello.class)
+            .build();
+```
 
 ### Authentication
 Authentication in otter is dependent on the value objects:
@@ -266,14 +295,15 @@ Use `anonymous()` to not require authentication or optionally authenticate.
 ```java
     AuthRestBetween authRestBetween = new AuthRestBetween();
 
-    RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
+    RestGroup<DummySession, ApiUser> apiGroupV3 = new RestGroupBuilder<DummySession, ApiUser>()
             .name(API_GROUP_V3)
+            .sessionClazz(DefaultSession.class)
             .authRequired(authRestBetween)
             .authOptional(authRestBetween)
             .build();
 ```
 
-Then, to require authentication for a Resource use, `.authenticate()`.
+Then, to require authentication for a `RestResource` use, `.authenticate()`.
 
 ```java
     var helloRestResourceV3 = new HelloRestResource();
@@ -283,6 +313,26 @@ Then, to require authentication for a Resource use, `.authenticate()`.
             .method(Method.POST)
             .restResource(helloRestResourceV3)
             .regex(helloRestResourceV3.URL)
+            .authenticate()
+            .contentType(json)
+            .accept(json)
+            .payload(Hello.class)
+            .build();
+```
+
+#### RestResource Sessions
+
+Here is an example on how to get read access to the session in the before rest betweens. 
+This *requires* the session is present or it will halt the request.
+```java
+var helloRestResourceV3 = new HelloRestResource();
+    RestTarget<ApiUser, Hello> helloApiV3 = new RestTargetBuilder<ApiUser, Hello>()
+            .groupName(API_GROUP_V3)
+            .method(Method.GET)
+            .method(Method.POST)
+            .restResource(helloRestResourceV3)
+            .regex(helloRestResourceV3.URL)
+            .session() // <-- this will set the session.
             .authenticate()
             .contentType(json)
             .accept(json)
@@ -386,11 +436,15 @@ Date: Sat, 17 Aug 2019 16:35:54 GMT
 Content-Length: 102
 
 {
-  "source": "BODY",
-  "key": null,
-  "actual": null,
-  "expected": null,
-  "reason": "The payload could not be parsed."
+  "causes": [
+      {
+          "source": "BODY",
+          "key": null,
+          "actual": null,
+          "expected": null,
+          "reason": "The payload could not be parsed."
+      }
+  ]
 }
 ```
 
@@ -405,12 +459,16 @@ Date: Mon, 21 Oct 2019 11:53:29 GMT
 Content-Length: 110
 
 {
-  "source": "HEADER",
-  "key": "ACCEPT",
-  "actual": null,
-  "expected":
-    ["application/json; charset=utf-8;"],
-  "reason":null
+"causes": [
+  {
+      "source": "HEADER",
+      "key": "ACCEPT",
+      "actual": null,
+      "expected":
+        ["application/json; charset=utf-8;"],
+      "reason":null
+  }
+]
 }
 ```
 
@@ -425,13 +483,17 @@ Date: Sat, 17 Aug 2019 16:30:01 GMT
 Content-Length: 124
 
 {
-  "source": "HEADER",
-  "key": "CONTENT_TYPE",
-  "actual": "null/null;",
-  "expected": [
-    "application/json; charset=utf-8;"
-  ],
-  "reason": null
+  "causes": [
+  {
+      "source": "HEADER",
+      "key": "CONTENT_TYPE",
+      "actual": "null/null;",
+      "expected": [
+        "application/json; charset=utf-8;"
+      ],
+      "reason": null
+  }
+]
 }
 ```
 
@@ -461,8 +523,9 @@ To configure a `RestGroup` to apply error handlers to all its related `RestTarge
             .resource(mediaTypeResource)
             .build();
 
-    RestGroup<ApiUser> apiGroupV3 = new RestGroupBuilder<ApiUser>()
+    RestGroup<DummySession, ApiUser> apiGroupV3 = new RestGroupBuilder<DummySession, ApiUser>()
             .name(API_GROUP_V3)
+            .sessionClazz(DefaultSession.class)
             .authRequired(authRestBetween)
             .authOptional(authRestBetween)
             .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
@@ -510,7 +573,11 @@ This allows applications to have many ways to react to a not found url based on 
 Configuring otter is done by implementing [Configure](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/gateway/Configure.java). 
 The implementation instructs otter how to:
  - Set CSRF signature key
+ - Set the status code when CSRF fails
+ - Set the template when CSRF fails
  - Set Session encryption signature key
+ - Set the status code when the Session is not present
+ - Set the template when the Session is not present
  - Read and Write chunk sizes - use for async i/o.
  - Route requests to Resources
  - Route requests to RestResources
@@ -565,6 +632,7 @@ O?S?N??O?T?jW&?#
 
 Otter supports CSRF protection by implementing the double submit strategy.
 
+#### Resource Protection
 Here is an example of how to protect a login page:
 
 In the configure implementation:
@@ -592,6 +660,35 @@ on the page.
 ```
 
 Done, it is CSRF protected.
+
+
+#### RestResource Protection
+Here is an example of how to protect an API. The use case is when javascript in a browser wants to call an API that is protected.
+
+- Browser calls a URI backed by a `Resource` that is CSRF protected, `text/html`.
+- Place the `csrfToken` into a meta tag. See [OSWAP's recommendation](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#storing-the-csrf-token-value-in-the-dom)
+```java
+<meta name="csrf-token" content="${presenter.getCsrfChallengeToken()}">
+```
+  
+- Then use javascript to read the value and send it in the header, `X-CSRF`.
+
+
+Configuration.
+```java
+    RestTarget<TokenSession, ApiUser, Hello> helloCsrfApiV2 = new RestTargetBuilder<TokenSession, ApiUser, Hello>()
+            .groupName(API_GROUP_V2)
+            .method(Method.GET)
+            .restResource(new HelloCsrfRestResource())
+            .regex(HelloCsrfRestResource.URL)
+            .csrf() // <-- csrf protects all methods.
+            .authenticate()
+            .contentType(json)
+            .payload(Hello.class)
+            .build();
+```
+
+To pass it will need the CSRF cookie and and the header, `X-CSRF`.
 ### Static Assets
 
 Files that are placed in, `src/main/webapp/public` are public as long as they pass the entry filter [regex](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/servlet/EntryFilter.java#L18).

@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 
-public class RestBtwnRequest<U> {
+public class RestBtwnRequest<S, U> {
     private Optional<Matcher> matcher;
     private List<MimeType> possibleContentTypes;
     private List<MimeType> possibleAccepts;
@@ -24,6 +24,7 @@ public class RestBtwnRequest<U> {
     private Optional<byte[]> body;
     private String ipAddress;
     private Optional<U> user;
+    private Optional<S> session;
 
     public RestBtwnRequest() {}
 
@@ -137,6 +138,14 @@ public class RestBtwnRequest<U> {
 
     public void setUser(Optional<U> user) {
         this.user = user;
+    }
+
+    public Optional<S> getSession() {
+        return session;
+    }
+
+    public void setSession(Optional<S> session) {
+        this.session = session;
     }
 
     @Override

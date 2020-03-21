@@ -1,6 +1,7 @@
 package net.tokensmith.otter.gateway.builder;
 
 import net.tokensmith.otter.controller.RestResource;
+import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.gateway.entity.rest.RestErrorTarget;
 import net.tokensmith.otter.router.entity.between.RestBetween;
@@ -9,34 +10,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class RestErrorTargetBuilder<U extends DefaultUser, P> {
+public class RestErrorTargetBuilder<S extends DefaultSession, U extends DefaultUser, P> {
     private Class<P> payload;
     private RestResource<U, P> resource;
-    private List<RestBetween<U>> before = new ArrayList<>();
-    private List<RestBetween<U>> after = new ArrayList<>();
+    private List<RestBetween<S, U>> before = new ArrayList<>();
+    private List<RestBetween<S, U>> after = new ArrayList<>();
 
-    public RestErrorTargetBuilder<U, P> payload(Class<P> payload) {
+    public RestErrorTargetBuilder<S, U, P> payload(Class<P> payload) {
         this.payload = payload;
         return this;
     }
 
-    public RestErrorTargetBuilder<U, P> resource(RestResource<U, P> resource) {
+    public RestErrorTargetBuilder<S, U, P> resource(RestResource<U, P> resource) {
         this.resource = resource;
         return this;
     }
 
 
-    public RestErrorTargetBuilder<U, P> before(List<RestBetween<U>> before) {
+    public RestErrorTargetBuilder<S, U, P> before(List<RestBetween<S, U>> before) {
         this.before = before;
         return this;
     }
 
-    public RestErrorTargetBuilder<U, P> after(List<RestBetween<U>> after) {
+    public RestErrorTargetBuilder<S, U, P> after(List<RestBetween<S, U>> after) {
         this.after = after;
         return this;
     }
 
-    public RestErrorTarget<U, P> build() {
-        return new RestErrorTarget<U,P>(payload, resource, before, after);
+    public RestErrorTarget<S, U, P> build() {
+        return new RestErrorTarget<S, U, P>(payload, resource, before, after);
     }
 }

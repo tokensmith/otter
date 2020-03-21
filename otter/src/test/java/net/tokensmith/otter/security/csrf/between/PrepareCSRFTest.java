@@ -3,6 +3,7 @@ package net.tokensmith.otter.security.csrf.between;
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.security.csrf.between.html.PrepareCSRF;
 import net.tokensmith.otter.security.entity.ChallengeToken;
 import org.junit.Before;
 import org.junit.Test;

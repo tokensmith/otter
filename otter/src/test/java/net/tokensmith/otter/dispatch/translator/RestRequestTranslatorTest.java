@@ -2,6 +2,7 @@ package net.tokensmith.otter.dispatch.translator;
 
 import helper.FixtureFactory;
 import helper.entity.model.DummyPayload;
+import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +18,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
 
 public class RestRequestTranslatorTest {
-    private RestRequestTranslator<DummyUser, DummyPayload> subject;
+    private RestRequestTranslator<DummySession, DummyUser, DummyPayload> subject;
 
     @Before
     public void setUp() {
@@ -51,7 +52,7 @@ public class RestRequestTranslatorTest {
 
     @Test
     public void toWhenFromIsBtwnRequest() {
-        RestBtwnRequest<DummyUser> from = FixtureFactory.makeRestBtwnRequest();
+        RestBtwnRequest<DummySession, DummyUser> from = FixtureFactory.makeRestBtwnRequest();
         Optional<DummyUser> user = Optional.of(new DummyUser());
         from.setUser(user);
 

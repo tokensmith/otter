@@ -3,6 +3,7 @@ package net.tokensmith.otter.security.csrf.between;
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.security.csrf.between.html.CheckCSRF;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -17,6 +18,7 @@ import net.tokensmith.otter.router.exception.HaltException;
 import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -32,10 +34,11 @@ public class CheckCSRFTest {
     private DoubleSubmitCSRF mockDoubleSubmitCSRF;
     private CheckCSRF<DummySession, DummyUser> subject;
 
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new CheckCSRF<DummySession, DummyUser>(COOKIE_NAME, FORM_FIELD_NAME, mockDoubleSubmitCSRF);
+        subject = new CheckCSRF<DummySession, DummyUser>(COOKIE_NAME, FORM_FIELD_NAME, mockDoubleSubmitCSRF, StatusCode.FORBIDDEN, Optional.empty());
     }
 
     @Test

@@ -3,6 +3,8 @@ package suite;
 
 import net.tokensmith.hello.controller.*;
 import net.tokensmith.hello.controller.api.v2.BrokenRestResourceTest;
+import net.tokensmith.hello.controller.api.v2.HelloCsrfRestResourceTest;
+import net.tokensmith.hello.controller.api.v2.HelloSessionRestResourceTest;
 import org.apache.tomcat.util.descriptor.web.ErrorPage;
 import net.tokensmith.hello.controller.api.v2.HelloRestResourceTest;
 import org.asynchttpclient.AsyncHttpClient;
@@ -29,6 +31,8 @@ import static org.asynchttpclient.Dsl.asyncHttpClient;
 @Categories.IncludeCategory(ServletContainerTest.class)
 @Suite.SuiteClasses(value = {
         HelloRestResourceTest.class,
+        HelloSessionRestResourceTest.class,
+        HelloCsrfRestResourceTest.class,
         BrokenRestResourceTest.class,
         net.tokensmith.hello.controller.api.v3.HelloRestResourceTest.class,
         net.tokensmith.hello.controller.api.v3.BrokenRestResourceTest.class,

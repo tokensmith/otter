@@ -1,10 +1,12 @@
 package net.tokensmith.otter.dispatch.config;
 
 
+import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.dispatch.json.JsonDispatchErrorRouteRun;
 import net.tokensmith.otter.dispatch.json.JsonErrorHandler;
 import net.tokensmith.otter.dispatch.RouteRunner;
+import net.tokensmith.otter.dispatch.json.validator.Validate;
 import net.tokensmith.otter.dispatch.translator.RestErrorHandler;
 import net.tokensmith.otter.dispatch.translator.rest.*;
 import net.tokensmith.otter.gateway.entity.rest.RestError;
@@ -21,25 +23,25 @@ import java.util.HashMap;
 public class DispatchAppFactory {
     private static TranslatorAppFactory translatorAppFactory = new TranslatorAppFactory();
 
-    public <U extends DefaultUser, P extends Translatable> RestRoute<U, ? extends Translatable> makeRestRoute(RestErrorTarget<U, P> from) {
-        return new RestRouteBuilder<U, P>()
+    public <S extends DefaultSession, U extends DefaultUser, P extends Translatable> RestRoute<S, U, ? extends Translatable> makeRestRoute(RestErrorTarget<S, U, P> from) {
+        return new RestRouteBuilder<S, U, P>()
                 .restResource(from.getResource())
                 .before(from.getBefore())
                 .after(from.getAfter())
                 .build();
     }
 
-    public <U extends DefaultUser, P extends Translatable> RouteRunner makeJsonDispatchErrorRouteRun(RestRoute<U, ? extends Translatable> restRoute, Class<? extends Translatable> payload) {
+    public <U extends DefaultUser, S extends DefaultSession, P extends Translatable> RouteRunner makeJsonDispatchErrorRouteRun(RestRoute<S, U, ? extends Translatable> restRoute, Class<? extends Translatable> payload, Validate validate) {
 
         Class<P> castedPayload = toPayload(payload);
         JsonTranslator<P> jsonTranslator = translatorAppFactory.jsonTranslator(castedPayload);
 
-        RestRequestTranslator<U, P> restRequestTranslator = new RestRequestTranslator<U, P>();
+        RestRequestTranslator<S, U, P> restRequestTranslator = new RestRequestTranslator<>();
         RestResponseTranslator<P> restResponseTranslator = new RestResponseTranslator<P>();
-        RestBtwnRequestTranslator<U, P> restBtwnRequestTranslator = new RestBtwnRequestTranslator<>();
+        RestBtwnRequestTranslator<S, U, P> restBtwnRequestTranslator = new RestBtwnRequestTranslator<>();
         RestBtwnResponseTranslator<P> restBtwnResponseTranslator = new RestBtwnResponseTranslator<>();
 
-        RestRoute<U, P> castedRestRoute = toRestRoute(restRoute);
+        RestRoute<S, U, P> castedRestRoute = toRestRoute(restRoute);
 
         return new JsonDispatchErrorRouteRun<>(
                 castedRestRoute,
@@ -48,6 +50,7 @@ public class DispatchAppFactory {
                 restBtwnRequestTranslator,
                 restBtwnResponseTranslator,
                 jsonTranslator,
+                validate,
                 new HashMap<>(),
                 new RestErrorRequestTranslator<>(),
                 new RestErrorResponseTranslator()
@@ -60,20 +63,20 @@ public class DispatchAppFactory {
     }
 
     @SuppressWarnings("unchecked")
-    protected <U extends DefaultUser, E extends Translatable> RestRoute<U, E> toRestRoute(RestRoute<U, ? extends Translatable> from) {
-        return (RestRoute<U, E>) from;
+    protected <S extends DefaultSession, U extends DefaultUser, E extends Translatable> RestRoute<S, U, E> toRestRoute(RestRoute<S, U, ? extends Translatable> from) {
+        return (RestRoute<S, U, E>) from;
     }
 
 
-    public <U extends DefaultUser, P extends Translatable> RestErrorHandler<U> restErrorHandler(RestError<U, ? extends P> restError) {
+    public <S extends DefaultSession, U extends DefaultUser, P extends Translatable> RestErrorHandler<U> restErrorHandler(RestError<U, ? extends P> restError) {
 
         RestError<U, P> castedRestErrorValue = toRestError(restError);
         JsonTranslator<P> jsonTranslator = translatorAppFactory.jsonTranslator(castedRestErrorValue.getPayload());
 
-        return new JsonErrorHandler<U, P>(
+        return new JsonErrorHandler<S, U, P>(
                 jsonTranslator,
                 castedRestErrorValue.getRestResource(),
-                new RestRequestTranslator<>(),
+                new RestRequestTranslator<S, U, P>(),
                 new RestResponseTranslator<>()
         );
     }

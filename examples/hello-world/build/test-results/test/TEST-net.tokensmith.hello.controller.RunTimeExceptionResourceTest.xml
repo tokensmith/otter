@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="net.tokensmith.hello.controller.RunTimeExceptionResourceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2019-10-26T16:34:56" hostname="Toms-MBP" time="0.032">
-  <properties/>
-  <testcase name="getShouldReturn500" classname="net.tokensmith.hello.controller.RunTimeExceptionResourceTest" time="0.032"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[[qtp857025988-16] ERROR net.tokensmith.otter.controller.error.html.ServerErrorResource - content-type: text/html; charset=utf-8;, possible content-type: [], accept: null/null;, possible accept: [], cause: null
-]]></system-err>
-</testsuite>

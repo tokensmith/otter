@@ -1,7 +1,7 @@
 rootProject.name = 'otter'
 include 'otter'
 include 'otter-translatable'
-include 'example:hello-world'
-include 'example:quick-start'
+include 'examples:hello-world'
+include 'examples:quick-start'
 include 'otter-translatable'
 

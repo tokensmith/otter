@@ -70,6 +70,8 @@ public class LocationTranslatorFactory {
                 .secure(shape.getSecure())
                 .signKey(shape.getSignkey())
                 .rotationSignKeys(shape.getRotationSignKeys())
+                .csrfFailStatusCode(shape.getCsrfFailStatusCode())
+                .csrfFailTemplate(shape.getCsrfFailTemplate())
                 .csrfPrepare()
                 .build();
 
@@ -81,6 +83,8 @@ public class LocationTranslatorFactory {
                 .secure(shape.getSecure())
                 .signKey(shape.getSignkey())
                 .rotationSignKeys(shape.getRotationSignKeys())
+                .csrfFailStatusCode(shape.getCsrfFailStatusCode())
+                .csrfFailTemplate(shape.getCsrfFailTemplate())
                 .csrfProtect()
                 .build();
 
@@ -93,6 +97,8 @@ public class LocationTranslatorFactory {
                 .encKey(shape.getEncKey())
                 .rotationEncKey(shape.getRotationEncKeys())
                 .sessionClass(sessionClazz)
+                .sessionFailStatusCode(shape.getSessionFailStatusCode())
+                .sessionFailTemplate(shape.getSessionFailTemplate())
                 .session()
                 .build();
     }
@@ -105,6 +111,8 @@ public class LocationTranslatorFactory {
                 .encKey(shape.getEncKey())
                 .rotationEncKey(shape.getRotationEncKeys())
                 .sessionClass(sessionClazz)
+                .sessionFailStatusCode(shape.getSessionFailStatusCode())
+                .sessionFailTemplate(shape.getSessionFailTemplate())
                 .optionalSession()
                 .build();
     }
