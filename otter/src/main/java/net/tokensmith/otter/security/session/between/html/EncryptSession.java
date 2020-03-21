@@ -1,4 +1,4 @@
-package net.tokensmith.otter.security.session.between;
+package net.tokensmith.otter.security.session.between.html;
 
 
 import org.slf4j.Logger;
@@ -15,7 +15,7 @@ import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.controller.entity.response.Response;
 import net.tokensmith.otter.controller.entity.StatusCode;
-import net.tokensmith.otter.security.session.between.exception.EncryptSessionException;
+import net.tokensmith.otter.security.session.exception.EncryptSessionException;
 import net.tokensmith.otter.router.entity.between.Between;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.exception.HaltException;

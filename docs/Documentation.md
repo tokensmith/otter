@@ -9,15 +9,16 @@
     - [Target](#target)
     - [Group](#group)
     - [RestBetween](#restbetween)
-    - [RestTarget](#target)
-    - [RestGroup](#group)
+    - [RestTarget](#resttarget)
+    - [RestGroup](#restgroup)
+    - [Request Body Validation](#request-body-validation)
 - [Authentication](#authentication)
     - [Session](#session)
     - [User](#user)
     - [Required Authentication](#required-authentication-between)
     - [Optional Authentication](#optional-authentication-between)
     - [Resource Authentication](#resource-authentication)
-    - [RestRestource Authentication](#restresource-authentication)    
+    - [RestResource Authentication](#restresource-authentication)    
 - [Error Handling](#error-handling)
 - [Not Founds](#not-founds)
 - [Configuration](#configuration)
@@ -26,6 +27,8 @@
     - [Main Method](#main-method)
     - [Compression](#compression)
 - [CSRF protection](#csrf)
+    - [Resource](#resource-protection)
+    - [RestResource](#restresource-protection)
 - [Delivery of static assets](#static-assets)
 
 ### Scaffolding
@@ -300,7 +303,7 @@ Use `anonymous()` to not require authentication or optionally authenticate.
             .build();
 ```
 
-Then, to require authentication for a Resource use, `.authenticate()`.
+Then, to require authentication for a `RestResource` use, `.authenticate()`.
 
 ```java
     var helloRestResourceV3 = new HelloRestResource();
@@ -310,6 +313,26 @@ Then, to require authentication for a Resource use, `.authenticate()`.
             .method(Method.POST)
             .restResource(helloRestResourceV3)
             .regex(helloRestResourceV3.URL)
+            .authenticate()
+            .contentType(json)
+            .accept(json)
+            .payload(Hello.class)
+            .build();
+```
+
+#### RestResource Sessions
+
+Here is an example on how to get read access to the session in the before rest betweens. 
+This *requires* the session is present or it will halt the request.
+```java
+var helloRestResourceV3 = new HelloRestResource();
+    RestTarget<ApiUser, Hello> helloApiV3 = new RestTargetBuilder<ApiUser, Hello>()
+            .groupName(API_GROUP_V3)
+            .method(Method.GET)
+            .method(Method.POST)
+            .restResource(helloRestResourceV3)
+            .regex(helloRestResourceV3.URL)
+            .session() // <-- this will set the session.
             .authenticate()
             .contentType(json)
             .accept(json)
@@ -436,12 +459,16 @@ Date: Mon, 21 Oct 2019 11:53:29 GMT
 Content-Length: 110
 
 {
-  "source": "HEADER",
-  "key": "ACCEPT",
-  "actual": null,
-  "expected":
-    ["application/json; charset=utf-8;"],
-  "reason":null
+"causes": [
+  {
+      "source": "HEADER",
+      "key": "ACCEPT",
+      "actual": null,
+      "expected":
+        ["application/json; charset=utf-8;"],
+      "reason":null
+  }
+]
 }
 ```
 
@@ -456,13 +483,17 @@ Date: Sat, 17 Aug 2019 16:30:01 GMT
 Content-Length: 124
 
 {
-  "source": "HEADER",
-  "key": "CONTENT_TYPE",
-  "actual": "null/null;",
-  "expected": [
-    "application/json; charset=utf-8;"
-  ],
-  "reason": null
+  "causes": [
+  {
+      "source": "HEADER",
+      "key": "CONTENT_TYPE",
+      "actual": "null/null;",
+      "expected": [
+        "application/json; charset=utf-8;"
+      ],
+      "reason": null
+  }
+]
 }
 ```
 
@@ -601,6 +632,7 @@ O?S?N??O?T?jW&?#
 
 Otter supports CSRF protection by implementing the double submit strategy.
 
+#### Resource Protection
 Here is an example of how to protect a login page:
 
 In the configure implementation:
@@ -628,6 +660,35 @@ on the page.
 ```
 
 Done, it is CSRF protected.
+
+
+#### RestResource Protection
+Here is an example of how to protect an API. The use case is when javascript in a browser wants to call an API that is protected.
+
+- Browser calls a URI backed by a `Resource` that is CSRF protected, `text/html`.
+- Place the `csrfToken` into a meta tag. See [OSWAP's recommendation](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#storing-the-csrf-token-value-in-the-dom)
+```java
+<meta name="csrf-token" content="${presenter.getCsrfChallengeToken()}">
+```
+  
+- Then use javascript to read the value and send it in the header, `X-CSRF`.
+
+
+Configuration.
+```java
+    RestTarget<TokenSession, ApiUser, Hello> helloCsrfApiV2 = new RestTargetBuilder<TokenSession, ApiUser, Hello>()
+            .groupName(API_GROUP_V2)
+            .method(Method.GET)
+            .restResource(new HelloCsrfRestResource())
+            .regex(HelloCsrfRestResource.URL)
+            .csrf() // <-- csrf protects all methods.
+            .authenticate()
+            .contentType(json)
+            .payload(Hello.class)
+            .build();
+```
+
+To pass it will need the CSRF cookie and and the header, `X-CSRF`.
 ### Static Assets
 
 Files that are placed in, `src/main/webapp/public` are public as long as they pass the entry filter [regex](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/servlet/EntryFilter.java#L18).

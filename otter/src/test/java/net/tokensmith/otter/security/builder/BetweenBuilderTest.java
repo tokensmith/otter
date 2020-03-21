@@ -6,10 +6,10 @@ import helper.entity.model.DummyUser;
 import org.junit.Test;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.security.builder.entity.Betweens;
-import net.tokensmith.otter.security.csrf.between.CheckCSRF;
-import net.tokensmith.otter.security.csrf.between.PrepareCSRF;
-import net.tokensmith.otter.security.session.between.DecryptSession;
-import net.tokensmith.otter.security.session.between.EncryptSession;
+import net.tokensmith.otter.security.csrf.between.html.CheckCSRF;
+import net.tokensmith.otter.security.csrf.between.html.PrepareCSRF;
+import net.tokensmith.otter.security.session.between.html.DecryptSession;
+import net.tokensmith.otter.security.session.between.html.EncryptSession;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
 
 

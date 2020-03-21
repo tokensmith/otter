@@ -1,4 +1,4 @@
-package net.tokensmith.otter.security.session.between.util;
+package net.tokensmith.otter.security.session.util;
 
 import com.fasterxml.jackson.databind.ObjectReader;
 import net.tokensmith.jwt.config.JwtAppFactory;
@@ -11,8 +11,8 @@ import net.tokensmith.jwt.jwe.serialization.exception.KeyException;
 import net.tokensmith.jwt.serialization.HeaderDeserializer;
 import net.tokensmith.jwt.serialization.exception.DecryptException;
 import net.tokensmith.jwt.serialization.exception.JsonToJwtException;
-import net.tokensmith.otter.security.session.between.exception.InvalidSessionException;
-import net.tokensmith.otter.security.session.between.exception.SessionDecryptException;
+import net.tokensmith.otter.security.session.exception.InvalidSessionException;
+import net.tokensmith.otter.security.session.exception.SessionDecryptException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

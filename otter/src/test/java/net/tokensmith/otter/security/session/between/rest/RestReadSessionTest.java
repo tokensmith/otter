@@ -1,23 +1,19 @@
-package net.tokensmith.otter.security.session.between;
+package net.tokensmith.otter.security.session.between.rest;
 
 import com.fasterxml.jackson.databind.ObjectReader;
 import helper.FixtureFactory;
-import helper.entity.model.DummyPayload;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.StatusCode;
-import net.tokensmith.otter.controller.entity.request.Request;
-import net.tokensmith.otter.controller.entity.request.RestRequest;
-import net.tokensmith.otter.controller.entity.response.Response;
-import net.tokensmith.otter.controller.entity.response.RestResponse;
 import net.tokensmith.otter.dispatch.entity.RestBtwnRequest;
 import net.tokensmith.otter.dispatch.entity.RestBtwnResponse;
 import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.exception.HaltException;
-import net.tokensmith.otter.security.session.between.util.Decrypt;
+import net.tokensmith.otter.security.session.between.rest.RestReadSession;
+import net.tokensmith.otter.security.session.util.Decrypt;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
 import org.junit.Test;
 

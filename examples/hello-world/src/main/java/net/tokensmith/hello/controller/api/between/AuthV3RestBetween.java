@@ -15,12 +15,13 @@ import java.util.UUID;
 /**
  * A Simple example of setting the user in a Authentication Between.
  *
- * In a real application use the authentication header to exchange a token for the user
- * Throwing a halt exception will stop the request from continuing to the its desired resource.
+ * In a real application it would use the authentication header to fetch the user from a identity server or database or
+ * wherever you want. If authentication fails then throw a HaltException. That will stop the request from reaching its
+ * intended Resource.
  */
-public class AuthRestBetween implements RestBetween<TokenSession, ApiUser> {
+public class AuthV3RestBetween implements RestBetween<DefaultSession, ApiUser> {
     @Override
-    public void process(Method method, RestBtwnRequest<TokenSession, ApiUser> request, RestBtwnResponse response) throws HaltException {
+    public void process(Method method, RestBtwnRequest<DefaultSession, ApiUser> request, RestBtwnResponse response) throws HaltException {
         ApiUser apiUser = new ApiUser(UUID.randomUUID(), "Obi-Wan", "Kenobi");
         request.setUser(Optional.of(apiUser));
     }

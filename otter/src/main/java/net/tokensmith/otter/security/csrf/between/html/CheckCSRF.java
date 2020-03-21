@@ -1,4 +1,4 @@
-package net.tokensmith.otter.security.csrf.between;
+package net.tokensmith.otter.security.csrf.between.html;
 
 
 import net.tokensmith.otter.controller.entity.Cookie;
@@ -68,6 +68,7 @@ public class CheckCSRF<S, U> implements Between<S, U> {
         response.setTemplate(failTemplate);
     }
 
+    // used for tests to make sure it gets built correctly.
     public String getCookieName() {
         return cookieName;
     }

@@ -1,6 +1,10 @@
 package net.tokensmith.hello.config;
 
 
+import net.tokensmith.hello.controller.api.between.AuthSessionRestBetween;
+import net.tokensmith.hello.controller.api.between.AuthV3RestBetween;
+import net.tokensmith.hello.controller.api.v2.HelloCsrfRestResource;
+import net.tokensmith.hello.controller.api.v2.HelloSessionRestResource;
 import net.tokensmith.hello.controller.api.v3.BrokenRestResource;
 import net.tokensmith.hello.controller.api.v3.HelloRestResource;
 import net.tokensmith.hello.controller.html.*;
@@ -105,9 +109,9 @@ public class AppConfig implements Configure {
         AuthRestBetween authRestBetween = new AuthRestBetween();
 
         // uses default bad request handling.
-        RestGroup<DefaultSession, ApiUser> apiGroupV2 = new RestGroupBuilder<DefaultSession, ApiUser>()
+        RestGroup<TokenSession, ApiUser> apiGroupV2 = new RestGroupBuilder<TokenSession, ApiUser>()
                 .name(API_GROUP_V2)
-                .sessionClazz(DefaultSession.class)
+                .sessionClazz(TokenSession.class)
                 .authRequired(authRestBetween)
                 .build();
 
@@ -129,11 +133,14 @@ public class AppConfig implements Configure {
                 .resource(mediaTypeResource)
                 .build();
 
+        // version 3
+        AuthV3RestBetween authV3RestBetween = new AuthV3RestBetween();
+
         RestGroup<DefaultSession, ApiUser> apiGroupV3 = new RestGroupBuilder<DefaultSession, ApiUser>()
                 .name(API_GROUP_V3)
                 .sessionClazz(DefaultSession.class)
-                .authRequired(authRestBetween)
-                .authOptional(authRestBetween)
+                .authRequired(authV3RestBetween)
+                .authOptional(authV3RestBetween)
                 .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
                 .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
                 .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaTypeTarget)
@@ -148,7 +155,11 @@ public class AppConfig implements Configure {
     @Override
     public void routes(Gateway gateway) {
         notFoundTargets(gateway);
+        apiRoutes(gateway);
+        htmlRoutes(gateway);
+    }
 
+    public void apiRoutes(Gateway gateway) {
         MimeType json = new MimeTypeBuilder().json().build();
 
         // resource for v2 api
@@ -164,6 +175,34 @@ public class AppConfig implements Configure {
                 .build();
 
         gateway.add(helloApiV2);
+
+        // this will use session to assist for auth
+        RestTarget<TokenSession, ApiUser, Hello> helloSessionApiV2 = new RestTargetBuilder<TokenSession, ApiUser, Hello>()
+                .groupName(API_GROUP_V2)
+                .method(Method.GET)
+                .restResource(new HelloSessionRestResource())
+                .regex(HelloSessionRestResource.URL)
+                .session() // <-- session is turned on here.
+                .before(new AuthSessionRestBetween()) // <-- session based auth between here.
+                .contentType(json)
+                .payload(Hello.class)
+                .build();
+
+        gateway.add(helloSessionApiV2);
+
+        // this will protect csrf.
+        RestTarget<TokenSession, ApiUser, Hello> helloCsrfApiV2 = new RestTargetBuilder<TokenSession, ApiUser, Hello>()
+                .groupName(API_GROUP_V2)
+                .method(Method.GET)
+                .restResource(new HelloCsrfRestResource())
+                .regex(HelloCsrfRestResource.URL)
+                .csrf() // <-- csrf protects all methods.
+                .authenticate()
+                .contentType(json)
+                .payload(Hello.class)
+                .build();
+
+        gateway.add(helloCsrfApiV2);
 
         // this will always throw a runtime exception and force the default error handler.
         BrokenRestResourceV2 brokenRestResourceV2 = new BrokenRestResourceV2();
@@ -208,14 +247,17 @@ public class AppConfig implements Configure {
                 .build();
 
         gateway.add(brokenApiV3);
+    }
+
+    public void htmlRoutes(Gateway gateway) {
 
         // does not require content-type
         Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
-            .groupName(WEB_SITE_GROUP)
-            .method(Method.GET)
-            .resource(new HelloResource())
-            .regex(HelloResource.URL)
-            .build();
+                .groupName(WEB_SITE_GROUP)
+                .method(Method.GET)
+                .resource(new HelloResource())
+                .regex(HelloResource.URL)
+                .build();
 
         gateway.add(hello);
 

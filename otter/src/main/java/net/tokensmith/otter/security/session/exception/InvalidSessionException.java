@@ -1,4 +1,4 @@
-package net.tokensmith.otter.security.session.between.exception;
+package net.tokensmith.otter.security.session.exception;
 
 /**
  * Used when the actual payload of the session was not in a compact JWT format.
