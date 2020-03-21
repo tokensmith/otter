@@ -1,16 +1,15 @@
-package net.tokensmith.otter.security.session.between;
+package net.tokensmith.otter.security.session.between.rest;
 
 import net.tokensmith.otter.controller.entity.Cookie;
-import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.dispatch.entity.RestBtwnRequest;
 import net.tokensmith.otter.dispatch.entity.RestBtwnResponse;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.entity.between.RestBetween;
 import net.tokensmith.otter.router.exception.HaltException;
-import net.tokensmith.otter.security.session.between.exception.InvalidSessionException;
-import net.tokensmith.otter.security.session.between.exception.SessionDecryptException;
-import net.tokensmith.otter.security.session.between.util.Decrypt;
+import net.tokensmith.otter.security.session.exception.InvalidSessionException;
+import net.tokensmith.otter.security.session.exception.SessionDecryptException;
+import net.tokensmith.otter.security.session.util.Decrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

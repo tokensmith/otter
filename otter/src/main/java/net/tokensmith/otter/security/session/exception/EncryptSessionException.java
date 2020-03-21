@@ -1,4 +1,4 @@
-package net.tokensmith.otter.security.session.between.exception;
+package net.tokensmith.otter.security.session.exception;
 
 /**
  * Used when for any reason a session could not be encrypted.

@@ -2,7 +2,6 @@ package net.tokensmith.otter.security.csrf;
 
 
 
-import net.tokensmith.otter.controller.entity.StatusCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.tokensmith.jwt.builder.compact.SecureCompactBuilder;

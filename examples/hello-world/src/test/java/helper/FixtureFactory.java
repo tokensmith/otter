@@ -20,4 +20,15 @@ public class FixtureFactory {
         sessionCookie.setMaxAge(-9223372036854775808L);
         return sessionCookie;
     }
+
+    public static io.netty.handler.codec.http.cookie.Cookie csrfCookie() {
+        io.netty.handler.codec.http.cookie.Cookie sessionCookie = new DefaultCookie("csrfToken", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImtpZCI6ImtleS0xIn0.eyJjaGFsbGVuZ2VfdG9rZW4iOiJ2ZmprMHZxMzlwNGNiMTBnYWk5dmdhbDRsZSIsIm5vaXNlIjoidGJmNGNnczFkMGtsZjRnNHQ4cDZxdW0wZDYiLCJpYXQiOjE1ODQ4MjEyOTh9.HYSk5BBakR76LJiS69_rGb8uBPEmEPr0ZZwKOD3UAq4");
+        sessionCookie.setHttpOnly(false);
+        sessionCookie.setMaxAge(-9223372036854775808L);
+        return sessionCookie;
+    }
+
+    public static String csrfHeader() {
+        return "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImtpZCI6ImtleS0xIn0.eyJjaGFsbGVuZ2VfdG9rZW4iOiJ2ZmprMHZxMzlwNGNiMTBnYWk5dmdhbDRsZSIsIm5vaXNlIjoia3E3cTA0OHAwMDU0dnE0bDUzZTBuZ3RnMWgiLCJpYXQiOjE1ODQ4MjEyOTh9.Hgj_7stI3cVNedC8D8hlW9NPfNU0uEqZ9BVHtC5SqGg";
+    }
 }

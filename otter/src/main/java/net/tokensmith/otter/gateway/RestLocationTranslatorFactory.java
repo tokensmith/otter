@@ -61,6 +61,7 @@ public class RestLocationTranslatorFactory {
         return new RestBetweenFlyweight<S, U>(
                 session(appFactory, sessionClazz),
                 sessionOptional(appFactory, sessionClazz),
+                csrfProtect(appFactory),
                 authRequired,
                 authOptional
         );
@@ -87,6 +88,17 @@ public class RestLocationTranslatorFactory {
                 .sessionClazz(sessionClazz)
                 .sessionFailStatusCode(shape.getSessionFailStatusCode())
                 .optionalSession()
+                .build();
+    }
+
+    protected <S, U> RestBetweens<S, U> csrfProtect(TranslatorAppFactory appFactory) {
+        return new RestBetweenBuilder<S, U>()
+                .routerAppFactory(appFactory)
+                .secure(shape.getSecure())
+                .signKey(shape.getSignkey())
+                .rotationSignKeys(shape.getRotationSignKeys())
+                .csrfFailStatusCode(shape.getCsrfFailStatusCode())
+                .csrfProtect()
                 .build();
     }
 }

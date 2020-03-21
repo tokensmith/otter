@@ -23,6 +23,7 @@ public class RestBetweenFlyweightTest {
     private RestBetweenFlyweight<DummySession, DummyUser> subject;
     private RestBetweens<DummySession, DummyUser> sessionRequired;
     private RestBetweens<DummySession, DummyUser> sessionOptional;
+    private RestBetweens<DummySession, DummyUser> csrfProtect;
     private Optional<RestBetween<DummySession, DummyUser>> authRequired;
     private Optional<RestBetween<DummySession, DummyUser>> authOptional;
 
@@ -30,14 +31,28 @@ public class RestBetweenFlyweightTest {
     public void setUp() {
         sessionRequired = FixtureFactory.makeRestBetweens();
         sessionOptional = FixtureFactory.makeRestBetweens();
+        csrfProtect = FixtureFactory.makeRestBetweens();
         authRequired = Optional.of(new DummyRestBetween<>());
         authOptional = Optional.of(new DummyRestBetween<>());
 
         subject = new RestBetweenFlyweight<DummySession, DummyUser>(
                 sessionRequired,
                 sessionOptional,
+                csrfProtect,
                 authRequired,
                 authOptional);
+    }
+
+    @Test
+    public void makeWhenGetAndCsrf() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.CSRF);
+
+        RestBetweens<DummySession, DummyUser> actual = subject.make(Method.GET, labels);
+
+        assertThat(actual.getBefore().size(), is(1));
+        assertThat(actual.getAfter().size(), is(0));
+        assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
     }
 
     @Test
@@ -103,6 +118,22 @@ public class RestBetweenFlyweightTest {
     }
 
     @Test
+    public void makeWhenGetAndCsrfAndSessionOptionalAndAuthOptional() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.CSRF);
+        labels.add(Label.SESSION_OPTIONAL);
+        labels.add(Label.AUTH_OPTIONAL);
+
+        RestBetweens<DummySession, DummyUser> actual = subject.make(Method.GET, labels);
+
+        assertThat(actual.getBefore().size(), is(3));
+        assertThat(actual.getAfter().size(), is(1));
+        assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
+        assertThat(actual.getBefore().get(1), is(sessionOptional.getBefore().get(0)));
+        assertThat(actual.getBefore().get(2), is(authOptional.get()));
+    }
+
+    @Test
     public void makeWhenGetAndSessionRequiredAndAuthRequired() {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.SESSION_REQUIRED);
@@ -114,6 +145,34 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(sessionRequired.getBefore().get(0)));
         assertThat(actual.getBefore().get(1), is(authRequired.get()));
+    }
+
+    @Test
+    public void makeWhenGetAndCsrfAndSessionRequiredAndAuthRequired() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.CSRF);
+        labels.add(Label.SESSION_REQUIRED);
+        labels.add(Label.AUTH_REQUIRED);
+
+        RestBetweens<DummySession, DummyUser> actual = subject.make(Method.GET, labels);
+
+        assertThat(actual.getBefore().size(), is(3));
+        assertThat(actual.getAfter().size(), is(1));
+        assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
+        assertThat(actual.getBefore().get(1), is(sessionRequired.getBefore().get(0)));
+        assertThat(actual.getBefore().get(2), is(authRequired.get()));
+    }
+
+    @Test
+    public void makeWhenPostAndCsrf() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.CSRF);
+
+        RestBetweens<DummySession, DummyUser> actual = subject.make(Method.POST, labels);
+
+        assertThat(actual.getBefore().size(), is(1));
+        assertThat(actual.getAfter().size(), is(0));
+        assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
     }
 
     @Test
@@ -179,6 +238,22 @@ public class RestBetweenFlyweightTest {
     }
 
     @Test
+    public void makeWhenPostAndCsrfAndSessionOptionalAndAuthOptional() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.CSRF);
+        labels.add(Label.SESSION_OPTIONAL);
+        labels.add(Label.AUTH_OPTIONAL);
+
+        RestBetweens<DummySession, DummyUser> actual = subject.make(Method.POST, labels);
+
+        assertThat(actual.getBefore().size(), is(3));
+        assertThat(actual.getAfter().size(), is(1));
+        assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
+        assertThat(actual.getBefore().get(1), is(sessionOptional.getBefore().get(0)));
+        assertThat(actual.getBefore().get(2), is(authOptional.get()));
+    }
+
+    @Test
     public void makeWhenPostAndSessionRequiredAndAuthRequired() {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.SESSION_REQUIRED);
@@ -191,6 +266,35 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getBefore().get(0), is(sessionRequired.getBefore().get(0)));
         assertThat(actual.getBefore().get(1), is(authRequired.get()));
     }
+
+    @Test
+    public void makeWhenPostAndCsrfAndSessionRequiredAndAuthRequired() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.CSRF);
+        labels.add(Label.SESSION_REQUIRED);
+        labels.add(Label.AUTH_REQUIRED);
+
+        RestBetweens<DummySession, DummyUser> actual = subject.make(Method.POST, labels);
+
+        assertThat(actual.getBefore().size(), is(3));
+        assertThat(actual.getAfter().size(), is(1));
+        assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
+        assertThat(actual.getBefore().get(1), is(sessionRequired.getBefore().get(0)));
+        assertThat(actual.getBefore().get(2), is(authRequired.get()));
+    }
+
+    @Test
+    public void makeWhenPutAndCsrf() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.CSRF);
+
+        RestBetweens<DummySession, DummyUser> actual = subject.make(Method.PUT, labels);
+
+        assertThat(actual.getBefore().size(), is(1));
+        assertThat(actual.getAfter().size(), is(0));
+        assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
+    }
+
 
     @Test
     public void makeWhenPutAndSessionOptional() {
@@ -255,6 +359,22 @@ public class RestBetweenFlyweightTest {
     }
 
     @Test
+    public void makeWhenPutAndCsrfAndSessionOptionalAndAuthOptional() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.CSRF);
+        labels.add(Label.SESSION_OPTIONAL);
+        labels.add(Label.AUTH_OPTIONAL);
+
+        RestBetweens<DummySession, DummyUser> actual = subject.make(Method.PUT, labels);
+
+        assertThat(actual.getBefore().size(), is(3));
+        assertThat(actual.getAfter().size(), is(1));
+        assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
+        assertThat(actual.getBefore().get(1), is(sessionOptional.getBefore().get(0)));
+        assertThat(actual.getBefore().get(2), is(authOptional.get()));
+    }
+
+    @Test
     public void makeWhenPutAndSessionRequiredAndAuthRequired() {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.SESSION_REQUIRED);
@@ -267,6 +387,35 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getBefore().get(0), is(sessionRequired.getBefore().get(0)));
         assertThat(actual.getBefore().get(1), is(authRequired.get()));
     }
+
+    @Test
+    public void makeWhenPutAndCsrfAndSessionRequiredAndAuthRequired() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.CSRF);
+        labels.add(Label.SESSION_REQUIRED);
+        labels.add(Label.AUTH_REQUIRED);
+
+        RestBetweens<DummySession, DummyUser> actual = subject.make(Method.PUT, labels);
+
+        assertThat(actual.getBefore().size(), is(3));
+        assertThat(actual.getAfter().size(), is(1));
+        assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
+        assertThat(actual.getBefore().get(1), is(sessionRequired.getBefore().get(0)));
+        assertThat(actual.getBefore().get(2), is(authRequired.get()));
+    }
+
+    @Test
+    public void makeWhenPatchAndCsrf() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.CSRF);
+
+        RestBetweens<DummySession, DummyUser> actual = subject.make(Method.PATCH, labels);
+
+        assertThat(actual.getBefore().size(), is(1));
+        assertThat(actual.getAfter().size(), is(0));
+        assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
+    }
+
 
     @Test
     public void makeWhenPatchAndSessionOptional() {
@@ -331,6 +480,22 @@ public class RestBetweenFlyweightTest {
     }
 
     @Test
+    public void makeWhenPatchAndCsrfAndSessionOptionalAndAuthOptional() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.CSRF);
+        labels.add(Label.SESSION_OPTIONAL);
+        labels.add(Label.AUTH_OPTIONAL);
+
+        RestBetweens<DummySession, DummyUser> actual = subject.make(Method.PATCH, labels);
+
+        assertThat(actual.getBefore().size(), is(3));
+        assertThat(actual.getAfter().size(), is(1));
+        assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
+        assertThat(actual.getBefore().get(1), is(sessionOptional.getBefore().get(0)));
+        assertThat(actual.getBefore().get(2), is(authOptional.get()));
+    }
+
+    @Test
     public void makeWhenPatchAndSessionRequiredAndAuthRequired() {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.SESSION_REQUIRED);
@@ -343,6 +508,35 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getBefore().get(0), is(sessionRequired.getBefore().get(0)));
         assertThat(actual.getBefore().get(1), is(authRequired.get()));
     }
+
+    @Test
+    public void makeWhenPatchAndCsrfAndSessionRequiredAndAuthRequired() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.CSRF);
+        labels.add(Label.SESSION_REQUIRED);
+        labels.add(Label.AUTH_REQUIRED);
+
+        RestBetweens<DummySession, DummyUser> actual = subject.make(Method.PATCH, labels);
+
+        assertThat(actual.getBefore().size(), is(3));
+        assertThat(actual.getAfter().size(), is(1));
+        assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
+        assertThat(actual.getBefore().get(1), is(sessionRequired.getBefore().get(0)));
+        assertThat(actual.getBefore().get(2), is(authRequired.get()));
+    }
+
+    @Test
+    public void makeWhenDeleteAndCsrf() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.CSRF);
+
+        RestBetweens<DummySession, DummyUser> actual = subject.make(Method.DELETE, labels);
+
+        assertThat(actual.getBefore().size(), is(1));
+        assertThat(actual.getAfter().size(), is(0));
+        assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
+    }
+
 
     @Test
     public void makeWhenDeleteAndSessionOptional() {
@@ -408,6 +602,22 @@ public class RestBetweenFlyweightTest {
     }
 
     @Test
+    public void makeWhenDeleteAndCsrfAndSessionOptionalAndAuthOptional() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.CSRF);
+        labels.add(Label.SESSION_OPTIONAL);
+        labels.add(Label.AUTH_OPTIONAL);
+
+        RestBetweens<DummySession, DummyUser> actual = subject.make(Method.DELETE, labels);
+
+        assertThat(actual.getBefore().size(), is(3));
+        assertThat(actual.getAfter().size(), is(1));
+        assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
+        assertThat(actual.getBefore().get(1), is(sessionOptional.getBefore().get(0)));
+        assertThat(actual.getBefore().get(2), is(authOptional.get()));
+    }
+
+    @Test
     public void makeWhenDeleteAndSessionRequiredAndAuthRequired() {
         List<Label> labels = new ArrayList<>();
         labels.add(Label.SESSION_REQUIRED);
@@ -419,5 +629,21 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(sessionRequired.getBefore().get(0)));
         assertThat(actual.getBefore().get(1), is(authRequired.get()));
+    }
+
+    @Test
+    public void makeWhenDeleteAndCsrfAndSessionRequiredAndAuthRequired() {
+        List<Label> labels = new ArrayList<>();
+        labels.add(Label.CSRF);
+        labels.add(Label.SESSION_REQUIRED);
+        labels.add(Label.AUTH_REQUIRED);
+
+        RestBetweens<DummySession, DummyUser> actual = subject.make(Method.DELETE, labels);
+
+        assertThat(actual.getBefore().size(), is(3));
+        assertThat(actual.getAfter().size(), is(1));
+        assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
+        assertThat(actual.getBefore().get(1), is(sessionRequired.getBefore().get(0)));
+        assertThat(actual.getBefore().get(2), is(authRequired.get()));
     }
 }

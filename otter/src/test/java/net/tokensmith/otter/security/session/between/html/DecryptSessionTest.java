@@ -1,11 +1,10 @@
-package net.tokensmith.otter.security.session.between;
+package net.tokensmith.otter.security.session.between.html;
 
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.security.session.between.html.DecryptSession;
 import org.junit.Test;
-import net.tokensmith.jwt.entity.jwk.SymmetricKey;
-import net.tokensmith.jwt.exception.InvalidJWT;
 import net.tokensmith.otter.config.OtterAppFactory;
 import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.request.Request;
@@ -17,9 +16,8 @@ import net.tokensmith.otter.router.exception.HaltException;
 import net.tokensmith.otter.router.factory.BetweenFlyweight;
 import net.tokensmith.otter.security.builder.entity.Betweens;
 import net.tokensmith.otter.security.exception.SessionCtorException;
-import net.tokensmith.otter.security.session.between.exception.InvalidSessionException;
+import net.tokensmith.otter.security.session.exception.InvalidSessionException;
 import net.tokensmith.otter.router.entity.Method;
-import net.tokensmith.otter.security.session.between.exception.SessionDecryptException;
 
 import java.util.ArrayList;
 import java.util.List;

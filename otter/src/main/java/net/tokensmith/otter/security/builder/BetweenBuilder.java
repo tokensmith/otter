@@ -11,11 +11,11 @@ import net.tokensmith.otter.security.RandomString;
 import net.tokensmith.otter.security.builder.entity.Betweens;
 import net.tokensmith.otter.security.exception.SessionCtorException;
 import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
-import net.tokensmith.otter.security.csrf.between.CheckCSRF;
-import net.tokensmith.otter.security.csrf.between.PrepareCSRF;
-import net.tokensmith.otter.security.session.between.util.Decrypt;
-import net.tokensmith.otter.security.session.between.DecryptSession;
-import net.tokensmith.otter.security.session.between.EncryptSession;
+import net.tokensmith.otter.security.csrf.between.html.CheckCSRF;
+import net.tokensmith.otter.security.csrf.between.html.PrepareCSRF;
+import net.tokensmith.otter.security.session.util.Decrypt;
+import net.tokensmith.otter.security.session.between.html.DecryptSession;
+import net.tokensmith.otter.security.session.between.html.EncryptSession;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
 
 import java.lang.reflect.Constructor;
@@ -39,8 +39,6 @@ public class BetweenBuilder<S, U> {
     private Map<String, SymmetricKey> rotationEncKeys;
     private StatusCode sessionFailStatusCode;
     private Optional<String> sessionFailTemplate;
-
-
 
     private Class<S> sessionClass;
     private ObjectReader sessionObjectReader;

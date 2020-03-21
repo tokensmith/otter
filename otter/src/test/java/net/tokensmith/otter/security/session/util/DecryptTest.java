@@ -1,4 +1,4 @@
-package net.tokensmith.otter.security.session.between.util;
+package net.tokensmith.otter.security.session.util;
 
 
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -8,8 +8,8 @@ import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.jwt.exception.InvalidJWT;
 import net.tokensmith.otter.gateway.entity.Shape;
-import net.tokensmith.otter.security.session.between.exception.InvalidSessionException;
-import net.tokensmith.otter.security.session.between.exception.SessionDecryptException;
+import net.tokensmith.otter.security.session.exception.InvalidSessionException;
+import net.tokensmith.otter.security.session.exception.SessionDecryptException;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
 
 
@@ -28,7 +28,6 @@ public class DecryptTest {
         ObjectReader sessionObjectReader = new TranslatorAppFactory().objectReader().forType(DummySession.class);
         return new Decrypt<>(new JwtAppFactory(), sessionObjectReader, shape.getEncKey(), shape.getRotationEncKeys());
     }
-
 
 
     @Test

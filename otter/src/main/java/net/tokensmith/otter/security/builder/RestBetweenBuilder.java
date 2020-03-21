@@ -4,10 +4,15 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.router.entity.between.Between;
 import net.tokensmith.otter.router.entity.between.RestBetween;
+import net.tokensmith.otter.security.RandomString;
 import net.tokensmith.otter.security.builder.entity.RestBetweens;
-import net.tokensmith.otter.security.session.between.RestReadSession;
-import net.tokensmith.otter.security.session.between.util.Decrypt;
+import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
+import net.tokensmith.otter.security.csrf.between.html.CheckCSRF;
+import net.tokensmith.otter.security.csrf.between.rest.RestCheckCSRF;
+import net.tokensmith.otter.security.session.between.rest.RestReadSession;
+import net.tokensmith.otter.security.session.util.Decrypt;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
 
 import java.util.ArrayList;
@@ -16,7 +21,8 @@ import java.util.Map;
 
 
 public class RestBetweenBuilder<S, U> {
-
+    private static String CSRF_NAME = "csrfToken";
+    private static String CSRF_HDR_NAME = "X-CSRF";
     private static String SESSION_NAME = "session";
 
     private TranslatorAppFactory appFactory;
@@ -89,6 +95,20 @@ public class RestBetweenBuilder<S, U> {
         Decrypt<S> decrypt = new Decrypt<S>(new JwtAppFactory(), sessionObjectReader, encKey, rotationEncKeys);
         RestBetween<S, U> decryptSession = new RestReadSession<S, U>(SESSION_NAME, false, sessionFailStatusCode, decrypt);
         before.add(decryptSession);
+
+        return this;
+    }
+
+    public RestBetweenBuilder<S, U> csrfFailStatusCode(StatusCode csrfFailStatusCode) {
+        this.csrfFailStatusCode = csrfFailStatusCode;
+        return this;
+    }
+
+    public RestBetweenBuilder<S, U> csrfProtect() {
+        DoubleSubmitCSRF doubleSubmitCSRF = new DoubleSubmitCSRF(new JwtAppFactory(), new RandomString(), signKey, rotationSignKeys);
+
+        RestBetween<S,U> checkCSRF = new RestCheckCSRF<>(CSRF_NAME, CSRF_HDR_NAME, doubleSubmitCSRF, csrfFailStatusCode);
+        before.add(checkCSRF);
 
         return this;
     }

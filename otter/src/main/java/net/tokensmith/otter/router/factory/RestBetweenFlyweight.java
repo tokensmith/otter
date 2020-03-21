@@ -1,6 +1,5 @@
 package net.tokensmith.otter.router.factory;
 
-import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.gateway.entity.Label;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.entity.between.RestBetween;
@@ -14,12 +13,14 @@ public class RestBetweenFlyweight<S, U> {
 
     private RestBetweens<S, U> sessionRequired;
     private RestBetweens<S, U> sessionOptional;
+    private RestBetweens<S, U> csrfProtect;
     private Optional<RestBetween<S, U>> authRequired;
     private Optional<RestBetween<S, U>> authOptional;
 
-    public RestBetweenFlyweight(RestBetweens<S, U> sessionRequired, RestBetweens<S, U> sessionOptional, Optional<RestBetween<S, U>> authRequired, Optional<RestBetween<S, U>> authOptional) {
+    public RestBetweenFlyweight(RestBetweens<S, U> sessionRequired, RestBetweens<S, U> sessionOptional, RestBetweens<S, U> csrfProtect, Optional<RestBetween<S, U>> authRequired, Optional<RestBetween<S, U>> authOptional) {
         this.sessionRequired = sessionRequired;
         this.sessionOptional = sessionOptional;
+        this.csrfProtect = csrfProtect;
         this.authRequired = authRequired;
         this.authOptional = authOptional;
     }
@@ -44,6 +45,7 @@ public class RestBetweenFlyweight<S, U> {
 
     public RestBetweens<S, U> makeGet(List<Label> labels) {
         RestBetweens<S, U> betweens = new RestBetweens<S, U>(new ArrayList<>(), new ArrayList<>());
+        csrfProtect(labels, betweens);
         session(labels, betweens);
         authentication(labels, betweens);
         return betweens;
@@ -51,6 +53,7 @@ public class RestBetweenFlyweight<S, U> {
 
     public RestBetweens<S, U> makePost(List<Label> labels) {
         RestBetweens<S, U> betweens = new RestBetweens<S, U>(new ArrayList<>(), new ArrayList<>());
+        csrfProtect(labels, betweens);
         session(labels, betweens);
         authentication(labels, betweens);
         return betweens;
@@ -58,6 +61,7 @@ public class RestBetweenFlyweight<S, U> {
 
     public RestBetweens<S, U> makePut(List<Label> labels) {
         RestBetweens<S, U> betweens = new RestBetweens<S, U>(new ArrayList<>(), new ArrayList<>());
+        csrfProtect(labels, betweens);
         session(labels, betweens);
         authentication(labels, betweens);
         return betweens;
@@ -65,6 +69,7 @@ public class RestBetweenFlyweight<S, U> {
 
     public RestBetweens<S, U> makePatch(List<Label> labels) {
         RestBetweens<S, U> betweens = new RestBetweens<S, U>(new ArrayList<>(), new ArrayList<>());
+        csrfProtect(labels, betweens);
         session(labels, betweens);
         authentication(labels, betweens);
         return betweens;
@@ -72,6 +77,7 @@ public class RestBetweenFlyweight<S, U> {
 
     public RestBetweens<S, U> makeDelete(List<Label> labels) {
         RestBetweens<S, U> betweens = new RestBetweens<S, U>(new ArrayList<>(), new ArrayList<>());
+        csrfProtect(labels, betweens);
         session(labels, betweens);
         authentication(labels, betweens);
         return betweens;
@@ -88,6 +94,13 @@ public class RestBetweenFlyweight<S, U> {
             betweens.getAfter().addAll(sessionRequired.getAfter());
         }
     }
+
+    protected void csrfProtect(List<Label> labels, RestBetweens<S, U> betweens) {
+        if (labels.contains(Label.CSRF)) {
+            betweens.getBefore().addAll(csrfProtect.getBefore());
+        }
+    }
+
     protected void authentication(List<Label> labels, RestBetweens<S, U> betweens) {
         if (labels.contains(Label.AUTH_OPTIONAL) && authOptional.isPresent()) {
             betweens.getBefore().add(authOptional.get());
