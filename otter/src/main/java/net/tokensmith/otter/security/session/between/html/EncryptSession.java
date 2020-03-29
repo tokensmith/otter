@@ -93,11 +93,8 @@ public class EncryptSession<S, U> implements Between<S, U> {
             if ( response.getSession().get().equals(request.getSession().get()) ) {
                 return false;
             }
-            LOGGER.trace("Request session: {}", request.getSession().get().toString());
-            LOGGER.trace("Response session: {}", response.getSession().get().toString());
             return true;
         } else if (response.getSession().isPresent()) {
-            LOGGER.trace("No response session");
             return true;
         }
         return false;

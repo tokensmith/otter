@@ -85,7 +85,7 @@ public class HttpServletResponseMerger {
         }
         return containerCookiesMap;
     }
-    
+
     protected int hashCodeForCookie(Cookie cookie) {
         return Objects.hash(
                 cookie.getComment(),
