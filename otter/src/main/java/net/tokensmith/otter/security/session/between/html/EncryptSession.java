@@ -32,6 +32,7 @@ import java.io.ByteArrayOutputStream;
  */
 public class EncryptSession<S, U> implements Between<S, U> {
     public static final String NOT_ENCRYPTING = "Not re-encrypting session cookie";
+    public static final String ENCRYPTING = "re-encrypting session cookie";
     public static final String COULD_NOT_ENCRYPT_SESSION = "Could not encrypt session cookie";
     protected static Logger LOGGER = LoggerFactory.getLogger(EncryptSession.class);
 
@@ -49,6 +50,7 @@ public class EncryptSession<S, U> implements Between<S, U> {
     @Override
     public void process(Method method, Request<S, U> request, Response<S> response) throws HaltException {
         if (shouldEncrypt(request, response)) {
+            LOGGER.debug(ENCRYPTING);
             ByteArrayOutputStream session;
 
             try {
@@ -91,8 +93,11 @@ public class EncryptSession<S, U> implements Between<S, U> {
             if ( response.getSession().get().equals(request.getSession().get()) ) {
                 return false;
             }
+            LOGGER.trace("Request session: {}", request.getSession().get().toString());
+            LOGGER.trace("Response session: {}", response.getSession().get().toString());
             return true;
         } else if (response.getSession().isPresent()) {
+            LOGGER.trace("No response session");
             return true;
         }
         return false;

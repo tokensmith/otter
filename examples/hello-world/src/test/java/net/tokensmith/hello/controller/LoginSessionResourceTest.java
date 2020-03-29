@@ -103,6 +103,7 @@ public class LoginSessionResourceTest {
     @Test
     public void postShouldReturn200() throws Exception {
 
+        Cookie csrfCookie = FixtureFactory.csrfCookie();
         Cookie sessionCookie = FixtureFactory.sessionCookie();
         AsyncHttpClient httpClient = IntegrationTestSuite.getHttpClient();
 
@@ -111,6 +112,7 @@ public class LoginSessionResourceTest {
                 .prepareGet(SUBJECT_URI)
                 .addHeader("Content-Type", "text/html")
                 .addCookie(sessionCookie)
+                .addCookie(csrfCookie)
                 .execute();
 
         Response getResponse = f.get();

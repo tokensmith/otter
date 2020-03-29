@@ -7,10 +7,13 @@ import net.tokensmith.otter.controller.entity.mime.MimeType;
 import net.tokensmith.otter.controller.entity.mime.SubType;
 import net.tokensmith.otter.controller.entity.mime.TopLevelType;
 import net.tokensmith.otter.controller.header.Header;
+import net.tokensmith.otter.gateway.servlet.ServletGateway;
 import net.tokensmith.otter.router.builder.AskBuilder;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.entity.io.Ask;
 import net.tokensmith.otter.translator.MimeTypeTranslator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -22,6 +25,7 @@ import java.util.stream.Collectors;
  * Translator for a HttpServletRequest to a Otter Request
  */
 public class HttpServletRequestTranslator  {
+    protected static Logger LOGGER = LoggerFactory.getLogger(HttpServletRequestTranslator.class);
     private static String PARAM_DELIMITER = "?";
     private static String EMPTY = "";
 
@@ -48,14 +52,19 @@ public class HttpServletRequestTranslator  {
 
         Map<String, Cookie> otterCookies = new HashMap<>();
         if (containerRequest.getCookies() != null) {
-            otterCookies = Arrays.asList(containerRequest.getCookies())
-                    .stream()
-                    .collect(
-                            Collectors.toMap(
-                                    javax.servlet.http.Cookie::getName, httpServletCookieTranslator.from
-                            )
-                    );
+            // throw away duplicate cookies.. idk why duplicates occur.
+            for (javax.servlet.http.Cookie cookie : containerRequest.getCookies()) {
+                Cookie candidate = httpServletCookieTranslator.from.apply(cookie);
+                Cookie existing = otterCookies.get(candidate.getName());
+                if (existing != null && existing.equals(candidate)) {
+                    LOGGER.debug("Found a duplicate cookie, {}, ignoring it.", existing.getName());
+                } else {
+                    otterCookies.put(candidate.getName(), candidate);
+                }
+            }
         }
+
+
         Map<String, String> headers = httpServletRequestHeaderTranslator.from(containerRequest);
         Optional<String> queryString = Optional.ofNullable(containerRequest.getQueryString());
         Map<String, List<String>> queryParams = queryStringToMap.run(queryString);

@@ -68,23 +68,23 @@ public class HttpServletResponseMergerTest {
 
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
         Cookie[] containerCookies = new Cookie[1];
-        Cookie mockContainerCookieToUpdate = mock(Cookie.class);
-        when(mockContainerCookieToUpdate.getName()).thenReturn(cookieName);
-        containerCookies[0] = mockContainerCookieToUpdate;
+        Cookie containerCookie = new Cookie(cookieName, "old value");
+        containerCookies[0] = containerCookie;
 
         Answer answer = FixtureFactory.makeAnswer();
         answer.getCookies().put(cookieName, FixtureFactory.makeCookie(cookieName));
 
+        Cookie cookieToUpdate = new Cookie(cookieName, "new value");
         Function mockTo = mock(Function.class);
         mockHttpServletRequestCookieTranslator.to = mockTo;
         when(mockTo.apply(answer.getCookies().get(cookieName)))
-                .thenReturn(mockContainerCookieToUpdate);
+                .thenReturn(cookieToUpdate);
 
         subject.merge(mockContainerResponse, containerCookies, answer);
 
         // indicates cookie was updated.
         verify(mockHttpServletRequestCookieTranslator.to).apply(answer.getCookies().get(cookieName));
-        verify(mockContainerResponse).addCookie(mockContainerCookieToUpdate);
+        verify(mockContainerResponse).addCookie(cookieToUpdate);
     }
 
     @Test

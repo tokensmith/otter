@@ -15,7 +15,8 @@ import java.util.regex.Pattern;
  */
 @WebFilter(filterName = "EntryFilter", asyncSupported = true, urlPatterns = {"/*"})
 public class EntryFilter implements Filter {
-    protected static Pattern STATIC_ASSETS_PATTERN = Pattern.compile("(.*).(js|css)");
+    // externalize this regex.
+    protected static Pattern STATIC_ASSETS_PATTERN = Pattern.compile("(.*).(js|css|map)");
     protected static String OTTER_PREFIX = "/app";
     protected static String FORWARD_URI = OTTER_PREFIX + "%s";
 
