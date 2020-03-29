@@ -72,7 +72,6 @@ public class HttpServletResponseMerger {
 
                 logCookie("Removing cookie from container request", requestCookie);
             } else {
-                // is otter cookie different than container cookie?
                 Cookie toUpdate =  httpServletRequestCookieTranslator.to.apply(otterCookie);
                 toUpdate.setComment("updated at " + Instant.now().getEpochSecond());
                 response.addCookie(toUpdate);
@@ -86,21 +85,7 @@ public class HttpServletResponseMerger {
         }
         return containerCookiesMap;
     }
-
-    protected boolean cookieEquals(Cookie a, Cookie b) {
-        if (a == b) return true;
-        if (b == null || a.getClass() != b.getClass()) return false;
-        return a.getMaxAge() == b.getMaxAge() &&
-                a.getSecure() == b.getSecure() &&
-                a.getVersion() == b.getVersion() &&
-                a.isHttpOnly() == b.isHttpOnly() &&
-                Objects.equals(a.getName(), b.getName()) &&
-                Objects.equals(a.getValue(), b.getValue()) &&
-                Objects.equals(a.getComment(), b.getComment()) &&
-                Objects.equals(a.getDomain(), b.getDomain()) &&
-                Objects.equals(a.getPath(), b.getPath());
-    }
-
+    
     protected int hashCodeForCookie(Cookie cookie) {
         return Objects.hash(
                 cookie.getComment(),
