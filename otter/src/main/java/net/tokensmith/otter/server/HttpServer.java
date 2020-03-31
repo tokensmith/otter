@@ -39,14 +39,7 @@ public class HttpServer {
 
         ServletContainer server = null;
         try {
-            server = servletContainerFactory.makeServletContainer(
-                config.getDocumentRoot(),
-                config.getClazz(),
-                config.getPort(),
-                config.getRequestLog(),
-                config.getGzipMimeTypes(),
-                config.getErrorPages()
-            );
+            server = servletContainerFactory.makeServletContainer(config);
         } catch (URISyntaxException e) {
             logger.error(e.getMessage(), e);
         } catch (MalformedURLException e) {

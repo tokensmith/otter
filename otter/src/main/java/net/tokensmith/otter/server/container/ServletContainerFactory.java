@@ -1,5 +1,6 @@
 package net.tokensmith.otter.server.container;
 
+import net.tokensmith.otter.server.HttpServerConfig;
 import org.apache.tomcat.util.descriptor.web.ErrorPage;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.http2.server.HTTP2CServerConnectionFactory;
@@ -31,7 +32,6 @@ import org.slf4j.LoggerFactory;
  * Created by tommackenzie on 4/3/16.
  *
  * A factory that creates a ServletContainer.
- * System.setProperty("org.eclipse.jetty.LEVEL","INFO");
  */
 public class ServletContainerFactory {
     protected static Logger logger = LoggerFactory.getLogger(ServletContainerFactory.class);
@@ -50,39 +50,30 @@ public class ServletContainerFactory {
 
     /**
      *
-     * @param documentRoot root path for the servlet container to run. example, "/"
-     * @param clazz a class in your project.
-     * @param port the port the container should use. 0 will randomly assign a port.
-     * @param requestLog path to the request log
-     * @param gzipMimeTypes the mimetypes that will be gzip'd
-     * @param errorPages a list of ErrorPages
+     * @param containerConfig configuration for the servlet container
      * @return a configured instance of ServletContainer
      * @throws URISyntaxException if an issue occurred constructing a URI
      * @throws IOException if issues come up regarding webapp or containerResources
      */
-    public ServletContainer makeServletContainer(String documentRoot, Class clazz, int port, String requestLog, List<String> gzipMimeTypes, List<ErrorPage> errorPages) throws URISyntaxException, IOException {
-        URI compliedClassPath = compiledClassPath.getForClass(clazz);
+    public ServletContainer makeServletContainer(HttpServerConfig containerConfig) throws URISyntaxException, IOException {
+        URI compliedClassPath = compiledClassPath.getForClass(containerConfig.getClazz());
         URI webApp = webAppPath.fromClassURI(compliedClassPath);
 
-        return makeServletContainer(documentRoot, webApp, compliedClassPath, port, requestLog, gzipMimeTypes, errorPages);
+        return makeServletContainer(webApp, compliedClassPath, containerConfig);
     }
 
     /**
      *
-     * @param documentRoot root path for the servlet container to run. example, "/"
      * @param webApp absolute file path to the webapp directory in your project.
      * @param compliedClassPath absolute file path to, target/classes/ in your project.
-     * @param port the port the container should use. 0 will randomly assign a port.
-     * @param requestLog path to the request log
-     * @param gzipMimeTypes the mimetypes that will be gzip'd
-     * @param errorPages a list of ErrorPages
+     * @param containerConfig configuration for the servlet container
      * @return a configured instance of ServletContainer
      * @throws IOException if issues come up regarding webapp or containerResources
      */
-    public ServletContainer makeServletContainer(String documentRoot, URI webApp, URI compliedClassPath, int port, String requestLog, List<String> gzipMimeTypes, List<ErrorPage> errorPages) throws IOException {
+    public ServletContainer makeServletContainer(URI webApp, URI compliedClassPath, HttpServerConfig containerConfig) throws IOException {
         logger.debug("Web App location: " + webApp.toURL());
         logger.debug("Compiled Class path: " + compliedClassPath.toURL());
-        Server jetty = new Server(port);
+        Server jetty = new Server(containerConfig.getPort());
 
         // dependencies for, WebAppContext
         Configuration[] configurations = makeConfigurations();
@@ -92,21 +83,18 @@ public class ServletContainerFactory {
         WebAppContext context;
         if (compliedClassPath.toURL().getFile().endsWith("war")) {
             logger.debug("Using a war file");
-            context = makeWebAppContextForWAR(documentRoot, configurations, containerResources, gzipMimeTypes, errorPages);
+            context = makeWebAppContextForWAR(configurations, containerResources, containerConfig);
         } else {
             logger.debug("Not a war file");
-
-            context = makeWebAppContext(
-                    documentRoot, resourceBase, configurations, containerResources, gzipMimeTypes, errorPages
-            );
+            context = makeWebAppContext(resourceBase, configurations, containerResources, containerConfig);
         }
         jetty.setHandler(context);
 
-        ServerConnector serverConnector = makeServerConnector(jetty, port);
+        ServerConnector serverConnector = makeServerConnector(jetty, containerConfig.getPort());
         jetty.setConnectors( new Connector[] { serverConnector } );
 
         // request logs
-        CustomRequestLog log = makeRequestLog(requestLog);
+        CustomRequestLog log = makeRequestLog(containerConfig.getRequestLog());
 
         jetty.setRequestLog(log);
 
@@ -115,7 +103,7 @@ public class ServletContainerFactory {
         return server;
     }
 
-    protected WebAppContext makeWebAppContext(String documentRoot, String resourceBase, Configuration[] configurations, PathResource containerResources, List<String> gzipMimeTypes, List<ErrorPage> errorPages) {
+    protected WebAppContext makeWebAppContext(String resourceBase, Configuration[] configurations, PathResource containerResources, HttpServerConfig containerConfig) {
 
         WebAppContext webAppContext = new WebAppContextBuilder()
                 .classLoader(Thread.currentThread().getContextClassLoader())
@@ -126,18 +114,18 @@ public class ServletContainerFactory {
                 .parentLoaderPriority(true)
                 .attribute(INCLUDE_JAR_PATTERN, JARS_TO_INCLUDE)
                 .jspServlet(JSP_SERVLET)
-                .gzipMimeTypes(gzipMimeTypes)
-                .errorPages(errorPages)
+                .gzipMimeTypes(containerConfig.getGzipMimeTypes())
+                .errorPages(containerConfig.getErrorPages())
                 .stateless()
                 .staticAssetServlet(resourceBase + "/public/")
                 .build();
 
-        webAppContext.addFilter(EntryFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+        webAppContext.addFilter(containerConfig.getFilterClass(), "/*", EnumSet.of(DispatcherType.REQUEST));
 
         return webAppContext;
     }
 
-    protected WebAppContext makeWebAppContextForWAR(String documentRoot, Configuration[] configurations, Resource war, List<String> gzipMimeTypes, List<ErrorPage> errorPages) {
+    protected WebAppContext makeWebAppContextForWAR(Configuration[] configurations, Resource war, HttpServerConfig containerConfig) {
         logger.debug("war: " + war.getURI().toString());
 
         WebAppContext webAppContext = new WebAppContextBuilder()
@@ -147,13 +135,13 @@ public class ServletContainerFactory {
                 .parentLoaderPriority(true)
                 .attribute(INCLUDE_JAR_PATTERN, JARS_TO_INCLUDE)
                 .jspServlet(JSP_SERVLET)
-                .gzipMimeTypes(gzipMimeTypes)
-                .errorPages(errorPages)
+                .gzipMimeTypes(containerConfig.getGzipMimeTypes())
+                .errorPages(containerConfig.getErrorPages())
                 .stateless()
                 .staticAssetServletWar("/public/")
                 .build();
 
-        webAppContext.addFilter(EntryFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+        webAppContext.addFilter(containerConfig.getFilterClass(), "/*", EnumSet.of(DispatcherType.REQUEST));
         webAppContext.setExtractWAR(true);
         webAppContext.setWarResource(war);
 

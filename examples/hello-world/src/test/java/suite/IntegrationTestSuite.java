@@ -5,6 +5,7 @@ import net.tokensmith.hello.controller.*;
 import net.tokensmith.hello.controller.api.v2.BrokenRestResourceTest;
 import net.tokensmith.hello.controller.api.v2.HelloCsrfRestResourceTest;
 import net.tokensmith.hello.controller.api.v2.HelloSessionRestResourceTest;
+import net.tokensmith.otter.server.HttpServerConfig;
 import org.apache.tomcat.util.descriptor.web.ErrorPage;
 import net.tokensmith.hello.controller.api.v2.HelloRestResourceTest;
 import org.asynchttpclient.AsyncHttpClient;
@@ -75,9 +76,16 @@ public class IntegrationTestSuite {
                 "text/css", "application/javascript", "text/javascript",
                 "application/json");
 
-        servletContainer = servletContainerFactory.makeServletContainer(
-                DOCUMENT_ROOT, HelloResource.class, RANDOM_PORT, REQUEST_LOG, gzipMimeTypes, errorPages
-        );
+        HttpServerConfig containerConfig = new HttpServerConfig.Builder()
+                .documentRoot(DOCUMENT_ROOT)
+                .clazz(HelloResource.class)
+                .port(RANDOM_PORT)
+                .requestLog(REQUEST_LOG)
+                .gzipMimeTypes(gzipMimeTypes)
+                .errorPages(errorPages)
+                .build();
+
+        servletContainer = servletContainerFactory.makeServletContainer(containerConfig);
         servletContainer.start();
 
         servletContainerURI = servletContainer.getURI();
