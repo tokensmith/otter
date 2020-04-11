@@ -3,13 +3,12 @@ package net.tokensmith.otter.security.builder;
 import com.fasterxml.jackson.databind.ObjectReader;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
+import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.controller.entity.StatusCode;
-import net.tokensmith.otter.router.entity.between.Between;
 import net.tokensmith.otter.router.entity.between.RestBetween;
 import net.tokensmith.otter.security.RandomString;
 import net.tokensmith.otter.security.builder.entity.RestBetweens;
 import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
-import net.tokensmith.otter.security.csrf.between.html.CheckCSRF;
 import net.tokensmith.otter.security.csrf.between.rest.RestCheckCSRF;
 import net.tokensmith.otter.security.session.between.rest.RestReadSession;
 import net.tokensmith.otter.security.session.util.Decrypt;
@@ -26,13 +25,18 @@ public class RestBetweenBuilder<S, U> {
     private static String SESSION_NAME = "session";
 
     private TranslatorAppFactory appFactory;
-    private Boolean secure;
+
+    // csrf
     private SymmetricKey signKey;
     private Map<String, SymmetricKey> rotationSignKeys;
     private StatusCode csrfFailStatusCode;
+    private CookieConfig csrfCookieConfig;
+
+    // session
     private SymmetricKey encKey;
     private Map<String, SymmetricKey> rotationEncKeys;
     private StatusCode sessionFailStatusCode;
+    private CookieConfig sessionCookieConfig;
 
     private Class<S> sessionClazz;
     private ObjectReader sessionObjectReader;
@@ -42,11 +46,6 @@ public class RestBetweenBuilder<S, U> {
 
     public RestBetweenBuilder<S, U> routerAppFactory(TranslatorAppFactory appFactory) {
         this.appFactory = appFactory;
-        return this;
-    }
-
-    public RestBetweenBuilder<S, U> secure(Boolean secure) {
-        this.secure = secure;
         return this;
     }
 
@@ -60,6 +59,11 @@ public class RestBetweenBuilder<S, U> {
         return this;
     }
 
+    public RestBetweenBuilder<S, U> csrfCookieConfig(CookieConfig csrfCookieConfig) {
+        this.csrfCookieConfig = csrfCookieConfig;
+        return this;
+    }
+
     public RestBetweenBuilder<S, U> encKey(SymmetricKey encKey) {
         this.encKey = encKey;
         return this;
@@ -67,6 +71,11 @@ public class RestBetweenBuilder<S, U> {
 
     public RestBetweenBuilder<S, U> rotationEncKeys(Map<String, SymmetricKey> rotationEncKeys) {
         this.rotationEncKeys = rotationEncKeys;
+        return this;
+    }
+
+    public RestBetweenBuilder<S, U> sessionCookieConfig(CookieConfig sessionCookieConfig) {
+        this.sessionCookieConfig = sessionCookieConfig;
         return this;
     }
 

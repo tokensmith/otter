@@ -1,5 +1,7 @@
 package net.tokensmith.otter.gateway.servlet.translator;
 
+import helper.FixtureFactory;
+import net.tokensmith.otter.gateway.entity.Shape;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -12,6 +14,7 @@ import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.entity.io.Ask;
 import net.tokensmith.otter.translator.MimeTypeTranslator;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.*;
@@ -20,6 +23,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,11 +43,13 @@ public class HttpServletRequestTranslatorTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        Shape shape = FixtureFactory.makeShape("1234", "56789");
         subject = new HttpServletRequestTranslator(
                 mockHttpServletCookieTranslator,
                 mockHttpServletRequestHeaderTranslator,
                 mockQueryStringToMap,
-                mockMimeTypeTranslator
+                mockMimeTypeTranslator,
+                shape.getCookieConfigs()
         );
     }
 
@@ -255,5 +261,42 @@ public class HttpServletRequestTranslatorTest {
         assertThat(actual.getCsrfChallenge().isPresent(), is(false));
         assertThat(actual.getIpAddress(), is(notNullValue()));
         assertThat(actual.getIpAddress(), is("127.0.0.1"));
+    }
+
+    // cookie tests.
+    @Test
+    public void fromWhenDuplicateCookieThenIgnoreIt() {
+        Cookie[] cookies = new Cookie[2];
+        cookies[0] = new Cookie("session", "test-value");
+        cookies[1] = new Cookie("session", "test-value");
+
+        net.tokensmith.otter.controller.entity.Cookie otterCookie = new net.tokensmith.otter.controller.entity.Cookie();
+        otterCookie.setName("session");
+        otterCookie.setValue("test-value");
+        when(mockHttpServletCookieTranslator.from(any(Cookie.class))).thenReturn(otterCookie);
+
+        Map<String, net.tokensmith.otter.controller.entity.Cookie> actual = subject.from(cookies);
+        assertThat(actual.size(), is(1));
+        assertThat(actual.get("session").getValue(), is("test-value"));
+    }
+
+    @Test
+    public void fromWhenHttpOnlyIsFalseThenOverrideToTrue() {
+        Cookie[] cookies = new Cookie[1];
+        Cookie cookie = new Cookie("session", "test-value");
+        cookie.setHttpOnly(false);
+        cookies[0] = cookie;
+
+        net.tokensmith.otter.controller.entity.Cookie otterCookie = new net.tokensmith.otter.controller.entity.Cookie();
+        otterCookie.setName("session");
+        otterCookie.setValue("test-value");
+        otterCookie.setHttpOnly(false);
+
+        when(mockHttpServletCookieTranslator.from(any(Cookie.class))).thenReturn(otterCookie);
+
+        Map<String, net.tokensmith.otter.controller.entity.Cookie> actual = subject.from(cookies);
+        assertThat(actual.size(), is(1));
+        assertThat(actual.get("session").getValue(), is("test-value"));
+        assertThat(actual.get("session").isHttpOnly(), is(true));
     }
 }

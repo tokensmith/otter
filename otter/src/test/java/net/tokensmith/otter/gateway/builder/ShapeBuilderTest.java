@@ -30,7 +30,6 @@ public class ShapeBuilderTest {
                 .csrfFailTemplate(Optional.of("/WEB-INF/jsp/csrf.jsp"))
                 .rotationEncKeys(rotationEncKeys)
                 .rotationSignKeys(rotationSignKeys)
-                .secure(true)
                 .writeChunkSize(1024)
                 .readChunkSize(1024)
                 .build();
@@ -45,7 +44,6 @@ public class ShapeBuilderTest {
         assertThat(actual.getCsrfFailTemplate().get(), is("/WEB-INF/jsp/csrf.jsp"));
         assertThat(actual.getRotationEncKeys(), is(rotationEncKeys));
         assertThat(actual.getRotationSignKeys(), is(rotationSignKeys));
-        assertThat(actual.getSecure(), is(true));
         assertThat(actual.getWriteChunkSize(), is(1024));
         assertThat(actual.getReadChunkSize(), is(1024));
     }
@@ -62,7 +60,6 @@ public class ShapeBuilderTest {
                 .signkey(signKey)
                 .rotationEncKeys(rotationEncKeys)
                 .rotationSignKeys(rotationSignKeys)
-                .secure(true)
                 .writeChunkSize(1024)
                 .readChunkSize(1024)
                 .build();
@@ -75,7 +72,6 @@ public class ShapeBuilderTest {
         assertThat(actual.getCsrfFailTemplate().isPresent(), is(false));
         assertThat(actual.getRotationEncKeys(), is(rotationEncKeys));
         assertThat(actual.getRotationSignKeys(), is(rotationSignKeys));
-        assertThat(actual.getSecure(), is(true));
         assertThat(actual.getWriteChunkSize(), is(1024));
         assertThat(actual.getReadChunkSize(), is(1024));
     }

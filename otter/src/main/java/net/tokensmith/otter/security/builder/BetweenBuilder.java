@@ -25,20 +25,26 @@ import java.util.Map;
 import java.util.Optional;
 
 public class BetweenBuilder<S, U> {
+    // #186: review how these cookie names are used.
     private static String CSRF_NAME = "csrfToken";
     private static String SESSION_NAME = "session";
     public static final String COULD_NOT_ACCESS_SESSION_CTORS = "Could not access session copy constructor";
 
     private TranslatorAppFactory appFactory;
-    private Boolean secure;
+
+    // csrf
     private SymmetricKey signKey;
     private Map<String, SymmetricKey> rotationSignKeys;
     private StatusCode csrfFailStatusCode;
     private Optional<String> csrfFailTemplate;
+    private CookieConfig csrfCookieConfig;
+
+    // session
     private SymmetricKey encKey;
     private Map<String, SymmetricKey> rotationEncKeys;
     private StatusCode sessionFailStatusCode;
     private Optional<String> sessionFailTemplate;
+    private CookieConfig sessionCookieConfig;
 
     private Class<S> sessionClass;
     private ObjectReader sessionObjectReader;
@@ -52,11 +58,6 @@ public class BetweenBuilder<S, U> {
         return this;
     }
 
-    public BetweenBuilder<S, U> secure(Boolean secure) {
-        this.secure = secure;
-        return this;
-    }
-
     public BetweenBuilder<S, U> signKey(SymmetricKey signKey) {
         this.signKey = signKey;
         return this;
@@ -64,6 +65,11 @@ public class BetweenBuilder<S, U> {
 
     public BetweenBuilder<S, U> rotationSignKeys(Map<String, SymmetricKey> rotationSignKeys) {
         this.rotationSignKeys = rotationSignKeys;
+        return this;
+    }
+
+    public BetweenBuilder<S, U> csrfCookieConfig(CookieConfig csrfCookieConfig) {
+        this.csrfCookieConfig = csrfCookieConfig;
         return this;
     }
 
@@ -77,8 +83,12 @@ public class BetweenBuilder<S, U> {
         return this;
     }
 
+    public BetweenBuilder<S, U> sessionCookieConfig(CookieConfig sessionCookieConfig) {
+        this.sessionCookieConfig = sessionCookieConfig;
+        return this;
+    }
+
     public BetweenBuilder<S, U> csrfPrepare() {
-        CookieConfig csrfCookieConfig = new CookieConfig(CSRF_NAME, secure, -1, true);
         DoubleSubmitCSRF doubleSubmitCSRF = new DoubleSubmitCSRF(new JwtAppFactory(), new RandomString(), signKey, rotationSignKeys);
 
         Between<S,U> prepareCSRF = new PrepareCSRF<S, U>(csrfCookieConfig, doubleSubmitCSRF);
@@ -123,8 +133,6 @@ public class BetweenBuilder<S, U> {
     }
 
     public BetweenBuilder<S, U> session() throws SessionCtorException {
-        CookieConfig sessionCookieConfig = new CookieConfig(SESSION_NAME, secure, -1, true);
-
         try {
             sessionCtor = sessionClass.getConstructor(sessionClass);
         } catch (NoSuchMethodException e) {
@@ -142,8 +150,6 @@ public class BetweenBuilder<S, U> {
     }
 
     public BetweenBuilder<S, U> optionalSession() throws SessionCtorException {
-        CookieConfig sessionCookieConfig = new CookieConfig(SESSION_NAME, secure, -1, true);
-
         try {
             sessionCtor = sessionClass.getConstructor(sessionClass);
         } catch (NoSuchMethodException e) {

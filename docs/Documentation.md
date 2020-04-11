@@ -572,6 +572,7 @@ This allows applications to have many ways to react to a not found url based on 
 #### Configure
 Configuring otter is done by implementing [Configure](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/gateway/Configure.java). 
 The implementation instructs otter how to:
+ - Set cookie configuration for CSRF, Session, and other cookies
  - Set CSRF signature key
  - Set the status code when CSRF fails
  - Set the template when CSRF fails

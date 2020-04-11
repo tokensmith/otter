@@ -1,6 +1,8 @@
 package net.tokensmith.otter.controller.entity;
 
 
+import java.util.Objects;
+
 public class Cookie {
     private String name;
     private String value;
@@ -82,5 +84,26 @@ public class Cookie {
 
     public void setHttpOnly(boolean httpOnly) {
         this.httpOnly = httpOnly;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cookie cookie = (Cookie) o;
+        return maxAge == cookie.maxAge &&
+                secure == cookie.secure &&
+                version == cookie.version &&
+                httpOnly == cookie.httpOnly &&
+                Objects.equals(name, cookie.name) &&
+                Objects.equals(value, cookie.value) &&
+                Objects.equals(comment, cookie.comment) &&
+                Objects.equals(domain, cookie.domain) &&
+                Objects.equals(path, cookie.path);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, value, comment, domain, maxAge, path, secure, version, httpOnly);
     }
 }

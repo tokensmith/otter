@@ -1,14 +1,16 @@
 package net.tokensmith.otter.gateway.builder;
 
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
+import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.gateway.entity.Shape;
 
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.Map.entry;
+
 public class ShapeBuilder {
-    private Boolean secure;
     private SymmetricKey signKey;
     private Optional<String> csrfFailTemplate = Optional.empty();
     private StatusCode csrfFailStatusCode = StatusCode.FORBIDDEN;
@@ -20,10 +22,11 @@ public class ShapeBuilder {
     private Integer writeChunkSize;
     private Integer readChunkSize;
 
-    public ShapeBuilder secure(Boolean secure) {
-        this.secure = secure;
-        return this;
-    }
+
+    private Map<String, CookieConfig> cookieConfigs = Map.ofEntries(
+        entry(Shape.CSRF_COOKIE_NAME, new CookieConfig(Shape.CSRF_COOKIE_NAME, false, -1, true)),
+        entry(Shape.SESSION_COOKIE_NAME, new CookieConfig(Shape.SESSION_COOKIE_NAME, false, -1, true))
+    );
 
     public ShapeBuilder signkey(SymmetricKey signKey) {
         this.signKey = signKey;
@@ -75,7 +78,34 @@ public class ShapeBuilder {
         return this;
     }
 
+    public ShapeBuilder sessionCookieConfig(CookieConfig cookieConfig) {
+        this.cookieConfigs.put(Shape.SESSION_COOKIE_NAME, cookieConfig);
+        return this;
+    }
+
+    public ShapeBuilder csrfCookieConfig(CookieConfig cookieConfig) {
+        this.cookieConfigs.put(Shape.CSRF_COOKIE_NAME, cookieConfig);
+        return this;
+    }
+
+    public ShapeBuilder cookieConfig(CookieConfig cookieConfig) {
+        this.cookieConfigs.put(cookieConfig.getName(), cookieConfig);
+        return this;
+    }
+
     public Shape build() {
-        return new Shape(secure, signKey, csrfFailTemplate, csrfFailStatusCode, encKey, sessionFailTemplate, sessionFailStatusCode, rotationSignKeys, rotationEncKeys, writeChunkSize, readChunkSize);
+        return new Shape(
+            signKey,
+            csrfFailTemplate,
+            csrfFailStatusCode,
+            encKey,
+            sessionFailTemplate,
+            sessionFailStatusCode,
+            rotationSignKeys,
+            rotationEncKeys,
+            writeChunkSize,
+            readChunkSize,
+            cookieConfigs
+        );
     }
 }

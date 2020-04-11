@@ -67,11 +67,11 @@ public class LocationTranslatorFactory {
     protected <S, U> Betweens<S, U> csrfPrepare(TranslatorAppFactory appFactory) {
         return new BetweenBuilder<S, U>()
                 .routerAppFactory(appFactory)
-                .secure(shape.getSecure())
                 .signKey(shape.getSignkey())
                 .rotationSignKeys(shape.getRotationSignKeys())
                 .csrfFailStatusCode(shape.getCsrfFailStatusCode())
                 .csrfFailTemplate(shape.getCsrfFailTemplate())
+                .csrfCookieConfig(shape.getCsrfCookie())
                 .csrfPrepare()
                 .build();
 
@@ -80,11 +80,11 @@ public class LocationTranslatorFactory {
     protected <S, U> Betweens<S, U> csrfProtect(TranslatorAppFactory appFactory) {
         return new BetweenBuilder<S, U>()
                 .routerAppFactory(appFactory)
-                .secure(shape.getSecure())
                 .signKey(shape.getSignkey())
                 .rotationSignKeys(shape.getRotationSignKeys())
                 .csrfFailStatusCode(shape.getCsrfFailStatusCode())
                 .csrfFailTemplate(shape.getCsrfFailTemplate())
+                .csrfCookieConfig(shape.getCsrfCookie())
                 .csrfProtect()
                 .build();
 
@@ -93,12 +93,12 @@ public class LocationTranslatorFactory {
     protected <S, U> Betweens<S, U> session(TranslatorAppFactory appFactory, Class<S> sessionClazz) throws SessionCtorException {
         return new BetweenBuilder<S, U>()
                 .routerAppFactory(appFactory)
-                .secure(shape.getSecure())
                 .encKey(shape.getEncKey())
                 .rotationEncKey(shape.getRotationEncKeys())
                 .sessionClass(sessionClazz)
                 .sessionFailStatusCode(shape.getSessionFailStatusCode())
                 .sessionFailTemplate(shape.getSessionFailTemplate())
+                .sessionCookieConfig(shape.getSessionCookie())
                 .session()
                 .build();
     }
@@ -107,12 +107,12 @@ public class LocationTranslatorFactory {
     protected <S, U> Betweens<S, U> sessionOptional(TranslatorAppFactory appFactory, Class<S> sessionClazz) throws SessionCtorException {
         return new BetweenBuilder<S, U>()
                 .routerAppFactory(appFactory)
-                .secure(shape.getSecure())
                 .encKey(shape.getEncKey())
                 .rotationEncKey(shape.getRotationEncKeys())
                 .sessionClass(sessionClazz)
                 .sessionFailStatusCode(shape.getSessionFailStatusCode())
                 .sessionFailTemplate(shape.getSessionFailTemplate())
+                .sessionCookieConfig(shape.getSessionCookie())
                 .optionalSession()
                 .build();
     }

@@ -70,7 +70,6 @@ public class RestLocationTranslatorFactory {
     protected <S, U> RestBetweens<S, U> session(TranslatorAppFactory appFactory, Class<S> sessionClazz) {
         return new RestBetweenBuilder<S, U>()
                 .routerAppFactory(appFactory)
-                .secure(shape.getSecure())
                 .encKey(shape.getEncKey())
                 .rotationEncKeys(shape.getRotationEncKeys())
                 .sessionClazz(sessionClazz)
@@ -82,7 +81,6 @@ public class RestLocationTranslatorFactory {
     protected <S, U> RestBetweens<S, U> sessionOptional(TranslatorAppFactory appFactory, Class<S> sessionClazz) {
         return new RestBetweenBuilder<S, U>()
                 .routerAppFactory(appFactory)
-                .secure(shape.getSecure())
                 .encKey(shape.getEncKey())
                 .rotationEncKeys(shape.getRotationEncKeys())
                 .sessionClazz(sessionClazz)
@@ -94,7 +92,6 @@ public class RestLocationTranslatorFactory {
     protected <S, U> RestBetweens<S, U> csrfProtect(TranslatorAppFactory appFactory) {
         return new RestBetweenBuilder<S, U>()
                 .routerAppFactory(appFactory)
-                .secure(shape.getSecure())
                 .signKey(shape.getSignkey())
                 .rotationSignKeys(shape.getRotationSignKeys())
                 .csrfFailStatusCode(shape.getCsrfFailStatusCode())

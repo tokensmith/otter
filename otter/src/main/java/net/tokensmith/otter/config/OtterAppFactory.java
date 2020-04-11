@@ -38,6 +38,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -71,8 +72,14 @@ public class OtterAppFactory {
 
         Integer writeChunkSize = (shape.getWriteChunkSize() != null) ? shape.getWriteChunkSize() : WRITE_CHUNK_SIZE;
 
+        // just in case not using default cookie names for session, csrf.
+        Map<String, CookieConfig> cookieConfigs = new HashMap<>();
+        for(Map.Entry<String, CookieConfig> item: shape.getCookieConfigs().entrySet()) {
+            cookieConfigs.put(item.getValue().getName(), item.getValue());
+        }
+
         return new ServletGateway(
-                httpServletRequestTranslator(),
+                httpServletRequestTranslator(cookieConfigs),
                 httpServletRequestMerger(),
                 httpServletResponseMerger(),
                 engine(),
@@ -185,12 +192,13 @@ public class OtterAppFactory {
         return defaultDispatchErrors;
     }
 
-    public HttpServletRequestTranslator httpServletRequestTranslator() {
+    public HttpServletRequestTranslator httpServletRequestTranslator(Map<String, CookieConfig> cookieConfigs) {
         return new HttpServletRequestTranslator(
                 httpServletRequestCookieTranslator(),
                 new HttpServletRequestHeaderTranslator(),
                 new QueryStringToMap(),
-                new MimeTypeTranslator()
+                new MimeTypeTranslator(),
+                cookieConfigs
         );
     }
 
