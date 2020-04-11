@@ -72,7 +72,7 @@ public class HttpServletResponseMerger {
 
                 logCookie("Removing cookie from container request", requestCookie);
             } else {
-                Cookie toUpdate =  httpServletRequestCookieTranslator.to.apply(otterCookie);
+                Cookie toUpdate =  httpServletRequestCookieTranslator.to(otterCookie);
                 toUpdate.setComment("updated at " + Instant.now().getEpochSecond());
                 response.addCookie(toUpdate);
 
@@ -105,7 +105,7 @@ public class HttpServletResponseMerger {
         for(Map.Entry<String, net.tokensmith.otter.controller.entity.Cookie> otterCookie: otterCookies.entrySet()) {
             Cookie containerCookie = containerCookiesMap.get(otterCookie.getKey());
             if (containerCookie == null) {
-                Cookie toAdd =  httpServletRequestCookieTranslator.to.apply(otterCookie.getValue());
+                Cookie toAdd =  httpServletRequestCookieTranslator.to(otterCookie.getValue());
                 logCookie( "Adding cookie to container response", toAdd);
                 response.addCookie(toAdd);
             }

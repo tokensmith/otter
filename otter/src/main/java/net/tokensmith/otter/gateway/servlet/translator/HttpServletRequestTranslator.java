@@ -98,7 +98,7 @@ public class HttpServletRequestTranslator  {
         if (containerCookies != null) {
             // throw away duplicate cookies.. idk why duplicates occur.
             for (javax.servlet.http.Cookie cookie : containerCookies) {
-                Cookie candidate = httpServletCookieTranslator.from.apply(cookie);
+                Cookie candidate = httpServletCookieTranslator.from(cookie);
                 Cookie existing = otterCookies.get(candidate.getName());
                 if (existing != null && existing.equals(candidate)) {
                     LOGGER.debug("Found a duplicate cookie, {}, ignoring it.", existing.getName());
