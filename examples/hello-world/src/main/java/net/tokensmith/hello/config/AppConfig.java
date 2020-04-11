@@ -67,7 +67,6 @@ public class AppConfig implements Configure {
         SymmetricKey signKey = appFactory.signKey();
 
         return new ShapeBuilder()
-                .secure(false)
                 .encKey(encKey)
                 .signkey(signKey)
                 .build();

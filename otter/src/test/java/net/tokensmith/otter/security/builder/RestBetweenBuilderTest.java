@@ -44,7 +44,6 @@ public class RestBetweenBuilderTest {
 
         RestBetweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .secure(false)
                 .encKey(preferredEncKey)
                 .rotationEncKeys(rotationEncKeys)
                 .sessionClazz(DummySession.class)
@@ -71,7 +70,6 @@ public class RestBetweenBuilderTest {
 
         RestBetweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .secure(true)
                 .encKey(preferredEncKey)
                 .rotationEncKeys(rotationEncKeys)
                 .sessionClazz(DummySession.class)
@@ -97,7 +95,6 @@ public class RestBetweenBuilderTest {
 
         RestBetweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .secure(false)
                 .encKey(preferredEncKey)
                 .rotationEncKeys(rotationEncKeys)
                 .sessionClazz(DummySession.class)
@@ -122,7 +119,6 @@ public class RestBetweenBuilderTest {
 
         RestBetweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .secure(true)
                 .encKey(preferredEncKey)
                 .rotationEncKeys(rotationEncKeys)
                 .sessionClazz(DummySession.class)
@@ -148,7 +144,6 @@ public class RestBetweenBuilderTest {
 
         RestBetweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .secure(true)
                 .signKey(preferredSignKey)
                 .rotationSignKeys(rotationSignKeys)
                 .csrfFailStatusCode(StatusCode.FORBIDDEN)

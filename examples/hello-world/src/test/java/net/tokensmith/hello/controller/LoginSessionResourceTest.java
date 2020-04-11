@@ -148,7 +148,7 @@ public class LoginSessionResourceTest {
         Cookie actualSessionCookie = getCookie(getResponse, "session");
 
         assertThat(actualSessionCookie, is(notNullValue()));
-        assertThat(actualSessionCookie.isHttpOnly(), is(false));
+        assertThat(actualSessionCookie.isHttpOnly(), is(true));
         assertThat(actualSessionCookie.maxAge(), is(-9223372036854775808L));
         // until the browser shutsdown.. dont ask me its teh sevlet api.
         assertThat(actualSessionCookie.name(), is("session"));

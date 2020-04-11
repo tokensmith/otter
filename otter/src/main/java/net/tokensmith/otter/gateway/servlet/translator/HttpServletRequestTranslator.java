@@ -2,6 +2,7 @@ package net.tokensmith.otter.gateway.servlet.translator;
 
 
 import net.tokensmith.otter.QueryStringToMap;
+import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.mime.MimeType;
 import net.tokensmith.otter.controller.entity.mime.SubType;
@@ -33,14 +34,18 @@ public class HttpServletRequestTranslator  {
     private HttpServletRequestHeaderTranslator httpServletRequestHeaderTranslator;
     private QueryStringToMap queryStringToMap;
     private MimeTypeTranslator mimeTypeTranslator;
+    // used to ensure http only is set on incoming cookies
+    private Map<String, CookieConfig> cookieConfigs;
 
     public HttpServletRequestTranslator(HttpServletRequestCookieTranslator httpServletCookieTranslator,
                                         HttpServletRequestHeaderTranslator httpServletRequestHeaderTranslator,
-                                        QueryStringToMap queryStringToMap, MimeTypeTranslator mimeTypeTranslator) {
+                                        QueryStringToMap queryStringToMap, MimeTypeTranslator mimeTypeTranslator,
+                                        Map<String, CookieConfig> cookieConfigs) {
         this.httpServletCookieTranslator = httpServletCookieTranslator;
         this.httpServletRequestHeaderTranslator = httpServletRequestHeaderTranslator;
         this.queryStringToMap = queryStringToMap;
         this.mimeTypeTranslator = mimeTypeTranslator;
+        this.cookieConfigs = cookieConfigs;
     }
 
     public Ask from(HttpServletRequest containerRequest, byte[] containerBody) throws IOException {
@@ -50,20 +55,7 @@ public class HttpServletRequestTranslator  {
         String pathWithParams = containerRequest.getRequestURI() +
                 queryStringForUrl(containerRequest.getQueryString());
 
-        Map<String, Cookie> otterCookies = new HashMap<>();
-        if (containerRequest.getCookies() != null) {
-            // throw away duplicate cookies.. idk why duplicates occur.
-            for (javax.servlet.http.Cookie cookie : containerRequest.getCookies()) {
-                Cookie candidate = httpServletCookieTranslator.from.apply(cookie);
-                Cookie existing = otterCookies.get(candidate.getName());
-                if (existing != null && existing.equals(candidate)) {
-                    LOGGER.debug("Found a duplicate cookie, {}, ignoring it.", existing.getName());
-                } else {
-                    otterCookies.put(candidate.getName(), candidate);
-                }
-            }
-        }
-
+        Map<String, Cookie> otterCookies = from(containerRequest.getCookies());
 
         Map<String, String> headers = httpServletRequestHeaderTranslator.from(containerRequest);
         Optional<String> queryString = Optional.ofNullable(containerRequest.getQueryString());
@@ -99,6 +91,34 @@ public class HttpServletRequestTranslator  {
                 .csrfChallenge(Optional.empty())
                 .ipAddress(ipAddress)
                 .build();
+    }
+
+    protected Map<String, Cookie> from(javax.servlet.http.Cookie[] containerCookies) {
+        Map<String, Cookie> otterCookies = new HashMap<>();
+        if (containerCookies != null) {
+            // throw away duplicate cookies.. idk why duplicates occur.
+            for (javax.servlet.http.Cookie cookie : containerCookies) {
+                Cookie candidate = httpServletCookieTranslator.from.apply(cookie);
+                Cookie existing = otterCookies.get(candidate.getName());
+                if (existing != null && existing.equals(candidate)) {
+                    LOGGER.debug("Found a duplicate cookie, {}, ignoring it.", existing.getName());
+                } else {
+                    // ensure http only is set - some ajax wont pass this is.. idk why
+                    CookieConfig expectedConfig = cookieConfigs.get(candidate.getName());
+                    if (expectedConfig != null) {
+                        if (!expectedConfig.getHttpOnly().equals(candidate.isHttpOnly())) {
+                            // force it to the default then.
+                            LOGGER.debug("httpOnly is being overriden for cookie, {}. expected {}, actual {}",
+                                    candidate.getName(), expectedConfig.getHttpOnly(), candidate.isHttpOnly());
+                            candidate.setHttpOnly(expectedConfig.getHttpOnly());
+                        }
+                    }
+
+                    otterCookies.put(candidate.getName(), candidate);
+                }
+            }
+        }
+        return otterCookies;
     }
 
     protected Boolean isForm(Method method, MimeType contentType) {

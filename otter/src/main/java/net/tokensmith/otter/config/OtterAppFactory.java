@@ -71,8 +71,10 @@ public class OtterAppFactory {
 
         Integer writeChunkSize = (shape.getWriteChunkSize() != null) ? shape.getWriteChunkSize() : WRITE_CHUNK_SIZE;
 
+        // 186: may need to tinker with the cookie configs.
+
         return new ServletGateway(
-                httpServletRequestTranslator(),
+                httpServletRequestTranslator(shape.getCookieConfigs()),
                 httpServletRequestMerger(),
                 httpServletResponseMerger(),
                 engine(),
@@ -185,12 +187,13 @@ public class OtterAppFactory {
         return defaultDispatchErrors;
     }
 
-    public HttpServletRequestTranslator httpServletRequestTranslator() {
+    public HttpServletRequestTranslator httpServletRequestTranslator(Map<String, CookieConfig> cookieConfigs) {
         return new HttpServletRequestTranslator(
                 httpServletRequestCookieTranslator(),
                 new HttpServletRequestHeaderTranslator(),
                 new QueryStringToMap(),
-                new MimeTypeTranslator()
+                new MimeTypeTranslator(),
+                cookieConfigs
         );
     }
 

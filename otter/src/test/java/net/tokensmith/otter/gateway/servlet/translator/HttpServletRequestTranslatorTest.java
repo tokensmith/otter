@@ -1,5 +1,7 @@
 package net.tokensmith.otter.gateway.servlet.translator;
 
+import helper.FixtureFactory;
+import net.tokensmith.otter.gateway.entity.Shape;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -39,11 +41,13 @@ public class HttpServletRequestTranslatorTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        Shape shape = FixtureFactory.makeShape("1234", "56789");
         subject = new HttpServletRequestTranslator(
                 mockHttpServletCookieTranslator,
                 mockHttpServletRequestHeaderTranslator,
                 mockQueryStringToMap,
-                mockMimeTypeTranslator
+                mockMimeTypeTranslator,
+                shape.getCookieConfigs()
         );
     }
 

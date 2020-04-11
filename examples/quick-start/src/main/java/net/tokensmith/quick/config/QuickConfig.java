@@ -40,7 +40,6 @@ public class QuickConfig implements Configure {
             Use.SIGNATURE);
 
         return new ShapeBuilder()
-                .secure(false)
                 .encKey(encKey)
                 .signkey(signKey)
                 .build();

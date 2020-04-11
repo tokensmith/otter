@@ -3,6 +3,9 @@ package net.tokensmith.otter.security.builder;
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.config.CookieConfig;
+import net.tokensmith.otter.gateway.builder.ShapeBuilder;
+import net.tokensmith.otter.gateway.entity.Shape;
 import org.junit.Test;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.security.builder.entity.Betweens;
@@ -41,12 +44,13 @@ public class BetweenBuilderTest {
 
         SymmetricKey preferredSignKey = FixtureFactory.signKey("preferred-key");
         Map<String, SymmetricKey> rotationSignKeys = FixtureFactory.rotationSignKeys("rotation-key-", 2);
+        CookieConfig csrfCookieConfig = FixtureFactory.csrfCookieConfig();
 
         Betweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .secure(false)
                 .signKey(preferredSignKey)
                 .rotationSignKeys(rotationSignKeys)
+                .csrfCookieConfig(csrfCookieConfig)
                 .csrfPrepare()
                 .build();
 
@@ -67,12 +71,14 @@ public class BetweenBuilderTest {
 
         SymmetricKey preferredSignKey = FixtureFactory.signKey("preferred-key");
         Map<String, SymmetricKey> rotationSignKeys = FixtureFactory.rotationSignKeys("rotation-key-", 2);
+        CookieConfig csrfCookieConfig = FixtureFactory.csrfCookieConfig();
+        csrfCookieConfig.setSecure(true);
 
         Betweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .secure(true)
                 .signKey(preferredSignKey)
                 .rotationSignKeys(rotationSignKeys)
+                .csrfCookieConfig(csrfCookieConfig)
                 .csrfPrepare()
                 .build();
 
@@ -94,12 +100,13 @@ public class BetweenBuilderTest {
 
         SymmetricKey preferredSignKey = FixtureFactory.signKey("preferred-key");
         Map<String, SymmetricKey> rotationSignKeys = FixtureFactory.rotationSignKeys("rotation-key-", 2);
+        CookieConfig csrfCookieConfig = FixtureFactory.csrfCookieConfig();
 
         Betweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .secure(true)
                 .signKey(preferredSignKey)
                 .rotationSignKeys(rotationSignKeys)
+                .csrfCookieConfig(csrfCookieConfig)
                 .csrfProtect()
                 .build();
 
@@ -120,13 +127,14 @@ public class BetweenBuilderTest {
 
         SymmetricKey preferredEncKey = FixtureFactory.encKey("preferred-key");
         Map<String, SymmetricKey> rotationEncKeys = FixtureFactory.rotationEncKeys("rotation-key-", 2);
+        CookieConfig sessionCookieConfig = FixtureFactory.sessionCookieConfig();
 
         Betweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .secure(false)
                 .encKey(preferredEncKey)
                 .rotationEncKey(rotationEncKeys)
                 .sessionClass(DummySession.class)
+                .sessionCookieConfig(sessionCookieConfig)
                 .session()
                 .build();
 
@@ -153,13 +161,15 @@ public class BetweenBuilderTest {
 
         SymmetricKey preferredEncKey = FixtureFactory.encKey("preferred-key");
         Map<String, SymmetricKey> rotationEncKeys = FixtureFactory.rotationEncKeys("rotation-key-", 2);
+        CookieConfig sessionCookieConfig = FixtureFactory.sessionCookieConfig();
+        sessionCookieConfig.setSecure(true);
 
         Betweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .secure(true)
                 .encKey(preferredEncKey)
                 .rotationEncKey(rotationEncKeys)
                 .sessionClass(DummySession.class)
+                .sessionCookieConfig(sessionCookieConfig)
                 .session()
                 .build();
 
@@ -185,13 +195,14 @@ public class BetweenBuilderTest {
 
         SymmetricKey preferredEncKey = FixtureFactory.encKey("preferred-key");
         Map<String, SymmetricKey> rotationEncKeys = FixtureFactory.rotationEncKeys("rotation-key-", 2);
+        CookieConfig sessionCookieConfig = FixtureFactory.sessionCookieConfig();
 
         Betweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .secure(false)
                 .encKey(preferredEncKey)
                 .rotationEncKey(rotationEncKeys)
                 .sessionClass(DummySession.class)
+                .sessionCookieConfig(sessionCookieConfig)
                 .optionalSession()
                 .build();
 
@@ -218,13 +229,14 @@ public class BetweenBuilderTest {
 
         SymmetricKey preferredEncKey = FixtureFactory.encKey("preferred-key");
         Map<String, SymmetricKey> rotationEncKeys = FixtureFactory.rotationEncKeys("rotation-key-", 2);
+        CookieConfig sessionCookieConfig = FixtureFactory.sessionCookieConfig();
 
         Betweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .secure(true)
                 .encKey(preferredEncKey)
                 .rotationEncKey(rotationEncKeys)
                 .sessionClass(DummySession.class)
+                .sessionCookieConfig(sessionCookieConfig)
                 .optionalSession()
                 .build();
 
@@ -238,7 +250,7 @@ public class BetweenBuilderTest {
         assertThat(actual.getAfter().get(0), is(instanceOf(EncryptSession.class)));
 
         EncryptSession<DummySession, DummyUser> actualEncrypt = (EncryptSession<DummySession, DummyUser>) actual.getAfter().get(0);
-        assertThat(actualEncrypt.getCookieConfig().getSecure(), is(true));
+        assertThat(actualEncrypt.getCookieConfig().getSecure(), is(false));
         assertThat(actualEncrypt.getCookieConfig().getAge(), is(-1));
         assertThat(actualEncrypt.getCookieConfig().getName(), is("session"));
     }
