@@ -2,7 +2,6 @@ package net.tokensmith.otter.router.factory;
 
 
 import helper.FixtureFactory;
-import helper.entity.*;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import org.junit.Before;
@@ -13,8 +12,9 @@ import net.tokensmith.otter.router.entity.between.RestBetween;
 import net.tokensmith.otter.security.builder.entity.RestBetweens;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
@@ -24,23 +24,32 @@ public class RestBetweenFlyweightTest {
     private RestBetweens<DummySession, DummyUser> sessionRequired;
     private RestBetweens<DummySession, DummyUser> sessionOptional;
     private RestBetweens<DummySession, DummyUser> csrfProtect;
-    private Optional<RestBetween<DummySession, DummyUser>> authRequired;
-    private Optional<RestBetween<DummySession, DummyUser>> authOptional;
+    private RestBetweens<DummySession, DummyUser> authRequired;
+    private RestBetweens<DummySession, DummyUser> authOptional;
 
     @Before
     public void setUp() {
         sessionRequired = FixtureFactory.makeRestBetweens();
         sessionOptional = FixtureFactory.makeRestBetweens();
         csrfProtect = FixtureFactory.makeRestBetweens();
-        authRequired = Optional.of(new DummyRestBetween<>());
-        authOptional = Optional.of(new DummyRestBetween<>());
+        authRequired = FixtureFactory.makeRestBetweens();
+        authOptional = FixtureFactory.makeRestBetweens();
 
-        subject = new RestBetweenFlyweight<DummySession, DummyUser>(
-                sessionRequired,
-                sessionOptional,
-                csrfProtect,
-                authRequired,
-                authOptional);
+        Map<Label, List<RestBetween<DummySession, DummyUser>>> before = new HashMap<>();
+        Map<Label, List<RestBetween<DummySession, DummyUser>>> after = new HashMap<>();
+
+        before.put(Label.CSRF_PROTECT, csrfProtect.getBefore());
+        before.put(Label.SESSION_OPTIONAL, sessionOptional.getBefore());
+        before.put(Label.SESSION_REQUIRED, sessionRequired.getBefore());
+        before.put(Label.AUTH_OPTIONAL, authOptional.getBefore());
+        before.put(Label.AUTH_REQUIRED, authRequired.getBefore());
+
+        after.put(Label.SESSION_OPTIONAL, sessionOptional.getAfter());
+        after.put(Label.SESSION_REQUIRED, sessionRequired.getAfter());
+        after.put(Label.AUTH_OPTIONAL, authOptional.getAfter());
+        after.put(Label.AUTH_REQUIRED, authRequired.getAfter());
+
+        subject = new RestBetweenFlyweight<DummySession, DummyUser>(before, after);
     }
 
     @Test
@@ -88,7 +97,7 @@ public class RestBetweenFlyweightTest {
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
-        assertThat(actual.getBefore().get(0), is(authRequired.get()));
+        assertThat(actual.getBefore().get(0), is(authRequired.getBefore().get(0)));
     }
 
     @Test
@@ -100,7 +109,7 @@ public class RestBetweenFlyweightTest {
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
-        assertThat(actual.getBefore().get(0), is(authOptional.get()));
+        assertThat(actual.getBefore().get(0), is(authOptional.getBefore().get(0)));
     }
 
     @Test
@@ -114,7 +123,7 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getBefore().size(), is(2));
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(sessionOptional.getBefore().get(0)));
-        assertThat(actual.getBefore().get(1), is(authOptional.get()));
+        assertThat(actual.getBefore().get(1), is(authOptional.getBefore().get(0)));
     }
 
     @Test
@@ -130,7 +139,7 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
         assertThat(actual.getBefore().get(1), is(sessionOptional.getBefore().get(0)));
-        assertThat(actual.getBefore().get(2), is(authOptional.get()));
+        assertThat(actual.getBefore().get(2), is(authOptional.getBefore().get(0)));
     }
 
     @Test
@@ -144,7 +153,7 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getBefore().size(), is(2));
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(sessionRequired.getBefore().get(0)));
-        assertThat(actual.getBefore().get(1), is(authRequired.get()));
+        assertThat(actual.getBefore().get(1), is(authRequired.getBefore().get(0)));
     }
 
     @Test
@@ -160,7 +169,7 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
         assertThat(actual.getBefore().get(1), is(sessionRequired.getBefore().get(0)));
-        assertThat(actual.getBefore().get(2), is(authRequired.get()));
+        assertThat(actual.getBefore().get(2), is(authRequired.getBefore().get(0)));
     }
 
     @Test
@@ -208,7 +217,7 @@ public class RestBetweenFlyweightTest {
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
-        assertThat(actual.getBefore().get(0), is(authRequired.get()));
+        assertThat(actual.getBefore().get(0), is(authRequired.getBefore().get(0)));
     }
 
     @Test
@@ -220,7 +229,7 @@ public class RestBetweenFlyweightTest {
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
-        assertThat(actual.getBefore().get(0), is(authOptional.get()));
+        assertThat(actual.getBefore().get(0), is(authOptional.getBefore().get(0)));
     }
 
     @Test
@@ -234,7 +243,7 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getBefore().size(), is(2));
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(sessionOptional.getBefore().get(0)));
-        assertThat(actual.getBefore().get(1), is(authOptional.get()));
+        assertThat(actual.getBefore().get(1), is(authOptional.getBefore().get(0)));
     }
 
     @Test
@@ -250,7 +259,7 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
         assertThat(actual.getBefore().get(1), is(sessionOptional.getBefore().get(0)));
-        assertThat(actual.getBefore().get(2), is(authOptional.get()));
+        assertThat(actual.getBefore().get(2), is(authOptional.getBefore().get(0)));
     }
 
     @Test
@@ -264,7 +273,7 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getBefore().size(), is(2));
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(sessionRequired.getBefore().get(0)));
-        assertThat(actual.getBefore().get(1), is(authRequired.get()));
+        assertThat(actual.getBefore().get(1), is(authRequired.getBefore().get(0)));
     }
 
     @Test
@@ -280,7 +289,7 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
         assertThat(actual.getBefore().get(1), is(sessionRequired.getBefore().get(0)));
-        assertThat(actual.getBefore().get(2), is(authRequired.get()));
+        assertThat(actual.getBefore().get(2), is(authRequired.getBefore().get(0)));
     }
 
     @Test
@@ -329,7 +338,7 @@ public class RestBetweenFlyweightTest {
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
-        assertThat(actual.getBefore().get(0), is(authRequired.get()));
+        assertThat(actual.getBefore().get(0), is(authRequired.getBefore().get(0)));
     }
 
     @Test
@@ -341,7 +350,7 @@ public class RestBetweenFlyweightTest {
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
-        assertThat(actual.getBefore().get(0), is(authOptional.get()));
+        assertThat(actual.getBefore().get(0), is(authOptional.getBefore().get(0)));
     }
 
     @Test
@@ -355,7 +364,7 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getBefore().size(), is(2));
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(sessionOptional.getBefore().get(0)));
-        assertThat(actual.getBefore().get(1), is(authOptional.get()));
+        assertThat(actual.getBefore().get(1), is(authOptional.getBefore().get(0)));
     }
 
     @Test
@@ -371,7 +380,7 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
         assertThat(actual.getBefore().get(1), is(sessionOptional.getBefore().get(0)));
-        assertThat(actual.getBefore().get(2), is(authOptional.get()));
+        assertThat(actual.getBefore().get(2), is(authOptional.getBefore().get(0)));
     }
 
     @Test
@@ -385,7 +394,7 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getBefore().size(), is(2));
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(sessionRequired.getBefore().get(0)));
-        assertThat(actual.getBefore().get(1), is(authRequired.get()));
+        assertThat(actual.getBefore().get(1), is(authRequired.getBefore().get(0)));
     }
 
     @Test
@@ -401,7 +410,7 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
         assertThat(actual.getBefore().get(1), is(sessionRequired.getBefore().get(0)));
-        assertThat(actual.getBefore().get(2), is(authRequired.get()));
+        assertThat(actual.getBefore().get(2), is(authRequired.getBefore().get(0)));
     }
 
     @Test
@@ -450,7 +459,7 @@ public class RestBetweenFlyweightTest {
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
-        assertThat(actual.getBefore().get(0), is(authRequired.get()));
+        assertThat(actual.getBefore().get(0), is(authRequired.getBefore().get(0)));
     }
 
     @Test
@@ -462,7 +471,7 @@ public class RestBetweenFlyweightTest {
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
-        assertThat(actual.getBefore().get(0), is(authOptional.get()));
+        assertThat(actual.getBefore().get(0), is(authOptional.getBefore().get(0)));
     }
 
     @Test
@@ -476,7 +485,7 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getBefore().size(), is(2));
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(sessionOptional.getBefore().get(0)));
-        assertThat(actual.getBefore().get(1), is(authOptional.get()));
+        assertThat(actual.getBefore().get(1), is(authOptional.getBefore().get(0)));
     }
 
     @Test
@@ -492,7 +501,7 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
         assertThat(actual.getBefore().get(1), is(sessionOptional.getBefore().get(0)));
-        assertThat(actual.getBefore().get(2), is(authOptional.get()));
+        assertThat(actual.getBefore().get(2), is(authOptional.getBefore().get(0)));
     }
 
     @Test
@@ -506,7 +515,7 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getBefore().size(), is(2));
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(sessionRequired.getBefore().get(0)));
-        assertThat(actual.getBefore().get(1), is(authRequired.get()));
+        assertThat(actual.getBefore().get(1), is(authRequired.getBefore().get(0)));
     }
 
     @Test
@@ -522,7 +531,7 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
         assertThat(actual.getBefore().get(1), is(sessionRequired.getBefore().get(0)));
-        assertThat(actual.getBefore().get(2), is(authRequired.get()));
+        assertThat(actual.getBefore().get(2), is(authRequired.getBefore().get(0)));
     }
 
     @Test
@@ -572,7 +581,7 @@ public class RestBetweenFlyweightTest {
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
-        assertThat(actual.getBefore().get(0), is(authRequired.get()));
+        assertThat(actual.getBefore().get(0), is(authRequired.getBefore().get(0)));
     }
 
     @Test
@@ -584,7 +593,7 @@ public class RestBetweenFlyweightTest {
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getAfter().size(), is(0));
-        assertThat(actual.getBefore().get(0), is(authOptional.get()));
+        assertThat(actual.getBefore().get(0), is(authOptional.getBefore().get(0)));
     }
 
     @Test
@@ -598,7 +607,7 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getBefore().size(), is(2));
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(sessionOptional.getBefore().get(0)));
-        assertThat(actual.getBefore().get(1), is(authOptional.get()));
+        assertThat(actual.getBefore().get(1), is(authOptional.getBefore().get(0)));
     }
 
     @Test
@@ -614,7 +623,7 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
         assertThat(actual.getBefore().get(1), is(sessionOptional.getBefore().get(0)));
-        assertThat(actual.getBefore().get(2), is(authOptional.get()));
+        assertThat(actual.getBefore().get(2), is(authOptional.getBefore().get(0)));
     }
 
     @Test
@@ -628,7 +637,7 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getBefore().size(), is(2));
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(sessionRequired.getBefore().get(0)));
-        assertThat(actual.getBefore().get(1), is(authRequired.get()));
+        assertThat(actual.getBefore().get(1), is(authRequired.getBefore().get(0)));
     }
 
     @Test
@@ -644,6 +653,6 @@ public class RestBetweenFlyweightTest {
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getBefore().get(0), is(csrfProtect.getBefore().get(0)));
         assertThat(actual.getBefore().get(1), is(sessionRequired.getBefore().get(0)));
-        assertThat(actual.getBefore().get(2), is(authRequired.get()));
+        assertThat(actual.getBefore().get(2), is(authRequired.getBefore().get(0)));
     }
 }

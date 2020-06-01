@@ -4,6 +4,7 @@ import helper.entity.DummyBetween;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import helper.entity.ServerErrorResource;
+import net.tokensmith.otter.gateway.entity.Label;
 import org.junit.Test;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.gateway.entity.ErrorTarget;
@@ -15,8 +16,10 @@ import static org.junit.Assert.*;
 
 public class GroupBuilderTest {
 
+    // 188: write test to add before, after with labels.
+
     @Test
-    public void buildShouldHaveEmptyAuthBetweens() {
+    public void buildShouldHaveEmptyBetweens() {
 
         Group<DummySession, DummyUser> actual = new GroupBuilder<DummySession, DummyUser>()
                 .name("API")
@@ -26,6 +29,12 @@ public class GroupBuilderTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getName(), is("API"));
         assertThat(actual.getSessionClazz(), is(notNullValue()));
+
+        assertThat(actual.getBefore(), is(notNullValue()));
+        assertThat(actual.getBefore().size(), is(0));
+        assertThat(actual.getAfter(), is(notNullValue()));
+        assertThat(actual.getAfter().size(), is(0));
+
         assertThat(actual.getAuthOptional(), is(notNullValue()));
         assertThat(actual.getAuthOptional().isPresent(), is(false));
         assertThat(actual.getAuthRequired(), is(notNullValue()));
@@ -45,11 +54,23 @@ public class GroupBuilderTest {
                 .sessionClazz(DummySession.class)
                 .authRequired(authRequired)
                 .authOptional(authOptional)
+                .before(Label.AUTH_REQUIRED, authRequired)
+                .before(Label.AUTH_OPTIONAL, authOptional)
                 .build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getName(), is("API"));
         assertThat(actual.getSessionClazz(), is(notNullValue()));
+
+        assertThat(actual.getBefore(), is(notNullValue()));
+        assertThat(actual.getBefore().size(), is(2));
+        assertThat(actual.getBefore().get(Label.AUTH_REQUIRED).size(), is(1));
+        assertThat(actual.getBefore().get(Label.AUTH_REQUIRED).get(0), is(authRequired));
+        assertThat(actual.getBefore().get(Label.AUTH_OPTIONAL).size(), is(1));
+        assertThat(actual.getBefore().get(Label.AUTH_OPTIONAL).get(0), is(authOptional));
+        assertThat(actual.getAfter(), is(notNullValue()));
+        assertThat(actual.getAfter().size(), is(0));
+
         assertThat(actual.getAuthOptional(), is(notNullValue()));
         assertThat(actual.getAuthOptional().isPresent(), is(true));
         assertThat(actual.getAuthOptional().get(), is(authOptional));
@@ -80,6 +101,12 @@ public class GroupBuilderTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getName(), is("API"));
         assertThat(actual.getSessionClazz(), is(notNullValue()));
+
+        assertThat(actual.getBefore(), is(notNullValue()));
+        assertThat(actual.getBefore().size(), is(0));
+        assertThat(actual.getAfter(), is(notNullValue()));
+        assertThat(actual.getAfter().size(), is(0));
+
         assertThat(actual.getAuthOptional(), is(notNullValue()));
         assertThat(actual.getAuthOptional().isPresent(), is(true));
         assertThat(actual.getAuthOptional().get(), is(authOptional));
@@ -114,6 +141,12 @@ public class GroupBuilderTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getName(), is("API"));
         assertThat(actual.getSessionClazz(), is(notNullValue()));
+
+        assertThat(actual.getBefore(), is(notNullValue()));
+        assertThat(actual.getBefore().size(), is(0));
+        assertThat(actual.getAfter(), is(notNullValue()));
+        assertThat(actual.getAfter().size(), is(0));
+
         assertThat(actual.getAuthOptional(), is(notNullValue()));
         assertThat(actual.getAuthOptional().isPresent(), is(true));
         assertThat(actual.getAuthOptional().get(), is(authOptional));

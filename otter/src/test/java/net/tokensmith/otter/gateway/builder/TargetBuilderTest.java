@@ -60,8 +60,9 @@ public class TargetBuilderTest {
         assertThat(actual, is(IsNull.notNullValue()));
 
         assertThat(actual.getLabels(), is(IsNull.notNullValue()));
-        assertThat(actual.getLabels().size(), is(3));
-        assertTrue(actual.getLabels().contains(Label.CSRF));
+        assertThat(actual.getLabels().size(), is(4));
+        assertTrue(actual.getLabels().contains(Label.CSRF_PREPARE));
+        assertTrue(actual.getLabels().contains(Label.CSRF_PROTECT));
 
         assertThat(actual.getMethods(), is(IsNull.notNullValue()));
         assertThat(actual.getMethods().size(), is(2));

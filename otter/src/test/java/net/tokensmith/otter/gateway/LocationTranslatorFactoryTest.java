@@ -3,6 +3,8 @@ package net.tokensmith.otter.gateway;
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.gateway.entity.Label;
+import net.tokensmith.otter.router.entity.between.Between;
 import org.junit.Before;
 import org.junit.Test;
 import net.tokensmith.otter.controller.Resource;
@@ -12,6 +14,7 @@ import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.gateway.translator.LocationTranslator;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -33,15 +36,19 @@ public class LocationTranslatorFactoryTest {
         Map<StatusCode, Resource<DummySession, DummyUser>> errorResources = new HashMap<>();
         Map<StatusCode, ErrorTarget<DummySession, DummyUser>> dispatchErrors = new HashMap<>();
         Map<StatusCode, ErrorTarget<DummySession, DummyUser>> defaultDispatchErrors = new HashMap<>();
+        Map<Label, List<Between<DummySession, DummyUser>>> before = new HashMap<>();
+        Map<Label, List<Between<DummySession, DummyUser>>> after = new HashMap<>();
+
         LocationTranslator<DummySession, DummyUser> actual = subject.make(
                 DummySession.class,
-                Optional.empty(),
-                Optional.empty(),
+                before,
+                after,
                 errorResources,
                 dispatchErrors,
                 defaultDispatchErrors
         );
 
         assertThat(actual, is(notNullValue()));
+        // 188: need more asserts yo!
     }
 }

@@ -20,6 +20,7 @@ import net.tokensmith.otter.security.session.exception.InvalidSessionException;
 import net.tokensmith.otter.router.entity.Method;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,8 +37,8 @@ public class DecryptSessionTest {
         LocationTranslatorFactory locationTranslatorFactory = otterAppFactory.locationTranslatorFactory(shape);
         BetweenFlyweight<DummySession, DummyUser> betweenFlyweight = locationTranslatorFactory.betweenFlyweight(
                 DummySession.class,
-                Optional.empty(),
-                Optional.empty()
+                new HashMap<>(),
+                new HashMap<>()
         );
 
         if (required) {

@@ -44,7 +44,8 @@ public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
         this.method(Method.GET)
             .method(Method.POST);
 
-        this.labels.add(Label.CSRF);
+        this.labels.add(Label.CSRF_PREPARE);
+        this.labels.add(Label.CSRF_PROTECT);
 
         return this;
     }

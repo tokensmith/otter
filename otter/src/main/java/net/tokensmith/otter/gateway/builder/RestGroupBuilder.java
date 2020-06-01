@@ -4,14 +4,18 @@ import net.tokensmith.otter.controller.RestResource;
 import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.gateway.entity.Label;
 import net.tokensmith.otter.gateway.entity.rest.RestError;
 import net.tokensmith.otter.gateway.entity.rest.RestErrorTarget;
 import net.tokensmith.otter.gateway.entity.rest.RestGroup;
 import net.tokensmith.otter.router.entity.between.RestBetween;
 import net.tokensmith.otter.translatable.Translatable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class RestGroupBuilder<S extends DefaultSession, U extends DefaultUser> {
@@ -19,6 +23,8 @@ public class RestGroupBuilder<S extends DefaultSession, U extends DefaultUser> {
     private Class<S> sessionClazz;
     private Optional<RestBetween<S, U>> authRequired = Optional.empty();
     private Optional<RestBetween<S, U>> authOptional = Optional.empty();
+    private Map<Label, List<RestBetween<S, U>>> before = new HashMap<>();
+    private Map<Label, List<RestBetween<S, U>>> after = new HashMap<>();
 
     // for route run to handle errors.
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors = new HashMap<>();
@@ -32,6 +38,22 @@ public class RestGroupBuilder<S extends DefaultSession, U extends DefaultUser> {
 
     public RestGroupBuilder<S, U> sessionClazz(Class<S> sessionClazz) {
         this.sessionClazz = sessionClazz;
+        return this;
+    }
+
+    public RestGroupBuilder<S, U> before(Label label, RestBetween<S, U> before) {
+        if (Objects.isNull(this.before.get(label))) {
+            this.before.put(label, new ArrayList<>());
+        }
+        this.before.get(label).add(before);
+        return this;
+    }
+
+    public RestGroupBuilder<S, U> after(Label label, RestBetween<S, U> after) {
+        if (Objects.isNull(this.after.get(label))) {
+            this.after.put(label, new ArrayList<>());
+        }
+        this.after.get(label).add(after);
         return this;
     }
 
@@ -57,6 +79,6 @@ public class RestGroupBuilder<S extends DefaultSession, U extends DefaultUser> {
     }
 
     public RestGroup<S, U> build() {
-        return new RestGroup<>(name, sessionClazz, authRequired, authOptional, restErrors, dispatchErrors);
+        return new RestGroup<>(name, sessionClazz, authRequired, authOptional, before, after, restErrors, dispatchErrors);
     }
 }

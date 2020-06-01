@@ -262,7 +262,7 @@ public class RestTargetBuilderTest {
         assertThat(actual, is(notNullValue()));
 
         assertThat(actual.getLabels().size(), is(2));
-        assertThat(actual.getLabels().get(0), is(Label.CSRF));
+        assertThat(actual.getLabels().get(0), is(Label.CSRF_PROTECT));
         assertThat(actual.getLabels().get(1), is(Label.AUTH_REQUIRED));
     }
 }
