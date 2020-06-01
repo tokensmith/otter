@@ -4,6 +4,7 @@ import helper.entity.DummyBetween;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import helper.entity.ServerErrorResource;
+import net.tokensmith.otter.gateway.entity.Label;
 import org.junit.Test;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.gateway.entity.ErrorTarget;
@@ -15,8 +16,9 @@ import static org.junit.Assert.*;
 
 public class GroupBuilderTest {
 
+
     @Test
-    public void buildShouldHaveEmptyAuthBetweens() {
+    public void buildShouldHaveEmptyBetweens() {
 
         Group<DummySession, DummyUser> actual = new GroupBuilder<DummySession, DummyUser>()
                 .name("API")
@@ -26,10 +28,12 @@ public class GroupBuilderTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getName(), is("API"));
         assertThat(actual.getSessionClazz(), is(notNullValue()));
-        assertThat(actual.getAuthOptional(), is(notNullValue()));
-        assertThat(actual.getAuthOptional().isPresent(), is(false));
-        assertThat(actual.getAuthRequired(), is(notNullValue()));
-        assertThat(actual.getAuthRequired().isPresent(), is(false));
+
+        assertThat(actual.getBefore(), is(notNullValue()));
+        assertThat(actual.getBefore().size(), is(0));
+        assertThat(actual.getAfter(), is(notNullValue()));
+        assertThat(actual.getAfter().size(), is(0));
+
         assertThat(actual.getErrorResources(), is(notNullValue()));
         assertThat(actual.getErrorResources().size(), is(0));
     }
@@ -43,19 +47,23 @@ public class GroupBuilderTest {
         Group<DummySession, DummyUser> actual = new GroupBuilder<DummySession, DummyUser>()
                 .name("API")
                 .sessionClazz(DummySession.class)
-                .authRequired(authRequired)
-                .authOptional(authOptional)
+                .before(Label.AUTH_REQUIRED, authRequired)
+                .before(Label.AUTH_OPTIONAL, authOptional)
                 .build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getName(), is("API"));
         assertThat(actual.getSessionClazz(), is(notNullValue()));
-        assertThat(actual.getAuthOptional(), is(notNullValue()));
-        assertThat(actual.getAuthOptional().isPresent(), is(true));
-        assertThat(actual.getAuthOptional().get(), is(authOptional));
-        assertThat(actual.getAuthRequired(), is(notNullValue()));
-        assertThat(actual.getAuthRequired().isPresent(), is(true));
-        assertThat(actual.getAuthRequired().get(), is(authRequired));
+
+        assertThat(actual.getBefore(), is(notNullValue()));
+        assertThat(actual.getBefore().size(), is(2));
+        assertThat(actual.getBefore().get(Label.AUTH_REQUIRED).size(), is(1));
+        assertThat(actual.getBefore().get(Label.AUTH_REQUIRED).get(0), is(authRequired));
+        assertThat(actual.getBefore().get(Label.AUTH_OPTIONAL).size(), is(1));
+        assertThat(actual.getBefore().get(Label.AUTH_OPTIONAL).get(0), is(authOptional));
+        assertThat(actual.getAfter(), is(notNullValue()));
+        assertThat(actual.getAfter().size(), is(0));
+
         assertThat(actual.getErrorResources(), is(notNullValue()));
         assertThat(actual.getErrorResources().size(), is(0));
     }
@@ -72,20 +80,13 @@ public class GroupBuilderTest {
         Group<DummySession, DummyUser> actual = new GroupBuilder<DummySession, DummyUser>()
                 .name("API")
                 .sessionClazz(DummySession.class)
-                .authRequired(authRequired)
-                .authOptional(authOptional)
                 .onError(StatusCode.SERVER_ERROR, serverErrorResource)
                 .build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getName(), is("API"));
         assertThat(actual.getSessionClazz(), is(notNullValue()));
-        assertThat(actual.getAuthOptional(), is(notNullValue()));
-        assertThat(actual.getAuthOptional().isPresent(), is(true));
-        assertThat(actual.getAuthOptional().get(), is(authOptional));
-        assertThat(actual.getAuthRequired(), is(notNullValue()));
-        assertThat(actual.getAuthRequired().isPresent(), is(true));
-        assertThat(actual.getAuthRequired().get(), is(authRequired));
+
         assertThat(actual.getErrorResources(), is(notNullValue()));
         assertThat(actual.getErrorResources().size(), is(1));
         assertThat(actual.getErrorResources().get(StatusCode.SERVER_ERROR), is(serverErrorResource));
@@ -105,8 +106,6 @@ public class GroupBuilderTest {
         Group<DummySession, DummyUser> actual = new GroupBuilder<DummySession, DummyUser>()
                 .name("API")
                 .sessionClazz(DummySession.class)
-                .authRequired(authRequired)
-                .authOptional(authOptional)
                 .onError(StatusCode.SERVER_ERROR, serverErrorResource)
                 .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, dispatchError)
                 .build();
@@ -114,12 +113,7 @@ public class GroupBuilderTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getName(), is("API"));
         assertThat(actual.getSessionClazz(), is(notNullValue()));
-        assertThat(actual.getAuthOptional(), is(notNullValue()));
-        assertThat(actual.getAuthOptional().isPresent(), is(true));
-        assertThat(actual.getAuthOptional().get(), is(authOptional));
-        assertThat(actual.getAuthRequired(), is(notNullValue()));
-        assertThat(actual.getAuthRequired().isPresent(), is(true));
-        assertThat(actual.getAuthRequired().get(), is(authRequired));
+
         assertThat(actual.getErrorResources(), is(notNullValue()));
         assertThat(actual.getErrorResources().size(), is(1));
         assertThat(actual.getErrorResources().get(StatusCode.SERVER_ERROR), is(serverErrorResource));

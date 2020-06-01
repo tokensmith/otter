@@ -6,6 +6,7 @@ import helper.entity.model.DummyErrorPayload;
 import helper.entity.model.DummyPayload;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.gateway.entity.Label;
 import org.junit.Test;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.gateway.entity.rest.RestErrorTarget;
@@ -14,7 +15,6 @@ import net.tokensmith.otter.translatable.Translatable;
 
 import java.util.ArrayList;
 
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.*;
@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 public class RestGroupBuilderTest {
 
     @Test
-    public void buildShouldHaveEmptyAuthBetweens() {
+    public void buildShouldHaveEmptyBetweens() {
 
         RestGroup<DummySession, DummyUser> actual = new RestGroupBuilder<DummySession, DummyUser>()
                 .name("API")
@@ -31,10 +31,12 @@ public class RestGroupBuilderTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getName(), is("API"));
-        assertThat(actual.getAuthOptional(), is(notNullValue()));
-        assertThat(actual.getAuthOptional().isPresent(), is(false));
-        assertThat(actual.getAuthRequired(), is(notNullValue()));
-        assertThat(actual.getAuthRequired().isPresent(), is(false));
+
+        assertThat(actual.getBefore(), is(notNullValue()));
+        assertThat(actual.getBefore().size(), is(0));
+        assertThat(actual.getAfter(), is(notNullValue()));
+        assertThat(actual.getAfter().size(), is(0));
+
         assertThat(actual.getRestErrors(), is(notNullValue()));
         assertThat(actual.getRestErrors().size(), is(0));
         assertThat(actual.getSessionClazz(), is(notNullValue()));
@@ -48,18 +50,22 @@ public class RestGroupBuilderTest {
 
         RestGroup<DummySession, DummyUser> actual = new RestGroupBuilder<DummySession, DummyUser>()
                 .name("API")
-                .authRequired(authRequired)
-                .authOptional(authOptional)
+                .before(Label.AUTH_REQUIRED, authRequired)
+                .before(Label.AUTH_OPTIONAL, authOptional)
                 .build();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getName(), is("API"));
-        assertThat(actual.getAuthOptional(), is(notNullValue()));
-        assertThat(actual.getAuthOptional().isPresent(), is(true));
-        assertThat(actual.getAuthOptional().get(), is(authOptional));
-        assertThat(actual.getAuthRequired(), is(notNullValue()));
-        assertThat(actual.getAuthRequired().isPresent(), is(true));
-        assertThat(actual.getAuthRequired().get(), is(authRequired));
+
+        assertThat(actual.getBefore(), is(notNullValue()));
+        assertThat(actual.getBefore().size(), is(2));
+        assertThat(actual.getBefore().get(Label.AUTH_REQUIRED).size(), is(1));
+        assertThat(actual.getBefore().get(Label.AUTH_REQUIRED).get(0), is(authRequired));
+        assertThat(actual.getBefore().get(Label.AUTH_OPTIONAL).size(), is(1));
+        assertThat(actual.getBefore().get(Label.AUTH_OPTIONAL).get(0), is(authOptional));
+        assertThat(actual.getAfter(), is(notNullValue()));
+        assertThat(actual.getAfter().size(), is(0));
+
         assertThat(actual.getRestErrors(), is(notNullValue()));
         assertThat(actual.getRestErrors().size(), is(0));
     }
@@ -75,10 +81,12 @@ public class RestGroupBuilderTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getName(), is("API"));
-        assertThat(actual.getAuthOptional(), is(notNullValue()));
-        assertThat(actual.getAuthOptional().isPresent(), is(false));
-        assertThat(actual.getAuthRequired(), is(notNullValue()));
-        assertThat(actual.getAuthRequired().isPresent(), is(false));
+
+        assertThat(actual.getBefore(), is(notNullValue()));
+        assertThat(actual.getBefore().size(), is(0));
+        assertThat(actual.getAfter(), is(notNullValue()));
+        assertThat(actual.getAfter().size(), is(0));
+
         assertThat(actual.getRestErrors(), is(notNullValue()));
         assertThat(actual.getRestErrors().size(), is(1));
 
@@ -113,10 +121,12 @@ public class RestGroupBuilderTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getName(), is("API"));
-        assertThat(actual.getAuthOptional(), is(notNullValue()));
-        assertThat(actual.getAuthOptional().isPresent(), is(false));
-        assertThat(actual.getAuthRequired(), is(notNullValue()));
-        assertThat(actual.getAuthRequired().isPresent(), is(false));
+
+        assertThat(actual.getBefore(), is(notNullValue()));
+        assertThat(actual.getBefore().size(), is(0));
+        assertThat(actual.getAfter(), is(notNullValue()));
+        assertThat(actual.getAfter().size(), is(0));
+
         assertThat(actual.getRestErrors(), is(notNullValue()));
         assertThat(actual.getRestErrors().size(), is(1));
 

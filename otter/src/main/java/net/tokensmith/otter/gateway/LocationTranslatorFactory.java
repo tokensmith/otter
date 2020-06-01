@@ -5,6 +5,7 @@ import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.gateway.entity.ErrorTarget;
+import net.tokensmith.otter.gateway.entity.Label;
 import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.gateway.translator.LocationTranslator;
 import net.tokensmith.otter.router.entity.between.Between;
@@ -14,7 +15,9 @@ import net.tokensmith.otter.security.builder.entity.Betweens;
 import net.tokensmith.otter.security.exception.SessionCtorException;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -29,9 +32,9 @@ public class LocationTranslatorFactory {
         this.shape = shape;
     }
 
-    public <S extends DefaultSession, U extends DefaultUser> LocationTranslator<S, U> make(Class<S> sessionClazz, Optional<Between<S,U>> authRequired, Optional<Between<S,U>> authOptional, Map<StatusCode, Resource<S, U>> errorResources, Map<StatusCode, ErrorTarget<S, U>> dispatchErrors, Map<StatusCode, ErrorTarget<S, U>> defaultDispatchErrors) throws SessionCtorException {
+    public <S extends DefaultSession, U extends DefaultUser> LocationTranslator<S, U> make(Class<S> sessionClazz, Map<Label, List<Between<S,U>>> before, Map<Label, List<Between<S,U>>> after, Map<StatusCode, Resource<S, U>> errorResources, Map<StatusCode, ErrorTarget<S, U>> dispatchErrors, Map<StatusCode, ErrorTarget<S, U>> defaultDispatchErrors) throws SessionCtorException {
         return new LocationTranslator<S, U>(
-                betweenFlyweight(sessionClazz, authRequired, authOptional),
+                betweenFlyweight(sessionClazz, before, after),
                 errorResources,
                 dispatchErrors,
                 defaultDispatchErrors
@@ -44,23 +47,50 @@ public class LocationTranslatorFactory {
      * Therefore many Locations will use the same betweens instead of creating many identical ones.
      *
      * @param sessionClazz The Class of the session
-     * @param authRequired The between that requires authentication
-     * @param authOptional The between that optionally authenticates.
+     * @param before a map of before betweens that will be used in the flyweight.
+     * @param after a map of after betweens that will be used in the flyweight.
      * @param <S> Session
      * @param <U> User
      * @return BetweenFlyweight that will be used the LocationTranslator.
      * @throws SessionCtorException if S does not have a copy constructor.
      */
-    public <S, U> BetweenFlyweight<S, U> betweenFlyweight(Class<S> sessionClazz, Optional<Between<S,U>> authRequired, Optional<Between<S,U>> authOptional) throws SessionCtorException {
+    public <S, U> BetweenFlyweight<S, U> betweenFlyweight(Class<S> sessionClazz, Map<Label, List<Between<S,U>>> before, Map<Label, List<Between<S,U>>> after) throws SessionCtorException {
         TranslatorAppFactory appFactory = new TranslatorAppFactory();
 
+        // 188: is this the right spot? add defaults.
+        if (Objects.isNull(before.get(Label.CSRF_PREPARE)) || before.get(Label.CSRF_PREPARE).isEmpty()) {
+            Betweens<S, U> csrfPrepare = csrfPrepare(appFactory);
+            before.put(Label.CSRF_PREPARE, csrfPrepare.getBefore());
+        }
+
+        if (Objects.isNull(before.get(Label.CSRF_PROTECT)) || before.get(Label.CSRF_PROTECT).isEmpty()) {
+            Betweens<S, U> csrfProtect = csrfProtect(appFactory);
+            before.put(Label.CSRF_PROTECT, csrfProtect.getBefore());
+        }
+
+        // 188: should these only run if needed?
+        Betweens<S, U> session = session(appFactory, sessionClazz);
+        Betweens<S, U> sessionOptional = sessionOptional(appFactory, sessionClazz);
+
+        if (Objects.isNull(before.get(Label.SESSION_OPTIONAL)) || before.get(Label.SESSION_OPTIONAL).isEmpty()) {
+            before.put(Label.SESSION_OPTIONAL, sessionOptional.getBefore());
+        }
+
+        if (Objects.isNull(before.get(Label.SESSION_REQUIRED)) || before.get(Label.SESSION_REQUIRED).isEmpty()) {
+            before.put(Label.SESSION_REQUIRED, session.getBefore());
+        }
+
+        if (Objects.isNull(after.get(Label.SESSION_OPTIONAL)) || after.get(Label.SESSION_OPTIONAL).isEmpty()) {
+            after.put(Label.SESSION_OPTIONAL, sessionOptional.getAfter());
+        }
+
+        if (Objects.isNull(after.get(Label.SESSION_REQUIRED)) || after.get(Label.SESSION_REQUIRED).isEmpty()) {
+            after.put(Label.SESSION_REQUIRED, session.getAfter());
+        }
+
         return new BetweenFlyweight<S, U>(
-                csrfPrepare(appFactory),
-                csrfProtect(appFactory),
-                session(appFactory, sessionClazz),
-                sessionOptional(appFactory, sessionClazz),
-                authRequired,
-                authOptional
+            before,
+            after
         );
     }
 

@@ -108,8 +108,8 @@ public class OtterAppFactory {
                     group.getName(),
                     locationTranslatorFactory.make(
                             castedGroup.getSessionClazz(),
-                            castedGroup.getAuthRequired(),
-                            castedGroup.getAuthOptional(),
+                            castedGroup.getBefore(),
+                            castedGroup.getAfter(),
                             castedGroup.getErrorResources(),
                             castedGroup.getDispatchErrors(),
                             new HashMap<>() // 113: default dispatch errors.
@@ -144,8 +144,8 @@ public class OtterAppFactory {
                     castedGroup.getName(),
                     restLocationTranslatorFactory.make(
                             castedGroup.getSessionClazz(),
-                            castedGroup.getAuthRequired(),
-                            castedGroup.getAuthOptional(),
+                            castedGroup.getBefore(),
+                            castedGroup.getAfter(),
                             castedGroup.getRestErrors(),
                             defaultErrors(),
                             castedGroup.getDispatchErrors(),

@@ -7,22 +7,18 @@ import net.tokensmith.otter.security.builder.entity.RestBetweens;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class RestBetweenFlyweight<S, U> {
 
-    private RestBetweens<S, U> sessionRequired;
-    private RestBetweens<S, U> sessionOptional;
-    private RestBetweens<S, U> csrfProtect;
-    private Optional<RestBetween<S, U>> authRequired;
-    private Optional<RestBetween<S, U>> authOptional;
+    private Map<Label, List<RestBetween<S, U>>> before;
+    private Map<Label, List<RestBetween<S, U>>> after;
 
-    public RestBetweenFlyweight(RestBetweens<S, U> sessionRequired, RestBetweens<S, U> sessionOptional, RestBetweens<S, U> csrfProtect, Optional<RestBetween<S, U>> authRequired, Optional<RestBetween<S, U>> authOptional) {
-        this.sessionRequired = sessionRequired;
-        this.sessionOptional = sessionOptional;
-        this.csrfProtect = csrfProtect;
-        this.authRequired = authRequired;
-        this.authOptional = authOptional;
+    public RestBetweenFlyweight(Map<Label, List<RestBetween<S, U>>> before, Map<Label, List<RestBetween<S, U>>> after) {
+        this.before = before;
+        this.after = after;
     }
 
     public RestBetweens<S, U> make(Method method, List<Label> labels) {
@@ -85,28 +81,29 @@ public class RestBetweenFlyweight<S, U> {
 
     protected void session(List<Label> labels, RestBetweens<S, U> betweens) {
         if (labels.contains(Label.SESSION_OPTIONAL)) {
-            betweens.getBefore().addAll(sessionOptional.getBefore());
-            betweens.getAfter().addAll(sessionOptional.getAfter());
+            betweens.getBefore().addAll(before.get(Label.SESSION_OPTIONAL));
+            betweens.getAfter().addAll(after.get(Label.SESSION_OPTIONAL));
         }
 
         if (labels.contains(Label.SESSION_REQUIRED)) {
-            betweens.getBefore().addAll(sessionRequired.getBefore());
-            betweens.getAfter().addAll(sessionRequired.getAfter());
+            betweens.getBefore().addAll(before.get(Label.SESSION_REQUIRED));
+            betweens.getAfter().addAll(after.get(Label.SESSION_REQUIRED));
         }
     }
 
     protected void csrfProtect(List<Label> labels, RestBetweens<S, U> betweens) {
-        if (labels.contains(Label.CSRF)) {
-            betweens.getBefore().addAll(csrfProtect.getBefore());
+        // 188: unit test missing
+        if (labels.contains(Label.CSRF_PROTECT)) {
+            betweens.getBefore().addAll(before.get(Label.CSRF_PROTECT));
         }
     }
 
     protected void authentication(List<Label> labels, RestBetweens<S, U> betweens) {
-        if (labels.contains(Label.AUTH_OPTIONAL) && authOptional.isPresent()) {
-            betweens.getBefore().add(authOptional.get());
+        if (labels.contains(Label.AUTH_OPTIONAL) && Objects.nonNull(before.get(Label.AUTH_OPTIONAL)) && before.get(Label.AUTH_OPTIONAL).size() > 0) {
+            betweens.getBefore().addAll(before.get(Label.AUTH_OPTIONAL));
         }
-        if (labels.contains(Label.AUTH_REQUIRED) && authRequired.isPresent()) {
-            betweens.getBefore().add(authRequired.get());
+        if (labels.contains(Label.AUTH_REQUIRED) && Objects.nonNull(before.get(Label.AUTH_REQUIRED)) && before.get(Label.AUTH_REQUIRED).size() > 0) {
+            betweens.getBefore().addAll(before.get(Label.AUTH_REQUIRED));
         }
     }
 }

@@ -126,9 +126,9 @@ public class RestTargetBuilder<S extends DefaultSession, U extends DefaultUser, 
 
     public RestTargetBuilder<S, U, P> csrf() {
         // just in-case
-        this.labels.remove(Label.CSRF);
+        this.labels.remove(Label.CSRF_PROTECT);
 
-        this.labels.add(Label.CSRF);
+        this.labels.add(Label.CSRF_PROTECT);
         return this;
     }
 

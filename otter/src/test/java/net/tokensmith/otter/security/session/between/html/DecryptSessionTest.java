@@ -3,7 +3,6 @@ package net.tokensmith.otter.security.session.between.html;
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
-import net.tokensmith.otter.security.session.between.html.DecryptSession;
 import org.junit.Test;
 import net.tokensmith.otter.config.OtterAppFactory;
 import net.tokensmith.otter.controller.entity.Cookie;
@@ -20,8 +19,9 @@ import net.tokensmith.otter.security.session.exception.InvalidSessionException;
 import net.tokensmith.otter.router.entity.Method;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -36,8 +36,8 @@ public class DecryptSessionTest {
         LocationTranslatorFactory locationTranslatorFactory = otterAppFactory.locationTranslatorFactory(shape);
         BetweenFlyweight<DummySession, DummyUser> betweenFlyweight = locationTranslatorFactory.betweenFlyweight(
                 DummySession.class,
-                Optional.empty(),
-                Optional.empty()
+                new HashMap<>(),
+                new HashMap<>()
         );
 
         if (required) {
