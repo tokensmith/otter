@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 
 public class GroupBuilder<S extends DefaultSession, U extends DefaultUser> {
@@ -24,8 +23,6 @@ public class GroupBuilder<S extends DefaultSession, U extends DefaultUser> {
     private Map<Label, List<Between<S, U>>> before = new HashMap<>();
     private Map<Label, List<Between<S, U>>> after = new HashMap<>();
 
-    private Between<S, U> authRequired;
-    private Between<S, U> authOptional;
     private Map<StatusCode, Resource<S, U>> errorResources = new HashMap<>();
     private Map<StatusCode, ErrorTarget<S, U>> dispatchErrors = new HashMap<>();
 
@@ -55,16 +52,6 @@ public class GroupBuilder<S extends DefaultSession, U extends DefaultUser> {
         return this;
     }
 
-    public GroupBuilder<S, U> authRequired(Between<S, U> authRequired) {
-        this.authRequired = authRequired;
-        return this;
-    }
-
-    public GroupBuilder<S, U> authOptional(Between<S, U> authOptional) {
-        this.authOptional = authOptional;
-        return this;
-    }
-
     public GroupBuilder<S, U> onError(StatusCode statusCode, Resource<S, U> errorResource) {
         this.errorResources.put(statusCode, errorResource);
         return this;
@@ -79,20 +66,10 @@ public class GroupBuilder<S extends DefaultSession, U extends DefaultUser> {
         return new Group<S, U>(
                 name,
                 sessionClazz,
-                makeBetween(authRequired),
-                makeBetween(authOptional),
                 before,
                 after,
                 errorResources,
                 dispatchErrors
         );
-    }
-
-    protected Optional<Between<S, U>> makeBetween(Between<S, U> between) {
-        if (between == null) {
-            return Optional.empty();
-        } else {
-            return Optional.of(between);
-        }
     }
 }

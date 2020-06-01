@@ -16,13 +16,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
+
 
 public class RestGroupBuilder<S extends DefaultSession, U extends DefaultUser> {
     private String name;
     private Class<S> sessionClazz;
-    private Optional<RestBetween<S, U>> authRequired = Optional.empty();
-    private Optional<RestBetween<S, U>> authOptional = Optional.empty();
     private Map<Label, List<RestBetween<S, U>>> before = new HashMap<>();
     private Map<Label, List<RestBetween<S, U>>> after = new HashMap<>();
 
@@ -57,16 +55,6 @@ public class RestGroupBuilder<S extends DefaultSession, U extends DefaultUser> {
         return this;
     }
 
-    public RestGroupBuilder<S, U> authRequired(RestBetween<S, U> authRequired) {
-        this.authRequired = Optional.of(authRequired);
-        return this;
-    }
-
-    public RestGroupBuilder<S, U> authOptional(RestBetween<S, U> authOptional) {
-        this.authOptional = Optional.of(authOptional);
-        return this;
-    }
-
     public <P extends Translatable> RestGroupBuilder<S, U> onError(StatusCode statusCode, RestResource<U, P> restResource, Class<P> errorPayload) {
         RestError<U, P> restError = new RestError<>(errorPayload, restResource);
         restErrors.put(statusCode, restError);
@@ -79,6 +67,6 @@ public class RestGroupBuilder<S extends DefaultSession, U extends DefaultUser> {
     }
 
     public RestGroup<S, U> build() {
-        return new RestGroup<>(name, sessionClazz, authRequired, authOptional, before, after, restErrors, dispatchErrors);
+        return new RestGroup<>(name, sessionClazz, before, after, restErrors, dispatchErrors);
     }
 }

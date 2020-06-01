@@ -88,8 +88,8 @@ A [Group](https://github.com/RootServices/otter/blob/development/otter/src/main/
     Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
             .name(WEB_SITE_GROUP)
             .sessionClazz(TokenSession.class)
-            .authOptional(new AuthOptBetween())
-            .authRequired(new AuthBetween())
+            .before(Label.AUTH_OPTIONAL, new AuthOptBetween())            
+            .before(Label.AUTH_REQUIRED, new AuthBetween())
             .onError(StatusCode.SERVER_ERROR, serverErrorResource)
             .build();
 ```
@@ -137,8 +137,8 @@ A [RestGroup](https://github.com/RootServices/otter/blob/development/otter/src/m
     RestGroup<DummySession, ApiUser> apiGroupV3 = new RestGroupBuilder<DummySession, ApiUser>()
             .name(API_GROUP_V3)
             .sessionClazz(DefaultSession.class)
-            .authRequired(authRestBetween)
-            .authOptional(authRestBetween)
+            .before(Label.AUTH_OPTIONAL, authRestBetween)            
+            .before(Label.AUTH_REQUIRED, authRestBetween)
             .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
             .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
             .build();
@@ -267,8 +267,8 @@ Then allow the request to reach the resource.
     Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
             .name(WEB_SITE_GROUP)
             .sessionClazz(TokenSession.class)
-            .authOptional(new AuthOptBetween())
-            .authRequired(new AuthBetween())
+            .before(Label.AUTH_OPTIONAL, new AuthOptBetween())            
+            .before(Label.AUTH_REQUIRED, new AuthBetween())
             .onError(StatusCode.SERVER_ERROR, serverErrorResource)
             .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaType)
             .build();
@@ -298,8 +298,8 @@ Use `anonymous()` to not require authentication or optionally authenticate.
     RestGroup<DummySession, ApiUser> apiGroupV3 = new RestGroupBuilder<DummySession, ApiUser>()
             .name(API_GROUP_V3)
             .sessionClazz(DefaultSession.class)
-            .authRequired(authRestBetween)
-            .authOptional(authRestBetween)
+            .before(Label.AUTH_OPTIONAL, authRestBetween)            
+            .before(Label.AUTH_REQUIRED, authRestBetween)
             .build();
 ```
 
@@ -372,8 +372,8 @@ To configure a `Group` to apply error handlers to all its related `Targets`.
     Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
             .name(WEB_SITE_GROUP)
             .sessionClazz(TokenSession.class)
-            .authOptional(new AuthOptBetween())
-            .authRequired(new AuthBetween())
+            .before(Label.AUTH_OPTIONAL, new AuthOptBetween())            
+            .before(Label.AUTH_REQUIRED, new AuthBetween())
             .onError(StatusCode.SERVER_ERROR, serverErrorResource)
             .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaType)
             .onDispatchError(StatusCode.NOT_ACCEPTABLE, notAcceptable)
@@ -526,8 +526,8 @@ To configure a `RestGroup` to apply error handlers to all its related `RestTarge
     RestGroup<DummySession, ApiUser> apiGroupV3 = new RestGroupBuilder<DummySession, ApiUser>()
             .name(API_GROUP_V3)
             .sessionClazz(DefaultSession.class)
-            .authRequired(authRestBetween)
-            .authOptional(authRestBetween)
+            .before(Label.AUTH_OPTIONAL, authRestBetween)            
+            .before(Label.AUTH_REQUIRED, authRestBetween)
             .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
             .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
             .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaTypeTarget)

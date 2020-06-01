@@ -92,7 +92,8 @@ public class RestBetweenFlyweight<S, U> {
     }
 
     protected void csrfProtect(List<Label> labels, RestBetweens<S, U> betweens) {
-        if (labels.contains(Label.CSRF)) {
+        // 188: unit test missing
+        if (labels.contains(Label.CSRF_PROTECT)) {
             betweens.getBefore().addAll(before.get(Label.CSRF_PROTECT));
         }
     }

@@ -21,6 +21,7 @@ import net.tokensmith.otter.translator.config.TranslatorAppFactory;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -61,7 +62,7 @@ public class RestLocationTranslatorFactory {
         TranslatorAppFactory appFactory = new TranslatorAppFactory();
 
         // 188: is this the right spot? add defaults.
-        if (before.get(Label.CSRF_PROTECT).isEmpty()) {
+        if (Objects.isNull(before.get(Label.CSRF_PREPARE)) || before.get(Label.CSRF_PROTECT).isEmpty()) {
             RestBetweens<S, U> csrfProtect = csrfProtect(appFactory);
             before.put(Label.CSRF_PROTECT, csrfProtect.getBefore());
         }
@@ -70,19 +71,19 @@ public class RestLocationTranslatorFactory {
         RestBetweens<S, U> session = session(appFactory, sessionClazz);
         RestBetweens<S, U> sessionOptional = sessionOptional(appFactory, sessionClazz);
 
-        if (before.get(Label.SESSION_OPTIONAL).isEmpty()) {
+        if (Objects.isNull(before.get(Label.SESSION_OPTIONAL)) || before.get(Label.SESSION_OPTIONAL).isEmpty()) {
             before.put(Label.SESSION_OPTIONAL, sessionOptional.getBefore());
         }
 
-        if (before.get(Label.SESSION_REQUIRED).isEmpty()) {
+        if (Objects.isNull(before.get(Label.SESSION_REQUIRED)) || before.get(Label.SESSION_REQUIRED).isEmpty()) {
             before.put(Label.SESSION_REQUIRED, session.getBefore());
         }
 
-        if (after.get(Label.SESSION_OPTIONAL).isEmpty()) {
+        if (Objects.isNull(after.get(Label.SESSION_OPTIONAL)) || after.get(Label.SESSION_OPTIONAL).isEmpty()) {
             after.put(Label.SESSION_OPTIONAL, sessionOptional.getBefore());
         }
 
-        if (after.get(Label.SESSION_REQUIRED).isEmpty()) {
+        if (Objects.isNull(after.get(Label.SESSION_REQUIRED)) || after.get(Label.SESSION_REQUIRED).isEmpty()) {
             after.put(Label.SESSION_REQUIRED, session.getAfter());
         }
 

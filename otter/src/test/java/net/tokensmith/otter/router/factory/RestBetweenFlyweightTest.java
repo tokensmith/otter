@@ -55,7 +55,7 @@ public class RestBetweenFlyweightTest {
     @Test
     public void makeWhenGetAndCsrf() {
         List<Label> labels = new ArrayList<>();
-        labels.add(Label.CSRF);
+        labels.add(Label.CSRF_PROTECT);
 
         RestBetweens<DummySession, DummyUser> actual = subject.make(Method.GET, labels);
 
@@ -129,7 +129,7 @@ public class RestBetweenFlyweightTest {
     @Test
     public void makeWhenGetAndCsrfAndSessionOptionalAndAuthOptional() {
         List<Label> labels = new ArrayList<>();
-        labels.add(Label.CSRF);
+        labels.add(Label.CSRF_PROTECT);
         labels.add(Label.SESSION_OPTIONAL);
         labels.add(Label.AUTH_OPTIONAL);
 
@@ -159,7 +159,7 @@ public class RestBetweenFlyweightTest {
     @Test
     public void makeWhenGetAndCsrfAndSessionRequiredAndAuthRequired() {
         List<Label> labels = new ArrayList<>();
-        labels.add(Label.CSRF);
+        labels.add(Label.CSRF_PROTECT);
         labels.add(Label.SESSION_REQUIRED);
         labels.add(Label.AUTH_REQUIRED);
 
@@ -175,7 +175,7 @@ public class RestBetweenFlyweightTest {
     @Test
     public void makeWhenPostAndCsrf() {
         List<Label> labels = new ArrayList<>();
-        labels.add(Label.CSRF);
+        labels.add(Label.CSRF_PROTECT);
 
         RestBetweens<DummySession, DummyUser> actual = subject.make(Method.POST, labels);
 
@@ -249,7 +249,7 @@ public class RestBetweenFlyweightTest {
     @Test
     public void makeWhenPostAndCsrfAndSessionOptionalAndAuthOptional() {
         List<Label> labels = new ArrayList<>();
-        labels.add(Label.CSRF);
+        labels.add(Label.CSRF_PROTECT);
         labels.add(Label.SESSION_OPTIONAL);
         labels.add(Label.AUTH_OPTIONAL);
 
@@ -279,7 +279,7 @@ public class RestBetweenFlyweightTest {
     @Test
     public void makeWhenPostAndCsrfAndSessionRequiredAndAuthRequired() {
         List<Label> labels = new ArrayList<>();
-        labels.add(Label.CSRF);
+        labels.add(Label.CSRF_PROTECT);
         labels.add(Label.SESSION_REQUIRED);
         labels.add(Label.AUTH_REQUIRED);
 
@@ -295,7 +295,7 @@ public class RestBetweenFlyweightTest {
     @Test
     public void makeWhenPutAndCsrf() {
         List<Label> labels = new ArrayList<>();
-        labels.add(Label.CSRF);
+        labels.add(Label.CSRF_PROTECT);
 
         RestBetweens<DummySession, DummyUser> actual = subject.make(Method.PUT, labels);
 
@@ -370,7 +370,7 @@ public class RestBetweenFlyweightTest {
     @Test
     public void makeWhenPutAndCsrfAndSessionOptionalAndAuthOptional() {
         List<Label> labels = new ArrayList<>();
-        labels.add(Label.CSRF);
+        labels.add(Label.CSRF_PROTECT);
         labels.add(Label.SESSION_OPTIONAL);
         labels.add(Label.AUTH_OPTIONAL);
 
@@ -400,7 +400,7 @@ public class RestBetweenFlyweightTest {
     @Test
     public void makeWhenPutAndCsrfAndSessionRequiredAndAuthRequired() {
         List<Label> labels = new ArrayList<>();
-        labels.add(Label.CSRF);
+        labels.add(Label.CSRF_PROTECT);
         labels.add(Label.SESSION_REQUIRED);
         labels.add(Label.AUTH_REQUIRED);
 
@@ -416,7 +416,7 @@ public class RestBetweenFlyweightTest {
     @Test
     public void makeWhenPatchAndCsrf() {
         List<Label> labels = new ArrayList<>();
-        labels.add(Label.CSRF);
+        labels.add(Label.CSRF_PROTECT);
 
         RestBetweens<DummySession, DummyUser> actual = subject.make(Method.PATCH, labels);
 
@@ -491,7 +491,7 @@ public class RestBetweenFlyweightTest {
     @Test
     public void makeWhenPatchAndCsrfAndSessionOptionalAndAuthOptional() {
         List<Label> labels = new ArrayList<>();
-        labels.add(Label.CSRF);
+        labels.add(Label.CSRF_PROTECT);
         labels.add(Label.SESSION_OPTIONAL);
         labels.add(Label.AUTH_OPTIONAL);
 
@@ -521,7 +521,7 @@ public class RestBetweenFlyweightTest {
     @Test
     public void makeWhenPatchAndCsrfAndSessionRequiredAndAuthRequired() {
         List<Label> labels = new ArrayList<>();
-        labels.add(Label.CSRF);
+        labels.add(Label.CSRF_PROTECT);
         labels.add(Label.SESSION_REQUIRED);
         labels.add(Label.AUTH_REQUIRED);
 
@@ -537,7 +537,7 @@ public class RestBetweenFlyweightTest {
     @Test
     public void makeWhenDeleteAndCsrf() {
         List<Label> labels = new ArrayList<>();
-        labels.add(Label.CSRF);
+        labels.add(Label.CSRF_PROTECT);
 
         RestBetweens<DummySession, DummyUser> actual = subject.make(Method.DELETE, labels);
 
@@ -613,7 +613,7 @@ public class RestBetweenFlyweightTest {
     @Test
     public void makeWhenDeleteAndCsrfAndSessionOptionalAndAuthOptional() {
         List<Label> labels = new ArrayList<>();
-        labels.add(Label.CSRF);
+        labels.add(Label.CSRF_PROTECT);
         labels.add(Label.SESSION_OPTIONAL);
         labels.add(Label.AUTH_OPTIONAL);
 
@@ -643,7 +643,7 @@ public class RestBetweenFlyweightTest {
     @Test
     public void makeWhenDeleteAndCsrfAndSessionRequiredAndAuthRequired() {
         List<Label> labels = new ArrayList<>();
-        labels.add(Label.CSRF);
+        labels.add(Label.CSRF_PROTECT);
         labels.add(Label.SESSION_REQUIRED);
         labels.add(Label.AUTH_REQUIRED);
 

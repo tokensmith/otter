@@ -17,6 +17,7 @@ import net.tokensmith.otter.translator.config.TranslatorAppFactory;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -57,12 +58,12 @@ public class LocationTranslatorFactory {
         TranslatorAppFactory appFactory = new TranslatorAppFactory();
 
         // 188: is this the right spot? add defaults.
-        if (before.get(Label.CSRF_PREPARE).isEmpty()) {
+        if (Objects.isNull(before.get(Label.CSRF_PREPARE)) || before.get(Label.CSRF_PREPARE).isEmpty()) {
             Betweens<S, U> csrfPrepare = csrfPrepare(appFactory);
             before.put(Label.CSRF_PREPARE, csrfPrepare.getBefore());
         }
 
-        if (before.get(Label.CSRF_PROTECT).isEmpty()) {
+        if (Objects.isNull(before.get(Label.CSRF_PROTECT)) || before.get(Label.CSRF_PROTECT).isEmpty()) {
             Betweens<S, U> csrfProtect = csrfProtect(appFactory);
             before.put(Label.CSRF_PROTECT, csrfProtect.getBefore());
         }
@@ -71,19 +72,19 @@ public class LocationTranslatorFactory {
         Betweens<S, U> session = session(appFactory, sessionClazz);
         Betweens<S, U> sessionOptional = sessionOptional(appFactory, sessionClazz);
 
-        if (before.get(Label.SESSION_OPTIONAL).isEmpty()) {
-            before.put(Label.CSRF_PROTECT, sessionOptional.getBefore());
+        if (Objects.isNull(before.get(Label.SESSION_OPTIONAL)) || before.get(Label.SESSION_OPTIONAL).isEmpty()) {
+            before.put(Label.SESSION_OPTIONAL, sessionOptional.getBefore());
         }
 
-        if (before.get(Label.SESSION_REQUIRED).isEmpty()) {
+        if (Objects.isNull(before.get(Label.SESSION_REQUIRED)) || before.get(Label.SESSION_REQUIRED).isEmpty()) {
             before.put(Label.SESSION_REQUIRED, session.getBefore());
         }
 
-        if (after.get(Label.SESSION_OPTIONAL).isEmpty()) {
-            after.put(Label.SESSION_REQUIRED, sessionOptional.getBefore());
+        if (Objects.isNull(after.get(Label.SESSION_OPTIONAL)) || after.get(Label.SESSION_OPTIONAL).isEmpty()) {
+            after.put(Label.SESSION_OPTIONAL, sessionOptional.getAfter());
         }
 
-        if (after.get(Label.SESSION_REQUIRED).isEmpty()) {
+        if (Objects.isNull(after.get(Label.SESSION_REQUIRED)) || after.get(Label.SESSION_REQUIRED).isEmpty()) {
             after.put(Label.SESSION_REQUIRED, session.getAfter());
         }
 

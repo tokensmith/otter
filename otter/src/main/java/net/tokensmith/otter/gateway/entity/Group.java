@@ -15,20 +15,14 @@ public class Group<S extends DefaultSession, U extends DefaultUser> {
     private String name;
     private Class<S> sessionClazz;
 
-    // 188: these can be deprecated.
-    private Optional<Between<S, U>> authRequired;
-    private Optional<Between<S, U>> authOptional;
-
     private Map<Label, List<Between<S, U>>> before;
     private Map<Label, List<Between<S, U>>> after;
     private Map<StatusCode, Resource<S, U>> errorResources;
     private Map<StatusCode, ErrorTarget<S, U>> dispatchErrors;
 
-    public Group(String name, Class<S> sessionClazz, Optional<Between<S, U>> authRequired, Optional<Between<S, U>> authOptional, Map<Label, List<Between<S, U>>> before, Map<Label, List<Between<S, U>>> after, Map<StatusCode, Resource<S, U>> errorResources, Map<StatusCode, ErrorTarget<S, U>> dispatchErrors) {
+    public Group(String name, Class<S> sessionClazz, Map<Label, List<Between<S, U>>> before, Map<Label, List<Between<S, U>>> after, Map<StatusCode, Resource<S, U>> errorResources, Map<StatusCode, ErrorTarget<S, U>> dispatchErrors) {
         this.name = name;
         this.sessionClazz = sessionClazz;
-        this.authRequired = authRequired;
-        this.authOptional = authOptional;
         this.before = before;
         this.after = after;
         this.errorResources = errorResources;
@@ -49,22 +43,6 @@ public class Group<S extends DefaultSession, U extends DefaultUser> {
 
     public void setSessionClazz(Class<S> sessionClazz) {
         this.sessionClazz = sessionClazz;
-    }
-
-    public Optional<Between<S, U>> getAuthRequired() {
-        return authRequired;
-    }
-
-    public void setAuthRequired(Optional<Between<S, U>> authRequired) {
-        this.authRequired = authRequired;
-    }
-
-    public Optional<Between<S, U>> getAuthOptional() {
-        return authOptional;
-    }
-
-    public void setAuthOptional(Optional<Between<S, U>> authOptional) {
-        this.authOptional = authOptional;
     }
 
     public Map<Label, List<Between<S, U>>> getBefore() {

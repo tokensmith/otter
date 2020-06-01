@@ -49,6 +49,5 @@ public class LocationTranslatorFactoryTest {
         );
 
         assertThat(actual, is(notNullValue()));
-        // 188: need more asserts yo!
     }
 }
