@@ -1,13 +1,15 @@
 package net.tokensmith.otter.security.builder;
 
 import com.fasterxml.jackson.databind.ObjectReader;
-import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.dispatch.entity.RestBtwnResponse;
 import net.tokensmith.otter.router.entity.between.RestBetween;
-import net.tokensmith.otter.security.RandomString;
+import net.tokensmith.otter.router.exception.HaltException;
+import net.tokensmith.otter.security.Halt;
 import net.tokensmith.otter.security.builder.entity.RestBetweens;
+import net.tokensmith.otter.security.config.SecurityAppFactory;
 import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
 import net.tokensmith.otter.security.csrf.between.rest.RestCheckCSRF;
 import net.tokensmith.otter.security.session.between.rest.RestReadSession;
@@ -17,25 +19,29 @@ import net.tokensmith.otter.translator.config.TranslatorAppFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 
 public class RestBetweenBuilder<S, U> {
+    private static SecurityAppFactory securityAppFactory = new SecurityAppFactory();
+
     private static String CSRF_NAME = "csrfToken";
     private static String CSRF_HDR_NAME = "X-CSRF";
     private static String SESSION_NAME = "session";
 
     private TranslatorAppFactory appFactory;
 
+    // halts - custom halt handlers for security betweens
+    private Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> onHalts;
+
     // csrf
     private SymmetricKey signKey;
     private Map<String, SymmetricKey> rotationSignKeys;
-    private StatusCode csrfFailStatusCode;
     private CookieConfig csrfCookieConfig;
 
     // session
     private SymmetricKey encKey;
     private Map<String, SymmetricKey> rotationEncKeys;
-    private StatusCode sessionFailStatusCode;
     private CookieConfig sessionCookieConfig;
 
     private Class<S> sessionClazz;
@@ -46,6 +52,11 @@ public class RestBetweenBuilder<S, U> {
 
     public RestBetweenBuilder<S, U> routerAppFactory(TranslatorAppFactory appFactory) {
         this.appFactory = appFactory;
+        return this;
+    }
+
+    public RestBetweenBuilder<S, U> onHalts(Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> onHalts) {
+        this.onHalts = onHalts;
         return this;
     }
 
@@ -85,15 +96,10 @@ public class RestBetweenBuilder<S, U> {
         return this;
     }
 
-    public RestBetweenBuilder<S, U> sessionFailStatusCode(StatusCode sessionFailStatusCode) {
-        this.sessionFailStatusCode = sessionFailStatusCode;
-        return this;
-    }
-
     public RestBetweenBuilder<S, U> session() {
 
-        Decrypt<S> decrypt = new Decrypt<S>(new JwtAppFactory(), sessionObjectReader, encKey, rotationEncKeys);
-        RestBetween<S, U> decryptSession = new RestReadSession<S, U>(SESSION_NAME, true, sessionFailStatusCode, decrypt);
+        Decrypt<S> decrypt = securityAppFactory.decrypt(sessionObjectReader, encKey, rotationEncKeys);
+        RestBetween<S, U> decryptSession = new RestReadSession<S, U>(SESSION_NAME, true, decrypt, onHalts.get(Halt.SESSION));
         before.add(decryptSession);
 
         return this;
@@ -101,22 +107,16 @@ public class RestBetweenBuilder<S, U> {
 
     public RestBetweenBuilder<S, U> optionalSession() {
 
-        Decrypt<S> decrypt = new Decrypt<S>(new JwtAppFactory(), sessionObjectReader, encKey, rotationEncKeys);
-        RestBetween<S, U> decryptSession = new RestReadSession<S, U>(SESSION_NAME, false, sessionFailStatusCode, decrypt);
+        Decrypt<S> decrypt = securityAppFactory.decrypt(sessionObjectReader, encKey, rotationEncKeys);
+        RestBetween<S, U> decryptSession = new RestReadSession<S, U>(SESSION_NAME, false, decrypt, onHalts.get(Halt.SESSION));
         before.add(decryptSession);
 
         return this;
     }
 
-    public RestBetweenBuilder<S, U> csrfFailStatusCode(StatusCode csrfFailStatusCode) {
-        this.csrfFailStatusCode = csrfFailStatusCode;
-        return this;
-    }
-
     public RestBetweenBuilder<S, U> csrfProtect() {
-        DoubleSubmitCSRF doubleSubmitCSRF = new DoubleSubmitCSRF(new JwtAppFactory(), new RandomString(), signKey, rotationSignKeys);
-
-        RestBetween<S,U> checkCSRF = new RestCheckCSRF<>(CSRF_NAME, CSRF_HDR_NAME, doubleSubmitCSRF, csrfFailStatusCode);
+        DoubleSubmitCSRF doubleSubmitCSRF = securityAppFactory.doubleSubmitCSRF(signKey, rotationSignKeys);
+        RestBetween<S,U> checkCSRF = new RestCheckCSRF<>(CSRF_NAME, CSRF_HDR_NAME, doubleSubmitCSRF, onHalts.get(Halt.CSRF));
         before.add(checkCSRF);
 
         return this;

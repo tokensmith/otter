@@ -3,14 +3,18 @@ package net.tokensmith.otter.gateway;
 import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.dispatch.entity.RestBtwnResponse;
 import net.tokensmith.otter.dispatch.json.validator.Validate;
+import net.tokensmith.otter.gateway.config.RestTranslatorConfig;
 import net.tokensmith.otter.gateway.entity.Label;
 import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.gateway.entity.rest.RestError;
 import net.tokensmith.otter.gateway.entity.rest.RestErrorTarget;
 import net.tokensmith.otter.gateway.translator.RestLocationTranslator;
 import net.tokensmith.otter.router.entity.between.RestBetween;
+import net.tokensmith.otter.router.exception.HaltException;
 import net.tokensmith.otter.router.factory.RestBetweenFlyweight;
+import net.tokensmith.otter.security.Halt;
 import net.tokensmith.otter.security.builder.BetweenBuilder;
 import net.tokensmith.otter.security.builder.RestBetweenBuilder;
 import net.tokensmith.otter.security.builder.entity.Betweens;
@@ -23,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 /**
  * Responsible for constructing a RestLocationTranslator.
@@ -35,14 +40,14 @@ public class RestLocationTranslatorFactory {
         this.shape = shape;
     }
 
-    public <S extends DefaultSession, U extends DefaultUser, P> RestLocationTranslator<S, U, P> make(Class<S> sessionClazz, Map<Label, List<RestBetween<S, U>>> before, Map<Label, List<RestBetween<S, U>>> after, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> defaultDispatchErrors, Validate restValidate) {
+    public <S extends DefaultSession, U extends DefaultUser, P> RestLocationTranslator<S, U, P> make(RestTranslatorConfig<S, U> config) {
         return new RestLocationTranslator<S, U, P>(
-                restBetweenFlyweight(sessionClazz, before, after),
-                restErrors,
-                defaultErrors,
-                dispatchErrors,
-                defaultDispatchErrors,
-                restValidate
+                restBetweenFlyweight(config.getSessionClazz(), config.getBefore(), config.getAfter(), config.getOnHalts()),
+                config.getRestErrors(),
+                config.getDefaultErrors(),
+                config.getDispatchErrors(),
+                config.getDefaultDispatchErrors(),
+                config.getValidate()
         );
     }
 
@@ -58,18 +63,18 @@ public class RestLocationTranslatorFactory {
      * @param <U> User
      * @return RestBetweenFlyweight that will be used in the RestLocationTranslator.
      */
-    public <S, U> RestBetweenFlyweight<S, U> restBetweenFlyweight(Class<S> sessionClazz, Map<Label, List<RestBetween<S, U>>> before, Map<Label, List<RestBetween<S, U>>> after) {
+    public <S, U> RestBetweenFlyweight<S, U> restBetweenFlyweight(Class<S> sessionClazz, Map<Label, List<RestBetween<S, U>>> before, Map<Label, List<RestBetween<S, U>>> after, Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> onHalts) {
         TranslatorAppFactory appFactory = new TranslatorAppFactory();
 
         // 188: is this the right spot? add defaults.
         if (Objects.isNull(before.get(Label.CSRF_PREPARE)) || before.get(Label.CSRF_PROTECT).isEmpty()) {
-            RestBetweens<S, U> csrfProtect = csrfProtect(appFactory);
+            RestBetweens<S, U> csrfProtect = csrfProtect(appFactory, onHalts);
             before.put(Label.CSRF_PROTECT, csrfProtect.getBefore());
         }
 
         // 188: should these only run if needed?
-        RestBetweens<S, U> session = session(appFactory, sessionClazz);
-        RestBetweens<S, U> sessionOptional = sessionOptional(appFactory, sessionClazz);
+        RestBetweens<S, U> session = session(appFactory, sessionClazz, onHalts);
+        RestBetweens<S, U> sessionOptional = sessionOptional(appFactory, sessionClazz, onHalts);
 
         if (Objects.isNull(before.get(Label.SESSION_OPTIONAL)) || before.get(Label.SESSION_OPTIONAL).isEmpty()) {
             before.put(Label.SESSION_OPTIONAL, sessionOptional.getBefore());
@@ -93,34 +98,34 @@ public class RestLocationTranslatorFactory {
         );
     }
 
-    protected <S, U> RestBetweens<S, U> session(TranslatorAppFactory appFactory, Class<S> sessionClazz) {
+    protected <S, U> RestBetweens<S, U> session(TranslatorAppFactory appFactory, Class<S> sessionClazz, Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> onHalts) {
         return new RestBetweenBuilder<S, U>()
                 .routerAppFactory(appFactory)
                 .encKey(shape.getEncKey())
                 .rotationEncKeys(shape.getRotationEncKeys())
                 .sessionClazz(sessionClazz)
-                .sessionFailStatusCode(shape.getSessionFailStatusCode())
+                .onHalts(onHalts)
                 .session()
                 .build();
     }
 
-    protected <S, U> RestBetweens<S, U> sessionOptional(TranslatorAppFactory appFactory, Class<S> sessionClazz) {
+    protected <S, U> RestBetweens<S, U> sessionOptional(TranslatorAppFactory appFactory, Class<S> sessionClazz, Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> onHalts) {
         return new RestBetweenBuilder<S, U>()
                 .routerAppFactory(appFactory)
                 .encKey(shape.getEncKey())
                 .rotationEncKeys(shape.getRotationEncKeys())
                 .sessionClazz(sessionClazz)
-                .sessionFailStatusCode(shape.getSessionFailStatusCode())
+                .onHalts(onHalts)
                 .optionalSession()
                 .build();
     }
 
-    protected <S, U> RestBetweens<S, U> csrfProtect(TranslatorAppFactory appFactory) {
+    protected <S, U> RestBetweens<S, U> csrfProtect(TranslatorAppFactory appFactory, Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> onHalts) {
         return new RestBetweenBuilder<S, U>()
                 .routerAppFactory(appFactory)
                 .signKey(shape.getSignkey())
                 .rotationSignKeys(shape.getRotationSignKeys())
-                .csrfFailStatusCode(shape.getCsrfFailStatusCode())
+                .onHalts(onHalts)
                 .csrfProtect()
                 .build();
     }

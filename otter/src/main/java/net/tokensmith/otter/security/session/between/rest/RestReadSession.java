@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 
 /**
@@ -30,14 +31,14 @@ public class RestReadSession<S, U> implements RestBetween<S, U> {
 
     private String sessionCookieName;
     private Boolean required;
-    private StatusCode failStatusCode;
+    private BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse> onHalt;
     private Decrypt<S> decrypt;
 
-    public RestReadSession(String sessionCookieName, Boolean required, StatusCode failStatusCode, Decrypt<S> decrypt) {
+    public RestReadSession(String sessionCookieName, Boolean required, Decrypt<S> decrypt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse> onHalt) {
         this.sessionCookieName = sessionCookieName;
         this.required = required;
-        this.failStatusCode = failStatusCode;
         this.decrypt = decrypt;
+        this.onHalt = onHalt;
     }
 
     @Override
@@ -77,7 +78,9 @@ public class RestReadSession<S, U> implements RestBetween<S, U> {
     }
 
     protected void onHalt(HaltException e, RestBtwnResponse response) {
-        response.setStatusCode(failStatusCode);
+        onHalt.apply(response, e);
+
+        // leaving removing cookie intentionally.
         response.getCookies().remove(sessionCookieName);
     }
 

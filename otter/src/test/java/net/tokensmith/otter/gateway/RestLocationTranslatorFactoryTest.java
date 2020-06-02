@@ -8,6 +8,7 @@ import net.tokensmith.otter.config.OtterAppFactory;
 import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.dispatch.json.validator.Validate;
+import net.tokensmith.otter.gateway.config.RestTranslatorConfig;
 import net.tokensmith.otter.gateway.entity.ErrorTarget;
 import net.tokensmith.otter.gateway.entity.Label;
 import net.tokensmith.otter.gateway.entity.Shape;
@@ -43,25 +44,21 @@ public class RestLocationTranslatorFactoryTest {
     @Test
     public void makeShouldNotThrowNPE() {
 
-        Map<Label, List<RestBetween<DummySession, DummyUser>>> before = new HashMap<>();
-        Map<Label, List<RestBetween<DummySession, DummyUser>>> after = new HashMap<>();
-
-        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> restErrors = new HashMap<>();
-        Map<StatusCode, RestError<DummyUser, ? extends Translatable>> defaultErrors = new HashMap<>();
-        Map<StatusCode, RestErrorTarget<DummySession, DummyUser, ? extends Translatable>> dispatchErrors = new HashMap<>();
-        Map<StatusCode, RestErrorTarget<DummySession, DummyUser, ? extends Translatable>> defaultDispatchErrors = new HashMap<>();
         Validate validate = otterAppFactory.restValidate();
 
-        RestLocationTranslator<DummySession, DummyUser, DummyPayload> actual = subject.make(
-                DummySession.class,
-                before,
-                after,
-                restErrors,
-                defaultErrors,
-                dispatchErrors,
-                defaultDispatchErrors,
-                validate
-        );
+        RestTranslatorConfig<DummySession, DummyUser> config = new RestTranslatorConfig.Builder<DummySession, DummyUser>()
+                .sessionClazz(DummySession.class)
+                .before(new HashMap<>())
+                .after(new HashMap<>())
+                .restErrors(new HashMap<>())
+                .defaultErrors(new HashMap<>())
+                .dispatchErrors(new HashMap<>())
+                .defaultDispatchErrors(new HashMap<>())
+                .validate(validate)
+                .onHalts(otterAppFactory.defaultRestOnHalts())
+                .build();
+
+        RestLocationTranslator<DummySession, DummyUser, DummyPayload> actual = subject.make(config);
 
         assertThat(actual, is(notNullValue()));
     }

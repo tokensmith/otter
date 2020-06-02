@@ -3,6 +3,8 @@ package net.tokensmith.otter.gateway;
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.config.OtterAppFactory;
+import net.tokensmith.otter.gateway.config.TranslatorConfig;
 import net.tokensmith.otter.gateway.entity.Label;
 import net.tokensmith.otter.router.entity.between.Between;
 import org.junit.Before;
@@ -33,20 +35,19 @@ public class LocationTranslatorFactoryTest {
 
     @Test
     public void shouldMakeLocationTranslator() throws Exception {
-        Map<StatusCode, Resource<DummySession, DummyUser>> errorResources = new HashMap<>();
-        Map<StatusCode, ErrorTarget<DummySession, DummyUser>> dispatchErrors = new HashMap<>();
-        Map<StatusCode, ErrorTarget<DummySession, DummyUser>> defaultDispatchErrors = new HashMap<>();
-        Map<Label, List<Between<DummySession, DummyUser>>> before = new HashMap<>();
-        Map<Label, List<Between<DummySession, DummyUser>>> after = new HashMap<>();
+        OtterAppFactory otterAppFactory = new OtterAppFactory();
 
-        LocationTranslator<DummySession, DummyUser> actual = subject.make(
-                DummySession.class,
-                before,
-                after,
-                errorResources,
-                dispatchErrors,
-                defaultDispatchErrors
-        );
+        TranslatorConfig<DummySession, DummyUser> config = new TranslatorConfig.Builder<DummySession, DummyUser>()
+                .sessionClazz(DummySession.class)
+                .before(new HashMap<>())
+                .after(new HashMap<>())
+                .errorResources(new HashMap<>())
+                .dispatchErrors(new HashMap<>())
+                .defaultDispatchErrors(new HashMap<>())
+                .onHalts(otterAppFactory.defaultOnHalts())
+                .build();
+
+        LocationTranslator<DummySession, DummyUser> actual = subject.make(config);
 
         assertThat(actual, is(notNullValue()));
     }

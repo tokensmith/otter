@@ -4,11 +4,14 @@ import net.tokensmith.otter.controller.RestResource;
 import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.dispatch.entity.RestBtwnResponse;
 import net.tokensmith.otter.gateway.entity.Label;
 import net.tokensmith.otter.gateway.entity.rest.RestError;
 import net.tokensmith.otter.gateway.entity.rest.RestErrorTarget;
 import net.tokensmith.otter.gateway.entity.rest.RestGroup;
 import net.tokensmith.otter.router.entity.between.RestBetween;
+import net.tokensmith.otter.router.exception.HaltException;
+import net.tokensmith.otter.security.Halt;
 import net.tokensmith.otter.translatable.Translatable;
 
 import java.util.ArrayList;
@@ -16,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 
 
 public class RestGroupBuilder<S extends DefaultSession, U extends DefaultUser> {
@@ -28,6 +32,8 @@ public class RestGroupBuilder<S extends DefaultSession, U extends DefaultUser> {
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors = new HashMap<>();
     // for engine to handle errors
     private Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors = new HashMap<>();
+    // halts - custom halt handlers for security betweens
+    private Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> onHalts = new HashMap<>();
 
     public RestGroupBuilder<S, U> name(String name) {
         this.name = name;
@@ -66,7 +72,12 @@ public class RestGroupBuilder<S extends DefaultSession, U extends DefaultUser> {
         return this;
     }
 
+    public <P extends Translatable> RestGroupBuilder<S, U> onHalt(Halt halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse> onHalt) {
+        this.onHalts.put(halt, onHalt);
+        return this;
+    }
+
     public RestGroup<S, U> build() {
-        return new RestGroup<>(name, sessionClazz, before, after, restErrors, dispatchErrors);
+        return new RestGroup<>(name, sessionClazz, before, after, restErrors, dispatchErrors, onHalts);
     }
 }

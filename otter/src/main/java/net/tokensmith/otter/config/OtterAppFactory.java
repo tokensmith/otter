@@ -4,14 +4,18 @@ package net.tokensmith.otter.config;
 import net.tokensmith.otter.QueryStringToMap;
 import net.tokensmith.otter.controller.RestResource;
 import net.tokensmith.otter.controller.entity.*;
+import net.tokensmith.otter.controller.entity.response.Response;
 import net.tokensmith.otter.controller.error.rest.BadRequestRestResource;
 import net.tokensmith.otter.controller.error.rest.MediaTypeRestResource;
 import net.tokensmith.otter.controller.error.rest.NotAcceptableRestResource;
 import net.tokensmith.otter.controller.error.rest.ServerErrorRestResource;
+import net.tokensmith.otter.dispatch.entity.RestBtwnResponse;
 import net.tokensmith.otter.dispatch.json.validator.RestValidate;
 import net.tokensmith.otter.dispatch.json.validator.Validate;
 import net.tokensmith.otter.gateway.LocationTranslatorFactory;
 import net.tokensmith.otter.gateway.RestLocationTranslatorFactory;
+import net.tokensmith.otter.gateway.config.RestTranslatorConfig;
+import net.tokensmith.otter.gateway.config.TranslatorConfig;
 import net.tokensmith.otter.gateway.entity.Group;
 import net.tokensmith.otter.gateway.entity.rest.RestError;
 import net.tokensmith.otter.gateway.entity.rest.RestErrorTarget;
@@ -27,6 +31,8 @@ import net.tokensmith.otter.gateway.translator.LocationTranslator;
 import net.tokensmith.otter.gateway.translator.RestLocationTranslator;
 import net.tokensmith.otter.router.Dispatcher;
 import net.tokensmith.otter.router.Engine;
+import net.tokensmith.otter.router.exception.HaltException;
+import net.tokensmith.otter.security.Halt;
 import net.tokensmith.otter.security.exception.SessionCtorException;
 import net.tokensmith.otter.server.container.ServletContainerFactory;
 import net.tokensmith.otter.server.path.CompiledClassPath;
@@ -34,11 +40,14 @@ import net.tokensmith.otter.server.path.WebAppPath;
 import net.tokensmith.otter.translatable.Translatable;
 import net.tokensmith.otter.translator.MimeTypeTranslator;
 
+import javax.swing.text.html.Option;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -104,20 +113,66 @@ public class OtterAppFactory {
         for(Group<? extends S, ? extends U> group: groups) {
 
             Group<S, U> castedGroup = (Group<S,U>) group;
-            locationTranslators.put(
-                    group.getName(),
-                    locationTranslatorFactory.make(
-                            castedGroup.getSessionClazz(),
-                            castedGroup.getBefore(),
-                            castedGroup.getAfter(),
-                            castedGroup.getErrorResources(),
-                            castedGroup.getDispatchErrors(),
-                            new HashMap<>() // 113: default dispatch errors.
+
+            Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> defaultOnHalts = defaultOnHalts();
+            Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> onHalts = Stream.of(defaultOnHalts, castedGroup.getOnHalts())
+                .flatMap(map -> map.entrySet().stream())
+                .collect(
+                    Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (v1, v2) -> v2
                     )
-            );
+                );
+
+            TranslatorConfig<S, U> config = new TranslatorConfig.Builder<S, U>()
+                    .sessionClazz(castedGroup.getSessionClazz())
+                    .before(castedGroup.getBefore())
+                    .after(castedGroup.getAfter())
+                    .errorResources(castedGroup.getErrorResources())
+                    .dispatchErrors(castedGroup.getDispatchErrors())
+                    .defaultDispatchErrors(new HashMap<>())
+                    .onHalts(onHalts)
+                    .build();
+
+            locationTranslators.put(group.getName(), locationTranslatorFactory.make(config));
         }
 
         return locationTranslators;
+    }
+
+    public <S extends DefaultSession> Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> defaultOnHalts() {
+        Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> defaults = new HashMap<>();
+
+        defaults.put(Halt.CSRF, (Response<S> response, HaltException ex) -> {
+            response.setTemplate(Optional.empty());
+            response.setStatusCode(StatusCode.FORBIDDEN);
+            return response;
+        });
+
+        defaults.put(Halt.SESSION, (Response<S> response, HaltException ex) -> {
+            response.setTemplate(Optional.empty());
+            response.setStatusCode(StatusCode.UNAUTHORIZED);
+            return response;
+        });
+
+        return defaults;
+    }
+
+    public Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> defaultRestOnHalts() {
+        Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> defaults = new HashMap<>();
+
+        defaults.put(Halt.CSRF, (RestBtwnResponse response, HaltException ex) -> {
+            response.setStatusCode(StatusCode.FORBIDDEN);
+            return response;
+        });
+
+        defaults.put(Halt.SESSION, (RestBtwnResponse response, HaltException ex) -> {
+            response.setStatusCode(StatusCode.UNAUTHORIZED);
+            return response;
+        });
+
+        return defaults;
     }
 
     public RestLocationTranslatorFactory restLocationTranslatorFactory(Shape shape) {
@@ -140,19 +195,30 @@ public class OtterAppFactory {
         for(RestGroup<? extends S, ? extends U> restGroup: restGroups) {
 
             RestGroup<S, U> castedGroup = (RestGroup<S, U>) restGroup;
-            restLocationTranslators.put(
-                    castedGroup.getName(),
-                    restLocationTranslatorFactory.make(
-                            castedGroup.getSessionClazz(),
-                            castedGroup.getBefore(),
-                            castedGroup.getAfter(),
-                            castedGroup.getRestErrors(),
-                            defaultErrors(),
-                            castedGroup.getDispatchErrors(),
-                            defaultDispatchErrors(),
-                            restValidate
+
+            var onHalts = Stream.of(defaultRestOnHalts(), castedGroup.getOnHalts())
+                .flatMap(map -> map.entrySet().stream())
+                .collect(
+                    Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (v1, v2) -> v2
                     )
-            );
+                );
+
+            RestTranslatorConfig<S, U> config = new RestTranslatorConfig.Builder<S, U>()
+                    .sessionClazz(castedGroup.getSessionClazz())
+                    .before(castedGroup.getBefore())
+                    .after(castedGroup.getAfter())
+                    .restErrors(castedGroup.getRestErrors())
+                    .defaultErrors(defaultErrors())
+                    .dispatchErrors(castedGroup.getDispatchErrors())
+                    .defaultDispatchErrors(defaultDispatchErrors())
+                    .validate(restValidate)
+                    .onHalts(onHalts)
+                    .build();
+
+            restLocationTranslators.put(castedGroup.getName(), restLocationTranslatorFactory.make(config));
         }
 
         return restLocationTranslators;
