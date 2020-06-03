@@ -1,15 +1,17 @@
 package net.tokensmith.otter.gateway;
 
-import net.tokensmith.otter.controller.Resource;
+
 import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
-import net.tokensmith.otter.controller.entity.StatusCode;
-import net.tokensmith.otter.gateway.entity.ErrorTarget;
+import net.tokensmith.otter.controller.entity.response.Response;
+import net.tokensmith.otter.gateway.config.TranslatorConfig;
 import net.tokensmith.otter.gateway.entity.Label;
 import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.gateway.translator.LocationTranslator;
 import net.tokensmith.otter.router.entity.between.Between;
+import net.tokensmith.otter.router.exception.HaltException;
 import net.tokensmith.otter.router.factory.BetweenFlyweight;
+import net.tokensmith.otter.security.Halt;
 import net.tokensmith.otter.security.builder.BetweenBuilder;
 import net.tokensmith.otter.security.builder.entity.Betweens;
 import net.tokensmith.otter.security.exception.SessionCtorException;
@@ -18,7 +20,7 @@ import net.tokensmith.otter.translator.config.TranslatorAppFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.function.BiFunction;
 
 
 /**
@@ -32,12 +34,12 @@ public class LocationTranslatorFactory {
         this.shape = shape;
     }
 
-    public <S extends DefaultSession, U extends DefaultUser> LocationTranslator<S, U> make(Class<S> sessionClazz, Map<Label, List<Between<S,U>>> before, Map<Label, List<Between<S,U>>> after, Map<StatusCode, Resource<S, U>> errorResources, Map<StatusCode, ErrorTarget<S, U>> dispatchErrors, Map<StatusCode, ErrorTarget<S, U>> defaultDispatchErrors) throws SessionCtorException {
+    public <S extends DefaultSession, U extends DefaultUser> LocationTranslator<S, U> make(TranslatorConfig<S, U> config) throws SessionCtorException {
         return new LocationTranslator<S, U>(
-                betweenFlyweight(sessionClazz, before, after),
-                errorResources,
-                dispatchErrors,
-                defaultDispatchErrors
+                betweenFlyweight(config.getSessionClazz(), config.getBefore(), config.getAfter(), config.getOnHalts()),
+                config.getErrorResources(),
+                config.getDispatchErrors(),
+                config.getDefaultDispatchErrors()
         );
     }
 
@@ -54,7 +56,7 @@ public class LocationTranslatorFactory {
      * @return BetweenFlyweight that will be used the LocationTranslator.
      * @throws SessionCtorException if S does not have a copy constructor.
      */
-    public <S, U> BetweenFlyweight<S, U> betweenFlyweight(Class<S> sessionClazz, Map<Label, List<Between<S,U>>> before, Map<Label, List<Between<S,U>>> after) throws SessionCtorException {
+    public <S, U> BetweenFlyweight<S, U> betweenFlyweight(Class<S> sessionClazz, Map<Label, List<Between<S,U>>> before, Map<Label, List<Between<S,U>>> after, Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> onHalts) throws SessionCtorException {
         TranslatorAppFactory appFactory = new TranslatorAppFactory();
 
         // 188: is this the right spot? add defaults.
@@ -64,13 +66,13 @@ public class LocationTranslatorFactory {
         }
 
         if (Objects.isNull(before.get(Label.CSRF_PROTECT)) || before.get(Label.CSRF_PROTECT).isEmpty()) {
-            Betweens<S, U> csrfProtect = csrfProtect(appFactory);
+            Betweens<S, U> csrfProtect = csrfProtect(appFactory, onHalts);
             before.put(Label.CSRF_PROTECT, csrfProtect.getBefore());
         }
 
         // 188: should these only run if needed?
-        Betweens<S, U> session = session(appFactory, sessionClazz);
-        Betweens<S, U> sessionOptional = sessionOptional(appFactory, sessionClazz);
+        Betweens<S, U> session = session(appFactory, sessionClazz, onHalts);
+        Betweens<S, U> sessionOptional = sessionOptional(appFactory, sessionClazz, onHalts);
 
         if (Objects.isNull(before.get(Label.SESSION_OPTIONAL)) || before.get(Label.SESSION_OPTIONAL).isEmpty()) {
             before.put(Label.SESSION_OPTIONAL, sessionOptional.getBefore());
@@ -99,50 +101,45 @@ public class LocationTranslatorFactory {
                 .routerAppFactory(appFactory)
                 .signKey(shape.getSignkey())
                 .rotationSignKeys(shape.getRotationSignKeys())
-                .csrfFailStatusCode(shape.getCsrfFailStatusCode())
-                .csrfFailTemplate(shape.getCsrfFailTemplate())
                 .csrfCookieConfig(shape.getCsrfCookie())
                 .csrfPrepare()
                 .build();
 
     }
 
-    protected <S, U> Betweens<S, U> csrfProtect(TranslatorAppFactory appFactory) {
+    protected <S, U> Betweens<S, U> csrfProtect(TranslatorAppFactory appFactory, Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> onHalts) {
         return new BetweenBuilder<S, U>()
                 .routerAppFactory(appFactory)
                 .signKey(shape.getSignkey())
                 .rotationSignKeys(shape.getRotationSignKeys())
-                .csrfFailStatusCode(shape.getCsrfFailStatusCode())
-                .csrfFailTemplate(shape.getCsrfFailTemplate())
                 .csrfCookieConfig(shape.getCsrfCookie())
+                .onHalts(onHalts)
                 .csrfProtect()
                 .build();
 
     }
 
-    protected <S, U> Betweens<S, U> session(TranslatorAppFactory appFactory, Class<S> sessionClazz) throws SessionCtorException {
+    protected <S, U> Betweens<S, U> session(TranslatorAppFactory appFactory, Class<S> sessionClazz, Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> onHalts) throws SessionCtorException {
         return new BetweenBuilder<S, U>()
                 .routerAppFactory(appFactory)
                 .encKey(shape.getEncKey())
                 .rotationEncKey(shape.getRotationEncKeys())
                 .sessionClass(sessionClazz)
-                .sessionFailStatusCode(shape.getSessionFailStatusCode())
-                .sessionFailTemplate(shape.getSessionFailTemplate())
                 .sessionCookieConfig(shape.getSessionCookie())
+                .onHalts(onHalts)
                 .session()
                 .build();
     }
 
 
-    protected <S, U> Betweens<S, U> sessionOptional(TranslatorAppFactory appFactory, Class<S> sessionClazz) throws SessionCtorException {
+    protected <S, U> Betweens<S, U> sessionOptional(TranslatorAppFactory appFactory, Class<S> sessionClazz, Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> onHalts) throws SessionCtorException {
         return new BetweenBuilder<S, U>()
                 .routerAppFactory(appFactory)
                 .encKey(shape.getEncKey())
                 .rotationEncKey(shape.getRotationEncKeys())
                 .sessionClass(sessionClazz)
-                .sessionFailStatusCode(shape.getSessionFailStatusCode())
-                .sessionFailTemplate(shape.getSessionFailTemplate())
                 .sessionCookieConfig(shape.getSessionCookie())
+                .onHalts(onHalts)
                 .optionalSession()
                 .build();
     }

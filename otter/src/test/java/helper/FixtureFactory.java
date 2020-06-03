@@ -70,10 +70,6 @@ public class FixtureFactory {
 
         return new ShapeBuilder()
                 .encKey(encKey)
-                .sessionFailStatusCode(StatusCode.UNAUTHORIZED)
-                .sessionFailTemplate(Optional.empty())
-                .csrfFailStatusCode(StatusCode.FORBIDDEN)
-                .csrfFailTemplate(Optional.empty())
                 .signkey(signKey)
                 .build();
     }

@@ -2,13 +2,15 @@ package net.tokensmith.otter.security.builder;
 
 
 import com.fasterxml.jackson.databind.ObjectReader;
-import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.response.Response;
 import net.tokensmith.otter.router.entity.between.Between;
-import net.tokensmith.otter.security.RandomString;
+import net.tokensmith.otter.router.exception.HaltException;
+import net.tokensmith.otter.security.Halt;
 import net.tokensmith.otter.security.builder.entity.Betweens;
+import net.tokensmith.otter.security.config.SecurityAppFactory;
 import net.tokensmith.otter.security.exception.SessionCtorException;
 import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
 import net.tokensmith.otter.security.csrf.between.html.CheckCSRF;
@@ -23,8 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 public class BetweenBuilder<S, U> {
+    private static SecurityAppFactory securityAppFactory = new SecurityAppFactory();
+
     // #186: review how these cookie names are used.
     private static String CSRF_NAME = "csrfToken";
     private static String SESSION_NAME = "session";
@@ -32,18 +37,17 @@ public class BetweenBuilder<S, U> {
 
     private TranslatorAppFactory appFactory;
 
+    // halts - custom halt handlers for security betweens
+    private Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> onHalts;
+
     // csrf
     private SymmetricKey signKey;
     private Map<String, SymmetricKey> rotationSignKeys;
-    private StatusCode csrfFailStatusCode;
-    private Optional<String> csrfFailTemplate;
     private CookieConfig csrfCookieConfig;
 
     // session
     private SymmetricKey encKey;
     private Map<String, SymmetricKey> rotationEncKeys;
-    private StatusCode sessionFailStatusCode;
-    private Optional<String> sessionFailTemplate;
     private CookieConfig sessionCookieConfig;
 
     private Class<S> sessionClass;
@@ -55,6 +59,11 @@ public class BetweenBuilder<S, U> {
 
     public BetweenBuilder<S, U> routerAppFactory(TranslatorAppFactory appFactory) {
         this.appFactory = appFactory;
+        return this;
+    }
+
+    public BetweenBuilder<S, U> onHalts(Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> onHalts) {
+        this.onHalts = onHalts;
         return this;
     }
 
@@ -73,23 +82,13 @@ public class BetweenBuilder<S, U> {
         return this;
     }
 
-    public BetweenBuilder<S, U> sessionFailTemplate(Optional<String> sessionFailTemplate) {
-        this.sessionFailTemplate = sessionFailTemplate;
-        return this;
-    }
-
-    public BetweenBuilder<S, U> sessionFailStatusCode(StatusCode sessionFailStatusCode) {
-        this.sessionFailStatusCode = sessionFailStatusCode;
-        return this;
-    }
-
     public BetweenBuilder<S, U> sessionCookieConfig(CookieConfig sessionCookieConfig) {
         this.sessionCookieConfig = sessionCookieConfig;
         return this;
     }
 
     public BetweenBuilder<S, U> csrfPrepare() {
-        DoubleSubmitCSRF doubleSubmitCSRF = new DoubleSubmitCSRF(new JwtAppFactory(), new RandomString(), signKey, rotationSignKeys);
+        DoubleSubmitCSRF doubleSubmitCSRF = securityAppFactory.doubleSubmitCSRF(signKey, rotationSignKeys);
 
         Between<S,U> prepareCSRF = new PrepareCSRF<S, U>(csrfCookieConfig, doubleSubmitCSRF);
         before.add(prepareCSRF);
@@ -98,9 +97,8 @@ public class BetweenBuilder<S, U> {
     }
 
     public BetweenBuilder<S, U> csrfProtect() {
-        DoubleSubmitCSRF doubleSubmitCSRF = new DoubleSubmitCSRF(new JwtAppFactory(), new RandomString(), signKey, rotationSignKeys);
-
-        Between<S,U> checkCSRF = new CheckCSRF<S, U>(CSRF_NAME, CSRF_NAME, doubleSubmitCSRF, csrfFailStatusCode, csrfFailTemplate);
+        DoubleSubmitCSRF doubleSubmitCSRF = securityAppFactory.doubleSubmitCSRF(signKey, rotationSignKeys);
+        Between<S,U> checkCSRF = new CheckCSRF<S, U>(CSRF_NAME, CSRF_NAME, doubleSubmitCSRF, onHalts.get(Halt.CSRF));
         before.add(checkCSRF);
 
         return this;
@@ -113,16 +111,6 @@ public class BetweenBuilder<S, U> {
 
     public BetweenBuilder<S, U> rotationEncKey(Map<String, SymmetricKey> rotationEncKeys) {
         this.rotationEncKeys = rotationEncKeys;
-        return this;
-    }
-
-    public BetweenBuilder<S, U> csrfFailTemplate(Optional<String> csrfFailTemplate) {
-        this.csrfFailTemplate = csrfFailTemplate;
-        return this;
-    }
-
-    public BetweenBuilder<S, U> csrfFailStatusCode(StatusCode csrfFailStatusCode) {
-        this.csrfFailStatusCode = csrfFailStatusCode;
         return this;
     }
 
@@ -139,8 +127,9 @@ public class BetweenBuilder<S, U> {
             throw new SessionCtorException(COULD_NOT_ACCESS_SESSION_CTORS, e);
         }
 
-        Decrypt<S> decrypt = new Decrypt<S>(new JwtAppFactory(), sessionObjectReader, encKey, rotationEncKeys);
-        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, SESSION_NAME, sessionFailStatusCode, sessionFailTemplate, true, decrypt);
+        Decrypt<S> decrypt = securityAppFactory.decrypt(sessionObjectReader, encKey, rotationEncKeys);
+
+        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, SESSION_NAME, onHalts.get(Halt.SESSION), true, decrypt);
         before.add(decryptSession);
 
         Between<S,U> encryptSession = new EncryptSession<S, U>(sessionCookieConfig, encKey, appFactory.objectWriter());
@@ -156,8 +145,9 @@ public class BetweenBuilder<S, U> {
             throw new SessionCtorException(COULD_NOT_ACCESS_SESSION_CTORS, e);
         }
 
-        Decrypt<S> decrypt = new Decrypt<S>(new JwtAppFactory(), sessionObjectReader, encKey, rotationEncKeys);
-        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, SESSION_NAME, sessionFailStatusCode, sessionFailTemplate, false, decrypt);
+        Decrypt<S> decrypt = securityAppFactory.decrypt(sessionObjectReader, encKey, rotationEncKeys);
+
+        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, SESSION_NAME, onHalts.get(Halt.SESSION), false, decrypt);
         before.add(decryptSession);
 
         Between<S,U> encryptSession = new EncryptSession<S, U>(sessionCookieConfig, encKey, appFactory.objectWriter());

@@ -19,6 +19,7 @@ import net.tokensmith.otter.router.exception.HaltException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 
 /**
@@ -37,15 +38,13 @@ public class DecryptSession<S, U> implements Between<S, U> {
     private Constructor<S> ctor;
     private String sessionCookieName;
     private Boolean required;
-    private StatusCode failStatusCode;
-    private Optional<String> failTemplate;
+    private BiFunction<Response<S>, HaltException, Response<S>> onHalt;
     private Decrypt<S> decrypt;
 
-    public DecryptSession(Constructor<S> ctor, String sessionCookieName, StatusCode failStatusCode, Optional<String> failTemplate, Boolean required, Decrypt<S> decrypt) {
+    public DecryptSession(Constructor<S> ctor, String sessionCookieName, BiFunction<Response<S>, HaltException, Response<S>> onHalt, Boolean required, Decrypt<S> decrypt) {
         this.ctor = ctor;
         this.sessionCookieName = sessionCookieName;
-        this.failStatusCode = failStatusCode;
-        this.failTemplate = failTemplate;
+        this.onHalt = onHalt;
         this.required = required;
         this.decrypt = decrypt;
     }
@@ -123,9 +122,10 @@ public class DecryptSession<S, U> implements Between<S, U> {
      * @param e a HaltException
      * @param response a Response
      */
-    protected void onHalt(HaltException e, Response response) {
-        response.setStatusCode(failStatusCode);
-        response.setTemplate(failTemplate);
+    protected void onHalt(HaltException e, Response<S> response) {
+        response = onHalt.apply(response, e);
+
+        // keeping this here intentionally.
         response.getCookies().remove(sessionCookieName);
     }
 

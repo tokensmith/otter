@@ -4,6 +4,7 @@ import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import net.tokensmith.otter.config.CookieConfig;
+import net.tokensmith.otter.config.OtterAppFactory;
 import net.tokensmith.otter.gateway.builder.ShapeBuilder;
 import net.tokensmith.otter.gateway.entity.Shape;
 import org.junit.Test;
@@ -24,6 +25,7 @@ import static org.junit.Assert.*;
 
 
 public class BetweenBuilderTest {
+    private static OtterAppFactory otterAppFactory = new OtterAppFactory();
     private static TranslatorAppFactory appFactory = new TranslatorAppFactory();
 
     @Test
@@ -32,6 +34,7 @@ public class BetweenBuilderTest {
 
         Betweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
+                .onHalts(otterAppFactory.defaultOnHalts())
                 .build();
 
         assertThat(actual.getBefore().size(), is(0));
@@ -51,6 +54,7 @@ public class BetweenBuilderTest {
                 .signKey(preferredSignKey)
                 .rotationSignKeys(rotationSignKeys)
                 .csrfCookieConfig(csrfCookieConfig)
+                .onHalts(otterAppFactory.defaultOnHalts())
                 .csrfPrepare()
                 .build();
 
@@ -79,6 +83,7 @@ public class BetweenBuilderTest {
                 .signKey(preferredSignKey)
                 .rotationSignKeys(rotationSignKeys)
                 .csrfCookieConfig(csrfCookieConfig)
+                .onHalts(otterAppFactory.defaultOnHalts())
                 .csrfPrepare()
                 .build();
 
@@ -107,6 +112,7 @@ public class BetweenBuilderTest {
                 .signKey(preferredSignKey)
                 .rotationSignKeys(rotationSignKeys)
                 .csrfCookieConfig(csrfCookieConfig)
+                .onHalts(otterAppFactory.defaultOnHalts())
                 .csrfProtect()
                 .build();
 
@@ -135,6 +141,7 @@ public class BetweenBuilderTest {
                 .rotationEncKey(rotationEncKeys)
                 .sessionClass(DummySession.class)
                 .sessionCookieConfig(sessionCookieConfig)
+                .onHalts(otterAppFactory.defaultOnHalts())
                 .session()
                 .build();
 
@@ -170,6 +177,7 @@ public class BetweenBuilderTest {
                 .rotationEncKey(rotationEncKeys)
                 .sessionClass(DummySession.class)
                 .sessionCookieConfig(sessionCookieConfig)
+                .onHalts(otterAppFactory.defaultOnHalts())
                 .session()
                 .build();
 
@@ -203,6 +211,7 @@ public class BetweenBuilderTest {
                 .rotationEncKey(rotationEncKeys)
                 .sessionClass(DummySession.class)
                 .sessionCookieConfig(sessionCookieConfig)
+                .onHalts(otterAppFactory.defaultOnHalts())
                 .optionalSession()
                 .build();
 
@@ -237,6 +246,7 @@ public class BetweenBuilderTest {
                 .rotationEncKey(rotationEncKeys)
                 .sessionClass(DummySession.class)
                 .sessionCookieConfig(sessionCookieConfig)
+                .onHalts(otterAppFactory.defaultOnHalts())
                 .optionalSession()
                 .build();
 

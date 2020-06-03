@@ -4,16 +4,20 @@ import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.response.Response;
 import net.tokensmith.otter.gateway.entity.ErrorTarget;
 import net.tokensmith.otter.gateway.entity.Group;
 import net.tokensmith.otter.gateway.entity.Label;
 import net.tokensmith.otter.router.entity.between.Between;
+import net.tokensmith.otter.router.exception.HaltException;
+import net.tokensmith.otter.security.Halt;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 
 
 public class GroupBuilder<S extends DefaultSession, U extends DefaultUser> {
@@ -25,6 +29,9 @@ public class GroupBuilder<S extends DefaultSession, U extends DefaultUser> {
 
     private Map<StatusCode, Resource<S, U>> errorResources = new HashMap<>();
     private Map<StatusCode, ErrorTarget<S, U>> dispatchErrors = new HashMap<>();
+
+    // halts - custom halt handlers for security betweens
+    private Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> onHalts = new HashMap<>();
 
     public GroupBuilder<S, U> name(String name) {
         this.name = name;
@@ -62,6 +69,11 @@ public class GroupBuilder<S extends DefaultSession, U extends DefaultUser> {
         return this;
     }
 
+    public GroupBuilder<S, U> onHalt(Halt halt, BiFunction<Response<S>, HaltException, Response<S>> onHalt) {
+        this.onHalts.put(halt, onHalt);
+        return this;
+    }
+
     public Group<S, U> build() {
         return new Group<S, U>(
                 name,
@@ -69,7 +81,8 @@ public class GroupBuilder<S extends DefaultSession, U extends DefaultUser> {
                 before,
                 after,
                 errorResources,
-                dispatchErrors
+                dispatchErrors,
+                onHalts
         );
     }
 }

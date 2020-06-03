@@ -3,6 +3,8 @@ package net.tokensmith.otter.security.csrf.between;
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.config.OtterAppFactory;
+import net.tokensmith.otter.security.Halt;
 import net.tokensmith.otter.security.csrf.between.html.CheckCSRF;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +20,9 @@ import net.tokensmith.otter.router.exception.HaltException;
 import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -37,8 +41,17 @@ public class CheckCSRFTest {
 
     @Before
     public void setUp() {
+        OtterAppFactory otterAppFactory = new OtterAppFactory();
         MockitoAnnotations.initMocks(this);
-        subject = new CheckCSRF<DummySession, DummyUser>(COOKIE_NAME, FORM_FIELD_NAME, mockDoubleSubmitCSRF, StatusCode.FORBIDDEN, Optional.empty());
+
+        Map<Halt, BiFunction<Response<DummySession>, HaltException, Response<DummySession>>> onHalts = otterAppFactory.defaultOnHalts();
+
+        subject = new CheckCSRF<DummySession, DummyUser>(
+            COOKIE_NAME,
+            FORM_FIELD_NAME,
+            mockDoubleSubmitCSRF,
+            onHalts.get(Halt.CSRF)
+        );
     }
 
     @Test

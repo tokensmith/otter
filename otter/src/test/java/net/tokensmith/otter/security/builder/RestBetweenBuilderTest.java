@@ -4,6 +4,7 @@ import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
+import net.tokensmith.otter.config.OtterAppFactory;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.security.builder.entity.Betweens;
 import net.tokensmith.otter.security.builder.entity.RestBetweens;
@@ -20,6 +21,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 public class RestBetweenBuilderTest {
+    private static OtterAppFactory otterAppFactory = new OtterAppFactory();
     private static TranslatorAppFactory appFactory = new TranslatorAppFactory();
 
     @Test
@@ -28,6 +30,7 @@ public class RestBetweenBuilderTest {
 
         RestBetweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
+                .onHalts(otterAppFactory.defaultRestOnHalts())
                 .build();
 
         assertThat(actual.getBefore().size(), is(0));
@@ -47,6 +50,7 @@ public class RestBetweenBuilderTest {
                 .encKey(preferredEncKey)
                 .rotationEncKeys(rotationEncKeys)
                 .sessionClazz(DummySession.class)
+                .onHalts(otterAppFactory.defaultRestOnHalts())
                 .session()
                 .build();
 
@@ -73,6 +77,7 @@ public class RestBetweenBuilderTest {
                 .encKey(preferredEncKey)
                 .rotationEncKeys(rotationEncKeys)
                 .sessionClazz(DummySession.class)
+                .onHalts(otterAppFactory.defaultRestOnHalts())
                 .session()
                 .build();
 
@@ -98,6 +103,7 @@ public class RestBetweenBuilderTest {
                 .encKey(preferredEncKey)
                 .rotationEncKeys(rotationEncKeys)
                 .sessionClazz(DummySession.class)
+                .onHalts(otterAppFactory.defaultRestOnHalts())
                 .optionalSession()
                 .build();
 
@@ -122,6 +128,7 @@ public class RestBetweenBuilderTest {
                 .encKey(preferredEncKey)
                 .rotationEncKeys(rotationEncKeys)
                 .sessionClazz(DummySession.class)
+                .onHalts(otterAppFactory.defaultRestOnHalts())
                 .optionalSession()
                 .build();
 
@@ -146,7 +153,7 @@ public class RestBetweenBuilderTest {
                 .routerAppFactory(appFactory)
                 .signKey(preferredSignKey)
                 .rotationSignKeys(rotationSignKeys)
-                .csrfFailStatusCode(StatusCode.FORBIDDEN)
+                .onHalts(otterAppFactory.defaultRestOnHalts())
                 .csrfProtect()
                 .build();
 
@@ -155,7 +162,6 @@ public class RestBetweenBuilderTest {
         RestCheckCSRF<DummySession, DummyUser> actualCheck = (RestCheckCSRF<DummySession, DummyUser>) actual.getBefore().get(0);
         assertThat(actualCheck.getCookieName(), is("csrfToken"));
         assertThat(actualCheck.getHeaderName(), is("X-CSRF"));
-        assertThat(actualCheck.getFailStatusCode(), is(StatusCode.FORBIDDEN));
 
         assertThat(actual.getAfter().size(), is(0));
     }
