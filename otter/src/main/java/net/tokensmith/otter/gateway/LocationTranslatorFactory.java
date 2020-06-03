@@ -51,6 +51,7 @@ public class LocationTranslatorFactory {
      * @param sessionClazz The Class of the session
      * @param before a map of before betweens that will be used in the flyweight.
      * @param after a map of after betweens that will be used in the flyweight.
+     * @param onHalts a map of halt handlers
      * @param <S> Session
      * @param <U> User
      * @return BetweenFlyweight that will be used the LocationTranslator.
