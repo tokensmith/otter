@@ -42,7 +42,7 @@ public class RestLocationTranslatorFactory {
 
     public <S extends DefaultSession, U extends DefaultUser, P> RestLocationTranslator<S, U, P> make(RestTranslatorConfig<S, U> config) {
         return new RestLocationTranslator<S, U, P>(
-                restBetweenFlyweight(config.getSessionClazz(), config.getBefore(), config.getAfter(), config.getOnHalts()),
+                restBetweenFlyweight(config.getSessionClazz(), config.getLabelBefore(), config.getLabelAfter(), config.getOnHalts()),
                 config.getRestErrors(),
                 config.getDefaultErrors(),
                 config.getDispatchErrors(),

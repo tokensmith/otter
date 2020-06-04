@@ -25,8 +25,12 @@ import java.util.function.BiFunction;
 public class RestGroupBuilder<S extends DefaultSession, U extends DefaultUser> {
     private String name;
     private Class<S> sessionClazz;
-    private Map<Label, List<RestBetween<S, U>>> before = new HashMap<>();
-    private Map<Label, List<RestBetween<S, U>>> after = new HashMap<>();
+
+    private Map<Label, List<RestBetween<S, U>>> labelBefore = new HashMap<>();
+    private Map<Label, List<RestBetween<S, U>>> labelAfter = new HashMap<>();
+
+    private List<RestBetween<S, U>> befores = new ArrayList<>();
+    private List<RestBetween<S, U>> afters = new ArrayList<>();
 
     // for route run to handle errors.
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors = new HashMap<>();
@@ -46,18 +50,28 @@ public class RestGroupBuilder<S extends DefaultSession, U extends DefaultUser> {
     }
 
     public RestGroupBuilder<S, U> before(Label label, RestBetween<S, U> before) {
-        if (Objects.isNull(this.before.get(label))) {
-            this.before.put(label, new ArrayList<>());
+        if (Objects.isNull(this.labelBefore.get(label))) {
+            this.labelBefore.put(label, new ArrayList<>());
         }
-        this.before.get(label).add(before);
+        this.labelBefore.get(label).add(before);
         return this;
     }
 
     public RestGroupBuilder<S, U> after(Label label, RestBetween<S, U> after) {
-        if (Objects.isNull(this.after.get(label))) {
-            this.after.put(label, new ArrayList<>());
+        if (Objects.isNull(this.labelAfter.get(label))) {
+            this.labelAfter.put(label, new ArrayList<>());
         }
-        this.after.get(label).add(after);
+        this.labelAfter.get(label).add(after);
+        return this;
+    }
+
+    public RestGroupBuilder<S, U> before(RestBetween<S, U> before) {
+        this.befores.add(before);
+        return this;
+    }
+
+    public RestGroupBuilder<S, U> after(RestBetween<S, U> after) {
+        this.afters.add(after);
         return this;
     }
 
@@ -78,6 +92,16 @@ public class RestGroupBuilder<S extends DefaultSession, U extends DefaultUser> {
     }
 
     public RestGroup<S, U> build() {
-        return new RestGroup<>(name, sessionClazz, before, after, restErrors, dispatchErrors, onHalts);
+        return new RestGroup<>(
+            name,
+            sessionClazz,
+            labelBefore,
+            labelAfter,
+            befores,
+            afters,
+            restErrors,
+            dispatchErrors,
+            onHalts
+        );
     }
 }

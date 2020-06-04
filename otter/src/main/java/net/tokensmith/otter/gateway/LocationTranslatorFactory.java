@@ -36,7 +36,7 @@ public class LocationTranslatorFactory {
 
     public <S extends DefaultSession, U extends DefaultUser> LocationTranslator<S, U> make(TranslatorConfig<S, U> config) throws SessionCtorException {
         return new LocationTranslator<S, U>(
-                betweenFlyweight(config.getSessionClazz(), config.getBefore(), config.getAfter(), config.getOnHalts()),
+                betweenFlyweight(config.getSessionClazz(), config.getLabelBefore(), config.getLabelAfter(), config.getOnHalts()),
                 config.getErrorResources(),
                 config.getDispatchErrors(),
                 config.getDefaultDispatchErrors()

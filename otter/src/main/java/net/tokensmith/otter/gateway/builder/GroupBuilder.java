@@ -24,8 +24,11 @@ public class GroupBuilder<S extends DefaultSession, U extends DefaultUser> {
     private String name;
     private Class<S> sessionClazz;
 
-    private Map<Label, List<Between<S, U>>> before = new HashMap<>();
-    private Map<Label, List<Between<S, U>>> after = new HashMap<>();
+    private Map<Label, List<Between<S, U>>> labelBefore = new HashMap<>();
+    private Map<Label, List<Between<S, U>>> labelAfter = new HashMap<>();
+
+    private List<Between<S, U>> befores = new ArrayList<>();
+    private List<Between<S, U>> afters = new ArrayList<>();
 
     private Map<StatusCode, Resource<S, U>> errorResources = new HashMap<>();
     private Map<StatusCode, ErrorTarget<S, U>> dispatchErrors = new HashMap<>();
@@ -44,18 +47,28 @@ public class GroupBuilder<S extends DefaultSession, U extends DefaultUser> {
     }
 
     public GroupBuilder<S, U> before(Label label, Between<S, U> before) {
-        if (Objects.isNull(this.before.get(label))) {
-            this.before.put(label, new ArrayList<>());
+        if (Objects.isNull(this.labelBefore.get(label))) {
+            this.labelBefore.put(label, new ArrayList<>());
         }
-        this.before.get(label).add(before);
+        this.labelBefore.get(label).add(before);
         return this;
     }
 
     public GroupBuilder<S, U> after(Label label, Between<S, U> after) {
-        if (Objects.isNull(this.after.get(label))) {
-            this.after.put(label, new ArrayList<>());
+        if (Objects.isNull(this.labelAfter.get(label))) {
+            this.labelAfter.put(label, new ArrayList<>());
         }
-        this.after.get(label).add(after);
+        this.labelAfter.get(label).add(after);
+        return this;
+    }
+
+    public GroupBuilder<S, U> before(Between<S, U> before) {
+        this.befores.add(before);
+        return this;
+    }
+
+    public GroupBuilder<S, U> after(Between<S, U> after) {
+        this.afters.add(after);
         return this;
     }
 
@@ -78,8 +91,10 @@ public class GroupBuilder<S extends DefaultSession, U extends DefaultUser> {
         return new Group<S, U>(
                 name,
                 sessionClazz,
-                before,
-                after,
+                labelBefore,
+                labelAfter,
+                befores,
+                afters,
                 errorResources,
                 dispatchErrors,
                 onHalts
