@@ -4,7 +4,6 @@ package net.tokensmith.otter.security.builder;
 import com.fasterxml.jackson.databind.ObjectReader;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.config.CookieConfig;
-import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.response.Response;
 import net.tokensmith.otter.router.entity.between.Between;
 import net.tokensmith.otter.router.exception.HaltException;
@@ -24,15 +23,12 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.BiFunction;
 
 public class BetweenBuilder<S, U> {
     private static SecurityAppFactory securityAppFactory = new SecurityAppFactory();
 
-    // #186: review how these cookie names are used.
-    private static String CSRF_NAME = "csrfToken";
-    private static String SESSION_NAME = "session";
+    private static String CSRF_FORM_NAME = "csrfToken";
     public static final String COULD_NOT_ACCESS_SESSION_CTORS = "Could not access session copy constructor";
 
     private TranslatorAppFactory appFactory;
@@ -98,7 +94,7 @@ public class BetweenBuilder<S, U> {
 
     public BetweenBuilder<S, U> csrfProtect() {
         DoubleSubmitCSRF doubleSubmitCSRF = securityAppFactory.doubleSubmitCSRF(signKey, rotationSignKeys);
-        Between<S,U> checkCSRF = new CheckCSRF<S, U>(CSRF_NAME, CSRF_NAME, doubleSubmitCSRF, onHalts.get(Halt.CSRF));
+        Between<S,U> checkCSRF = new CheckCSRF<S, U>(csrfCookieConfig.getName(), CSRF_FORM_NAME, doubleSubmitCSRF, onHalts.get(Halt.CSRF));
         before.add(checkCSRF);
 
         return this;
@@ -129,7 +125,7 @@ public class BetweenBuilder<S, U> {
 
         Decrypt<S> decrypt = securityAppFactory.decrypt(sessionObjectReader, encKey, rotationEncKeys);
 
-        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, SESSION_NAME, onHalts.get(Halt.SESSION), true, decrypt);
+        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, sessionCookieConfig.getName(), onHalts.get(Halt.SESSION), true, decrypt);
         before.add(decryptSession);
 
         Between<S,U> encryptSession = new EncryptSession<S, U>(sessionCookieConfig, encKey, appFactory.objectWriter());
@@ -147,7 +143,7 @@ public class BetweenBuilder<S, U> {
 
         Decrypt<S> decrypt = securityAppFactory.decrypt(sessionObjectReader, encKey, rotationEncKeys);
 
-        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, SESSION_NAME, onHalts.get(Halt.SESSION), false, decrypt);
+        Between<S,U> decryptSession = new DecryptSession<S, U>(sessionCtor, sessionCookieConfig.getName(), onHalts.get(Halt.SESSION), false, decrypt);
         before.add(decryptSession);
 
         Between<S,U> encryptSession = new EncryptSession<S, U>(sessionCookieConfig, encKey, appFactory.objectWriter());

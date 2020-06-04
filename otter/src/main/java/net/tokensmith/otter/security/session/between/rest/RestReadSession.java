@@ -87,4 +87,8 @@ public class RestReadSession<S, U> implements RestBetween<S, U> {
     public Boolean getRequired() {
         return required;
     }
+
+    public String getSessionCookieName() {
+        return sessionCookieName;
+    }
 }

@@ -151,6 +151,7 @@ public class BetweenBuilderTest {
 
         DecryptSession<DummySession, DummyUser> actualDecrypt = (DecryptSession<DummySession, DummyUser>) actual.getBefore().get(0);
         assertThat(actualDecrypt.getRequired(), is(true));
+        assertThat(actualDecrypt.getSessionCookieName(), is(sessionCookieConfig.getName()));
 
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getAfter().get(0), is(instanceOf(EncryptSession.class)));
@@ -186,6 +187,7 @@ public class BetweenBuilderTest {
 
         DecryptSession<DummySession, DummyUser> actualDecrypt = (DecryptSession<DummySession, DummyUser>) actual.getBefore().get(0);
         assertThat(actualDecrypt.getRequired(), is(true));
+        assertThat(actualDecrypt.getSessionCookieName(), is(sessionCookieConfig.getName()));
 
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getAfter().get(0), is(instanceOf(EncryptSession.class)));
@@ -221,6 +223,7 @@ public class BetweenBuilderTest {
 
         DecryptSession<DummySession, DummyUser> actualDecrypt = (DecryptSession<DummySession, DummyUser>) actual.getBefore().get(0);
         assertThat(actualDecrypt.getRequired(), is(false));
+        assertThat(actualDecrypt.getSessionCookieName(), is(sessionCookieConfig.getName()));
 
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getAfter().get(0), is(instanceOf(EncryptSession.class)));
@@ -255,6 +258,7 @@ public class BetweenBuilderTest {
 
         DecryptSession<DummySession, DummyUser> actualDecrypt = (DecryptSession<DummySession, DummyUser>) actual.getBefore().get(0);
         assertThat(actualDecrypt.getRequired(), is(false));
+        assertThat(actualDecrypt.getSessionCookieName(), is(sessionCookieConfig.getName()));
 
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getAfter().get(0), is(instanceOf(EncryptSession.class)));

@@ -4,6 +4,7 @@ import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
+import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.config.OtterAppFactory;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.security.builder.entity.Betweens;
@@ -44,12 +45,14 @@ public class RestBetweenBuilderTest {
 
         SymmetricKey preferredEncKey = FixtureFactory.encKey("preferred-key");
         Map<String, SymmetricKey> rotationEncKeys = FixtureFactory.rotationEncKeys("rotation-key-", 2);
+        CookieConfig sessionCookieConfig = FixtureFactory.sessionCookieConfig();
 
         RestBetweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
                 .encKey(preferredEncKey)
                 .rotationEncKeys(rotationEncKeys)
                 .sessionClazz(DummySession.class)
+                .sessionCookieConfig(sessionCookieConfig)
                 .onHalts(otterAppFactory.defaultRestOnHalts())
                 .session()
                 .build();
@@ -60,6 +63,7 @@ public class RestBetweenBuilderTest {
 
         RestReadSession<DummySession, DummyUser> actualDecrypt = (RestReadSession<DummySession, DummyUser>) actual.getBefore().get(0);
         assertThat(actualDecrypt.getRequired(), is(true));
+        assertThat(actualDecrypt.getSessionCookieName(), is(sessionCookieConfig.getName()));
 
         assertThat(actual.getAfter().size(), is(0));
     }
@@ -71,6 +75,7 @@ public class RestBetweenBuilderTest {
 
         SymmetricKey preferredEncKey = FixtureFactory.encKey("preferred-key");
         Map<String, SymmetricKey> rotationEncKeys = FixtureFactory.rotationEncKeys("rotation-key-", 2);
+        CookieConfig sessionCookieConfig = FixtureFactory.sessionCookieConfig();
 
         RestBetweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
@@ -78,6 +83,7 @@ public class RestBetweenBuilderTest {
                 .rotationEncKeys(rotationEncKeys)
                 .sessionClazz(DummySession.class)
                 .onHalts(otterAppFactory.defaultRestOnHalts())
+                .sessionCookieConfig(sessionCookieConfig)
                 .session()
                 .build();
 
@@ -86,6 +92,7 @@ public class RestBetweenBuilderTest {
 
         RestReadSession<DummySession, DummyUser> actualDecrypt = (RestReadSession<DummySession, DummyUser>) actual.getBefore().get(0);
         assertThat(actualDecrypt.getRequired(), is(true));
+        assertThat(actualDecrypt.getSessionCookieName(), is(sessionCookieConfig.getName()));
 
         assertThat(actual.getAfter().size(), is(0));
     }
@@ -97,6 +104,7 @@ public class RestBetweenBuilderTest {
 
         SymmetricKey preferredEncKey = FixtureFactory.encKey("preferred-key");
         Map<String, SymmetricKey> rotationEncKeys = FixtureFactory.rotationEncKeys("rotation-key-", 2);
+        CookieConfig sessionCookieConfig = FixtureFactory.sessionCookieConfig();
 
         RestBetweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
@@ -104,6 +112,7 @@ public class RestBetweenBuilderTest {
                 .rotationEncKeys(rotationEncKeys)
                 .sessionClazz(DummySession.class)
                 .onHalts(otterAppFactory.defaultRestOnHalts())
+                .sessionCookieConfig(sessionCookieConfig)
                 .optionalSession()
                 .build();
 
@@ -113,6 +122,7 @@ public class RestBetweenBuilderTest {
 
         RestReadSession<DummySession, DummyUser> actualDecrypt = (RestReadSession<DummySession, DummyUser>) actual.getBefore().get(0);
         assertThat(actualDecrypt.getRequired(), is(false));
+        assertThat(actualDecrypt.getSessionCookieName(), is(sessionCookieConfig.getName()));
     }
 
     @Test
@@ -122,6 +132,7 @@ public class RestBetweenBuilderTest {
 
         SymmetricKey preferredEncKey = FixtureFactory.encKey("preferred-key");
         Map<String, SymmetricKey> rotationEncKeys = FixtureFactory.rotationEncKeys("rotation-key-", 2);
+        CookieConfig sessionCookieConfig = FixtureFactory.sessionCookieConfig();
 
         RestBetweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
@@ -129,6 +140,7 @@ public class RestBetweenBuilderTest {
                 .rotationEncKeys(rotationEncKeys)
                 .sessionClazz(DummySession.class)
                 .onHalts(otterAppFactory.defaultRestOnHalts())
+                .sessionCookieConfig(sessionCookieConfig)
                 .optionalSession()
                 .build();
 
@@ -137,6 +149,7 @@ public class RestBetweenBuilderTest {
 
         RestReadSession<DummySession, DummyUser> actualDecrypt = (RestReadSession<DummySession, DummyUser>) actual.getBefore().get(0);
         assertThat(actualDecrypt.getRequired(), is(false));
+        assertThat(actualDecrypt.getSessionCookieName(), is(sessionCookieConfig.getName()));
 
         assertThat(actual.getAfter().size(), is(0));
     }
@@ -148,19 +161,21 @@ public class RestBetweenBuilderTest {
 
         SymmetricKey preferredSignKey = FixtureFactory.signKey("preferred-key");
         Map<String, SymmetricKey> rotationSignKeys = FixtureFactory.rotationSignKeys("rotation-key-", 2);
+        CookieConfig csrfCookieConfig = FixtureFactory.csrfCookieConfig();
 
         RestBetweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
                 .signKey(preferredSignKey)
                 .rotationSignKeys(rotationSignKeys)
                 .onHalts(otterAppFactory.defaultRestOnHalts())
+                .csrfCookieConfig(csrfCookieConfig)
                 .csrfProtect()
                 .build();
 
         assertThat(actual.getBefore().size(), is(1));
         assertThat(actual.getBefore().get(0), is(instanceOf(RestCheckCSRF.class)));
         RestCheckCSRF<DummySession, DummyUser> actualCheck = (RestCheckCSRF<DummySession, DummyUser>) actual.getBefore().get(0);
-        assertThat(actualCheck.getCookieName(), is("csrfToken"));
+        assertThat(actualCheck.getCookieName(), is(csrfCookieConfig.getName()));
         assertThat(actualCheck.getHeaderName(), is("X-CSRF"));
 
         assertThat(actual.getAfter().size(), is(0));

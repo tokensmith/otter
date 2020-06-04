@@ -4,27 +4,17 @@ import helper.FixtureFactory;
 import helper.entity.model.DummyPayload;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.config.OtterAppFactory;
-import net.tokensmith.otter.controller.Resource;
-import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.dispatch.json.validator.Validate;
 import net.tokensmith.otter.gateway.config.RestTranslatorConfig;
-import net.tokensmith.otter.gateway.entity.ErrorTarget;
-import net.tokensmith.otter.gateway.entity.Label;
 import net.tokensmith.otter.gateway.entity.Shape;
-import net.tokensmith.otter.gateway.entity.rest.RestError;
-import net.tokensmith.otter.gateway.entity.rest.RestErrorTarget;
-import net.tokensmith.otter.gateway.translator.LocationTranslator;
 import net.tokensmith.otter.gateway.translator.RestLocationTranslator;
-import net.tokensmith.otter.router.entity.between.Between;
-import net.tokensmith.otter.router.entity.between.RestBetween;
-import net.tokensmith.otter.translatable.Translatable;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;

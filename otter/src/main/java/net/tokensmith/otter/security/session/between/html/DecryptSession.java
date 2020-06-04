@@ -132,4 +132,8 @@ public class DecryptSession<S, U> implements Between<S, U> {
     public Boolean getRequired() {
         return required;
     }
+
+    public String getSessionCookieName() {
+        return sessionCookieName;
+    }
 }
