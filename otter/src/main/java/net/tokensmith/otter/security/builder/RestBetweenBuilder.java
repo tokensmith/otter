@@ -3,7 +3,6 @@ package net.tokensmith.otter.security.builder;
 import com.fasterxml.jackson.databind.ObjectReader;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.config.CookieConfig;
-import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.dispatch.entity.RestBtwnResponse;
 import net.tokensmith.otter.router.entity.between.RestBetween;
 import net.tokensmith.otter.router.exception.HaltException;
@@ -25,9 +24,7 @@ import java.util.function.BiFunction;
 public class RestBetweenBuilder<S, U> {
     private static SecurityAppFactory securityAppFactory = new SecurityAppFactory();
 
-    private static String CSRF_NAME = "csrfToken";
     private static String CSRF_HDR_NAME = "X-CSRF";
-    private static String SESSION_NAME = "session";
 
     private TranslatorAppFactory appFactory;
 
@@ -99,7 +96,7 @@ public class RestBetweenBuilder<S, U> {
     public RestBetweenBuilder<S, U> session() {
 
         Decrypt<S> decrypt = securityAppFactory.decrypt(sessionObjectReader, encKey, rotationEncKeys);
-        RestBetween<S, U> decryptSession = new RestReadSession<S, U>(SESSION_NAME, true, decrypt, onHalts.get(Halt.SESSION));
+        RestBetween<S, U> decryptSession = new RestReadSession<S, U>(sessionCookieConfig.getName(), true, decrypt, onHalts.get(Halt.SESSION));
         before.add(decryptSession);
 
         return this;
@@ -108,7 +105,7 @@ public class RestBetweenBuilder<S, U> {
     public RestBetweenBuilder<S, U> optionalSession() {
 
         Decrypt<S> decrypt = securityAppFactory.decrypt(sessionObjectReader, encKey, rotationEncKeys);
-        RestBetween<S, U> decryptSession = new RestReadSession<S, U>(SESSION_NAME, false, decrypt, onHalts.get(Halt.SESSION));
+        RestBetween<S, U> decryptSession = new RestReadSession<S, U>(sessionCookieConfig.getName(), false, decrypt, onHalts.get(Halt.SESSION));
         before.add(decryptSession);
 
         return this;
@@ -116,7 +113,7 @@ public class RestBetweenBuilder<S, U> {
 
     public RestBetweenBuilder<S, U> csrfProtect() {
         DoubleSubmitCSRF doubleSubmitCSRF = securityAppFactory.doubleSubmitCSRF(signKey, rotationSignKeys);
-        RestBetween<S,U> checkCSRF = new RestCheckCSRF<>(CSRF_NAME, CSRF_HDR_NAME, doubleSubmitCSRF, onHalts.get(Halt.CSRF));
+        RestBetween<S,U> checkCSRF = new RestCheckCSRF<>(csrfCookieConfig.getName(), CSRF_HDR_NAME, doubleSubmitCSRF, onHalts.get(Halt.CSRF));
         before.add(checkCSRF);
 
         return this;

@@ -79,12 +79,13 @@ public class RestReadSession<S, U> implements RestBetween<S, U> {
 
     protected void onHalt(HaltException e, RestBtwnResponse response) {
         onHalt.apply(response, e);
-
-        // leaving removing cookie intentionally.
-        response.getCookies().remove(sessionCookieName);
     }
 
     public Boolean getRequired() {
         return required;
+    }
+
+    public String getSessionCookieName() {
+        return sessionCookieName;
     }
 }

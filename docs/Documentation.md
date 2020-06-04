@@ -14,6 +14,8 @@
     - [Request Body Validation](#request-body-validation)
 - [Authentication](#authentication)
     - [Session](#session)
+    - [Session fail](#session-failure)
+    - [Custom Session Management](#custom-session-implementation)
     - [User](#user)
     - [Required Authentication](#required-authentication-between)
     - [Optional Authentication](#optional-authentication-between)
@@ -29,6 +31,7 @@
 - [CSRF protection](#csrf)
     - [Resource](#resource-protection)
     - [RestResource](#restresource-protection)
+    - [CSRF fail](#csrf-failure)
     - [Customize](#custom-csrf-implemention)
 - [Delivery of static assets](#static-assets)
 
@@ -221,6 +224,29 @@ Session implementations:
 The threats are: 
  - Session hijacking by modifying values of the session cookie to take over a different session.
  - In the instance the session cookie is revealed then sensitive data is not easily accessible.
+ 
+#### Session failure
+
+When a session fails to be read or does not exist when it should then Otter will return:
+- status code of 401
+- remove session cookie
+
+This behavior can be overridden by implementing a halt bifunction and passing it into it's group.
+
+```java
+    Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
+        .name(WEB_SITE_GROUP)
+        .sessionClazz(TokenSession.class)
+        .before(Label.AUTH_OPTIONAL, new AuthOptBetween())            
+        .before(Label.AUTH_REQUIRED, new AuthBetween())
+        .onHalt(Halt.SESSION, (Response<TokenSession> response, HaltException e) -> {
+            response.setTemplate(Optional.of("/WEB-INF/jsp/401.jsp"));
+            response.setStatusCode(StatusCode.UNAUTHORIZED);
+            return response;
+        })
+        .onError(StatusCode.SERVER_ERROR, serverErrorResource)
+        .build();
+```
  
 #### Custom session implementation
 
@@ -736,6 +762,29 @@ Configuration.
 ```
 
 To pass it will need the CSRF cookie and and the header, `X-CSRF`.
+
+#### CSRF failure
+
+When a CSRF fails then Otter will return:
+- status code of 403
+- remove csrf cookie
+
+This behavior can be overridden by implementing a halt bifunction and passing it into it's group.
+
+```java
+    Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
+        .name(WEB_SITE_GROUP)
+        .sessionClazz(TokenSession.class)
+        .before(Label.AUTH_OPTIONAL, new AuthOptBetween())            
+        .before(Label.AUTH_REQUIRED, new AuthBetween())
+        .onHalt(Halt.CSRF, (Response<TokenSession> response, HaltException e) -> {
+            response.setTemplate(Optional.of("/WEB-INF/jsp/403.jsp"));
+            response.setStatusCode(StatusCode.FORBIDDEN);
+            return response;
+        })
+        .onError(StatusCode.SERVER_ERROR, serverErrorResource)
+        .build();
+```
 
 #### Custom CSRF implemention.
 

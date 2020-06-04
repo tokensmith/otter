@@ -25,6 +25,7 @@ import java.net.http.HttpClient;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.asynchttpclient.Dsl.asyncHttpClient;
 
@@ -90,6 +91,19 @@ public class IntegrationTestSuite {
 
         servletContainerURI = servletContainer.getURI();
 
+
+        httpClient = asyncHttpClient(new DefaultAsyncHttpClientConfig.Builder().setCookieStore(null).build());
+
+        httpClient2 = HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_2)
+                .followRedirects(HttpClient.Redirect.NEVER)
+                .build();
+    }
+
+    public static void configureHttpClient() throws Exception {
+        if (Objects.nonNull(httpClient)) {
+            httpClient.close();
+        }
 
         httpClient = asyncHttpClient(new DefaultAsyncHttpClientConfig.Builder().setCookieStore(null).build());
 

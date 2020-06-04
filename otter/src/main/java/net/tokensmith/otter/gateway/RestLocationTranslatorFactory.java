@@ -104,6 +104,7 @@ public class RestLocationTranslatorFactory {
                 .routerAppFactory(appFactory)
                 .encKey(shape.getEncKey())
                 .rotationEncKeys(shape.getRotationEncKeys())
+                .sessionCookieConfig(shape.getSessionCookie())
                 .sessionClazz(sessionClazz)
                 .onHalts(onHalts)
                 .session()
@@ -115,6 +116,7 @@ public class RestLocationTranslatorFactory {
                 .routerAppFactory(appFactory)
                 .encKey(shape.getEncKey())
                 .rotationEncKeys(shape.getRotationEncKeys())
+                .sessionCookieConfig(shape.getSessionCookie())
                 .sessionClazz(sessionClazz)
                 .onHalts(onHalts)
                 .optionalSession()
@@ -126,6 +128,7 @@ public class RestLocationTranslatorFactory {
                 .routerAppFactory(appFactory)
                 .signKey(shape.getSignkey())
                 .rotationSignKeys(shape.getRotationSignKeys())
+                .csrfCookieConfig(shape.getCsrfCookie())
                 .onHalts(onHalts)
                 .csrfProtect()
                 .build();

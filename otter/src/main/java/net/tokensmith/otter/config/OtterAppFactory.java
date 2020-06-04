@@ -76,8 +76,8 @@ public class OtterAppFactory {
         LocationTranslatorFactory locationTranslatorFactory = locationTranslatorFactory(shape);
         RestLocationTranslatorFactory restLocationTranslatorFactory = restLocationTranslatorFactory(shape);
 
-        Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators = locationTranslators(locationTranslatorFactory, groups);
-        Map<String, RestLocationTranslator<? extends DefaultSession, ? extends DefaultUser, ?>> restLocationTranslators = restLocationTranslators(restLocationTranslatorFactory, restGroups);
+        Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators = locationTranslators(locationTranslatorFactory, groups, shape);
+        Map<String, RestLocationTranslator<? extends DefaultSession, ? extends DefaultUser, ?>> restLocationTranslators = restLocationTranslators(restLocationTranslatorFactory, restGroups, shape);
 
         Integer writeChunkSize = (shape.getWriteChunkSize() != null) ? shape.getWriteChunkSize() : WRITE_CHUNK_SIZE;
 
@@ -107,14 +107,14 @@ public class OtterAppFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public <S extends DefaultSession, U extends DefaultUser> Map<String, LocationTranslator<? extends S, ? extends U>> locationTranslators(LocationTranslatorFactory locationTranslatorFactory, List<Group<? extends S, ? extends U>> groups) throws SessionCtorException {
+    public <S extends DefaultSession, U extends DefaultUser> Map<String, LocationTranslator<? extends S, ? extends U>> locationTranslators(LocationTranslatorFactory locationTranslatorFactory, List<Group<? extends S, ? extends U>> groups, Shape shape) throws SessionCtorException {
         Map<String, LocationTranslator<? extends S, ? extends U>> locationTranslators = new HashMap<>();
 
         for(Group<? extends S, ? extends U> group: groups) {
 
             Group<S, U> castedGroup = (Group<S,U>) group;
 
-            Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> defaultOnHalts = defaultOnHalts();
+            Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> defaultOnHalts = defaultOnHalts(shape);
             Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> onHalts = Stream.of(defaultOnHalts, castedGroup.getOnHalts())
                 .flatMap(map -> map.entrySet().stream())
                 .collect(
@@ -141,34 +141,38 @@ public class OtterAppFactory {
         return locationTranslators;
     }
 
-    public <S extends DefaultSession> Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> defaultOnHalts() {
+    public <S extends DefaultSession> Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> defaultOnHalts(Shape shape) {
         Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> defaults = new HashMap<>();
 
         defaults.put(Halt.CSRF, (Response<S> response, HaltException ex) -> {
             response.setTemplate(Optional.empty());
             response.setStatusCode(StatusCode.FORBIDDEN);
+            response.getCookies().remove(shape.getCsrfCookie().getName());
             return response;
         });
 
         defaults.put(Halt.SESSION, (Response<S> response, HaltException ex) -> {
             response.setTemplate(Optional.empty());
             response.setStatusCode(StatusCode.UNAUTHORIZED);
+            response.getCookies().remove(shape.getSessionCookie().getName());
             return response;
         });
 
         return defaults;
     }
 
-    public Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> defaultRestOnHalts() {
+    public Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> defaultRestOnHalts(Shape shape) {
         Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> defaults = new HashMap<>();
 
         defaults.put(Halt.CSRF, (RestBtwnResponse response, HaltException ex) -> {
             response.setStatusCode(StatusCode.FORBIDDEN);
+            response.getCookies().remove(shape.getCsrfCookie().getName());
             return response;
         });
 
         defaults.put(Halt.SESSION, (RestBtwnResponse response, HaltException ex) -> {
             response.setStatusCode(StatusCode.UNAUTHORIZED);
+            response.getCookies().remove(shape.getSessionCookie().getName());
             return response;
         });
 
@@ -186,7 +190,7 @@ public class OtterAppFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public <U extends DefaultUser, S extends DefaultSession, P> Map<String, RestLocationTranslator<? extends S, ? extends U, ? extends P>> restLocationTranslators(RestLocationTranslatorFactory restLocationTranslatorFactory, List<RestGroup<? extends S, ? extends U>> restGroups) throws SessionCtorException {
+    public <U extends DefaultUser, S extends DefaultSession, P> Map<String, RestLocationTranslator<? extends S, ? extends U, ? extends P>> restLocationTranslators(RestLocationTranslatorFactory restLocationTranslatorFactory, List<RestGroup<? extends S, ? extends U>> restGroups, Shape shape) throws SessionCtorException {
         Map<String, RestLocationTranslator<? extends S, ? extends U, ? extends P>> restLocationTranslators = new HashMap<>();
 
         // bean validator
@@ -196,7 +200,7 @@ public class OtterAppFactory {
 
             RestGroup<S, U> castedGroup = (RestGroup<S, U>) restGroup;
 
-            var onHalts = Stream.of(defaultRestOnHalts(), castedGroup.getOnHalts())
+            var onHalts = Stream.of(defaultRestOnHalts(shape), castedGroup.getOnHalts())
                 .flatMap(map -> map.entrySet().stream())
                 .collect(
                     Collectors.toMap(

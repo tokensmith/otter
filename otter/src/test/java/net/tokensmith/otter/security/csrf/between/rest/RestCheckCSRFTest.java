@@ -8,6 +8,7 @@ import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.dispatch.entity.RestBtwnRequest;
 import net.tokensmith.otter.dispatch.entity.RestBtwnResponse;
+import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.exception.CsrfException;
 import net.tokensmith.otter.router.exception.HaltException;
@@ -42,7 +43,8 @@ public class RestCheckCSRFTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         OtterAppFactory otterAppFactory = new OtterAppFactory();
-        BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse> onHalt =  otterAppFactory.defaultRestOnHalts().get(Halt.CSRF);
+        Shape shape = FixtureFactory.makeShape("1234", "5678");
+        BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse> onHalt =  otterAppFactory.defaultRestOnHalts(shape).get(Halt.CSRF);
 
         subject = new RestCheckCSRF<DummySession, DummyUser>(
             COOKIE_NAME, 
@@ -89,8 +91,8 @@ public class RestCheckCSRFTest {
         }
 
         assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
+        assertFalse(response.getCookies().containsKey(COOKIE_NAME));
 
-        assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
         assertThat(actual, is(notNullValue()));
         assertThat(actual, instanceOf(CsrfException.class));
 
@@ -112,10 +114,10 @@ public class RestCheckCSRFTest {
             actual = e;
         }
 
-        assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
         verify(mockDoubleSubmitCSRF, never()).doTokensMatch(anyString(), anyString());
 
         assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
+        assertFalse(response.getCookies().containsKey(COOKIE_NAME));
         assertThat(actual, is(notNullValue()));
         assertThat(actual, instanceOf(CsrfException.class));
     }
@@ -133,6 +135,7 @@ public class RestCheckCSRFTest {
         }
 
         assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
+        assertFalse(response.getCookies().containsKey(COOKIE_NAME));
         assertThat(actual, is(notNullValue()));
         assertThat(actual, instanceOf(CsrfException.class));
 

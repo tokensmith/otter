@@ -124,12 +124,13 @@ public class DecryptSession<S, U> implements Between<S, U> {
      */
     protected void onHalt(HaltException e, Response<S> response) {
         response = onHalt.apply(response, e);
-
-        // keeping this here intentionally.
-        response.getCookies().remove(sessionCookieName);
     }
 
     public Boolean getRequired() {
         return required;
+    }
+
+    public String getSessionCookieName() {
+        return sessionCookieName;
     }
 }

@@ -4,6 +4,7 @@ import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import net.tokensmith.otter.config.OtterAppFactory;
+import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.security.Halt;
 import net.tokensmith.otter.security.csrf.between.html.CheckCSRF;
 import org.junit.Before;
@@ -21,7 +22,6 @@ import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.BiFunction;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -44,7 +44,8 @@ public class CheckCSRFTest {
         OtterAppFactory otterAppFactory = new OtterAppFactory();
         MockitoAnnotations.initMocks(this);
 
-        Map<Halt, BiFunction<Response<DummySession>, HaltException, Response<DummySession>>> onHalts = otterAppFactory.defaultOnHalts();
+        Shape shape = FixtureFactory.makeShape("1234", "5678");
+        Map<Halt, BiFunction<Response<DummySession>, HaltException, Response<DummySession>>> onHalts = otterAppFactory.defaultOnHalts(shape);
 
         subject = new CheckCSRF<DummySession, DummyUser>(
             COOKIE_NAME,
@@ -91,8 +92,7 @@ public class CheckCSRFTest {
         }
 
         assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
-
-        assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
+        assertFalse(response.getCookies().containsKey(COOKIE_NAME));
         assertThat(actual, is(notNullValue()));
         assertThat(actual, instanceOf(CsrfException.class));
 
@@ -114,10 +114,10 @@ public class CheckCSRFTest {
             actual = e;
         }
 
-        assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
         verify(mockDoubleSubmitCSRF, never()).doTokensMatch(anyString(), anyString());
 
         assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
+        assertFalse(response.getCookies().containsKey(COOKIE_NAME));
         assertThat(actual, is(notNullValue()));
         assertThat(actual, instanceOf(CsrfException.class));
     }

@@ -35,7 +35,7 @@ public class RestReadSessionTest {
         Decrypt<DummySession> decrypt = new Decrypt<>(new JwtAppFactory(), sessionObjectReader, shape.getEncKey(), shape.getRotationEncKeys());
 
         OtterAppFactory otterAppFactory = new OtterAppFactory();
-        BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse> onHalt =  otterAppFactory.defaultRestOnHalts().get(Halt.SESSION);
+        BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse> onHalt =  otterAppFactory.defaultRestOnHalts(shape).get(Halt.SESSION);
 
         return new RestReadSession<>("session", required, decrypt, onHalt);
     }
