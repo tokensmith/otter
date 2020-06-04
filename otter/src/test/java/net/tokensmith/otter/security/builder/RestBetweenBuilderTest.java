@@ -7,12 +7,14 @@ import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.config.OtterAppFactory;
 import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.security.builder.entity.Betweens;
 import net.tokensmith.otter.security.builder.entity.RestBetweens;
 import net.tokensmith.otter.security.csrf.between.html.CheckCSRF;
 import net.tokensmith.otter.security.csrf.between.rest.RestCheckCSRF;
 import net.tokensmith.otter.security.session.between.rest.RestReadSession;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Map;
@@ -24,6 +26,12 @@ import static org.junit.Assert.*;
 public class RestBetweenBuilderTest {
     private static OtterAppFactory otterAppFactory = new OtterAppFactory();
     private static TranslatorAppFactory appFactory = new TranslatorAppFactory();
+    private Shape shape;
+    
+    @Before
+    public void setUp() {
+        shape = FixtureFactory.makeShape("1234", "5678");
+    }
 
     @Test
     public void buildShouldBeEmptyLists() {
@@ -31,7 +39,7 @@ public class RestBetweenBuilderTest {
 
         RestBetweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .onHalts(otterAppFactory.defaultRestOnHalts())
+                .onHalts(otterAppFactory.defaultRestOnHalts(shape))
                 .build();
 
         assertThat(actual.getBefore().size(), is(0));
@@ -53,7 +61,7 @@ public class RestBetweenBuilderTest {
                 .rotationEncKeys(rotationEncKeys)
                 .sessionClazz(DummySession.class)
                 .sessionCookieConfig(sessionCookieConfig)
-                .onHalts(otterAppFactory.defaultRestOnHalts())
+                .onHalts(otterAppFactory.defaultRestOnHalts(shape))
                 .session()
                 .build();
 
@@ -82,7 +90,7 @@ public class RestBetweenBuilderTest {
                 .encKey(preferredEncKey)
                 .rotationEncKeys(rotationEncKeys)
                 .sessionClazz(DummySession.class)
-                .onHalts(otterAppFactory.defaultRestOnHalts())
+                .onHalts(otterAppFactory.defaultRestOnHalts(shape))
                 .sessionCookieConfig(sessionCookieConfig)
                 .session()
                 .build();
@@ -111,7 +119,7 @@ public class RestBetweenBuilderTest {
                 .encKey(preferredEncKey)
                 .rotationEncKeys(rotationEncKeys)
                 .sessionClazz(DummySession.class)
-                .onHalts(otterAppFactory.defaultRestOnHalts())
+                .onHalts(otterAppFactory.defaultRestOnHalts(shape))
                 .sessionCookieConfig(sessionCookieConfig)
                 .optionalSession()
                 .build();
@@ -139,7 +147,7 @@ public class RestBetweenBuilderTest {
                 .encKey(preferredEncKey)
                 .rotationEncKeys(rotationEncKeys)
                 .sessionClazz(DummySession.class)
-                .onHalts(otterAppFactory.defaultRestOnHalts())
+                .onHalts(otterAppFactory.defaultRestOnHalts(shape))
                 .sessionCookieConfig(sessionCookieConfig)
                 .optionalSession()
                 .build();
@@ -167,7 +175,7 @@ public class RestBetweenBuilderTest {
                 .routerAppFactory(appFactory)
                 .signKey(preferredSignKey)
                 .rotationSignKeys(rotationSignKeys)
-                .onHalts(otterAppFactory.defaultRestOnHalts())
+                .onHalts(otterAppFactory.defaultRestOnHalts(shape))
                 .csrfCookieConfig(csrfCookieConfig)
                 .csrfProtect()
                 .build();

@@ -37,7 +37,7 @@ public class DecryptSessionTest {
         Betweens<DummySession, DummyUser> betweens;
 
         LocationTranslatorFactory locationTranslatorFactory = otterAppFactory.locationTranslatorFactory(shape);
-        Map<Halt, BiFunction<Response<DummySession>, HaltException, Response<DummySession>>> defaultOnHalts = otterAppFactory.defaultOnHalts();
+        Map<Halt, BiFunction<Response<DummySession>, HaltException, Response<DummySession>>> defaultOnHalts = otterAppFactory.defaultOnHalts(shape);
 
         BetweenFlyweight<DummySession, DummyUser> betweenFlyweight = locationTranslatorFactory.betweenFlyweight(
                 DummySession.class,

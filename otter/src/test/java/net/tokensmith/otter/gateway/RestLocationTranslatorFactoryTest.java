@@ -22,12 +22,13 @@ import static org.junit.Assert.*;
 
 public class RestLocationTranslatorFactoryTest {
     private OtterAppFactory otterAppFactory;
+    private Shape shape;
     private RestLocationTranslatorFactory subject;
 
     @Before
     public void setUp() throws Exception {
         otterAppFactory = new OtterAppFactory();
-        Shape shape = FixtureFactory.makeShape("test-enc-key", "test-sign-key");
+        shape = FixtureFactory.makeShape("test-enc-key", "test-sign-key");
         subject = new RestLocationTranslatorFactory(shape);
     }
 
@@ -45,7 +46,7 @@ public class RestLocationTranslatorFactoryTest {
                 .dispatchErrors(new HashMap<>())
                 .defaultDispatchErrors(new HashMap<>())
                 .validate(validate)
-                .onHalts(otterAppFactory.defaultRestOnHalts())
+                .onHalts(otterAppFactory.defaultRestOnHalts(shape))
                 .build();
 
         RestLocationTranslator<DummySession, DummyUser, DummyPayload> actual = subject.make(config);
