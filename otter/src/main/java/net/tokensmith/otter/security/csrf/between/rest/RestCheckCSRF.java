@@ -11,6 +11,7 @@ import net.tokensmith.otter.router.exception.CsrfException;
 import net.tokensmith.otter.router.exception.HaltException;
 import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 
 
@@ -33,7 +34,7 @@ public class RestCheckCSRF<S, U> implements RestBetween<S, U> {
         Boolean ok;
         String headerValue = request.getHeaders().get(headerName);
         Cookie csrfCookie = request.getCookies().get(cookieName);
-        if ( csrfCookie != null && headerValue != null) {
+        if ( Objects.nonNull(csrfCookie) && Objects.nonNull(headerValue)) {
             ok = doubleSubmitCSRF.doTokensMatch(csrfCookie.getValue(), headerValue);
         } else {
             ok = false;

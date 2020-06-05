@@ -78,7 +78,7 @@ public class OtterAppFactory {
         Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators = locationTranslators(locationTranslatorFactory, groups, shape);
         Map<String, RestLocationTranslator<? extends DefaultSession, ? extends DefaultUser, ?>> restLocationTranslators = restLocationTranslators(restLocationTranslatorFactory, restGroups, shape);
 
-        Integer writeChunkSize = (shape.getWriteChunkSize() != null) ? shape.getWriteChunkSize() : WRITE_CHUNK_SIZE;
+        Integer writeChunkSize = Objects.nonNull(shape.getWriteChunkSize()) ? shape.getWriteChunkSize() : WRITE_CHUNK_SIZE;
 
         // just in case not using default cookie names for session, csrf.
         Map<String, CookieConfig> cookieConfigs = new HashMap<>();

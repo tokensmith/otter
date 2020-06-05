@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -74,7 +75,7 @@ public abstract class OtterEntryServlet extends HttpServlet {
         configure.routes(servletGateway);
 
         // async i/o read chunk size.
-        readChunkSize = (shape.getReadChunkSize() != null) ? shape.getReadChunkSize() : DEFAULT_READ_CHUNK_SIZE;
+        readChunkSize = Objects.nonNull(shape.getReadChunkSize()) ? shape.getReadChunkSize() : DEFAULT_READ_CHUNK_SIZE;
     }
 
     /**
@@ -85,7 +86,7 @@ public abstract class OtterEntryServlet extends HttpServlet {
      */
     protected Boolean hasBeenDestroyed() {
         Boolean hasBeenDestroyed = false;
-        if (otterAppFactory != null || servletGateway != null) {
+        if (Objects.nonNull(otterAppFactory) || Objects.nonNull(servletGateway)) {
             hasBeenDestroyed = true;
         }
         return hasBeenDestroyed;

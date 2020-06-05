@@ -34,6 +34,7 @@ import javax.validation.ValidationException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class JsonRouteRun<S extends DefaultSession, U extends DefaultUser, P> implements RouteRunner {
@@ -181,7 +182,7 @@ public class JsonRouteRun<S extends DefaultSession, U extends DefaultUser, P> im
     protected Optional<Answer> handle(StatusCode statusCode, Throwable cause, Ask ask, Answer answer) {
         Optional<Answer> answerFromHandler = Optional.empty();
         RestErrorHandler<U> errorHandler = errorHandlers.get(statusCode);
-        if (errorHandler != null) {
+        if (Objects.nonNull(errorHandler)) {
             RestErrorRequest<U> errorReq = errorRequestTranslator.to(ask);
             RestErrorResponse errorResp = errorResponseTranslator.to(answer);
             answerFromHandler = Optional.of(errorHandler.run(errorReq, errorResp, cause));
@@ -271,8 +272,8 @@ public class JsonRouteRun<S extends DefaultSession, U extends DefaultUser, P> im
                 .response(response)
                 .build();
 
-        responseEither.setRight(error.getCause() == null ? Optional.empty() : Optional.of(error));
-        responseEither.setLeft(error.getCause() == null ? Optional.of(response) : Optional.empty());
+        responseEither.setRight(Objects.isNull(error.getCause()) ? Optional.empty() : Optional.of(error));
+        responseEither.setLeft(Objects.isNull(error.getCause()) ? Optional.of(response) : Optional.empty());
 
         return responseEither;
     }

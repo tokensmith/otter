@@ -13,6 +13,7 @@ import net.tokensmith.otter.security.session.util.Decrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
@@ -51,11 +52,11 @@ public class RestReadSession<S, U> implements RestBetween<S, U> {
         Optional<S> session = Optional.empty();
         Cookie sessionCookie = request.getCookies().get(sessionCookieName);
 
-        if (sessionCookie == null && required) {
+        if (Objects.isNull(sessionCookie) && required) {
             HaltException halt = new HaltException(COOKIE_NOT_PRESENT);
             onHalt(halt, response);
             throw halt;
-        } else if (sessionCookie == null && !required) {
+        } else if (Objects.isNull(sessionCookie) && !required) {
             // ok to proceed to resource. The session is not required.
             return session;
         }

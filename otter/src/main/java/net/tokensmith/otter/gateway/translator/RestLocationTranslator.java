@@ -89,18 +89,18 @@ public class RestLocationTranslator<S extends DefaultSession, U extends DefaultU
         RestBetweens<S, U> betweens = restBetweenFlyweight.make(method, from.getLabels());
 
         List<MimeType> contentTypes = from.getContentTypes().get(method);
-        if (contentTypes == null) {
+        if (Objects.isNull(contentTypes)) {
             contentTypes = new ArrayList<>();
         }
 
         List<MimeType> accepts = from.getAccepts().get(method);
-        if (accepts == null) {
+        if (Objects.isNull(accepts)) {
             accepts = new ArrayList<>();
         }
 
         // use default payload valiate?
         Validate validate = restValidate;
-        if (from.getValidate() != null) {
+        if (Objects.nonNull(from.getValidate())) {
             validate = from.getValidate();
         }
 

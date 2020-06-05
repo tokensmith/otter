@@ -10,6 +10,7 @@ import net.tokensmith.otter.controller.entity.request.RestRequest;
 import net.tokensmith.otter.controller.entity.response.RestResponse;
 import net.tokensmith.otter.controller.header.Header;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ public class NotAcceptableRestResource<U extends DefaultUser> extends RestResour
 
     protected ClientError to(RestRequest<U, ClientError> from) {
         String actual = null;
-        if (from.getAccept() != null && from.getAccept().getType() != null) {
+        if (Objects.nonNull(from.getAccept()) && Objects.nonNull(from.getAccept().getType())) {
             actual = from.getAccept().toString();
         }
 
