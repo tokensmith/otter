@@ -47,18 +47,18 @@ publishing {
                 name = 'otter-translatable'
                 packaging = 'jar'
                 description = 'interface to assist with serializing POJOs to and from JSON'
-                url = 'https://github.com/RootServices/otter'
+                url = 'https://github.com/tokensmith/otter'
 
                 scm {
-                    connection = 'git@github.com:RootServices/otter.git'
-                    developerConnection = 'git@github.com:RootServices/otter.git'
-                    url = 'https://github.com/RootServices/otter/otter-translatable'
+                    connection = 'git@github.com:tokensmith/otter.git'
+                    developerConnection = 'git@github.com:tokensmith/otter.git'
+                    url = 'https://github.com/tokensmith/otter/otter-translatable'
                 }
 
                 licenses {
                     license {
                         name = 'The MIT License (MIT)'
-                        url = 'https://github.com/RootServices/otter/blob/development/LICENSE'
+                        url = 'https://github.com/tokensmith/otter/blob/development/LICENSE'
                     }
                 }
 

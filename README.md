@@ -20,7 +20,7 @@ If you want to get started quickly head over to the [quick start](/examples/quic
 example application. Only 5 files to get started.
 
 ## Dependency coordinates
-Latest pinned version is `1.5.3`
+Latest pinned version is `1.5.4`
 
 Current development version is `1.5.4-SNAPHOT`
 
