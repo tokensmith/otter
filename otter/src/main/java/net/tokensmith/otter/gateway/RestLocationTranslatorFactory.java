@@ -42,7 +42,14 @@ public class RestLocationTranslatorFactory {
 
     public <S extends DefaultSession, U extends DefaultUser, P> RestLocationTranslator<S, U, P> make(RestTranslatorConfig<S, U> config) {
         return new RestLocationTranslator<S, U, P>(
-                restBetweenFlyweight(config.getSessionClazz(), config.getLabelBefore(), config.getLabelAfter(), config.getOnHalts()),
+                restBetweenFlyweight(
+                    config.getSessionClazz(),
+                    config.getLabelBefore(),
+                    config.getLabelAfter(),
+                    config.getBefores(),
+                    config.getAfters(),
+                    config.getOnHalts()
+                ),
                 config.getRestErrors(),
                 config.getDefaultErrors(),
                 config.getDispatchErrors(),
@@ -57,45 +64,49 @@ public class RestLocationTranslatorFactory {
      * Therefore many Locations will use the same betweens instead of creating many identical ones.
      *
      * @param sessionClazz The session class to be used when configuring object reader
-     * @param before a map of before betweens that will be used in the flyweight.
-     * @param after a map of after betweens that will be used in the flyweight.
+     * @param labelBefore a map of before betweens that will be used in the flyweight.
+     * @param labelAfter a map of after betweens that will be used in the flyweight.
+     * @param befores before betweens that will be used in the flyweight.
+     * @param afters after betweens that will be used in the flyweight.
      * @param onHalts a map of halt handlers
      * @param <S> Session
      * @param <U> User
      * @return RestBetweenFlyweight that will be used in the RestLocationTranslator.
      */
-    public <S, U> RestBetweenFlyweight<S, U> restBetweenFlyweight(Class<S> sessionClazz, Map<Label, List<RestBetween<S, U>>> before, Map<Label, List<RestBetween<S, U>>> after, Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> onHalts) {
+    public <S, U> RestBetweenFlyweight<S, U> restBetweenFlyweight(Class<S> sessionClazz, Map<Label, List<RestBetween<S, U>>> labelBefore, Map<Label, List<RestBetween<S, U>>> labelAfter, List<RestBetween<S, U>> befores, List<RestBetween<S, U>> afters, Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> onHalts) {
         TranslatorAppFactory appFactory = new TranslatorAppFactory();
 
         // 188: is this the right spot? add defaults.
-        if (Objects.isNull(before.get(Label.CSRF_PREPARE)) || before.get(Label.CSRF_PROTECT).isEmpty()) {
+        if (Objects.isNull(labelBefore.get(Label.CSRF_PREPARE)) || labelBefore.get(Label.CSRF_PROTECT).isEmpty()) {
             RestBetweens<S, U> csrfProtect = csrfProtect(appFactory, onHalts);
-            before.put(Label.CSRF_PROTECT, csrfProtect.getBefore());
+            labelBefore.put(Label.CSRF_PROTECT, csrfProtect.getBefore());
         }
 
         // 188: should these only run if needed?
         RestBetweens<S, U> session = session(appFactory, sessionClazz, onHalts);
         RestBetweens<S, U> sessionOptional = sessionOptional(appFactory, sessionClazz, onHalts);
 
-        if (Objects.isNull(before.get(Label.SESSION_OPTIONAL)) || before.get(Label.SESSION_OPTIONAL).isEmpty()) {
-            before.put(Label.SESSION_OPTIONAL, sessionOptional.getBefore());
+        if (Objects.isNull(labelBefore.get(Label.SESSION_OPTIONAL)) || labelBefore.get(Label.SESSION_OPTIONAL).isEmpty()) {
+            labelBefore.put(Label.SESSION_OPTIONAL, sessionOptional.getBefore());
         }
 
-        if (Objects.isNull(before.get(Label.SESSION_REQUIRED)) || before.get(Label.SESSION_REQUIRED).isEmpty()) {
-            before.put(Label.SESSION_REQUIRED, session.getBefore());
+        if (Objects.isNull(labelBefore.get(Label.SESSION_REQUIRED)) || labelBefore.get(Label.SESSION_REQUIRED).isEmpty()) {
+            labelBefore.put(Label.SESSION_REQUIRED, session.getBefore());
         }
 
-        if (Objects.isNull(after.get(Label.SESSION_OPTIONAL)) || after.get(Label.SESSION_OPTIONAL).isEmpty()) {
-            after.put(Label.SESSION_OPTIONAL, sessionOptional.getBefore());
+        if (Objects.isNull(labelAfter.get(Label.SESSION_OPTIONAL)) || labelAfter.get(Label.SESSION_OPTIONAL).isEmpty()) {
+            labelAfter.put(Label.SESSION_OPTIONAL, sessionOptional.getBefore());
         }
 
-        if (Objects.isNull(after.get(Label.SESSION_REQUIRED)) || after.get(Label.SESSION_REQUIRED).isEmpty()) {
-            after.put(Label.SESSION_REQUIRED, session.getAfter());
+        if (Objects.isNull(labelAfter.get(Label.SESSION_REQUIRED)) || labelAfter.get(Label.SESSION_REQUIRED).isEmpty()) {
+            labelAfter.put(Label.SESSION_REQUIRED, session.getAfter());
         }
 
         return new RestBetweenFlyweight<S, U>(
-            before,
-            after
+            labelBefore,
+            labelAfter,
+            befores,
+            afters
         );
     }
 
