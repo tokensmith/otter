@@ -44,11 +44,11 @@ public class LocationTranslator<S extends DefaultSession, U extends DefaultUser>
             Betweens<S, U> betweens = betweenFlyweight.make(method, from.getLabels());
 
             List<MimeType> contentTypes = from.getContentTypes().get(method);
-            if (contentTypes == null) {
+            if (Objects.isNull(contentTypes)) {
                 contentTypes = new ArrayList<>();
             }
             List<MimeType> accepts = from.getAccepts().get(method);
-            if (accepts == null) {
+            if (Objects.isNull(accepts)) {
                 accepts = new ArrayList<>();
             }
 

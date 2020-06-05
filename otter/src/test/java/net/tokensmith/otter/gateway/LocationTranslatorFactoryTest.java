@@ -10,6 +10,7 @@ import org.junit.Test;
 import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.gateway.translator.LocationTranslator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -32,8 +33,10 @@ public class LocationTranslatorFactoryTest {
 
         TranslatorConfig<DummySession, DummyUser> config = new TranslatorConfig.Builder<DummySession, DummyUser>()
                 .sessionClazz(DummySession.class)
-                .before(new HashMap<>())
-                .after(new HashMap<>())
+                .labelBefore(new HashMap<>())
+                .labelAfter(new HashMap<>())
+                .befores(new ArrayList<>())
+                .afters(new ArrayList<>())
                 .errorResources(new HashMap<>())
                 .dispatchErrors(new HashMap<>())
                 .defaultDispatchErrors(new HashMap<>())

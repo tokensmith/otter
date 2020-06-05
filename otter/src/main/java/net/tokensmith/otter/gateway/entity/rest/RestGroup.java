@@ -21,8 +21,11 @@ public class RestGroup<S extends DefaultSession, U extends DefaultUser> {
     private String name;
     private Class<S> sessionClazz;
 
-    private Map<Label, List<RestBetween<S, U>>> before;
-    private Map<Label, List<RestBetween<S, U>>> after;
+    private Map<Label, List<RestBetween<S, U>>> labelBefore;
+    private Map<Label, List<RestBetween<S, U>>> labelAfter;
+
+    private List<RestBetween<S, U>> befores;
+    private List<RestBetween<S, U>> afters;
 
     // for route run to handle errors.
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors;
@@ -31,11 +34,13 @@ public class RestGroup<S extends DefaultSession, U extends DefaultUser> {
     // halts - custom halt handlers for security betweens
     private Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> onHalts;
 
-    public RestGroup(String name, Class<S> sessionClazz, Map<Label, List<RestBetween<S, U>>> before, Map<Label, List<RestBetween<S, U>>> after, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors, Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> onHalts) {
+    public RestGroup(String name, Class<S> sessionClazz, Map<Label, List<RestBetween<S, U>>> labelBefore, Map<Label, List<RestBetween<S, U>>> labelAfter, List<RestBetween<S, U>> befores, List<RestBetween<S, U>> afters, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors, Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> onHalts) {
         this.name = name;
         this.sessionClazz = sessionClazz;
-        this.before = before;
-        this.after = after;
+        this.labelBefore = labelBefore;
+        this.labelAfter = labelAfter;
+        this.befores = befores;
+        this.afters = afters;
         this.restErrors = restErrors;
         this.dispatchErrors = dispatchErrors;
         this.onHalts = onHalts;
@@ -57,20 +62,36 @@ public class RestGroup<S extends DefaultSession, U extends DefaultUser> {
         this.sessionClazz = sessionClazz;
     }
 
-    public Map<Label, List<RestBetween<S, U>>> getBefore() {
-        return before;
+    public Map<Label, List<RestBetween<S, U>>> getLabelBefore() {
+        return labelBefore;
     }
 
-    public void setBefore(Map<Label, List<RestBetween<S, U>>> before) {
-        this.before = before;
+    public void setLabelBefore(Map<Label, List<RestBetween<S, U>>> labelBefore) {
+        this.labelBefore = labelBefore;
     }
 
-    public Map<Label, List<RestBetween<S, U>>> getAfter() {
-        return after;
+    public Map<Label, List<RestBetween<S, U>>> getLabelAfter() {
+        return labelAfter;
     }
 
-    public void setAfter(Map<Label, List<RestBetween<S, U>>> after) {
-        this.after = after;
+    public void setLabelAfter(Map<Label, List<RestBetween<S, U>>> labelAfter) {
+        this.labelAfter = labelAfter;
+    }
+
+    public List<RestBetween<S, U>> getBefores() {
+        return befores;
+    }
+
+    public void setBefores(List<RestBetween<S, U>> befores) {
+        this.befores = befores;
+    }
+
+    public List<RestBetween<S, U>> getAfters() {
+        return afters;
+    }
+
+    public void setAfters(List<RestBetween<S, U>> afters) {
+        this.afters = afters;
     }
 
     public Map<StatusCode, RestError<U, ? extends Translatable>> getRestErrors() {

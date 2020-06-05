@@ -32,10 +32,15 @@ public class RestGroupBuilderTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getName(), is("API"));
 
-        assertThat(actual.getBefore(), is(notNullValue()));
-        assertThat(actual.getBefore().size(), is(0));
-        assertThat(actual.getAfter(), is(notNullValue()));
-        assertThat(actual.getAfter().size(), is(0));
+        assertThat(actual.getLabelBefore(), is(notNullValue()));
+        assertThat(actual.getLabelBefore().size(), is(0));
+        assertThat(actual.getLabelAfter(), is(notNullValue()));
+        assertThat(actual.getLabelAfter().size(), is(0));
+
+        assertThat(actual.getBefores(), is(notNullValue()));
+        assertThat(actual.getBefores().size(), is(0));
+        assertThat(actual.getAfters(), is(notNullValue()));
+        assertThat(actual.getAfters().size(), is(0));
 
         assertThat(actual.getRestErrors(), is(notNullValue()));
         assertThat(actual.getRestErrors().size(), is(0));
@@ -57,17 +62,41 @@ public class RestGroupBuilderTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getName(), is("API"));
 
-        assertThat(actual.getBefore(), is(notNullValue()));
-        assertThat(actual.getBefore().size(), is(2));
-        assertThat(actual.getBefore().get(Label.AUTH_REQUIRED).size(), is(1));
-        assertThat(actual.getBefore().get(Label.AUTH_REQUIRED).get(0), is(authRequired));
-        assertThat(actual.getBefore().get(Label.AUTH_OPTIONAL).size(), is(1));
-        assertThat(actual.getBefore().get(Label.AUTH_OPTIONAL).get(0), is(authOptional));
-        assertThat(actual.getAfter(), is(notNullValue()));
-        assertThat(actual.getAfter().size(), is(0));
+        assertThat(actual.getLabelBefore(), is(notNullValue()));
+        assertThat(actual.getLabelBefore().size(), is(2));
+        assertThat(actual.getLabelBefore().get(Label.AUTH_REQUIRED).size(), is(1));
+        assertThat(actual.getLabelBefore().get(Label.AUTH_REQUIRED).get(0), is(authRequired));
+        assertThat(actual.getLabelBefore().get(Label.AUTH_OPTIONAL).size(), is(1));
+        assertThat(actual.getLabelBefore().get(Label.AUTH_OPTIONAL).get(0), is(authOptional));
+        assertThat(actual.getLabelAfter(), is(notNullValue()));
+        assertThat(actual.getLabelAfter().size(), is(0));
 
         assertThat(actual.getRestErrors(), is(notNullValue()));
         assertThat(actual.getRestErrors().size(), is(0));
+    }
+
+    @Test
+    public void buildShouldHaveBeforesAndAfters() {
+
+        DummyRestBetween<DummySession, DummyUser> before = new DummyRestBetween<DummySession, DummyUser>();
+        DummyRestBetween<DummySession, DummyUser> after = new DummyRestBetween<DummySession, DummyUser>();
+
+        RestGroup<DummySession, DummyUser> actual = new RestGroupBuilder<DummySession, DummyUser>()
+                .name("API")
+                .before(before)
+                .after(after)
+                .build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getName(), is("API"));
+
+        assertThat(actual.getBefores(), is(notNullValue()));
+        assertThat(actual.getBefores().size(), is(1));
+        assertThat(actual.getBefores().get(0), is(before));
+
+        assertThat(actual.getAfters(), is(notNullValue()));
+        assertThat(actual.getAfters().size(), is(1));
+        assertThat(actual.getAfters().get(0), is(after));
     }
 
     @Test
@@ -82,10 +111,10 @@ public class RestGroupBuilderTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getName(), is("API"));
 
-        assertThat(actual.getBefore(), is(notNullValue()));
-        assertThat(actual.getBefore().size(), is(0));
-        assertThat(actual.getAfter(), is(notNullValue()));
-        assertThat(actual.getAfter().size(), is(0));
+        assertThat(actual.getLabelBefore(), is(notNullValue()));
+        assertThat(actual.getLabelBefore().size(), is(0));
+        assertThat(actual.getLabelAfter(), is(notNullValue()));
+        assertThat(actual.getLabelAfter().size(), is(0));
 
         assertThat(actual.getRestErrors(), is(notNullValue()));
         assertThat(actual.getRestErrors().size(), is(1));
@@ -122,10 +151,10 @@ public class RestGroupBuilderTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getName(), is("API"));
 
-        assertThat(actual.getBefore(), is(notNullValue()));
-        assertThat(actual.getBefore().size(), is(0));
-        assertThat(actual.getAfter(), is(notNullValue()));
-        assertThat(actual.getAfter().size(), is(0));
+        assertThat(actual.getLabelBefore(), is(notNullValue()));
+        assertThat(actual.getLabelBefore().size(), is(0));
+        assertThat(actual.getLabelAfter(), is(notNullValue()));
+        assertThat(actual.getLabelAfter().size(), is(0));
 
         assertThat(actual.getRestErrors(), is(notNullValue()));
         assertThat(actual.getRestErrors().size(), is(1));

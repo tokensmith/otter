@@ -13,6 +13,7 @@ import net.tokensmith.otter.gateway.translator.RestLocationTranslator;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -39,8 +40,10 @@ public class RestLocationTranslatorFactoryTest {
 
         RestTranslatorConfig<DummySession, DummyUser> config = new RestTranslatorConfig.Builder<DummySession, DummyUser>()
                 .sessionClazz(DummySession.class)
-                .before(new HashMap<>())
-                .after(new HashMap<>())
+                .labelBefore(new HashMap<>())
+                .labelAfter(new HashMap<>())
+                .befores(new ArrayList<>())
+                .afters(new ArrayList<>())
                 .restErrors(new HashMap<>())
                 .defaultErrors(new HashMap<>())
                 .dispatchErrors(new HashMap<>())

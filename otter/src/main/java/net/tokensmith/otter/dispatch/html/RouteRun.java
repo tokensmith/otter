@@ -21,6 +21,7 @@ import net.tokensmith.otter.router.exception.HaltException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -85,7 +86,7 @@ public class RouteRun<S extends DefaultSession, U extends DefaultUser> implement
         Optional<Answer> answerFromErrorResource = Optional.empty();
         Resource<S, U> errorResource = errorResources.get(statusCode);
 
-        if (errorResource != null) {
+        if (Objects.nonNull(errorResource)) {
             Request<S, U> request = requestTranslator.to(ask);
             Response<S> response = answerTranslator.from(answer);
             Method method = request.getMethod();
@@ -155,8 +156,9 @@ public class RouteRun<S extends DefaultSession, U extends DefaultUser> implement
             .response(response)
             .build();
 
-        responseEither.setRight(error.getCause() == null ? Optional.empty() : Optional.of(error));
-        responseEither.setLeft(error.getCause() == null ? Optional.of(response) : Optional.empty());
+
+        responseEither.setRight(Objects.isNull(error.getCause()) ? Optional.empty() : Optional.of(error));
+        responseEither.setLeft(Objects.isNull(error.getCause()) ? Optional.of(response) : Optional.empty());
 
         return responseEither;
     }

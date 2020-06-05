@@ -44,7 +44,7 @@ public class HttpServletResponseMerger {
         Map<String, Cookie> containerCookiesMap = new HashMap<>();
 
         // no request cookies then they will all be added instead up deleted and updated.
-        if (requestCookies == null) {
+        if (Objects.isNull(requestCookies)) {
             return containerCookiesMap;
         }
 
@@ -61,7 +61,7 @@ public class HttpServletResponseMerger {
 
             // delete cookie
             net.tokensmith.otter.controller.entity.Cookie otterCookie = answer.getCookies().get(requestCookie.getName());
-            if(otterCookie == null) {
+            if(Objects.isNull(otterCookie)) {
                 containerCookiesMap.remove(requestCookie.getName());
 
                 // delete the cookie.
@@ -104,7 +104,7 @@ public class HttpServletResponseMerger {
     protected void createCookies(HttpServletResponse response,  Map<String, Cookie> containerCookiesMap, Map<String, net.tokensmith.otter.controller.entity.Cookie> otterCookies) {
         for(Map.Entry<String, net.tokensmith.otter.controller.entity.Cookie> otterCookie: otterCookies.entrySet()) {
             Cookie containerCookie = containerCookiesMap.get(otterCookie.getKey());
-            if (containerCookie == null) {
+            if (Objects.isNull(containerCookie)) {
                 Cookie toAdd =  httpServletRequestCookieTranslator.to(otterCookie.getValue());
                 logCookie( "Adding cookie to container response", toAdd);
                 response.addCookie(toAdd);

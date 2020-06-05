@@ -5,6 +5,7 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,7 +47,7 @@ public class EntryFilter implements Filter {
     }
 
     protected Pattern staticAssetsPattern() {
-        if (this.staticAssetsPattern == null) {
+        if (Objects.isNull(this.staticAssetsPattern)) {
             staticAssetsPattern = Pattern.compile(staticAssetsRegex());
         }
         return staticAssetsPattern;

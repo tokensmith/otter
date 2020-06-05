@@ -43,6 +43,8 @@ public class DecryptSessionTest {
                 DummySession.class,
                 new HashMap<>(),
                 new HashMap<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
                 defaultOnHalts
         );
 

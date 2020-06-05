@@ -40,7 +40,6 @@ import net.tokensmith.otter.server.path.WebAppPath;
 import net.tokensmith.otter.translatable.Translatable;
 import net.tokensmith.otter.translator.MimeTypeTranslator;
 
-import javax.swing.text.html.Option;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
@@ -79,7 +78,7 @@ public class OtterAppFactory {
         Map<String, LocationTranslator<? extends DefaultSession, ? extends DefaultUser>> locationTranslators = locationTranslators(locationTranslatorFactory, groups, shape);
         Map<String, RestLocationTranslator<? extends DefaultSession, ? extends DefaultUser, ?>> restLocationTranslators = restLocationTranslators(restLocationTranslatorFactory, restGroups, shape);
 
-        Integer writeChunkSize = (shape.getWriteChunkSize() != null) ? shape.getWriteChunkSize() : WRITE_CHUNK_SIZE;
+        Integer writeChunkSize = Objects.nonNull(shape.getWriteChunkSize()) ? shape.getWriteChunkSize() : WRITE_CHUNK_SIZE;
 
         // just in case not using default cookie names for session, csrf.
         Map<String, CookieConfig> cookieConfigs = new HashMap<>();
@@ -127,8 +126,10 @@ public class OtterAppFactory {
 
             TranslatorConfig<S, U> config = new TranslatorConfig.Builder<S, U>()
                     .sessionClazz(castedGroup.getSessionClazz())
-                    .before(castedGroup.getBefore())
-                    .after(castedGroup.getAfter())
+                    .labelBefore(castedGroup.getLabelBefore())
+                    .labelAfter(castedGroup.getLabelAfter())
+                    .befores(castedGroup.getBefores())
+                    .afters(castedGroup.getAfters())
                     .errorResources(castedGroup.getErrorResources())
                     .dispatchErrors(castedGroup.getDispatchErrors())
                     .defaultDispatchErrors(new HashMap<>())
@@ -212,8 +213,10 @@ public class OtterAppFactory {
 
             RestTranslatorConfig<S, U> config = new RestTranslatorConfig.Builder<S, U>()
                     .sessionClazz(castedGroup.getSessionClazz())
-                    .before(castedGroup.getBefore())
-                    .after(castedGroup.getAfter())
+                    .labelBefore(castedGroup.getLabelBefore())
+                    .labelAfter(castedGroup.getLabelAfter())
+                    .befores(castedGroup.getBefores())
+                    .afters(castedGroup.getAfters())
                     .restErrors(castedGroup.getRestErrors())
                     .defaultErrors(defaultErrors())
                     .dispatchErrors(castedGroup.getDispatchErrors())

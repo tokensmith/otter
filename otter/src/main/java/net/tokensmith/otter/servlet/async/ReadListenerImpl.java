@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -69,7 +70,7 @@ public class ReadListenerImpl implements ReadListener {
 
     public byte[] queueToByteArray(Queue<byte[]> queue) {
         ByteArrayOutputStream to = new ByteArrayOutputStream();
-        while (queue.peek() != null) {
+        while (Objects.nonNull(queue.peek())) {
             try {
                 to.write(queue.poll());
             } catch (IOException e) {

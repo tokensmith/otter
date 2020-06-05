@@ -12,6 +12,7 @@ import net.tokensmith.otter.router.exception.HaltException;
 import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
@@ -35,7 +36,7 @@ public class CheckCSRF<S, U> implements Between<S, U> {
         Boolean ok;
         Cookie csrfCookie = request.getCookies().get(cookieName);
         List<String> formValue = request.getFormData().get(formFieldName);
-        if ( csrfCookie != null && formValue != null && formValue.size() == 1) {
+        if ( Objects.nonNull(csrfCookie) && Objects.nonNull(formValue) && formValue.size() == 1) {
             ok = doubleSubmitCSRF.doTokensMatch(csrfCookie.getValue(), formValue.get(0));
         } else {
             ok = false;

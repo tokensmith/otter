@@ -36,7 +36,14 @@ public class LocationTranslatorFactory {
 
     public <S extends DefaultSession, U extends DefaultUser> LocationTranslator<S, U> make(TranslatorConfig<S, U> config) throws SessionCtorException {
         return new LocationTranslator<S, U>(
-                betweenFlyweight(config.getSessionClazz(), config.getBefore(), config.getAfter(), config.getOnHalts()),
+                betweenFlyweight(
+                    config.getSessionClazz(),
+                    config.getLabelBefore(),
+                    config.getLabelAfter(),
+                    config.getBefores(),
+                    config.getAfters(),
+                    config.getOnHalts()
+                ),
                 config.getErrorResources(),
                 config.getDispatchErrors(),
                 config.getDefaultDispatchErrors()
@@ -49,51 +56,55 @@ public class LocationTranslatorFactory {
      * Therefore many Locations will use the same betweens instead of creating many identical ones.
      *
      * @param sessionClazz The Class of the session
-     * @param before a map of before betweens that will be used in the flyweight.
-     * @param after a map of after betweens that will be used in the flyweight.
+     * @param labelBefore a map of before betweens that will be used in the flyweight.
+     * @param labelAfter a map of after betweens that will be used in the flyweight.
+     * @param befores before betweens that will be used in the flyweight.
+     * @param afters after betweens that will be used in the flyweight.
      * @param onHalts a map of halt handlers
      * @param <S> Session
      * @param <U> User
      * @return BetweenFlyweight that will be used the LocationTranslator.
      * @throws SessionCtorException if S does not have a copy constructor.
      */
-    public <S, U> BetweenFlyweight<S, U> betweenFlyweight(Class<S> sessionClazz, Map<Label, List<Between<S,U>>> before, Map<Label, List<Between<S,U>>> after, Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> onHalts) throws SessionCtorException {
+    public <S, U> BetweenFlyweight<S, U> betweenFlyweight(Class<S> sessionClazz, Map<Label, List<Between<S,U>>> labelBefore, Map<Label, List<Between<S,U>>> labelAfter, List<Between<S, U>> befores, List<Between<S, U>> afters, Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> onHalts) throws SessionCtorException {
         TranslatorAppFactory appFactory = new TranslatorAppFactory();
 
         // 188: is this the right spot? add defaults.
-        if (Objects.isNull(before.get(Label.CSRF_PREPARE)) || before.get(Label.CSRF_PREPARE).isEmpty()) {
+        if (Objects.isNull(labelBefore.get(Label.CSRF_PREPARE)) || labelBefore.get(Label.CSRF_PREPARE).isEmpty()) {
             Betweens<S, U> csrfPrepare = csrfPrepare(appFactory);
-            before.put(Label.CSRF_PREPARE, csrfPrepare.getBefore());
+            labelBefore.put(Label.CSRF_PREPARE, csrfPrepare.getBefore());
         }
 
-        if (Objects.isNull(before.get(Label.CSRF_PROTECT)) || before.get(Label.CSRF_PROTECT).isEmpty()) {
+        if (Objects.isNull(labelBefore.get(Label.CSRF_PROTECT)) || labelBefore.get(Label.CSRF_PROTECT).isEmpty()) {
             Betweens<S, U> csrfProtect = csrfProtect(appFactory, onHalts);
-            before.put(Label.CSRF_PROTECT, csrfProtect.getBefore());
+            labelBefore.put(Label.CSRF_PROTECT, csrfProtect.getBefore());
         }
 
         // 188: should these only run if needed?
         Betweens<S, U> session = session(appFactory, sessionClazz, onHalts);
         Betweens<S, U> sessionOptional = sessionOptional(appFactory, sessionClazz, onHalts);
 
-        if (Objects.isNull(before.get(Label.SESSION_OPTIONAL)) || before.get(Label.SESSION_OPTIONAL).isEmpty()) {
-            before.put(Label.SESSION_OPTIONAL, sessionOptional.getBefore());
+        if (Objects.isNull(labelBefore.get(Label.SESSION_OPTIONAL)) || labelBefore.get(Label.SESSION_OPTIONAL).isEmpty()) {
+            labelBefore.put(Label.SESSION_OPTIONAL, sessionOptional.getBefore());
         }
 
-        if (Objects.isNull(before.get(Label.SESSION_REQUIRED)) || before.get(Label.SESSION_REQUIRED).isEmpty()) {
-            before.put(Label.SESSION_REQUIRED, session.getBefore());
+        if (Objects.isNull(labelBefore.get(Label.SESSION_REQUIRED)) || labelBefore.get(Label.SESSION_REQUIRED).isEmpty()) {
+            labelBefore.put(Label.SESSION_REQUIRED, session.getBefore());
         }
 
-        if (Objects.isNull(after.get(Label.SESSION_OPTIONAL)) || after.get(Label.SESSION_OPTIONAL).isEmpty()) {
-            after.put(Label.SESSION_OPTIONAL, sessionOptional.getAfter());
+        if (Objects.isNull(labelAfter.get(Label.SESSION_OPTIONAL)) || labelAfter.get(Label.SESSION_OPTIONAL).isEmpty()) {
+            labelAfter.put(Label.SESSION_OPTIONAL, sessionOptional.getAfter());
         }
 
-        if (Objects.isNull(after.get(Label.SESSION_REQUIRED)) || after.get(Label.SESSION_REQUIRED).isEmpty()) {
-            after.put(Label.SESSION_REQUIRED, session.getAfter());
+        if (Objects.isNull(labelAfter.get(Label.SESSION_REQUIRED)) || labelAfter.get(Label.SESSION_REQUIRED).isEmpty()) {
+            labelAfter.put(Label.SESSION_REQUIRED, session.getAfter());
         }
 
         return new BetweenFlyweight<S, U>(
-            before,
-            after
+            labelBefore,
+            labelAfter,
+            befores,
+            afters
         );
     }
 

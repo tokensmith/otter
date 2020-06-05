@@ -20,8 +20,10 @@ import java.util.function.BiFunction;
 
 public class RestTranslatorConfig<S extends DefaultSession, U extends DefaultUser> {
     private Class<S> sessionClazz;
-    private Map<Label, List<RestBetween<S, U>>> before;
-    private Map<Label, List<RestBetween<S, U>>> after;
+    private Map<Label, List<RestBetween<S, U>>> labelBefore;
+    private Map<Label, List<RestBetween<S, U>>> labelAfter;
+    private List<RestBetween<S, U>> befores;
+    private List<RestBetween<S, U>> afters;
     private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors;
     private Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors;
     private Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors;
@@ -30,10 +32,12 @@ public class RestTranslatorConfig<S extends DefaultSession, U extends DefaultUse
     // halts - custom halt handlers for security betweens
     private Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> onHalts;
 
-    public RestTranslatorConfig(Class<S> sessionClazz, Map<Label, List<RestBetween<S, U>>> before, Map<Label, List<RestBetween<S, U>>> after, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> defaultDispatchErrors, Validate validate, Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> onHalts) {
+    public RestTranslatorConfig(Class<S> sessionClazz, Map<Label, List<RestBetween<S, U>>> labelBefore, Map<Label, List<RestBetween<S, U>>> labelAfter, List<RestBetween<S, U>> befores, List<RestBetween<S, U>> afters, Map<StatusCode, RestError<U, ? extends Translatable>> restErrors, Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors, Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> defaultDispatchErrors, Validate validate, Map<Halt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse>> onHalts) {
         this.sessionClazz = sessionClazz;
-        this.before = before;
-        this.after = after;
+        this.labelBefore = labelBefore;
+        this.labelAfter = labelAfter;
+        this.befores = befores;
+        this.afters = afters;
         this.restErrors = restErrors;
         this.defaultErrors = defaultErrors;
         this.dispatchErrors = dispatchErrors;
@@ -50,20 +54,36 @@ public class RestTranslatorConfig<S extends DefaultSession, U extends DefaultUse
         this.sessionClazz = sessionClazz;
     }
 
-    public Map<Label, List<RestBetween<S, U>>> getBefore() {
-        return before;
+    public Map<Label, List<RestBetween<S, U>>> getLabelBefore() {
+        return labelBefore;
     }
 
-    public void setBefore(Map<Label, List<RestBetween<S, U>>> before) {
-        this.before = before;
+    public void setLabelBefore(Map<Label, List<RestBetween<S, U>>> labelBefore) {
+        this.labelBefore = labelBefore;
     }
 
-    public Map<Label, List<RestBetween<S, U>>> getAfter() {
-        return after;
+    public Map<Label, List<RestBetween<S, U>>> getLabelAfter() {
+        return labelAfter;
     }
 
-    public void setAfter(Map<Label, List<RestBetween<S, U>>> after) {
-        this.after = after;
+    public void setLabelAfter(Map<Label, List<RestBetween<S, U>>> labelAfter) {
+        this.labelAfter = labelAfter;
+    }
+
+    public List<RestBetween<S, U>> getBefores() {
+        return befores;
+    }
+
+    public void setBefores(List<RestBetween<S, U>> befores) {
+        this.befores = befores;
+    }
+
+    public List<RestBetween<S, U>> getAfters() {
+        return afters;
+    }
+
+    public void setAfters(List<RestBetween<S, U>> afters) {
+        this.afters = afters;
     }
 
     public Map<StatusCode, RestError<U, ? extends Translatable>> getRestErrors() {
@@ -116,8 +136,10 @@ public class RestTranslatorConfig<S extends DefaultSession, U extends DefaultUse
 
     public static class Builder<S extends DefaultSession, U extends DefaultUser> {
         private Class<S> sessionClazz;
-        private Map<Label, List<RestBetween<S, U>>> before;
-        private Map<Label, List<RestBetween<S, U>>> after;
+        private Map<Label, List<RestBetween<S, U>>> labelBefore;
+        private Map<Label, List<RestBetween<S, U>>> labelAfter;
+        private List<RestBetween<S, U>> befores;
+        private List<RestBetween<S, U>> afters;
         private Map<StatusCode, RestError<U, ? extends Translatable>> restErrors;
         private Map<StatusCode, RestError<U, ? extends Translatable>> defaultErrors;
         private Map<StatusCode, RestErrorTarget<S, U, ? extends Translatable>> dispatchErrors;
@@ -130,13 +152,23 @@ public class RestTranslatorConfig<S extends DefaultSession, U extends DefaultUse
             return this;
         }
 
-        public Builder<S, U> before(Map<Label, List<RestBetween<S, U>>> before) {
-            this.before = before;
+        public Builder<S, U> labelBefore(Map<Label, List<RestBetween<S, U>>> labelBefore) {
+            this.labelBefore = labelBefore;
             return this;
         }
 
-        public Builder<S, U> after(Map<Label, List<RestBetween<S, U>>> after) {
-            this.after = after;
+        public Builder<S, U> labelAfter(Map<Label, List<RestBetween<S, U>>> labelAfter) {
+            this.labelAfter = labelAfter;
+            return this;
+        }
+
+        public Builder<S, U> befores(List<RestBetween<S, U>> befores) {
+            this.befores = befores;
+            return this;
+        }
+
+        public Builder<S, U> afters(List<RestBetween<S, U>> afters) {
+            this.afters = afters;
             return this;
         }
 
@@ -171,7 +203,19 @@ public class RestTranslatorConfig<S extends DefaultSession, U extends DefaultUse
         }
 
         public RestTranslatorConfig<S, U> build() {
-            return new RestTranslatorConfig<>(sessionClazz, before, after, restErrors, defaultErrors, dispatchErrors, defaultDispatchErrors, validate, onHalts);
+            return new RestTranslatorConfig<>(
+                    sessionClazz,
+                    labelBefore,
+                    labelAfter,
+                    afters,
+                    befores,
+                    restErrors,
+                    defaultErrors,
+                    dispatchErrors,
+                    defaultDispatchErrors,
+                    validate,
+                    onHalts
+            );
         }
     }
 }

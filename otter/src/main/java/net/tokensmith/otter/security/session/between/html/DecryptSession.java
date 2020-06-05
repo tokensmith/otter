@@ -18,6 +18,7 @@ import net.tokensmith.otter.router.exception.HaltException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
@@ -54,11 +55,11 @@ public class DecryptSession<S, U> implements Between<S, U> {
         Optional<S> session;
         Cookie sessionCookie = request.getCookies().get(sessionCookieName);
 
-        if (sessionCookie == null && required) {
+        if (Objects.isNull(sessionCookie) && required) {
             HaltException halt = new HaltException(COOKIE_NOT_PRESENT);
             onHalt(halt, response);
             throw halt;
-        } else if (sessionCookie == null && !required) {
+        } else if (Objects.isNull(sessionCookie) && !required) {
             // ok to proceed to resource. The session is not required.
             request.setSession(Optional.empty());
             return;

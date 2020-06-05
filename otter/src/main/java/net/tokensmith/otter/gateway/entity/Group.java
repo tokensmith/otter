@@ -11,7 +11,6 @@ import net.tokensmith.otter.security.Halt;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.BiFunction;
 
 
@@ -19,19 +18,25 @@ public class Group<S extends DefaultSession, U extends DefaultUser> {
     private String name;
     private Class<S> sessionClazz;
 
-    private Map<Label, List<Between<S, U>>> before;
-    private Map<Label, List<Between<S, U>>> after;
+    private Map<Label, List<Between<S, U>>> labelBefore;
+    private Map<Label, List<Between<S, U>>> labelAfter;
+
+    private List<Between<S, U>> befores;
+    private List<Between<S, U>> afters;
+
     private Map<StatusCode, Resource<S, U>> errorResources;
     private Map<StatusCode, ErrorTarget<S, U>> dispatchErrors;
 
     // halts - custom halt handlers for security betweens
     private Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> onHalts;
 
-    public Group(String name, Class<S> sessionClazz, Map<Label, List<Between<S, U>>> before, Map<Label, List<Between<S, U>>> after, Map<StatusCode, Resource<S, U>> errorResources, Map<StatusCode, ErrorTarget<S, U>> dispatchErrors, Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> onHalts) {
+    public Group(String name, Class<S> sessionClazz, Map<Label, List<Between<S, U>>> labelBefore, Map<Label, List<Between<S, U>>> labelAfter, List<Between<S, U>> befores, List<Between<S, U>> afters, Map<StatusCode, Resource<S, U>> errorResources, Map<StatusCode, ErrorTarget<S, U>> dispatchErrors, Map<Halt, BiFunction<Response<S>, HaltException, Response<S>>> onHalts) {
         this.name = name;
         this.sessionClazz = sessionClazz;
-        this.before = before;
-        this.after = after;
+        this.labelBefore = labelBefore;
+        this.labelAfter = labelAfter;
+        this.befores = befores;
+        this.afters = afters;
         this.errorResources = errorResources;
         this.dispatchErrors = dispatchErrors;
         this.onHalts = onHalts;
@@ -53,20 +58,36 @@ public class Group<S extends DefaultSession, U extends DefaultUser> {
         this.sessionClazz = sessionClazz;
     }
 
-    public Map<Label, List<Between<S, U>>> getBefore() {
-        return before;
+    public Map<Label, List<Between<S, U>>> getLabelBefore() {
+        return labelBefore;
     }
 
-    public void setBefore(Map<Label, List<Between<S, U>>> before) {
-        this.before = before;
+    public void setLabelBefore(Map<Label, List<Between<S, U>>> labelBefore) {
+        this.labelBefore = labelBefore;
     }
 
-    public Map<Label, List<Between<S, U>>> getAfter() {
-        return after;
+    public Map<Label, List<Between<S, U>>> getLabelAfter() {
+        return labelAfter;
     }
 
-    public void setAfter(Map<Label, List<Between<S, U>>> after) {
-        this.after = after;
+    public void setLabelAfter(Map<Label, List<Between<S, U>>> labelAfter) {
+        this.labelAfter = labelAfter;
+    }
+
+    public List<Between<S, U>> getBefores() {
+        return befores;
+    }
+
+    public void setBefores(List<Between<S, U>> befores) {
+        this.befores = befores;
+    }
+
+    public List<Between<S, U>> getAfters() {
+        return afters;
+    }
+
+    public void setAfters(List<Between<S, U>> afters) {
+        this.afters = afters;
     }
 
     public Map<StatusCode, Resource<S, U>> getErrorResources() {

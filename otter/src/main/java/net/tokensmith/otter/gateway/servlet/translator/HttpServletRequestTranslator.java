@@ -95,17 +95,17 @@ public class HttpServletRequestTranslator  {
 
     protected Map<String, Cookie> from(javax.servlet.http.Cookie[] containerCookies) {
         Map<String, Cookie> otterCookies = new HashMap<>();
-        if (containerCookies != null) {
+        if (Objects.nonNull(containerCookies)) {
             // throw away duplicate cookies.. idk why duplicates occur.
             for (javax.servlet.http.Cookie cookie : containerCookies) {
                 Cookie candidate = httpServletCookieTranslator.from(cookie);
                 Cookie existing = otterCookies.get(candidate.getName());
-                if (existing != null && existing.equals(candidate)) {
+                if (Objects.nonNull(existing) && existing.equals(candidate)) {
                     LOGGER.debug("Found a duplicate cookie, {}, ignoring it.", existing.getName());
                 } else {
                     // ensure http only is set - some ajax wont pass this is.. idk why
                     CookieConfig expectedConfig = cookieConfigs.get(candidate.getName());
-                    if (expectedConfig != null) {
+                    if (Objects.nonNull(expectedConfig)) {
                         if (!expectedConfig.getHttpOnly().equals(candidate.isHttpOnly())) {
                             // force it to the default then.
                             LOGGER.debug("httpOnly is being overriden for cookie, {}. expected {}, actual {}",
@@ -127,7 +127,7 @@ public class HttpServletRequestTranslator  {
 
     protected String queryStringForUrl(String queryString) {
         String queryStringForUrl;
-        if (queryString != null) {
+        if (Objects.nonNull(queryString)) {
             queryStringForUrl = PARAM_DELIMITER + queryString;
         } else {
             queryStringForUrl = EMPTY;

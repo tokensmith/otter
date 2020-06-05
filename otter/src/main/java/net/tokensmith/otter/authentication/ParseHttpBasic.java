@@ -4,6 +4,7 @@ import net.tokensmith.otter.authentication.exception.HttpBasicException;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Objects;
 
 /**
  * Created by tommackenzie on 6/4/15.
@@ -18,7 +19,7 @@ public class ParseHttpBasic {
 
     public HttpBasicEntity run(String header) throws HttpBasicException {
 
-        if (header == null || header.isEmpty()) {
+        if (Objects.isNull(header) || header.isEmpty()) {
             throw new HttpBasicException(HEADER_EMPTY);
         }
 
