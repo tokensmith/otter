@@ -5,6 +5,7 @@ import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import net.tokensmith.jwt.config.JwtAppFactory;
+import net.tokensmith.otter.config.OtterAppFactory;
 import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.dispatch.entity.RestBtwnRequest;
@@ -12,12 +13,14 @@ import net.tokensmith.otter.dispatch.entity.RestBtwnResponse;
 import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.exception.HaltException;
+import net.tokensmith.otter.security.Halt;
 import net.tokensmith.otter.security.session.between.rest.RestReadSession;
 import net.tokensmith.otter.security.session.util.Decrypt;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
 import org.junit.Test;
 
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -31,7 +34,10 @@ public class RestReadSessionTest {
         ObjectReader sessionObjectReader = new TranslatorAppFactory().objectReader().forType(DummySession.class);
         Decrypt<DummySession> decrypt = new Decrypt<>(new JwtAppFactory(), sessionObjectReader, shape.getEncKey(), shape.getRotationEncKeys());
 
-        return new RestReadSession<>("session", required, shape.getSessionFailStatusCode(), decrypt);
+        OtterAppFactory otterAppFactory = new OtterAppFactory();
+        BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse> onHalt =  otterAppFactory.defaultRestOnHalts(shape).get(Halt.SESSION);
+
+        return new RestReadSession<>("session", required, decrypt, onHalt);
     }
 
     @Test

@@ -6,6 +6,7 @@ import net.tokensmith.otter.controller.entity.mime.ParamValue;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +26,7 @@ public class MimeTypeTranslator {
         Map<String, String> parameters = new LinkedHashMap<String, String>();
         to.setParameters(parameters);
 
-        if (from == null) {
+        if (Objects.isNull(from)) {
             return to;
         }
 
@@ -55,7 +56,7 @@ public class MimeTypeTranslator {
         }
 
         // default to US-ASCII charset.
-        if (parameters.get(ParamKey.CHARSET.toString()) == null) {
+        if (Objects.isNull(parameters.get(ParamKey.CHARSET.toString()))) {
             parameters.put(ParamKey.CHARSET.toString(), ParamValue.US_ASCII.toString());
         }
 

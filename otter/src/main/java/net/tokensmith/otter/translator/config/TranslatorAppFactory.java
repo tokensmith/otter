@@ -9,6 +9,8 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import net.tokensmith.otter.translator.JsonTranslator;
 
+import java.util.Objects;
+
 public class TranslatorAppFactory {
 
     private static ObjectMapper objectMapper;
@@ -30,21 +32,21 @@ public class TranslatorAppFactory {
     }
 
     public ObjectReader objectReader() {
-        if (objectReader == null) {
+        if (Objects.isNull(objectReader)) {
             objectReader = objectMapper().reader();
         }
         return objectReader;
     }
 
     public ObjectWriter objectWriter() {
-        if (objectWriter == null) {
+        if (Objects.isNull(objectWriter)) {
             objectWriter = objectMapper().writer();
         }
         return objectWriter;
     }
 
     public ObjectMapper objectMapper() {
-        if (objectMapper == null) {
+        if (Objects.isNull(objectMapper)) {
             objectMapper = new ObjectMapper()
                     .setPropertyNamingStrategy(
                             PropertyNamingStrategy.SNAKE_CASE

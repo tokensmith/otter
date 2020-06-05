@@ -44,7 +44,8 @@ public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
         this.method(Method.GET)
             .method(Method.POST);
 
-        this.labels.add(Label.CSRF);
+        this.labels.add(Label.CSRF_PREPARE);
+        this.labels.add(Label.CSRF_PROTECT);
 
         return this;
     }
@@ -68,7 +69,7 @@ public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
 
     public TargetBuilder<S, U> contentType(Method method, MimeType contentType) {
         List<MimeType> mimeTypes = this.contentTypes.get(method);
-        if (mimeTypes == null) {
+        if (Objects.isNull(mimeTypes)) {
             mimeTypes = new ArrayList<>();
         }
         mimeTypes.add(contentType);
@@ -85,7 +86,7 @@ public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
 
     public TargetBuilder<S, U> accept(Method method, MimeType contentType) {
         List<MimeType> mimeTypes = this.accepts.get(method);
-        if (mimeTypes == null) {
+        if (Objects.isNull(mimeTypes)) {
             mimeTypes = new ArrayList<>();
         }
         mimeTypes.add(contentType);

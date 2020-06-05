@@ -14,6 +14,8 @@
     - [Request Body Validation](#request-body-validation)
 - [Authentication](#authentication)
     - [Session](#session)
+    - [Session fail](#session-failure)
+    - [Custom Session Management](#custom-session-implementation)
     - [User](#user)
     - [Required Authentication](#required-authentication-between)
     - [Optional Authentication](#optional-authentication-between)
@@ -29,6 +31,8 @@
 - [CSRF protection](#csrf)
     - [Resource](#resource-protection)
     - [RestResource](#restresource-protection)
+    - [CSRF fail](#csrf-failure)
+    - [Customize](#custom-csrf-implemention)
 - [Delivery of static assets](#static-assets)
 
 ### Scaffolding
@@ -81,19 +85,18 @@ A [Target](https://github.com/RootServices/otter/blob/development/otter/src/main
 ```
 
 #### Group
-A [Group](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/gateway/entity/Group.java) allows sharing authentication and error handling with `Targets`.
+A [Group](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/gateway/entity/Group.java) allows sharing betweens and error handling with `Targets`.
 
 ```java
     var serverErrorResource = new ServerErrorResource();
     Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
             .name(WEB_SITE_GROUP)
             .sessionClazz(TokenSession.class)
-            .authOptional(new AuthOptBetween())
-            .authRequired(new AuthBetween())
+            .before(Label.AUTH_OPTIONAL, new AuthOptBetween())            
+            .before(Label.AUTH_REQUIRED, new AuthBetween())
             .onError(StatusCode.SERVER_ERROR, serverErrorResource)
             .build();
 ```
-
 To share a `Group's` feature with a `Target` set the `.groupName(..)` ot the `name(..)` of the `Group`.
 ```java
     Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
@@ -129,7 +132,7 @@ A [RestTarget](https://github.com/RootServices/otter/blob/development/otter/src/
 ```
 
 #### RestGroup
-A [RestGroup](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/gateway/entity/rest/RestGroup.java) allows sharing authentication and error handling with `RestTargets`.
+A [RestGroup](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/gateway/entity/rest/RestGroup.java) allows sharing betweens and error handling with `RestTargets`.
 
 ```java
     BadRequestResource badRequestResource = new BadRequestResource();
@@ -137,8 +140,8 @@ A [RestGroup](https://github.com/RootServices/otter/blob/development/otter/src/m
     RestGroup<DummySession, ApiUser> apiGroupV3 = new RestGroupBuilder<DummySession, ApiUser>()
             .name(API_GROUP_V3)
             .sessionClazz(DefaultSession.class)
-            .authRequired(authRestBetween)
-            .authOptional(authRestBetween)
+            .before(Label.AUTH_OPTIONAL, authRestBetween)            
+            .before(Label.AUTH_REQUIRED, authRestBetween)
             .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
             .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
             .build();
@@ -220,7 +223,77 @@ Session implementations:
  
 The threats are: 
  - Session hijacking by modifying values of the session cookie to take over a different session.
- - In the instance the session cookie is revealed then sensitive data is not easily accessible. 
+ - In the instance the session cookie is revealed then sensitive data is not easily accessible.
+ 
+#### Session failure
+
+When a session fails to be read or does not exist when it should then Otter will return:
+- status code of 401
+- remove session cookie
+
+This behavior can be overridden by implementing a halt bifunction and passing it into it's group.
+
+```java
+    Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
+        .name(WEB_SITE_GROUP)
+        .sessionClazz(TokenSession.class)
+        .before(Label.AUTH_OPTIONAL, new AuthOptBetween())            
+        .before(Label.AUTH_REQUIRED, new AuthBetween())
+        .onHalt(Halt.SESSION, (Response<TokenSession> response, HaltException e) -> {
+            response.setTemplate(Optional.of("/WEB-INF/jsp/401.jsp"));
+            response.setStatusCode(StatusCode.UNAUTHORIZED);
+            return response;
+        })
+        .onError(StatusCode.SERVER_ERROR, serverErrorResource)
+        .build();
+```
+ 
+#### Custom session implementation
+
+Custom implementations of session managment can be injected into [Groups]((#group)) and [RestGroups](#restgroup)
+
+##### Group
+Implement betweens that will handle reading and writing sessions. Then inject them into the group.
+
+```java
+    Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
+        .name(WEB_SITE_GROUP)
+        .sessionClazz(TokenSession.class)
+        .before(Label.AUTH_OPTIONAL, new AuthOptBetween())            
+        .before(Label.AUTH_REQUIRED, new AuthBetween())
+        .before(Label.SESSION_REQUIRED, readSession) // <-- custom required session reading 
+        .before(Label.SESSION_OPTIONAL, readSessionOptional) // <-- custom optional session reading
+        .before(Label.SESSION_REQUIRED, writeSession) // <-- custom required session writing 
+        .before(Label.SESSION_OPTIONAL, writeSessionOptional) // <-- custom optional session writing
+        .onError(StatusCode.SERVER_ERROR, serverErrorResource)
+        .build();
+    
+```
+
+These would then be used instead of the defaults for all the targets in that group.
+
+##### RestGroup
+
+Implement betweens that will handle reading and writing sessions. Then inject them into the restGroup.
+```java
+    BadRequestResource badRequestResource = new BadRequestResource();
+    ServerErrorResource serverErrorResource = new ServerErrorResource();
+    RestGroup<DummySession, ApiUser> apiGroupV3 = new RestGroupBuilder<DummySession, ApiUser>()
+            .name(API_GROUP_V3)
+            .sessionClazz(DefaultSession.class)
+            .before(Label.AUTH_OPTIONAL, authRestBetween)            
+            .before(Label.AUTH_REQUIRED, authRestBetween)
+            .before(Label.SESSION_REQUIRED, readSession) // <-- custom required session reading 
+            .before(Label.SESSION_OPTIONAL, readSessionOptional) // <-- custom optional session reading
+            .before(Label.SESSION_REQUIRED, writeSession) // <-- custom required session writing 
+            .before(Label.SESSION_OPTIONAL, writeSessionOptional) // <-- custom optional session writing
+            .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
+            .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
+            .build();
+```
+
+It would then be used instead of the default for all the restTargets in that restGroup.
+
  
 #### User
 
@@ -267,8 +340,8 @@ Then allow the request to reach the resource.
     Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
             .name(WEB_SITE_GROUP)
             .sessionClazz(TokenSession.class)
-            .authOptional(new AuthOptBetween())
-            .authRequired(new AuthBetween())
+            .before(Label.AUTH_OPTIONAL, new AuthOptBetween())            
+            .before(Label.AUTH_REQUIRED, new AuthBetween())
             .onError(StatusCode.SERVER_ERROR, serverErrorResource)
             .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaType)
             .build();
@@ -298,8 +371,8 @@ Use `anonymous()` to not require authentication or optionally authenticate.
     RestGroup<DummySession, ApiUser> apiGroupV3 = new RestGroupBuilder<DummySession, ApiUser>()
             .name(API_GROUP_V3)
             .sessionClazz(DefaultSession.class)
-            .authRequired(authRestBetween)
-            .authOptional(authRestBetween)
+            .before(Label.AUTH_OPTIONAL, authRestBetween)            
+            .before(Label.AUTH_REQUIRED, authRestBetween)
             .build();
 ```
 
@@ -372,8 +445,8 @@ To configure a `Group` to apply error handlers to all its related `Targets`.
     Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
             .name(WEB_SITE_GROUP)
             .sessionClazz(TokenSession.class)
-            .authOptional(new AuthOptBetween())
-            .authRequired(new AuthBetween())
+            .before(Label.AUTH_OPTIONAL, new AuthOptBetween())            
+            .before(Label.AUTH_REQUIRED, new AuthBetween())
             .onError(StatusCode.SERVER_ERROR, serverErrorResource)
             .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaType)
             .onDispatchError(StatusCode.NOT_ACCEPTABLE, notAcceptable)
@@ -526,8 +599,8 @@ To configure a `RestGroup` to apply error handlers to all its related `RestTarge
     RestGroup<DummySession, ApiUser> apiGroupV3 = new RestGroupBuilder<DummySession, ApiUser>()
             .name(API_GROUP_V3)
             .sessionClazz(DefaultSession.class)
-            .authRequired(authRestBetween)
-            .authOptional(authRestBetween)
+            .before(Label.AUTH_OPTIONAL, authRestBetween)            
+            .before(Label.AUTH_REQUIRED, authRestBetween)
             .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
             .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
             .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaTypeTarget)
@@ -572,6 +645,7 @@ This allows applications to have many ways to react to a not found url based on 
 #### Configure
 Configuring otter is done by implementing [Configure](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/gateway/Configure.java). 
 The implementation instructs otter how to:
+ - Set cookie configuration for CSRF, Session, and other cookies
  - Set CSRF signature key
  - Set the status code when CSRF fails
  - Set the template when CSRF fails
@@ -661,7 +735,6 @@ on the page.
 
 Done, it is CSRF protected.
 
-
 #### RestResource Protection
 Here is an example of how to protect an API. The use case is when javascript in a browser wants to call an API that is protected.
 
@@ -689,6 +762,71 @@ Configuration.
 ```
 
 To pass it will need the CSRF cookie and and the header, `X-CSRF`.
+
+#### CSRF failure
+
+When a CSRF fails then Otter will return:
+- status code of 403
+- remove csrf cookie
+
+This behavior can be overridden by implementing a halt bifunction and passing it into it's group.
+
+```java
+    Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
+        .name(WEB_SITE_GROUP)
+        .sessionClazz(TokenSession.class)
+        .before(Label.AUTH_OPTIONAL, new AuthOptBetween())            
+        .before(Label.AUTH_REQUIRED, new AuthBetween())
+        .onHalt(Halt.CSRF, (Response<TokenSession> response, HaltException e) -> {
+            response.setTemplate(Optional.of("/WEB-INF/jsp/403.jsp"));
+            response.setStatusCode(StatusCode.FORBIDDEN);
+            return response;
+        })
+        .onError(StatusCode.SERVER_ERROR, serverErrorResource)
+        .build();
+```
+
+#### Custom CSRF implemention.
+
+Custom implementations of CSRF can be injected into [Groups]((#group)) and [RestGroups](#restgroup)
+
+##### Group
+Implement two betweens that handle preparing and protecting CSRF then inject them with the `before` interface.
+```java
+    Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
+        .name(WEB_SITE_GROUP)
+        .sessionClazz(TokenSession.class)
+        .before(Label.AUTH_OPTIONAL, new AuthOptBetween())            
+        .before(Label.AUTH_REQUIRED, new AuthBetween())
+        .before(Label.CSRF_PROTECT, csrfProtect) // <-- custom csrf protect
+        .before(Label.CSRF_PREPARE, csrfPrepare) // <-- custom csrf prepare
+        .onError(StatusCode.SERVER_ERROR, serverErrorResource)
+        .build();
+    
+```
+
+These would then be used instead of the defaults for all the targets in that group.
+
+##### RestGroup
+
+Implement one betweens that handle protecting CSRF then inject it with the `before` interface.
+```java
+    BadRequestResource badRequestResource = new BadRequestResource();
+    ServerErrorResource serverErrorResource = new ServerErrorResource();
+    RestGroup<DummySession, ApiUser> apiGroupV3 = new RestGroupBuilder<DummySession, ApiUser>()
+            .name(API_GROUP_V3)
+            .sessionClazz(DefaultSession.class)
+            .before(Label.AUTH_OPTIONAL, authRestBetween)            
+            .before(Label.AUTH_REQUIRED, authRestBetween)
+            .before(Label.CSRF_PROTECT, csrfProtect) // <-- custom csrf protect
+            .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
+            .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
+            .build();
+```
+
+It would then be used instead of the default for all the restTargets in that restGroup.
+
+
 ### Static Assets
 
 Files that are placed in, `src/main/webapp/public` are public as long as they pass the entry filter [regex](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/servlet/EntryFilter.java#L18).

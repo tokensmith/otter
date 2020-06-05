@@ -22,9 +22,14 @@ public class QuickServer extends HttpServer {
                 "text/css", "application/javascript", "text/javascript",
                 "application/json");
 
-        HttpServerConfig config = new HttpServerConfig(
-                DOCUMENT_ROOT, PORT, REQUEST_LOG, HelloResource.class, gzipMimeTypes, new ArrayList<>()
-        );
+        HttpServerConfig config = new HttpServerConfig.Builder()
+                .documentRoot(DOCUMENT_ROOT)
+                .clazz(HelloResource.class)
+                .port(PORT)
+                .requestLog(REQUEST_LOG)
+                .gzipMimeTypes(gzipMimeTypes)
+                .build();
+
         run(config);
     }
 }

@@ -68,23 +68,22 @@ public class HttpServletResponseMergerTest {
 
         HttpServletResponse mockContainerResponse = mock(HttpServletResponse.class);
         Cookie[] containerCookies = new Cookie[1];
-        Cookie mockContainerCookieToUpdate = mock(Cookie.class);
-        when(mockContainerCookieToUpdate.getName()).thenReturn(cookieName);
-        containerCookies[0] = mockContainerCookieToUpdate;
+        Cookie containerCookie = new Cookie(cookieName, "old value");
+        containerCookies[0] = containerCookie;
 
         Answer answer = FixtureFactory.makeAnswer();
         answer.getCookies().put(cookieName, FixtureFactory.makeCookie(cookieName));
 
-        Function mockTo = mock(Function.class);
-        mockHttpServletRequestCookieTranslator.to = mockTo;
-        when(mockTo.apply(answer.getCookies().get(cookieName)))
-                .thenReturn(mockContainerCookieToUpdate);
+        Cookie cookieToUpdate = new Cookie(cookieName, "new value");
+        when(mockHttpServletRequestCookieTranslator.to(answer.getCookies().get(cookieName)))
+                .thenReturn(cookieToUpdate);
 
         subject.merge(mockContainerResponse, containerCookies, answer);
 
         // indicates cookie was updated.
-        verify(mockHttpServletRequestCookieTranslator.to).apply(answer.getCookies().get(cookieName));
-        verify(mockContainerResponse).addCookie(mockContainerCookieToUpdate);
+
+        verify(mockHttpServletRequestCookieTranslator).to(eq(answer.getCookies().get(cookieName)));
+        verify(mockContainerResponse).addCookie(cookieToUpdate);
     }
 
     @Test
@@ -99,15 +98,13 @@ public class HttpServletResponseMergerTest {
         answer.getCookies().put(cookieName, FixtureFactory.makeCookie(cookieName));
 
         Cookie mockContainerCookieToCreate = mock(Cookie.class);
-        Function mockTo = mock(Function.class);
-        mockHttpServletRequestCookieTranslator.to = mockTo;
-        when(mockTo.apply(answer.getCookies().get(cookieName)))
+        when(mockHttpServletRequestCookieTranslator.to(answer.getCookies().get(cookieName)))
                 .thenReturn(mockContainerCookieToCreate);
 
         subject.merge(mockContainerResponse, containerCookies, answer);
 
         // indicates cookie was added
-        verify(mockHttpServletRequestCookieTranslator.to).apply(answer.getCookies().get(cookieName));
+        verify(mockHttpServletRequestCookieTranslator).to(eq(answer.getCookies().get(cookieName)));
         verify(mockContainerResponse).addCookie(mockContainerCookieToCreate);
     }
 }

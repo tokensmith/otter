@@ -81,7 +81,7 @@ public class RestTargetBuilder<S extends DefaultSession, U extends DefaultUser, 
 
     public RestTargetBuilder<S, U, P> contentType(Method method, MimeType contentType) {
         List<MimeType> mimeTypes = this.contentTypes.get(method);
-        if (mimeTypes == null) {
+        if (Objects.isNull(mimeTypes)) {
             mimeTypes = new ArrayList<>();
         }
         mimeTypes.add(contentType);
@@ -98,7 +98,7 @@ public class RestTargetBuilder<S extends DefaultSession, U extends DefaultUser, 
 
     public RestTargetBuilder<S, U, P> accept(Method method, MimeType contentType) {
         List<MimeType> mimeTypes = this.accepts.get(method);
-        if (mimeTypes == null) {
+        if (Objects.isNull(mimeTypes)) {
             mimeTypes = new ArrayList<>();
         }
         mimeTypes.add(contentType);
@@ -126,9 +126,9 @@ public class RestTargetBuilder<S extends DefaultSession, U extends DefaultUser, 
 
     public RestTargetBuilder<S, U, P> csrf() {
         // just in-case
-        this.labels.remove(Label.CSRF);
+        this.labels.remove(Label.CSRF_PROTECT);
 
-        this.labels.add(Label.CSRF);
+        this.labels.add(Label.CSRF_PROTECT);
         return this;
     }
 

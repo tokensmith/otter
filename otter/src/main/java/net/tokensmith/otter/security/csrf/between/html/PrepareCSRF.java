@@ -16,6 +16,7 @@ import net.tokensmith.otter.security.csrf.exception.CsrfException;
 import net.tokensmith.otter.security.entity.ChallengeToken;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -42,7 +43,8 @@ public class PrepareCSRF<S, U> implements Between<S, U> {
 
     @Override
     public void process(Method method, Request<S, U> request, Response<S> response) throws HaltException {
-        if (response.getCookies().get(cookieConfig.getName()) == null) {
+        if (Objects.isNull(response.getCookies().get(cookieConfig.getName()))) {
+            LOGGER.debug("No CSRF Cookie - adding it");
             String challengeToken = doubleSubmitCSRF.makeChallengeToken();
 
             String cookieNoise = doubleSubmitCSRF.makeChallengeToken();
@@ -65,6 +67,7 @@ public class PrepareCSRF<S, U> implements Between<S, U> {
                 LOGGER.error(e.getMessage(), e);
             }
         } else {
+            LOGGER.debug("CSRF Cookie exists - adding it to it's token to request");
             JsonWebToken csrfJwt = null;
             try {
                 csrfJwt = doubleSubmitCSRF.csrfToJwt(response.getCookies().get(cookieConfig.getName()).getValue());

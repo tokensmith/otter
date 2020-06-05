@@ -31,7 +31,6 @@ public class DoubleSubmitCSRFTest {
     @Before
     public void setUp() {
         SecurityAppFactory appFactory = new SecurityAppFactory();
-        subject = appFactory.doubleSubmitCSRF();
 
         SymmetricKey preferredSignKey = FixtureFactory.signKey("preferred-key");
 
@@ -39,6 +38,7 @@ public class DoubleSubmitCSRFTest {
         rotationSignKeys.put("rotation-key-1", FixtureFactory.signKey("rotation-key-1"));
         rotationSignKeys.put("rotation-key-2", FixtureFactory.signKey("rotation-key-2"));
 
+        subject = appFactory.doubleSubmitCSRF(preferredSignKey, rotationSignKeys);
         subject.setPreferredSignKey(preferredSignKey);
         subject.setRotationSignKeys(rotationSignKeys);
     }

@@ -10,6 +10,7 @@ import net.tokensmith.otter.controller.entity.request.RestRequest;
 import net.tokensmith.otter.controller.entity.response.RestResponse;
 import net.tokensmith.otter.controller.header.Header;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ public class MediaTypeRestResource<U extends DefaultUser> extends RestResource<U
     
     protected ClientError to(RestRequest<U, ClientError> from) {
         String actual = null;
-        if (from.getContentType() != null && from.getContentType().getType() != null) {
+        if (Objects.nonNull(from.getContentType()) && Objects.nonNull(from.getContentType().getType())) {
             actual = from.getContentType().toString();
         }
 

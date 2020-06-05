@@ -8,25 +8,22 @@ import net.tokensmith.otter.security.builder.entity.Betweens;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.Objects;
 
 
 public class BetweenFlyweight<S, U> {
-    private Betweens<S, U> csrfPrepare;
-    private Betweens<S, U> csrfProtect;
-    private Betweens<S, U> sessionRequired;
-    private Betweens<S, U> sessionOptional;
+    private Map<Label, List<Between<S, U>>> lableBefore;
+    private Map<Label, List<Between<S, U>>> labelAfter;
 
-    private Optional<Between<S, U>> authRequired;
-    private Optional<Between<S, U>> authOptional;
+    private List<Between<S, U>> befores;
+    private List<Between<S, U>> afters;
 
-    public BetweenFlyweight(Betweens<S, U> csrfPrepare, Betweens<S, U> csrfProtect, Betweens<S, U> sessionRequired, Betweens<S, U> sessionOptional, Optional<Between<S, U>> authRequired, Optional<Between<S, U>> authOptional) {
-        this.csrfPrepare = csrfPrepare;
-        this.csrfProtect = csrfProtect;
-        this.sessionRequired = sessionRequired;
-        this.sessionOptional = sessionOptional;
-        this.authRequired = authRequired;
-        this.authOptional = authOptional;
+    public BetweenFlyweight(Map<Label, List<Between<S, U>>> lableBefore, Map<Label, List<Between<S, U>>> labelAfter, List<Between<S, U>> befores, List<Between<S, U>> afters) {
+        this.lableBefore = lableBefore;
+        this.labelAfter = labelAfter;
+        this.befores = befores;
+        this.afters = afters;
     }
 
     public Betweens<S, U> make(Method method, List<Label> labels) {
@@ -43,22 +40,24 @@ public class BetweenFlyweight<S, U> {
         } else if (Method.DELETE.equals(method)) {
             betweens = makeDelete(labels);
         }
+        betweens.getBefore().addAll(befores);
+        betweens.getAfter().addAll(afters);
         return betweens;
 
     }
 
     public Betweens<S, U> makeGet(List<Label> labels) {
         Betweens<S, U> betweens = new Betweens<S, U>(new ArrayList<>(), new ArrayList<>());
-        if(labels.contains(Label.CSRF)) {
-            betweens.getBefore().addAll(csrfPrepare.getBefore());
+        if(labels.contains(Label.CSRF_PREPARE)) {
+            betweens.getBefore().addAll(lableBefore.get(Label.CSRF_PREPARE));
         }
         if (labels.contains(Label.SESSION_OPTIONAL)) {
-            betweens.getBefore().addAll(sessionOptional.getBefore());
-            betweens.getAfter().addAll(sessionOptional.getAfter());
+            betweens.getBefore().addAll(lableBefore.get(Label.SESSION_OPTIONAL));
+            betweens.getAfter().addAll(labelAfter.get(Label.SESSION_OPTIONAL));
         }
         if (labels.contains(Label.SESSION_REQUIRED)) {
-            betweens.getBefore().addAll(sessionRequired.getBefore());
-            betweens.getAfter().addAll(sessionRequired.getAfter());
+            betweens.getBefore().addAll(lableBefore.get(Label.SESSION_REQUIRED));
+            betweens.getAfter().addAll(labelAfter.get(Label.SESSION_REQUIRED));
         }
         authentication(labels, betweens);
         return betweens;
@@ -66,16 +65,16 @@ public class BetweenFlyweight<S, U> {
 
     public Betweens<S, U> makePost(List<Label> labels) {
         Betweens<S, U> betweens = new Betweens<S, U>(new ArrayList<>(), new ArrayList<>());
-        if(labels.contains(Label.CSRF)) {
-            betweens.getBefore().addAll(csrfProtect.getBefore());
+        if(labels.contains(Label.CSRF_PROTECT)) {
+            betweens.getBefore().addAll(lableBefore.get(Label.CSRF_PROTECT));
         }
         if (labels.contains(Label.SESSION_OPTIONAL)) {
-            betweens.getBefore().addAll(sessionOptional.getBefore());
-            betweens.getAfter().addAll(sessionOptional.getAfter());
+            betweens.getBefore().addAll(lableBefore.get(Label.SESSION_OPTIONAL));
+            betweens.getAfter().addAll(labelAfter.get(Label.SESSION_OPTIONAL));
         }
         if (labels.contains(Label.SESSION_REQUIRED)) {
-            betweens.getBefore().addAll(sessionRequired.getBefore());
-            betweens.getAfter().addAll(sessionRequired.getAfter());
+            betweens.getBefore().addAll(lableBefore.get(Label.SESSION_REQUIRED));
+            betweens.getAfter().addAll(labelAfter.get(Label.SESSION_REQUIRED));
         }
         authentication(labels, betweens);
         return betweens;
@@ -100,11 +99,11 @@ public class BetweenFlyweight<S, U> {
     }
 
     protected void authentication(List<Label> labels, Betweens<S, U> betweens) {
-        if (labels.contains(Label.AUTH_OPTIONAL) && authOptional.isPresent()) {
-            betweens.getBefore().add(authOptional.get());
+        if (labels.contains(Label.AUTH_OPTIONAL) && Objects.nonNull(lableBefore.get(Label.AUTH_OPTIONAL)) && lableBefore.get(Label.AUTH_OPTIONAL).size() > 0) {
+            betweens.getBefore().addAll(lableBefore.get(Label.AUTH_OPTIONAL));
         }
-        if (labels.contains(Label.AUTH_REQUIRED) && authRequired.isPresent()) {
-            betweens.getBefore().add(authRequired.get());
+        if (labels.contains(Label.AUTH_REQUIRED) && Objects.nonNull(lableBefore.get(Label.AUTH_REQUIRED)) && lableBefore.get(Label.AUTH_REQUIRED).size() > 0) {
+            betweens.getBefore().addAll(lableBefore.get(Label.AUTH_REQUIRED));
         }
     }
 }

@@ -3,6 +3,11 @@ package net.tokensmith.otter.security.builder;
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.config.CookieConfig;
+import net.tokensmith.otter.config.OtterAppFactory;
+import net.tokensmith.otter.gateway.builder.ShapeBuilder;
+import net.tokensmith.otter.gateway.entity.Shape;
+import org.junit.Before;
 import org.junit.Test;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.security.builder.entity.Betweens;
@@ -21,7 +26,14 @@ import static org.junit.Assert.*;
 
 
 public class BetweenBuilderTest {
+    private static OtterAppFactory otterAppFactory = new OtterAppFactory();
     private static TranslatorAppFactory appFactory = new TranslatorAppFactory();
+    private Shape shape;
+
+    @Before
+    public void setUp() {
+        shape = FixtureFactory.makeShape("1234", "5678");
+    }
 
     @Test
     public void buildShouldBeEmptyLists() {
@@ -29,6 +41,7 @@ public class BetweenBuilderTest {
 
         Betweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
+                .onHalts(otterAppFactory.defaultOnHalts(shape))
                 .build();
 
         assertThat(actual.getBefore().size(), is(0));
@@ -41,12 +54,14 @@ public class BetweenBuilderTest {
 
         SymmetricKey preferredSignKey = FixtureFactory.signKey("preferred-key");
         Map<String, SymmetricKey> rotationSignKeys = FixtureFactory.rotationSignKeys("rotation-key-", 2);
+        CookieConfig csrfCookieConfig = FixtureFactory.csrfCookieConfig();
 
         Betweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .secure(false)
                 .signKey(preferredSignKey)
                 .rotationSignKeys(rotationSignKeys)
+                .csrfCookieConfig(csrfCookieConfig)
+                .onHalts(otterAppFactory.defaultOnHalts(shape))
                 .csrfPrepare()
                 .build();
 
@@ -67,12 +82,15 @@ public class BetweenBuilderTest {
 
         SymmetricKey preferredSignKey = FixtureFactory.signKey("preferred-key");
         Map<String, SymmetricKey> rotationSignKeys = FixtureFactory.rotationSignKeys("rotation-key-", 2);
+        CookieConfig csrfCookieConfig = FixtureFactory.csrfCookieConfig();
+        csrfCookieConfig.setSecure(true);
 
         Betweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .secure(true)
                 .signKey(preferredSignKey)
                 .rotationSignKeys(rotationSignKeys)
+                .csrfCookieConfig(csrfCookieConfig)
+                .onHalts(otterAppFactory.defaultOnHalts(shape))
                 .csrfPrepare()
                 .build();
 
@@ -94,12 +112,14 @@ public class BetweenBuilderTest {
 
         SymmetricKey preferredSignKey = FixtureFactory.signKey("preferred-key");
         Map<String, SymmetricKey> rotationSignKeys = FixtureFactory.rotationSignKeys("rotation-key-", 2);
+        CookieConfig csrfCookieConfig = FixtureFactory.csrfCookieConfig();
 
         Betweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .secure(true)
                 .signKey(preferredSignKey)
                 .rotationSignKeys(rotationSignKeys)
+                .csrfCookieConfig(csrfCookieConfig)
+                .onHalts(otterAppFactory.defaultOnHalts(shape))
                 .csrfProtect()
                 .build();
 
@@ -120,13 +140,15 @@ public class BetweenBuilderTest {
 
         SymmetricKey preferredEncKey = FixtureFactory.encKey("preferred-key");
         Map<String, SymmetricKey> rotationEncKeys = FixtureFactory.rotationEncKeys("rotation-key-", 2);
+        CookieConfig sessionCookieConfig = FixtureFactory.sessionCookieConfig();
 
         Betweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .secure(false)
                 .encKey(preferredEncKey)
                 .rotationEncKey(rotationEncKeys)
                 .sessionClass(DummySession.class)
+                .sessionCookieConfig(sessionCookieConfig)
+                .onHalts(otterAppFactory.defaultOnHalts(shape))
                 .session()
                 .build();
 
@@ -136,6 +158,7 @@ public class BetweenBuilderTest {
 
         DecryptSession<DummySession, DummyUser> actualDecrypt = (DecryptSession<DummySession, DummyUser>) actual.getBefore().get(0);
         assertThat(actualDecrypt.getRequired(), is(true));
+        assertThat(actualDecrypt.getSessionCookieName(), is(sessionCookieConfig.getName()));
 
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getAfter().get(0), is(instanceOf(EncryptSession.class)));
@@ -153,13 +176,16 @@ public class BetweenBuilderTest {
 
         SymmetricKey preferredEncKey = FixtureFactory.encKey("preferred-key");
         Map<String, SymmetricKey> rotationEncKeys = FixtureFactory.rotationEncKeys("rotation-key-", 2);
+        CookieConfig sessionCookieConfig = FixtureFactory.sessionCookieConfig();
+        sessionCookieConfig.setSecure(true);
 
         Betweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .secure(true)
                 .encKey(preferredEncKey)
                 .rotationEncKey(rotationEncKeys)
                 .sessionClass(DummySession.class)
+                .sessionCookieConfig(sessionCookieConfig)
+                .onHalts(otterAppFactory.defaultOnHalts(shape))
                 .session()
                 .build();
 
@@ -168,6 +194,7 @@ public class BetweenBuilderTest {
 
         DecryptSession<DummySession, DummyUser> actualDecrypt = (DecryptSession<DummySession, DummyUser>) actual.getBefore().get(0);
         assertThat(actualDecrypt.getRequired(), is(true));
+        assertThat(actualDecrypt.getSessionCookieName(), is(sessionCookieConfig.getName()));
 
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getAfter().get(0), is(instanceOf(EncryptSession.class)));
@@ -185,13 +212,15 @@ public class BetweenBuilderTest {
 
         SymmetricKey preferredEncKey = FixtureFactory.encKey("preferred-key");
         Map<String, SymmetricKey> rotationEncKeys = FixtureFactory.rotationEncKeys("rotation-key-", 2);
+        CookieConfig sessionCookieConfig = FixtureFactory.sessionCookieConfig();
 
         Betweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .secure(false)
                 .encKey(preferredEncKey)
                 .rotationEncKey(rotationEncKeys)
                 .sessionClass(DummySession.class)
+                .sessionCookieConfig(sessionCookieConfig)
+                .onHalts(otterAppFactory.defaultOnHalts(shape))
                 .optionalSession()
                 .build();
 
@@ -201,6 +230,7 @@ public class BetweenBuilderTest {
 
         DecryptSession<DummySession, DummyUser> actualDecrypt = (DecryptSession<DummySession, DummyUser>) actual.getBefore().get(0);
         assertThat(actualDecrypt.getRequired(), is(false));
+        assertThat(actualDecrypt.getSessionCookieName(), is(sessionCookieConfig.getName()));
 
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getAfter().get(0), is(instanceOf(EncryptSession.class)));
@@ -218,13 +248,15 @@ public class BetweenBuilderTest {
 
         SymmetricKey preferredEncKey = FixtureFactory.encKey("preferred-key");
         Map<String, SymmetricKey> rotationEncKeys = FixtureFactory.rotationEncKeys("rotation-key-", 2);
+        CookieConfig sessionCookieConfig = FixtureFactory.sessionCookieConfig();
 
         Betweens<DummySession, DummyUser> actual = subject
                 .routerAppFactory(appFactory)
-                .secure(true)
                 .encKey(preferredEncKey)
                 .rotationEncKey(rotationEncKeys)
                 .sessionClass(DummySession.class)
+                .sessionCookieConfig(sessionCookieConfig)
+                .onHalts(otterAppFactory.defaultOnHalts(shape))
                 .optionalSession()
                 .build();
 
@@ -233,12 +265,13 @@ public class BetweenBuilderTest {
 
         DecryptSession<DummySession, DummyUser> actualDecrypt = (DecryptSession<DummySession, DummyUser>) actual.getBefore().get(0);
         assertThat(actualDecrypt.getRequired(), is(false));
+        assertThat(actualDecrypt.getSessionCookieName(), is(sessionCookieConfig.getName()));
 
         assertThat(actual.getAfter().size(), is(1));
         assertThat(actual.getAfter().get(0), is(instanceOf(EncryptSession.class)));
 
         EncryptSession<DummySession, DummyUser> actualEncrypt = (EncryptSession<DummySession, DummyUser>) actual.getAfter().get(0);
-        assertThat(actualEncrypt.getCookieConfig().getSecure(), is(true));
+        assertThat(actualEncrypt.getCookieConfig().getSecure(), is(false));
         assertThat(actualEncrypt.getCookieConfig().getAge(), is(-1));
         assertThat(actualEncrypt.getCookieConfig().getName(), is("session"));
     }

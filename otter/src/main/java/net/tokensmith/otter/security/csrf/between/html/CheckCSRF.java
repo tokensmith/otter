@@ -12,26 +12,23 @@ import net.tokensmith.otter.router.exception.HaltException;
 import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 public class CheckCSRF<S, U> implements Between<S, U> {
     private String cookieName;
     private String formFieldName;
     private DoubleSubmitCSRF doubleSubmitCSRF;
     private static String HALT_MSG = "CSRF failed.";
-    private StatusCode failStatusCode;
-    private Optional<String> failTemplate;
+    private BiFunction<Response<S>, HaltException, Response<S>> onHalt;
 
-    public CheckCSRF(DoubleSubmitCSRF doubleSubmitCSRF) {
-        this.doubleSubmitCSRF = doubleSubmitCSRF;
-    }
 
-    public CheckCSRF(String cookieName, String formFieldName, DoubleSubmitCSRF doubleSubmitCSRF, StatusCode failStatusCode, Optional<String> failTemplate) {
+    public CheckCSRF(String cookieName, String formFieldName, DoubleSubmitCSRF doubleSubmitCSRF, BiFunction<Response<S>, HaltException, Response<S>> onHalt) {
         this.cookieName = cookieName;
         this.formFieldName = formFieldName;
         this.doubleSubmitCSRF = doubleSubmitCSRF;
-        this.failStatusCode = failStatusCode;
-        this.failTemplate = failTemplate;
+        this.onHalt = onHalt;
     }
 
     @Override
@@ -39,7 +36,7 @@ public class CheckCSRF<S, U> implements Between<S, U> {
         Boolean ok;
         Cookie csrfCookie = request.getCookies().get(cookieName);
         List<String> formValue = request.getFormData().get(formFieldName);
-        if ( csrfCookie != null && formValue != null && formValue.size() == 1) {
+        if ( Objects.nonNull(csrfCookie) && Objects.nonNull(formValue) && formValue.size() == 1) {
             ok = doubleSubmitCSRF.doTokensMatch(csrfCookie.getValue(), formValue.get(0));
         } else {
             ok = false;
@@ -63,9 +60,8 @@ public class CheckCSRF<S, U> implements Between<S, U> {
      * @param e a HaltException
      * @param response a Response
      */
-    protected void onHalt(HaltException e, Response response) {
-        response.setStatusCode(failStatusCode);
-        response.setTemplate(failTemplate);
+    protected void onHalt(HaltException e, Response<S> response) {
+        onHalt.apply(response, e);
     }
 
     // used for tests to make sure it gets built correctly.

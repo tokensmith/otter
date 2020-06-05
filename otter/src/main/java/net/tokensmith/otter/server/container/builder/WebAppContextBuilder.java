@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class WebAppContextBuilder {
     private ClassLoader classLoader;
@@ -132,7 +133,7 @@ public class WebAppContextBuilder {
 
         webAppContext.setClassLoader(this.classLoader);
 
-        if (resourceBase != null){
+        if (Objects.nonNull(resourceBase)){
             webAppContext.setResourceBase(resourceBase);
         }
 
@@ -140,7 +141,7 @@ public class WebAppContextBuilder {
 
         webAppContext.setTempDirectory(tempDirectory);
 
-        if (containerResource != null) {
+        if (Objects.nonNull(containerResource)) {
             webAppContext.getMetaData().addContainerResource(containerResource);
         }
 
@@ -173,7 +174,7 @@ public class WebAppContextBuilder {
             errorHandler.addErrorPage(errorPage.getErrorCode(), errorPage.getLocation());
         }
 
-        if (gzipMimeTypes != null && gzipMimeTypes.size() > 0) {
+        if (Objects.nonNull(gzipMimeTypes) && gzipMimeTypes.size() > 0) {
             GzipHandler gzipHandler = new GzipHandler();
             gzipHandler.setIncludedMimeTypes(
                     gzipMimeTypes.toArray(new String[gzipMimeTypes.size()])

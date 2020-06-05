@@ -13,7 +13,9 @@ import net.tokensmith.otter.security.session.util.Decrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 
 /**
@@ -30,14 +32,14 @@ public class RestReadSession<S, U> implements RestBetween<S, U> {
 
     private String sessionCookieName;
     private Boolean required;
-    private StatusCode failStatusCode;
+    private BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse> onHalt;
     private Decrypt<S> decrypt;
 
-    public RestReadSession(String sessionCookieName, Boolean required, StatusCode failStatusCode, Decrypt<S> decrypt) {
+    public RestReadSession(String sessionCookieName, Boolean required, Decrypt<S> decrypt, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse> onHalt) {
         this.sessionCookieName = sessionCookieName;
         this.required = required;
-        this.failStatusCode = failStatusCode;
         this.decrypt = decrypt;
+        this.onHalt = onHalt;
     }
 
     @Override
@@ -50,11 +52,11 @@ public class RestReadSession<S, U> implements RestBetween<S, U> {
         Optional<S> session = Optional.empty();
         Cookie sessionCookie = request.getCookies().get(sessionCookieName);
 
-        if (sessionCookie == null && required) {
+        if (Objects.isNull(sessionCookie) && required) {
             HaltException halt = new HaltException(COOKIE_NOT_PRESENT);
             onHalt(halt, response);
             throw halt;
-        } else if (sessionCookie == null && !required) {
+        } else if (Objects.isNull(sessionCookie) && !required) {
             // ok to proceed to resource. The session is not required.
             return session;
         }
@@ -77,11 +79,14 @@ public class RestReadSession<S, U> implements RestBetween<S, U> {
     }
 
     protected void onHalt(HaltException e, RestBtwnResponse response) {
-        response.setStatusCode(failStatusCode);
-        response.getCookies().remove(sessionCookieName);
+        onHalt.apply(response, e);
     }
 
     public Boolean getRequired() {
         return required;
+    }
+
+    public String getSessionCookieName() {
+        return sessionCookieName;
     }
 }

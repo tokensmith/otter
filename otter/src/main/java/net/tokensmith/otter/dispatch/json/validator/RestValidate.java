@@ -8,6 +8,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class RestValidate implements Validate {
@@ -30,7 +31,7 @@ public class RestValidate implements Validate {
             LOGGER.error(violation.getMessage());
 
             String value = null;
-            if (violation.getInvalidValue() != null) {
+            if (Objects.nonNull(violation.getInvalidValue())) {
                 value = violation.getInvalidValue().toString();
             }
 

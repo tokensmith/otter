@@ -1,6 +1,7 @@
 package net.tokensmith.otter.gateway.entity;
 
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
+import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.controller.entity.StatusCode;
 
 import java.util.Map;
@@ -19,38 +20,26 @@ import java.util.Optional;
  *  - async i/o chuck sizes
  */
 public class Shape {
-    private Boolean secure;
+    public static final String SESSION_COOKIE_NAME = "session";
+    public static final String CSRF_COOKIE_NAME = "csrfToken";
+
     private SymmetricKey signkey;
-    private Optional<String> csrfFailTemplate;
-    private StatusCode csrfFailStatusCode;
     private SymmetricKey encKey;
-    private Optional<String> sessionFailTemplate;
-    private StatusCode sessionFailStatusCode;
     private Map<String, SymmetricKey> rotationSignKeys;
     private Map<String, SymmetricKey> rotationEncKeys;
     private Integer writeChunkSize;
     private Integer readChunkSize;
 
-    public Shape(Boolean secure, SymmetricKey signkey, Optional<String> csrfFailTemplate, StatusCode csrfFailStatusCode, SymmetricKey encKey, Optional<String> sessionFailTemplate, StatusCode sessionFailStatusCode, Map<String, SymmetricKey> rotationSignKeys, Map<String, SymmetricKey> rotationEncKeys, Integer writeChunkSize, Integer readChunkSize) {
-        this.secure = secure;
+    private Map<String, CookieConfig> cookieConfigs;
+
+    public Shape(SymmetricKey signkey, SymmetricKey encKey, Map<String, SymmetricKey> rotationSignKeys, Map<String, SymmetricKey> rotationEncKeys, Integer writeChunkSize, Integer readChunkSize, Map<String, CookieConfig> cookieConfigs) {
         this.signkey = signkey;
-        this.csrfFailStatusCode = csrfFailStatusCode;
-        this.csrfFailTemplate = csrfFailTemplate;
         this.encKey = encKey;
-        this.sessionFailStatusCode = sessionFailStatusCode;
-        this.sessionFailTemplate = sessionFailTemplate;
         this.rotationSignKeys = rotationSignKeys;
         this.rotationEncKeys = rotationEncKeys;
         this.writeChunkSize = writeChunkSize;
         this.readChunkSize = readChunkSize;
-    }
-
-    public Boolean getSecure() {
-        return secure;
-    }
-
-    public void setSecure(Boolean secure) {
-        this.secure = secure;
+        this.cookieConfigs = cookieConfigs;
     }
 
     public SymmetricKey getSignkey() {
@@ -61,44 +50,12 @@ public class Shape {
         this.signkey = signkey;
     }
 
-    public Optional<String> getCsrfFailTemplate() {
-        return csrfFailTemplate;
-    }
-
-    public void setCsrfFailTemplate(Optional<String> csrfFailTemplate) {
-        this.csrfFailTemplate = csrfFailTemplate;
-    }
-
-    public StatusCode getCsrfFailStatusCode() {
-        return csrfFailStatusCode;
-    }
-
-    public void setCsrfFailStatusCode(StatusCode csrfFailStatusCode) {
-        this.csrfFailStatusCode = csrfFailStatusCode;
-    }
-
     public SymmetricKey getEncKey() {
         return encKey;
     }
 
     public void setEncKey(SymmetricKey encKey) {
         this.encKey = encKey;
-    }
-
-    public Optional<String> getSessionFailTemplate() {
-        return sessionFailTemplate;
-    }
-
-    public void setSessionFailTemplate(Optional<String> sessionFailTemplate) {
-        this.sessionFailTemplate = sessionFailTemplate;
-    }
-
-    public StatusCode getSessionFailStatusCode() {
-        return sessionFailStatusCode;
-    }
-
-    public void setSessionFailStatusCode(StatusCode sessionFailStatusCode) {
-        this.sessionFailStatusCode = sessionFailStatusCode;
     }
 
     public Map<String, SymmetricKey> getRotationSignKeys() {
@@ -131,5 +88,21 @@ public class Shape {
 
     public void setReadChunkSize(Integer readChunkSize) {
         this.readChunkSize = readChunkSize;
+    }
+
+    public CookieConfig getSessionCookie() {
+        return cookieConfigs.get(SESSION_COOKIE_NAME);
+    }
+
+    public CookieConfig getCsrfCookie() {
+        return cookieConfigs.get(CSRF_COOKIE_NAME);
+    }
+
+    public Map<String, CookieConfig> getCookieConfigs() {
+        return cookieConfigs;
+    }
+
+    public void setCookieConfigs(Map<String, CookieConfig> cookieConfigs) {
+        this.cookieConfigs = cookieConfigs;
     }
 }

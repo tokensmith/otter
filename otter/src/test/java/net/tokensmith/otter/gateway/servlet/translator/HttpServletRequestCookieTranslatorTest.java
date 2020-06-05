@@ -28,7 +28,7 @@ public class HttpServletRequestCookieTranslatorTest {
         containerCookie.setVersion(0);
         containerCookie.setHttpOnly(true);
 
-        net.tokensmith.otter.controller.entity.Cookie actual = subject.from.apply(containerCookie);
+        net.tokensmith.otter.controller.entity.Cookie actual = subject.from(containerCookie);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getDomain(), is("www.rootservices.org"));
@@ -52,7 +52,7 @@ public class HttpServletRequestCookieTranslatorTest {
         otterCookie.setVersion(0);
         otterCookie.setHttpOnly(true);
 
-        Cookie actual = subject.to.apply(otterCookie);
+        Cookie actual = subject.to(otterCookie);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getDomain(), is("www.rootservices.org"));

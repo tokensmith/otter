@@ -3,44 +3,47 @@ package net.tokensmith.otter.gateway;
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.config.OtterAppFactory;
+import net.tokensmith.otter.gateway.config.TranslatorConfig;
 import org.junit.Before;
 import org.junit.Test;
-import net.tokensmith.otter.controller.Resource;
-import net.tokensmith.otter.controller.entity.StatusCode;
-import net.tokensmith.otter.gateway.entity.ErrorTarget;
 import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.gateway.translator.LocationTranslator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
 
 public class LocationTranslatorFactoryTest {
+    private Shape shape;
     private LocationTranslatorFactory subject;
 
     @Before
     public void setUp() throws Exception {
-        Shape shape = FixtureFactory.makeShape("test-enc-key", "test-sign-key");
+        shape = FixtureFactory.makeShape("test-enc-key", "test-sign-key");
         subject = new LocationTranslatorFactory(shape);
     }
 
     @Test
     public void shouldMakeLocationTranslator() throws Exception {
-        Map<StatusCode, Resource<DummySession, DummyUser>> errorResources = new HashMap<>();
-        Map<StatusCode, ErrorTarget<DummySession, DummyUser>> dispatchErrors = new HashMap<>();
-        Map<StatusCode, ErrorTarget<DummySession, DummyUser>> defaultDispatchErrors = new HashMap<>();
-        LocationTranslator<DummySession, DummyUser> actual = subject.make(
-                DummySession.class,
-                Optional.empty(),
-                Optional.empty(),
-                errorResources,
-                dispatchErrors,
-                defaultDispatchErrors
-        );
+        OtterAppFactory otterAppFactory = new OtterAppFactory();
+
+        TranslatorConfig<DummySession, DummyUser> config = new TranslatorConfig.Builder<DummySession, DummyUser>()
+                .sessionClazz(DummySession.class)
+                .labelBefore(new HashMap<>())
+                .labelAfter(new HashMap<>())
+                .befores(new ArrayList<>())
+                .afters(new ArrayList<>())
+                .errorResources(new HashMap<>())
+                .dispatchErrors(new HashMap<>())
+                .defaultDispatchErrors(new HashMap<>())
+                .onHalts(otterAppFactory.defaultOnHalts(shape))
+                .build();
+
+        LocationTranslator<DummySession, DummyUser> actual = subject.make(config);
 
         assertThat(actual, is(notNullValue()));
     }

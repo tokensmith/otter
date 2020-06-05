@@ -3,6 +3,9 @@ package net.tokensmith.otter.security.csrf.between;
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.config.OtterAppFactory;
+import net.tokensmith.otter.gateway.entity.Shape;
+import net.tokensmith.otter.security.Halt;
 import net.tokensmith.otter.security.csrf.between.html.CheckCSRF;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +21,8 @@ import net.tokensmith.otter.router.exception.HaltException;
 import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
 
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.Map;
+import java.util.function.BiFunction;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -37,8 +41,18 @@ public class CheckCSRFTest {
 
     @Before
     public void setUp() {
+        OtterAppFactory otterAppFactory = new OtterAppFactory();
         MockitoAnnotations.initMocks(this);
-        subject = new CheckCSRF<DummySession, DummyUser>(COOKIE_NAME, FORM_FIELD_NAME, mockDoubleSubmitCSRF, StatusCode.FORBIDDEN, Optional.empty());
+
+        Shape shape = FixtureFactory.makeShape("1234", "5678");
+        Map<Halt, BiFunction<Response<DummySession>, HaltException, Response<DummySession>>> onHalts = otterAppFactory.defaultOnHalts(shape);
+
+        subject = new CheckCSRF<DummySession, DummyUser>(
+            COOKIE_NAME,
+            FORM_FIELD_NAME,
+            mockDoubleSubmitCSRF,
+            onHalts.get(Halt.CSRF)
+        );
     }
 
     @Test
@@ -78,8 +92,7 @@ public class CheckCSRFTest {
         }
 
         assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
-
-        assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
+        assertFalse(response.getCookies().containsKey(COOKIE_NAME));
         assertThat(actual, is(notNullValue()));
         assertThat(actual, instanceOf(CsrfException.class));
 
@@ -101,10 +114,10 @@ public class CheckCSRFTest {
             actual = e;
         }
 
-        assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
         verify(mockDoubleSubmitCSRF, never()).doTokensMatch(anyString(), anyString());
 
         assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
+        assertFalse(response.getCookies().containsKey(COOKIE_NAME));
         assertThat(actual, is(notNullValue()));
         assertThat(actual, instanceOf(CsrfException.class));
     }

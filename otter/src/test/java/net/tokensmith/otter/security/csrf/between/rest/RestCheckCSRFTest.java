@@ -3,13 +3,16 @@ package net.tokensmith.otter.security.csrf.between.rest;
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.config.OtterAppFactory;
 import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.dispatch.entity.RestBtwnRequest;
 import net.tokensmith.otter.dispatch.entity.RestBtwnResponse;
+import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.exception.CsrfException;
 import net.tokensmith.otter.router.exception.HaltException;
+import net.tokensmith.otter.security.Halt;
 import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
+import java.util.function.BiFunction;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -38,11 +42,15 @@ public class RestCheckCSRFTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        OtterAppFactory otterAppFactory = new OtterAppFactory();
+        Shape shape = FixtureFactory.makeShape("1234", "5678");
+        BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse> onHalt =  otterAppFactory.defaultRestOnHalts(shape).get(Halt.CSRF);
+
         subject = new RestCheckCSRF<DummySession, DummyUser>(
             COOKIE_NAME, 
             HDR_NAME,
             mockDoubleSubmitCSRF,
-            StatusCode.FORBIDDEN
+            onHalt
         );
     }
 
@@ -83,8 +91,8 @@ public class RestCheckCSRFTest {
         }
 
         assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
+        assertFalse(response.getCookies().containsKey(COOKIE_NAME));
 
-        assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
         assertThat(actual, is(notNullValue()));
         assertThat(actual, instanceOf(CsrfException.class));
 
@@ -106,10 +114,10 @@ public class RestCheckCSRFTest {
             actual = e;
         }
 
-        assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
         verify(mockDoubleSubmitCSRF, never()).doTokensMatch(anyString(), anyString());
 
         assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
+        assertFalse(response.getCookies().containsKey(COOKIE_NAME));
         assertThat(actual, is(notNullValue()));
         assertThat(actual, instanceOf(CsrfException.class));
     }
@@ -127,6 +135,7 @@ public class RestCheckCSRFTest {
         }
 
         assertThat(response.getStatusCode(), is(StatusCode.FORBIDDEN));
+        assertFalse(response.getCookies().containsKey(COOKIE_NAME));
         assertThat(actual, is(notNullValue()));
         assertThat(actual, instanceOf(CsrfException.class));
 

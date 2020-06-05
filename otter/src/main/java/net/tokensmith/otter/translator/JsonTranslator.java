@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import net.tokensmith.otter.translator.exception.*;
 
 import java.io.*;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,7 +55,7 @@ public class JsonTranslator<T> {
             throw new DeserializationException(DUPLICATE_KEY_GENERIC_MSG, e.getKey(), null, Reason.DUPLICATE_KEY, e);
         } catch (InvalidValueException e) {
             Optional<String> value = Optional.empty();
-            if (e.getValue() != null) {
+            if (Objects.nonNull(e.getValue())) {
                 value = Optional.of(e.getValue());
             }
             throw new DeserializationException(INVALID_VALUE_GENERIC_MSG, e.getKey(), value, Reason.INVALID_VALUE, e);
@@ -89,7 +90,7 @@ public class JsonTranslator<T> {
             String key = e.getPath().get(0).getFieldName();
             String msg = String.format(INVALID_VALUE_MSG, key);
             String value = null;
-            if (e.getValue() != null) {
+            if (Objects.nonNull(e.getValue())) {
                 value = e.getValue().toString();
             }
             throw new InvalidValueException(msg, e, key, value);

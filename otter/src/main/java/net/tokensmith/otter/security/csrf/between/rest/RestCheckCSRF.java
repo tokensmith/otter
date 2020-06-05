@@ -11,19 +11,22 @@ import net.tokensmith.otter.router.exception.CsrfException;
 import net.tokensmith.otter.router.exception.HaltException;
 import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
 
+import java.util.Objects;
+import java.util.function.BiFunction;
+
 
 public class RestCheckCSRF<S, U> implements RestBetween<S, U> {
     private String cookieName;
     private String headerName;
     private DoubleSubmitCSRF doubleSubmitCSRF;
     private static String HALT_MSG = "CSRF failed.";
-    private StatusCode failStatusCode;
+    private BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse> onHalt;
 
-    public RestCheckCSRF(String cookieName, String headerName, DoubleSubmitCSRF doubleSubmitCSRF, StatusCode failStatusCode) {
+    public RestCheckCSRF(String cookieName, String headerName, DoubleSubmitCSRF doubleSubmitCSRF, BiFunction<RestBtwnResponse, HaltException, RestBtwnResponse> onHalt) {
         this.cookieName = cookieName;
         this.headerName = headerName;
         this.doubleSubmitCSRF = doubleSubmitCSRF;
-        this.failStatusCode = failStatusCode;
+        this.onHalt = onHalt;
     }
 
     @Override
@@ -31,7 +34,7 @@ public class RestCheckCSRF<S, U> implements RestBetween<S, U> {
         Boolean ok;
         String headerValue = request.getHeaders().get(headerName);
         Cookie csrfCookie = request.getCookies().get(cookieName);
-        if ( csrfCookie != null && headerValue != null) {
+        if ( Objects.nonNull(csrfCookie) && Objects.nonNull(headerValue)) {
             ok = doubleSubmitCSRF.doTokensMatch(csrfCookie.getValue(), headerValue);
         } else {
             ok = false;
@@ -45,7 +48,7 @@ public class RestCheckCSRF<S, U> implements RestBetween<S, U> {
     }
 
     protected void onHalt(HaltException e, RestBtwnResponse response) {
-        response.setStatusCode(failStatusCode);
+        onHalt.apply(response, e);
     }
 
     public String getCookieName() {
@@ -54,9 +57,5 @@ public class RestCheckCSRF<S, U> implements RestBetween<S, U> {
 
     public String getHeaderName() {
         return headerName;
-    }
-
-    public StatusCode getFailStatusCode() {
-        return failStatusCode;
     }
 }

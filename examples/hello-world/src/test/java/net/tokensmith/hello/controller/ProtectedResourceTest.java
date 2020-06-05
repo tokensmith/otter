@@ -55,7 +55,6 @@ public class ProtectedResourceTest {
             }
         }
         assertThat(actual, is(notNullValue()));
-        // TODO: maybe make sure its a jwe?
     }
 
     @Test

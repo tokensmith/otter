@@ -6,5 +6,5 @@ allprojects {
             options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
         }
     }
-    version = "1.5.3"
+    version = "1.5.4"
 }

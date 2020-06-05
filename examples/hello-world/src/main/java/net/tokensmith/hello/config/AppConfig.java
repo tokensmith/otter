@@ -67,7 +67,6 @@ public class AppConfig implements Configure {
         SymmetricKey signKey = appFactory.signKey();
 
         return new ShapeBuilder()
-                .secure(false)
                 .encKey(encKey)
                 .signkey(signKey)
                 .build();
@@ -90,8 +89,8 @@ public class AppConfig implements Configure {
         Group<TokenSession, User> webSiteGroup = new GroupBuilder<TokenSession, User>()
                 .name(WEB_SITE_GROUP)
                 .sessionClazz(TokenSession.class)
-                .authOptional(new AuthOptBetween())
-                .authRequired(new AuthBetween())
+                .before(Label.AUTH_OPTIONAL, new AuthOptBetween())
+                .before(Label.AUTH_REQUIRED, new AuthBetween())
                 .onError(StatusCode.SERVER_ERROR, serverErrorResource)
                 .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaType)
                 .onDispatchError(StatusCode.NOT_ACCEPTABLE, notAcceptable)
@@ -112,7 +111,7 @@ public class AppConfig implements Configure {
         RestGroup<TokenSession, ApiUser> apiGroupV2 = new RestGroupBuilder<TokenSession, ApiUser>()
                 .name(API_GROUP_V2)
                 .sessionClazz(TokenSession.class)
-                .authRequired(authRestBetween)
+                .before(Label.AUTH_REQUIRED, authRestBetween)
                 .build();
 
         restGroups.add(apiGroupV2);
@@ -139,8 +138,8 @@ public class AppConfig implements Configure {
         RestGroup<DefaultSession, ApiUser> apiGroupV3 = new RestGroupBuilder<DefaultSession, ApiUser>()
                 .name(API_GROUP_V3)
                 .sessionClazz(DefaultSession.class)
-                .authRequired(authV3RestBetween)
-                .authOptional(authV3RestBetween)
+                .before(Label.AUTH_OPTIONAL, authV3RestBetween)
+                .before(Label.AUTH_REQUIRED, authV3RestBetween)
                 .onError(StatusCode.BAD_REQUEST, badRequestResource, BadRequestPayload.class)
                 .onError(StatusCode.SERVER_ERROR, serverErrorResource, ServerErrorPayload.class)
                 .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaTypeTarget)

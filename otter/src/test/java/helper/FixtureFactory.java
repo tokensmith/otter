@@ -17,6 +17,7 @@ import net.tokensmith.jwt.jws.serialization.SecureJwtSerializer;
 import net.tokensmith.jwt.serialization.JwtSerde;
 import net.tokensmith.jwt.serialization.exception.JsonToJwtException;
 import net.tokensmith.jwt.serialization.exception.JwtToJsonException;
+import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.controller.builder.MimeTypeBuilder;
 import net.tokensmith.otter.controller.builder.ResponseBuilder;
 import net.tokensmith.otter.controller.entity.Cookie;
@@ -68,14 +69,17 @@ public class FixtureFactory {
         SymmetricKey signKey = FixtureFactory.signKey(signKeyId);
 
         return new ShapeBuilder()
-                .secure(false)
                 .encKey(encKey)
-                .sessionFailStatusCode(StatusCode.UNAUTHORIZED)
-                .sessionFailTemplate(Optional.empty())
-                .csrfFailStatusCode(StatusCode.FORBIDDEN)
-                .csrfFailTemplate(Optional.empty())
                 .signkey(signKey)
                 .build();
+    }
+
+    public static CookieConfig csrfCookieConfig() {
+        return makeShape("foo", "bar").getCsrfCookie();
+    }
+
+    public static CookieConfig sessionCookieConfig() {
+        return makeShape("foo", "bar").getSessionCookie();
     }
 
     public static Optional<MatchedLocation> makeMatch(String url) {
