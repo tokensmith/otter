@@ -148,14 +148,13 @@ public class DoubleSubmitCSRF {
 
         ByteArrayOutputStream compactJwt = toJwt(challengeToken);
 
-        Cookie csrfCookie = new Cookie();
-        csrfCookie.setSecure(secure);
-        csrfCookie.setName(name);
-        csrfCookie.setMaxAge(maxAge);
-        csrfCookie.setValue(compactJwt.toString());
-        csrfCookie.setHttpOnly(isHttpOnly);
-
-        return csrfCookie;
+        return new Cookie.Builder()
+                .secure(secure)
+                .name(name)
+                .maxAge(maxAge)
+                .value(compactJwt.toString())
+                .httpOnly(isHttpOnly)
+                .build();
     }
 
     public ByteArrayOutputStream toJwt(ChallengeToken challengeToken) throws CsrfException {

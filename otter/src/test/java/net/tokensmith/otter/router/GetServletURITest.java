@@ -10,7 +10,7 @@ import static org.junit.Assert.assertThat;
 
 public class GetServletURITest {
 
-    private static String BASE_URI = "https://rootservices.org";
+    private static String BASE_URI = "https://tokensmith.net";
     private GetServletURI subject;
 
     @Before

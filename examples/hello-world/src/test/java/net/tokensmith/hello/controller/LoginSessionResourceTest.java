@@ -127,7 +127,7 @@ public class LoginSessionResourceTest {
         String formCsrfValue = matcher.group(1);
 
         List<Param> formData = new ArrayList<>();
-        formData.add(new Param("email", "obi-wan@rootservices.org"));
+        formData.add(new Param("email", "obi-wan@tokensmith.net"));
         formData.add(new Param("password", "foo"));
         formData.add(new Param("csrfToken", formCsrfValue));
 
@@ -174,7 +174,7 @@ public class LoginSessionResourceTest {
     @Test
     public void postWhenNoCsrfCookieShouldReturn403() throws Exception {
         List<Param> formData = new ArrayList<>();
-        formData.add(new Param("email", "obi-wan@rootservices.org"));
+        formData.add(new Param("email", "obi-wan@tokensmith.net"));
         formData.add(new Param("password", "foo"));
         formData.add(new Param("csrfToken", "foo"));
 
@@ -217,7 +217,7 @@ public class LoginSessionResourceTest {
         String formCsrfValue = matcher.group(1);
 
         List<Param> formData = new ArrayList<>();
-        formData.add(new Param("email", "obi-wan@rootservices.org"));
+        formData.add(new Param("email", "obi-wan@tokensmith.net"));
         formData.add(new Param("password", "foo"));
         formData.add(new Param("csrfToken", formCsrfValue));
 

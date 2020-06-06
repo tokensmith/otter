@@ -35,7 +35,7 @@ RUN \
   mv gradle-${GRADLE_VERSION} ${GRADLE_HOME} && \
   ln -s ${GRADLE_HOME}/gradle-${GRADLE_VERSION}/bin/gradle /usr/bin/gradle && \
   mkdir -p ${USER_HOME_DIR}/gradle/.gradle && \
-  git clone https://github.com/RootServices/otter.git /build/rootservices/otter
+  git clone https://github.com/tokensmith/otter.git /build/tokensmith/otter
 
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 ENV MAVEN_HOME /usr/share/maven
@@ -46,7 +46,7 @@ VOLUME "$USER_HOME_DIR/gradle/.gradle"
 VOLUME "$USER_HOME_DIR/.m2"
 
 # Define working directory.
-WORKDIR /build/rootservices
+WORKDIR /build/tokensmith
 
 
 # Define default command.

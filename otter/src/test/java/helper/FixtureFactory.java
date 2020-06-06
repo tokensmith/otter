@@ -384,10 +384,10 @@ public class FixtureFactory {
     }
 
     public static Cookie makeCookie(String name) {
-        Cookie cookie = new Cookie();
-        cookie.setName(name);
-        cookie.setValue("test-value");
-        return cookie;
+        return new Cookie.Builder()
+            .name(name)
+            .value("test-value")
+            .build();
     }
 
     public static SymmetricKey signKey(String keyId) {

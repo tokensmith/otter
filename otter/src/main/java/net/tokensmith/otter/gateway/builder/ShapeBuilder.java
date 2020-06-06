@@ -5,6 +5,7 @@ import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.gateway.entity.Shape;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -17,12 +18,7 @@ public class ShapeBuilder {
     private Map<String, SymmetricKey> rotationEncKeys;
     private Integer writeChunkSize;
     private Integer readChunkSize;
-
-
-    private Map<String, CookieConfig> cookieConfigs = Map.ofEntries(
-        entry(Shape.CSRF_COOKIE_NAME, new CookieConfig(Shape.CSRF_COOKIE_NAME, false, -1, true)),
-        entry(Shape.SESSION_COOKIE_NAME, new CookieConfig(Shape.SESSION_COOKIE_NAME, false, -1, true))
-    );
+    private Map<String, CookieConfig> cookieConfigs = new HashMap<>();
 
     public ShapeBuilder signkey(SymmetricKey signKey) {
         this.signKey = signKey;
@@ -70,6 +66,19 @@ public class ShapeBuilder {
     }
 
     public Shape build() {
+
+        // csrf default
+        cookieConfigs.putIfAbsent(
+            Shape.CSRF_COOKIE_NAME,
+            new CookieConfig(Shape.CSRF_COOKIE_NAME, false, -1, true)
+        );
+
+        // session default
+        cookieConfigs.putIfAbsent(
+            Shape.SESSION_COOKIE_NAME,
+            new CookieConfig(Shape.SESSION_COOKIE_NAME, false, -1, true)
+        );
+
         return new Shape(
             signKey,
             encKey,
