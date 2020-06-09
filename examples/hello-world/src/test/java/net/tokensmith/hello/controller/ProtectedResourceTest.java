@@ -77,7 +77,7 @@ public class ProtectedResourceTest {
     public void postShouldReturn200() throws Exception {
         Cookie sessionCookie = FixtureFactory.sessionCookie();
         List<Param> formData = new ArrayList<>();
-        formData.add(new Param("email", "obi-wan@rootservices.org"));
+        formData.add(new Param("email", "obi-wan@tokensmith.net"));
         formData.add(new Param("password", "foo"));
 
         AsyncHttpClient httpClient = IntegrationTestSuite.getHttpClient();
@@ -98,7 +98,7 @@ public class ProtectedResourceTest {
     @Test
     public void postWhenNoSessionShouldReturn403() throws Exception {
         List<Param> formData = new ArrayList<>();
-        formData.add(new Param("email", "obi-wan@rootservices.org"));
+        formData.add(new Param("email", "obi-wan@tokensmith.net"));
 
         AsyncHttpClient httpClient = IntegrationTestSuite.getHttpClient();
 

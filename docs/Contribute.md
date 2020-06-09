@@ -11,7 +11,7 @@
  - Please write unit and integration tests.
 
 ## Say Hello
- - otter@rootservices.org
+ - otter@tokensmith.net
 
 ## How to release.
 ```bash

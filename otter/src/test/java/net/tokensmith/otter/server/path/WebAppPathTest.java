@@ -37,24 +37,24 @@ public class WebAppPathTest {
 
     @Test
     public void fromClassUriWhenMultBuildDirsShouldReturnPathToWebApp() throws Exception {
-        URI classPath = new URI("file:/home/travis/build/RootServices/otter/build/classes/java/main/");
+        URI classPath = new URI("file:/home/travis/build/tokensmith/otter/build/classes/java/main/");
 
         URI actual = subject.fromClassURI(classPath);
         String actualPath = actual.getPath();
 
-        String expected = "/home/travis/build/RootServices/otter/src/main/webapp";
+        String expected = "/home/travis/build/tokensmith/otter/src/main/webapp";
         String errorMsg = actualPath + " does not match " + expected;
         assertThat(errorMsg, actualPath, is(expected));
     }
 
     @Test
     public void fromClassUriWithCustomLocationWhenMultBuildDirsShouldReturnPathToWebApp() throws Exception {
-        URI classPath = new URI("file:/home/travis/build/RootServices/otter/build/classes/java/main/");
+        URI classPath = new URI("file:/home/travis/build/tokensmith/otter/build/classes/java/main/");
 
         URI actual = subject.fromClassURI(classPath, "/integration/app/webapp");
         String actualPath = actual.getPath();
 
-        String expected = "/home/travis/build/RootServices/otter/integration/app/webapp";
+        String expected = "/home/travis/build/tokensmith/otter/integration/app/webapp";
         String errorMsg = actualPath + " does not match " + expected;
         assertThat(errorMsg, actualPath, is(expected));
     }

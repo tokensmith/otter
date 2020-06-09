@@ -93,18 +93,18 @@ publishing {
                 name = 'otter'
                 packaging = 'jar'
                 description = 'Micro web framework for servlet api 4.0'
-                url = 'https://github.com/RootServices/otter'
+                url = 'https://github.com/tokensmith/otter'
 
                 scm {
-                    connection = 'git@github.com:RootServices/otter.git'
-                    developerConnection = 'git@github.com:RootServices/otter.git'
-                    url = 'https://github.com/RootServices/otter'
+                    connection = 'git@github.com:tokensmith/otter.git'
+                    developerConnection = 'git@github.com:tokensmith/otter.git'
+                    url = 'https://github.com/tokensmith/otter'
                 }
 
                 licenses {
                     license {
                         name = 'The MIT License (MIT)'
-                        url = 'https://github.com/RootServices/otter/blob/development/LICENSE'
+                        url = 'https://github.com/tokensmith/otter/blob/development/LICENSE'
                     }
                 }
 

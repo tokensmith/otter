@@ -37,7 +37,7 @@
 
 ### Scaffolding
 
-Below is one approach to a project layout. Which can be observed in the [hello world application](https://github.com/RootServices/otter/tree/development/examples/hello-world).
+Below is one approach to a project layout. Which can be observed in the [hello world application](https://github.com/tokensmith/otter/tree/development/examples/hello-world).
 ```bash
     project/
         src/
@@ -64,16 +64,16 @@ Below is one approach to a project layout. Which can be observed in the [hello w
 
 ### Fundamentals
 #### Resource
-A [Resource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/controller/Resource.java) handles an http request. it's typically used to accept `text/html`, however, It can accept any `Content-Type`.
+A [Resource](https://github.com/tokensmith/otter/blob/development/otter/src/main/java/net/tokensmith/otter/controller/Resource.java) handles an http request. it's typically used to accept `text/html`, however, It can accept any `Content-Type`.
 
 #### RestResource
-A [RestResource](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/controller/RestResource.java) is designed to accept and reply `application/json`. Sorry, there is no support for `application/xml`.
+A [RestResource](https://github.com/tokensmith/otter/blob/development/otter/src/main/java/net/tokensmith/otter/controller/RestResource.java) is designed to accept and reply `application/json`. Sorry, there is no support for `application/xml`.
 
 #### Between
-A [Between](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/router/entity/between/Between.java) allows a rule to be executed before a request reaches a Resource or after a Resource executes. Also referred to as a before and a after.
+A [Between](https://github.com/tokensmith/otter/blob/development/otter/src/main/java/net/tokensmith/otter/router/entity/between/Between.java) allows a rule to be executed before a request reaches a Resource or after a Resource executes. Also referred to as a before and a after.
 
 #### Target
-A [Target](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/gateway/entity/Target.java) instructs otter which `Resource` to use for a given url and http methods. 
+A [Target](https://github.com/tokensmith/otter/blob/development/otter/src/main/java/net/tokensmith/otter/gateway/entity/Target.java) instructs otter which `Resource` to use for a given url and http methods. 
 
 ```java
     Target<TokenSession, User> hello = new TargetBuilder<TokenSession, User>()
@@ -85,7 +85,7 @@ A [Target](https://github.com/RootServices/otter/blob/development/otter/src/main
 ```
 
 #### Group
-A [Group](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/gateway/entity/Group.java) allows sharing betweens and error handling with `Targets`.
+A [Group](https://github.com/tokensmith/otter/blob/development/otter/src/main/java/net/tokensmith/otter/gateway/entity/Group.java) allows sharing betweens and error handling with `Targets`.
 
 ```java
     var serverErrorResource = new ServerErrorResource();
@@ -110,11 +110,11 @@ To share a `Group's` feature with a `Target` set the `.groupName(..)` ot the `na
 All `Targets` must relate to a `Group`.
 
 #### RestBetween
-A [RestBetween](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/router/entity/between/RestBetween.java) allows a rule to be executed before a request reaches a RestResource or after a RestResource executes. Also referred to as a before and a after.
+A [RestBetween](https://github.com/tokensmith/otter/blob/development/otter/src/main/java/net/tokensmith/otter/router/entity/between/RestBetween.java) allows a rule to be executed before a request reaches a RestResource or after a RestResource executes. Also referred to as a before and a after.
 
 #### RestTarget
 
-A [RestTarget](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/gateway/entity/rest/RestTarget.java) instructs otter which `RestResource` to use for a given url and http methods.
+A [RestTarget](https://github.com/tokensmith/otter/blob/development/otter/src/main/java/net/tokensmith/otter/gateway/entity/rest/RestTarget.java) instructs otter which `RestResource` to use for a given url and http methods.
 
 ```java
     var helloRestResourceV3 = new HelloRestResource();
@@ -132,7 +132,7 @@ A [RestTarget](https://github.com/RootServices/otter/blob/development/otter/src/
 ```
 
 #### RestGroup
-A [RestGroup](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/gateway/entity/rest/RestGroup.java) allows sharing betweens and error handling with `RestTargets`.
+A [RestGroup](https://github.com/tokensmith/otter/blob/development/otter/src/main/java/net/tokensmith/otter/gateway/entity/rest/RestGroup.java) allows sharing betweens and error handling with `RestTargets`.
 
 ```java
     BadRequestResource badRequestResource = new BadRequestResource();
@@ -216,7 +216,7 @@ Session don'ts:
  - Do not put data into the session that may become stale, such as RBAC.
    
 Session implementations:
- - Must extend [DefaultSession](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/controller/entity/DefaultSession.java)
+ - Must extend [DefaultSession](https://github.com/tokensmith/otter/blob/development/otter/src/main/java/net/tokensmith/otter/controller/entity/DefaultSession.java)
  - Must have a copy constructor.
 
 **Why JWE?**
@@ -298,7 +298,7 @@ It would then be used instead of the default for all the restTargets in that res
 #### User
 
 User implementations:
- - Must extend [DefaultUser](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/controller/entity/DefaultUser.java)
+ - Must extend [DefaultUser](https://github.com/tokensmith/otter/blob/development/otter/src/main/java/net/tokensmith/otter/controller/entity/DefaultUser.java)
 
 #### Authentication Between Implementations
 ##### Required Authentication Between
@@ -643,7 +643,7 @@ This allows applications to have many ways to react to a not found url based on 
 ### Configuration
 
 #### Configure
-Configuring otter is done by implementing [Configure](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/gateway/Configure.java). 
+Configuring otter is done by implementing [Configure](https://github.com/tokensmith/otter/blob/development/otter/src/main/java/net/tokensmith/otter/gateway/Configure.java). 
 The implementation instructs otter how to:
  - Set cookie configuration for CSRF, Session, and other cookies
  - Set CSRF signature key
@@ -659,10 +659,10 @@ The implementation instructs otter how to:
  - Group RestResources together to use the same User
  - Handle Errors
 
-Have a look a the hello world application for an [example](https://github.com/RootServices/otter/blob/development/examples/hello-world/src/main/java/net/tokensmith/hello/config/AppConfig.java).
+Have a look a the hello world application for an [example](https://github.com/tokensmith/otter/blob/development/examples/hello-world/src/main/java/net/tokensmith/hello/config/AppConfig.java).
 
 #### Entry Servlet
-An otter application needs to extend [OtterEntryServlet](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/servlet/OtterEntryServlet.java). This is needed to route requests from the servlet conatiner
+An otter application needs to extend [OtterEntryServlet](https://github.com/tokensmith/otter/blob/development/otter/src/main/java/net/tokensmith/otter/servlet/OtterEntryServlet.java). This is needed to route requests from the servlet conatiner
 to otter. 
 
 It must override the following:
@@ -675,19 +675,19 @@ It must override the following:
 
 `makeConfigure()` must return your `configure` implementation.
 
-Have a look a the hello world application for an [example](https://github.com/RootServices/otter/blob/development/examples/hello-world/src/main/java/net/tokensmith/hello/config/AppEntryServlet.java).
+Have a look a the hello world application for an [example](https://github.com/tokensmith/otter/blob/development/examples/hello-world/src/main/java/net/tokensmith/hello/config/AppEntryServlet.java).
 
 #### Main Method
 
-Otter runs in a Jetty powered [embedded servlet container](https://github.com/RootServices/otter/blob/development/examples/hello-world/src/main/java/net/tokensmith/hello/server/HelloServer.java).
+Otter runs in a Jetty powered [embedded servlet container](https://github.com/tokensmith/otter/blob/development/examples/hello-world/src/main/java/net/tokensmith/hello/server/HelloServer.java).
 The port, document root, and the request log are all configurable.
 
-Have a look a the hello world application for an [example](https://github.com/RootServices/otter/blob/development/examples/hello-world/src/main/java/net/tokensmith/hello/server/HelloServer.java)
+Have a look a the hello world application for an [example](https://github.com/tokensmith/otter/blob/development/examples/hello-world/src/main/java/net/tokensmith/hello/server/HelloServer.java)
 
 #### Compression
 
 Otter is able to compress the response body with `gzip`. To enable it then add the `MimeTypes` to compress in the [Server 
-implementation](https://github.com/RootServices/otter/blob/development/examples/hello-world/src/main/java/net/tokensmith/hello/server/HelloServer.java#L19-L22).
+implementation](https://github.com/tokensmith/otter/blob/development/examples/hello-world/src/main/java/net/tokensmith/hello/server/HelloServer.java#L19-L22).
 
 With the hello world project:
 ```bash
@@ -721,13 +721,13 @@ In the configure implementation:
     gateway.add(login);
 ```
 
-In the [Login Resource](https://github.com/RootServices/otter/blob/development/examples/hello-world/src/main/java/net/tokensmith/hello/controller/html/LoginResource.java#L20) 
-set the csrf challenge token to the appropriate ivar in the [login presenter](https://github.com/RootServices/otter/blob/development/examples/hello-world/src/main/java/net/tokensmith/hello/controller/html/presenter/LoginPresenter.java).
+In the [Login Resource](https://github.com/tokensmith/otter/blob/development/examples/hello-world/src/main/java/net/tokensmith/hello/controller/html/LoginResource.java#L20) 
+set the csrf challenge token to the appropriate ivar in the [login presenter](https://github.com/tokensmith/otter/blob/development/examples/hello-world/src/main/java/net/tokensmith/hello/controller/html/presenter/LoginPresenter.java).
 ```java
     LoginPresenter presenter = new LoginPresenter("", request.getCsrfChallenge().get());
 ```
 
-Render the [CSRF challenge token](https://github.com/RootServices/otter/blob/development/examples/hello-world/src/main/webapp/WEB-INF/jsp/login.jsp#L12) 
+Render the [CSRF challenge token](https://github.com/tokensmith/otter/blob/development/examples/hello-world/src/main/webapp/WEB-INF/jsp/login.jsp#L12) 
 on the page.
 ```java
     <input id="csrfToken" type="hidden" name="csrfToken" value="${presenter.getCsrfChallengeToken()}" / >
@@ -829,6 +829,6 @@ It would then be used instead of the default for all the restTargets in that res
 
 ### Static Assets
 
-Files that are placed in, `src/main/webapp/public` are public as long as they pass the entry filter [regex](https://github.com/RootServices/otter/blob/development/otter/src/main/java/net/tokensmith/otter/servlet/EntryFilter.java#L18).
+Files that are placed in, `src/main/webapp/public` are public as long as they pass the entry filter [regex](https://github.com/tokensmith/otter/blob/development/otter/src/main/java/net/tokensmith/otter/servlet/EntryFilter.java#L18).
 
 For example, `src/main/webapp/public/assets/js/jquery-3.3.1.min.js` can be retrieved from, `assets/js/jquery-3.3.1.min.js`

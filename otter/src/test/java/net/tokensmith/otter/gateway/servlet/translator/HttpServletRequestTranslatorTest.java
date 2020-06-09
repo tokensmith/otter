@@ -270,9 +270,11 @@ public class HttpServletRequestTranslatorTest {
         cookies[0] = new Cookie("session", "test-value");
         cookies[1] = new Cookie("session", "test-value");
 
-        net.tokensmith.otter.controller.entity.Cookie otterCookie = new net.tokensmith.otter.controller.entity.Cookie();
-        otterCookie.setName("session");
-        otterCookie.setValue("test-value");
+        var otterCookie = new net.tokensmith.otter.controller.entity.Cookie.Builder()
+                .name("session")
+                .value("test-value")
+                .build();
+
         when(mockHttpServletCookieTranslator.from(any(Cookie.class))).thenReturn(otterCookie);
 
         Map<String, net.tokensmith.otter.controller.entity.Cookie> actual = subject.from(cookies);
@@ -287,10 +289,11 @@ public class HttpServletRequestTranslatorTest {
         cookie.setHttpOnly(false);
         cookies[0] = cookie;
 
-        net.tokensmith.otter.controller.entity.Cookie otterCookie = new net.tokensmith.otter.controller.entity.Cookie();
-        otterCookie.setName("session");
-        otterCookie.setValue("test-value");
-        otterCookie.setHttpOnly(false);
+        var otterCookie = new net.tokensmith.otter.controller.entity.Cookie.Builder()
+                .name("session")
+                .value("test-value")
+                .httpOnly(false)
+                .build();
 
         when(mockHttpServletCookieTranslator.from(any(Cookie.class))).thenReturn(otterCookie);
 
