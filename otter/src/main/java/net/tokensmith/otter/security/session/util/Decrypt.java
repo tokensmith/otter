@@ -3,6 +3,7 @@ package net.tokensmith.otter.security.session.util;
 import com.fasterxml.jackson.databind.ObjectReader;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
+import net.tokensmith.jwt.entity.jwt.header.Header;
 import net.tokensmith.jwt.exception.InvalidJWT;
 import net.tokensmith.jwt.jwe.entity.JWE;
 import net.tokensmith.jwt.jwe.factory.exception.CipherException;
@@ -44,7 +45,7 @@ public class Decrypt<S> {
 
         // extract the header to figure out what key to use as cek.
         HeaderDeserializer headerDeserializer = jwtAppFactory.headerDeserializer();
-        net.tokensmith.jwt.entity.jwt.header.Header sessionHeader;
+        Header sessionHeader;
         try {
             sessionHeader = headerDeserializer.toHeader(encryptedSession);
         } catch (JsonToJwtException e) {
