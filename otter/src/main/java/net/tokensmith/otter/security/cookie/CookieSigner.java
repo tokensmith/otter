@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class CookieSigner implements CookieSecurity {
@@ -41,7 +42,6 @@ public class CookieSigner implements CookieSecurity {
     @Override
     public <T extends Claims> Cookie make(CookieConfig cookieConfig, T claims) throws CookieJwtException {
 
-        // what should the fall back be if its not there?
         String preferredKeyId = preferredKeys.get(cookieConfig.getName());
         SymmetricKey preferredKey = getKey(preferredKeyId);
 
@@ -84,7 +84,18 @@ public class CookieSigner implements CookieSecurity {
 
         if (jwt.getHeader().getKeyId().isPresent()) {
             SymmetricKey signKey = getKey(jwt.getHeader().getKeyId().get());
-            // 203: NPE
+
+            // protect NPE
+            if (Objects.isNull(signKey)) {
+                LOGGER.debug("do not have key id: {}", jwt.getHeader().getKeyId().get());
+                ReadError<T> error = new ReadError.Builder<T>()
+                        .claims(Optional.of(jwt.getClaims()))
+                        .cookieError(CookieError.SIGNATURE_ERROR)
+                        .build();
+                readEither.right(error);
+                return readEither.build();
+            }
+
             Boolean signatureValid;
             try {
                 signatureValid = verifySignature(jwt, signKey);

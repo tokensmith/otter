@@ -33,7 +33,7 @@ public class CookieSignerTest {
     private JwtAppFactory jwtAppFactory;
     private Map<String, SymmetricKey> keys;
     private Map<String, String> cookieToKey;
-    private CookieSecurity cookieSigner;
+    private CookieSecurity subject;
 
     @Before
     public void setUp() throws Exception {
@@ -53,7 +53,7 @@ public class CookieSignerTest {
 
         jwtAppFactory = new JwtAppFactory();
 
-        cookieSigner = new CookieSigner(jwtAppFactory, keys, cookieToKey);
+        subject = new CookieSigner(jwtAppFactory, keys, cookieToKey);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class CookieSignerTest {
                 .name("csrf")
                 .build();
 
-        Cookie actual = cookieSigner.make(config, claims);
+        Cookie actual = subject.make(config, claims);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMaxAge(), is(-1));
@@ -114,14 +114,14 @@ public class CookieSignerTest {
 
         assertTrue("Signature of jwt is not correct", verifySignature.run(actualJwt));
     }
-
+    
     @Test
     public void readShouldPass() {
         String jwt = FixtureFactory.compactJwtForCSRF(
             keys.get("123"), "challenge-token"
         );
 
-        ReadEither<CsrfClaims> actual = cookieSigner.read(jwt, CsrfClaims.class);
+        ReadEither<CsrfClaims> actual = subject.read(jwt, CsrfClaims.class);
 
         assertFalse(actual.getRight().isPresent());
         assertTrue(actual.getLeft().isPresent());
@@ -134,7 +134,7 @@ public class CookieSignerTest {
     public void readWhenNotAJwtShouldFail() {
         String jwt = "not-a-jwt";
 
-        ReadEither<CsrfClaims> actual = cookieSigner.read(jwt, CsrfClaims.class);
+        ReadEither<CsrfClaims> actual = subject.read(jwt, CsrfClaims.class);
 
         assertTrue(actual.getRight().isPresent());
         assertFalse(actual.getLeft().isPresent());
@@ -152,7 +152,7 @@ public class CookieSignerTest {
                 key, "challenge-token"
         );
 
-        ReadEither<CsrfClaims> actual = cookieSigner.read(jwt, CsrfClaims.class);
+        ReadEither<CsrfClaims> actual = subject.read(jwt, CsrfClaims.class);
 
         assertTrue(actual.getRight().isPresent());
         assertFalse(actual.getLeft().isPresent());
@@ -160,6 +160,28 @@ public class CookieSignerTest {
         ReadError<CsrfClaims> actualError = actual.getRight().get();
         assertThat(actualError.getCookieError(), is(CookieError.SIGNATURE_INVALID));
 
+        assertTrue(actualError.getClaims().isPresent());
+        CsrfClaims actualClaims = actualError.getClaims().get();
+        assertThat(actualClaims.getChallengeToken(), is("challenge-token"));
+        assertThat(actualError.getCause(), is(nullValue()));
+    }
+
+    @Test
+    public void readWhenKeyNotFoundShouldBeSignatureError() {
+
+        SymmetricKey notFoundKey = FixtureFactory.signKey("not-found");
+        // make the jwt with a good key that was not passed into CookieSigner
+        String jwt = FixtureFactory.compactJwtForCSRF(
+                notFoundKey, "challenge-token"
+        );
+
+        ReadEither<CsrfClaims> actual = subject.read(jwt, CsrfClaims.class);
+
+        assertTrue(actual.getRight().isPresent());
+        assertFalse(actual.getLeft().isPresent());
+
+        ReadError<CsrfClaims> actualError = actual.getRight().get();
+        assertThat(actualError.getCookieError(), is(CookieError.SIGNATURE_ERROR));
         assertTrue(actualError.getClaims().isPresent());
         CsrfClaims actualClaims = actualError.getClaims().get();
         assertThat(actualClaims.getChallengeToken(), is("challenge-token"));
@@ -196,7 +218,7 @@ public class CookieSignerTest {
     public void readWhenJwtHasNoKeyIdShouldBeNoKeyId() {
         String jwt = FixtureFactory.compactUnSecureJwtForCSRF("challenge-toke");
 
-        ReadEither<CsrfClaims> actual = cookieSigner.read(jwt, CsrfClaims.class);
+        ReadEither<CsrfClaims> actual = subject.read(jwt, CsrfClaims.class);
 
         assertTrue(actual.getRight().isPresent());
         assertFalse(actual.getLeft().isPresent());
