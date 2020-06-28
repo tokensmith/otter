@@ -90,11 +90,11 @@ public class LoginSessionResourceTest {
         JwtAppFactory jwtAppFactory = new JwtAppFactory();
         JwtSerde jwtSerializer = jwtAppFactory.jwtSerde();
 
-        JsonWebToken cookieJwt = jwtSerializer.stringToJwt(csrfCookie.value(), CsrfClaims.class);
-        CsrfClaims cookieClaims = (CsrfClaims) cookieJwt.getClaims();
+        JsonWebToken<CsrfClaims> cookieJwt = jwtSerializer.stringToJwt(csrfCookie.value(), CsrfClaims.class);
+        CsrfClaims cookieClaims = cookieJwt.getClaims();
 
-        JsonWebToken formJwt = jwtSerializer.stringToJwt(formCsrfValue, CsrfClaims.class);
-        CsrfClaims formClaims = (CsrfClaims) formJwt.getClaims();
+        JsonWebToken<CsrfClaims> formJwt = jwtSerializer.stringToJwt(formCsrfValue, CsrfClaims.class);
+        CsrfClaims formClaims = formJwt.getClaims();
 
         assertThat(cookieClaims.getChallengeToken(), is(formClaims.getChallengeToken()));
         assertThat(cookieClaims.getNoise(), is(not(formClaims.getNoise())));

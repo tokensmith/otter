@@ -68,14 +68,14 @@ public class PrepareCSRF<S, U> implements Between<S, U> {
             }
         } else {
             LOGGER.debug("CSRF Cookie exists - adding it to it's token to request");
-            JsonWebToken csrfJwt = null;
+            JsonWebToken<CsrfClaims> csrfJwt = null;
             try {
                 csrfJwt = doubleSubmitCSRF.csrfToJwt(response.getCookies().get(cookieConfig.getName()).getValue());
             } catch (CsrfException e) {
                 LOGGER.error(e.getMessage(), e);
             }
             String formNoise = doubleSubmitCSRF.makeChallengeToken();
-            CsrfClaims claims = (CsrfClaims) csrfJwt.getClaims();
+            CsrfClaims claims = csrfJwt.getClaims();
             ChallengeToken formChallengeToken = new ChallengeToken(claims.getChallengeToken(), formNoise);
             ByteArrayOutputStream formValue = null;
             try {
