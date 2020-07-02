@@ -22,7 +22,6 @@ import net.tokensmith.otter.security.csrf.exception.CsrfException;
 
 import java.io.ByteArrayOutputStream;
 
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -83,7 +82,7 @@ public class PrepareCSRFTest {
         CsrfClaims csrfClaims = new CsrfClaims();
         csrfClaims.setChallengeToken(challengeToken);
         csrfClaims.setNoise("cookie-noise");
-        JsonWebToken csrfJwt = new JsonWebToken();
+        JsonWebToken<CsrfClaims> csrfJwt = new JsonWebToken<CsrfClaims>();
         csrfJwt.setClaims(csrfClaims);
 
         // create the value to assign to the request.

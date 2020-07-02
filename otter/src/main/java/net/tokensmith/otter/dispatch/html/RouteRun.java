@@ -57,10 +57,10 @@ public class RouteRun<S extends DefaultSession, U extends DefaultUser> implement
 
         ResponseEither<S, U> runResponseEither = executeResourceMethod(route, request, response);
 
-        if (runResponseEither.getRight().isPresent()) {
-            answer = handleErrors(runResponseEither.getRight().get(), ask, answer);
+        if (runResponseEither.getLeft().isPresent()) {
+            answer = handleErrors(runResponseEither.getLeft().get(), ask, answer);
         } else {
-            answer = answerTranslator.to(runResponseEither.getLeft().get());
+            answer = answerTranslator.to(runResponseEither.getRight().get());
         }
 
         return answer;
@@ -157,8 +157,8 @@ public class RouteRun<S extends DefaultSession, U extends DefaultUser> implement
             .build();
 
 
-        responseEither.setRight(Objects.isNull(error.getCause()) ? Optional.empty() : Optional.of(error));
-        responseEither.setLeft(Objects.isNull(error.getCause()) ? Optional.of(response) : Optional.empty());
+        responseEither.setLeft(Objects.isNull(error.getCause()) ? Optional.empty() : Optional.of(error));
+        responseEither.setRight(Objects.isNull(error.getCause()) ? Optional.of(response) : Optional.empty());
 
         return responseEither;
     }

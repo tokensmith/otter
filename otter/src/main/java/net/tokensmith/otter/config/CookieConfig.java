@@ -1,6 +1,7 @@
 package net.tokensmith.otter.config;
 
 public class CookieConfig {
+    public static final Integer SESSION = -1;
     private String name;
     private Boolean isSecure;
     private Integer age;
