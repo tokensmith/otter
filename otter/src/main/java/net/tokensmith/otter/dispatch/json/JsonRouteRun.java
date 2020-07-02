@@ -113,16 +113,16 @@ public class JsonRouteRun<S extends DefaultSession, U extends DefaultUser, P> im
 
         RestReponseEither<S, U, P> runResponse = executeResourceMethod(restRoute, btwnRequest, btwnResponse, entity);
 
-        if (runResponse.getRight().isPresent()) {
-            answer = handleErrors(runResponse.getRight().get(), ask, answer);
-        } else if (runResponse.getLeft().isPresent() && runResponse.getLeft().get().getRawPayload().isPresent()) {
+        if (runResponse.getLeft().isPresent()) {
+            answer = handleErrors(runResponse.getLeft().get(), ask, answer);
+        } else if (runResponse.getRight().isPresent() && runResponse.getRight().get().getRawPayload().isPresent()) {
             LOGGER.debug("using raw payload");
-            answer = restResponseTranslator.from(answer, runResponse.getLeft().get());
-            answer.setPayload(runResponse.getLeft().get().getRawPayload());
+            answer = restResponseTranslator.from(answer, runResponse.getRight().get());
+            answer.setPayload(runResponse.getRight().get().getRawPayload());
         } else {
             LOGGER.debug("using typed payload");
-            answer = restResponseTranslator.from(answer, runResponse.getLeft().get());
-            Optional<byte[]> out = payloadToBytes(runResponse.getLeft().get().getPayload());
+            answer = restResponseTranslator.from(answer, runResponse.getRight().get());
+            Optional<byte[]> out = payloadToBytes(runResponse.getRight().get().getPayload());
             answer.setPayload(out);
         }
 
@@ -272,8 +272,8 @@ public class JsonRouteRun<S extends DefaultSession, U extends DefaultUser, P> im
                 .response(response)
                 .build();
 
-        responseEither.setRight(Objects.isNull(error.getCause()) ? Optional.empty() : Optional.of(error));
-        responseEither.setLeft(Objects.isNull(error.getCause()) ? Optional.of(response) : Optional.empty());
+        responseEither.setLeft(Objects.isNull(error.getCause()) ? Optional.empty() : Optional.of(error));
+        responseEither.setRight(Objects.isNull(error.getCause()) ? Optional.of(response) : Optional.empty());
 
         return responseEither;
     }

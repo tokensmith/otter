@@ -78,7 +78,7 @@ public class CookieSigner implements CookieSecurity {
                 .cause(e)
                 .cookieError(CookieError.JWT_INVALID)
                 .build();
-            readEither.right(error);
+            readEither.left(error);
             return readEither.build();
         }
 
@@ -92,7 +92,7 @@ public class CookieSigner implements CookieSecurity {
                         .claims(Optional.of(jwt.getClaims()))
                         .cookieError(CookieError.SIGNATURE_ERROR)
                         .build();
-                readEither.right(error);
+                readEither.left(error);
                 return readEither.build();
             }
 
@@ -106,7 +106,7 @@ public class CookieSigner implements CookieSecurity {
                     .cookieError(CookieError.SIGNATURE_ERROR)
                     .cause(e)
                     .build();
-                readEither.right(error);
+                readEither.left(error);
                 return readEither.build();
             }
 
@@ -116,7 +116,7 @@ public class CookieSigner implements CookieSecurity {
                     .claims(Optional.of(jwt.getClaims()))
                     .cookieError(CookieError.SIGNATURE_INVALID)
                     .build();
-                readEither.right(error);
+                readEither.left(error);
                 return readEither.build();
             }
         } else {
@@ -124,11 +124,11 @@ public class CookieSigner implements CookieSecurity {
                 .claims(Optional.of(jwt.getClaims()))
                 .cookieError(CookieError.NO_KEY_ID)
                 .build();
-            readEither.right(error);
+            readEither.left(error);
             return readEither.build();
         }
 
-        readEither.left(jwt.getClaims());
+        readEither.right(jwt.getClaims());
         return readEither.build();
     }
 

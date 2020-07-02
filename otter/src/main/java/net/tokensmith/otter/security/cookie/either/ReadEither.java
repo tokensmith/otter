@@ -6,40 +6,40 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class ReadEither<T extends Claims> {
-    private Optional<T> left;
-    private Optional<ReadError<T>> right;
+    private Optional<ReadError<T>> left;
+    private Optional<T> right;
 
-    public ReadEither(Optional<T> left, Optional<ReadError<T>> right) {
+    public ReadEither(Optional<ReadError<T>> left, Optional<T> right) {
         this.left = left;
         this.right = right;
     }
 
-    public Optional<T> getLeft() {
-        return left;
-    }
-
-    public Optional<ReadError<T>> getRight() {
+    public Optional<T> getRight() {
         return right;
     }
 
-    public static class Builder<T extends Claims> {
-        private T left;
-        private ReadError<T> right;
+    public Optional<ReadError<T>> getLeft() {
+        return left;
+    }
 
-        public Builder<T> left(T left) {
+    public static class Builder<T extends Claims> {
+        private T right;
+        private ReadError<T> left;
+
+        public Builder<T> left(ReadError<T> left) {
             this.left = left;
             return this;
         }
 
-        public Builder<T> right(ReadError<T> right) {
+        public Builder<T> right(T right) {
             this.right = right;
             return this;
         }
 
         public ReadEither<T> build() {
-            Optional<T> left = Objects.isNull(this.left) ? Optional.empty() : Optional.of(this.left);
-            Optional<ReadError<T>> right = Objects.isNull(this.right) ? Optional.empty() : Optional.of(this.right);
-            return new ReadEither<T>(left, right);
+            Optional<T> right = Objects.isNull(this.right) ? Optional.empty() : Optional.of(this.right);
+            Optional<ReadError<T>> left = Objects.isNull(this.left) ? Optional.empty() : Optional.of(this.left);
+            return new ReadEither<>(left, right);
         }
     }
 }

@@ -123,10 +123,10 @@ public class CookieSignerTest {
 
         ReadEither<CsrfClaims> actual = subject.read(jwt, CsrfClaims.class);
 
-        assertFalse(actual.getRight().isPresent());
-        assertTrue(actual.getLeft().isPresent());
+        assertFalse(actual.getLeft().isPresent());
+        assertTrue(actual.getRight().isPresent());
 
-        CsrfClaims actualClaims = actual.getLeft().get();
+        CsrfClaims actualClaims = actual.getRight().get();
         assertThat(actualClaims.getChallengeToken(), is("challenge-token"));
     }
 
@@ -136,10 +136,10 @@ public class CookieSignerTest {
 
         ReadEither<CsrfClaims> actual = subject.read(jwt, CsrfClaims.class);
 
-        assertTrue(actual.getRight().isPresent());
-        assertFalse(actual.getLeft().isPresent());
+        assertTrue(actual.getLeft().isPresent());
+        assertFalse(actual.getRight().isPresent());
 
-        ReadError<CsrfClaims> actualError = actual.getRight().get();
+        ReadError<CsrfClaims> actualError = actual.getLeft().get();
         assertThat(actualError.getCookieError(), is(CookieError.JWT_INVALID));
         assertFalse(actualError.getClaims().isPresent());
         assertThat(actualError.getCause(), is(instanceOf(CookieJwtException.class)));
@@ -154,10 +154,10 @@ public class CookieSignerTest {
 
         ReadEither<CsrfClaims> actual = subject.read(jwt, CsrfClaims.class);
 
-        assertTrue(actual.getRight().isPresent());
-        assertFalse(actual.getLeft().isPresent());
+        assertTrue(actual.getLeft().isPresent());
+        assertFalse(actual.getRight().isPresent());
 
-        ReadError<CsrfClaims> actualError = actual.getRight().get();
+        ReadError<CsrfClaims> actualError = actual.getLeft().get();
         assertThat(actualError.getCookieError(), is(CookieError.SIGNATURE_INVALID));
 
         assertTrue(actualError.getClaims().isPresent());
@@ -177,10 +177,10 @@ public class CookieSignerTest {
 
         ReadEither<CsrfClaims> actual = subject.read(jwt, CsrfClaims.class);
 
-        assertTrue(actual.getRight().isPresent());
-        assertFalse(actual.getLeft().isPresent());
+        assertTrue(actual.getLeft().isPresent());
+        assertFalse(actual.getRight().isPresent());
 
-        ReadError<CsrfClaims> actualError = actual.getRight().get();
+        ReadError<CsrfClaims> actualError = actual.getLeft().get();
         assertThat(actualError.getCookieError(), is(CookieError.SIGNATURE_ERROR));
         assertTrue(actualError.getClaims().isPresent());
         CsrfClaims actualClaims = actualError.getClaims().get();
@@ -203,10 +203,10 @@ public class CookieSignerTest {
         CookieSecurity subject = new CookieSigner(jwtAppFactory, keys, cookieToKey);
         ReadEither<CsrfClaims> actual = subject.read(jwt, CsrfClaims.class);
 
-        assertTrue(actual.getRight().isPresent());
-        assertFalse(actual.getLeft().isPresent());
+        assertTrue(actual.getLeft().isPresent());
+        assertFalse(actual.getRight().isPresent());
 
-        ReadError<CsrfClaims> actualError = actual.getRight().get();
+        ReadError<CsrfClaims> actualError = actual.getLeft().get();
         assertThat(actualError.getCookieError(), is(CookieError.SIGNATURE_ERROR));
         assertTrue(actualError.getClaims().isPresent());
         CsrfClaims actualClaims = actualError.getClaims().get();
@@ -220,10 +220,10 @@ public class CookieSignerTest {
 
         ReadEither<CsrfClaims> actual = subject.read(jwt, CsrfClaims.class);
 
-        assertTrue(actual.getRight().isPresent());
-        assertFalse(actual.getLeft().isPresent());
+        assertTrue(actual.getLeft().isPresent());
+        assertFalse(actual.getRight().isPresent());
 
-        ReadError<CsrfClaims> actualError = actual.getRight().get();
+        ReadError<CsrfClaims> actualError = actual.getLeft().get();
         assertThat(actualError.getCookieError(), is(CookieError.NO_KEY_ID));
         assertTrue(actualError.getClaims().isPresent());
         // claims assertions
