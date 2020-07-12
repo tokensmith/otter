@@ -86,11 +86,11 @@ public class LoginSetSessionResourceTest {
         // cookie csrf value should match the form's value.
         JwtAppFactory jwtAppFactory = new JwtAppFactory();
         JwtSerde jwtSerializer = jwtAppFactory.jwtSerde();
-        JsonWebToken cookieJwt = jwtSerializer.stringToJwt(csrfCookie.value(), CsrfClaims.class);
-        CsrfClaims cookieClaims = (CsrfClaims) cookieJwt.getClaims();
+        JsonWebToken<CsrfClaims> cookieJwt = jwtSerializer.stringToJwt(csrfCookie.value(), CsrfClaims.class);
+        CsrfClaims cookieClaims = cookieJwt.getClaims();
 
-        JsonWebToken formJwt = jwtSerializer.stringToJwt(formCsrfValue, CsrfClaims.class);
-        CsrfClaims formClaims = (CsrfClaims) formJwt.getClaims();
+        JsonWebToken<CsrfClaims> formJwt = jwtSerializer.stringToJwt(formCsrfValue, CsrfClaims.class);
+        CsrfClaims formClaims = formJwt.getClaims();
 
         assertThat(cookieClaims.getChallengeToken(), is(formClaims.getChallengeToken()));
         assertThat(cookieClaims.getNoise(), is(not(formClaims.getNoise())));
@@ -119,7 +119,7 @@ public class LoginSetSessionResourceTest {
         String formCsrfValue = matcher.group(1);
 
         List<Param> formData = new ArrayList<>();
-        formData.add(new Param("email", "obi-wan@rootservices.org"));
+        formData.add(new Param("email", "obi-wan@tokensmith.net"));
         formData.add(new Param("password", "foo"));
         formData.add(new Param("csrfToken", formCsrfValue));
 
@@ -169,7 +169,7 @@ public class LoginSetSessionResourceTest {
     @Test
     public void postWhenNoCsrfCookieShouldReturn403() throws Exception {
         List<Param> formData = new ArrayList<>();
-        formData.add(new Param("email", "obi-wan@rootservices.org"));
+        formData.add(new Param("email", "obi-wan@tokensmith.net"));
         formData.add(new Param("password", "foo"));
         formData.add(new Param("csrfToken", "foo"));
 

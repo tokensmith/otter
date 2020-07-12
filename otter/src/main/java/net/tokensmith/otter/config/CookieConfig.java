@@ -1,6 +1,7 @@
 package net.tokensmith.otter.config;
 
 public class CookieConfig {
+    public static final Integer SESSION = -1;
     private String name;
     private Boolean isSecure;
     private Integer age;
@@ -43,5 +44,36 @@ public class CookieConfig {
 
     public void setHttpOnly(Boolean httpOnly) {
         this.httpOnly = httpOnly;
+    }
+
+    public static class Builder {
+        private String name;
+        private Boolean isSecure;
+        private Integer age;
+        private Boolean httpOnly;
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder secure(Boolean secure) {
+            isSecure = secure;
+            return this;
+        }
+
+        public Builder age(Integer age) {
+            this.age = age;
+            return this;
+        }
+
+        public Builder httpOnly(Boolean httpOnly) {
+            this.httpOnly = httpOnly;
+            return this;
+        }
+
+        public CookieConfig build() {
+            return new CookieConfig(name, isSecure, age, httpOnly);
+        }
     }
 }

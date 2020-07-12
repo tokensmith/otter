@@ -6,6 +6,7 @@ import helper.entity.model.DummyPayload;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import helper.fake.FakeResource;
+import net.tokensmith.jwt.builder.compact.UnsecureCompactBuilder;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.jwt.entity.jwk.Use;
@@ -13,6 +14,7 @@ import net.tokensmith.jwt.entity.jwt.JsonWebToken;
 import net.tokensmith.jwt.entity.jwt.header.Algorithm;
 import net.tokensmith.jwt.exception.InvalidJWT;
 import net.tokensmith.jwt.exception.SignatureException;
+import net.tokensmith.jwt.jwk.generator.KeyGenerator;
 import net.tokensmith.jwt.jws.serialization.SecureJwtSerializer;
 import net.tokensmith.jwt.serialization.JwtSerde;
 import net.tokensmith.jwt.serialization.exception.JsonToJwtException;
@@ -57,6 +59,9 @@ import net.tokensmith.otter.security.builder.entity.Betweens;
 import net.tokensmith.otter.security.builder.entity.RestBetweens;
 import net.tokensmith.otter.security.csrf.CsrfClaims;
 
+import javax.crypto.SecretKey;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -384,16 +389,29 @@ public class FixtureFactory {
     }
 
     public static Cookie makeCookie(String name) {
-        Cookie cookie = new Cookie();
-        cookie.setName(name);
-        cookie.setValue("test-value");
-        return cookie;
+        return new Cookie.Builder()
+            .name(name)
+            .value("test-value")
+            .build();
+    }
+
+    public static SymmetricKey generateSignKey(String keyId) throws Exception {
+        KeyGenerator keyGenerator = jwtAppFactory.keyGenerator();
+        return keyGenerator.symmetricKey(Optional.of(keyId), Use.SIGNATURE);
     }
 
     public static SymmetricKey signKey(String keyId) {
         return new SymmetricKey(
             Optional.of(keyId),
             "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
+            Use.SIGNATURE
+        );
+    }
+
+    public static SymmetricKey badSignKey(String keyId) {
+        return new SymmetricKey(
+            Optional.<String>empty(),
+            "%%%%^&&*(#*$(#*$#@(*$E*E(",
             Use.SIGNATURE
         );
     }
@@ -459,15 +477,25 @@ public class FixtureFactory {
         return compactJwt;
     }
 
-    public static JsonWebToken csrfJwt(String encodedCsrfJwt) {
+    public static String compactUnSecureJwtForCSRF(String challengeToken) {
+        CsrfClaims csrfClaims = new CsrfClaims();
+        csrfClaims.setChallengeToken(challengeToken);
+        csrfClaims.setIssuedAt(Optional.of(OffsetDateTime.now().toEpochSecond()));
+
+        UnsecureCompactBuilder compactBuilder = new UnsecureCompactBuilder();
+
+        ByteArrayOutputStream encodedJwt = compactBuilder.claims(csrfClaims).build();
+
+        return new String(encodedJwt.toByteArray(), StandardCharsets.UTF_8);
+    }
+
+    public static JsonWebToken<CsrfClaims> csrfJwt(String encodedCsrfJwt) {
         JwtSerde jwtSerde = jwtAppFactory.jwtSerde();
 
-        JsonWebToken jsonWebToken = null;
+        JsonWebToken<CsrfClaims> jsonWebToken = null;
         try {
             jsonWebToken = jwtSerde.stringToJwt(encodedCsrfJwt, CsrfClaims.class);
-        } catch (JsonToJwtException e) {
-            e.printStackTrace();
-        } catch (InvalidJWT e) {
+        } catch (JsonToJwtException | InvalidJWT e) {
             e.printStackTrace();
         }
 

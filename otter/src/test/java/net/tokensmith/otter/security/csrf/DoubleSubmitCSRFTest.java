@@ -105,7 +105,7 @@ public class DoubleSubmitCSRFTest {
         SymmetricKey key = FixtureFactory.signKey("key-1");
         String compactJwtForCSRF = FixtureFactory.compactJwtForCSRF(key, "challenge-token");
 
-        JsonWebToken actual = subject.csrfToJwt(compactJwtForCSRF);
+        JsonWebToken<CsrfClaims> actual = subject.csrfToJwt(compactJwtForCSRF);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getHeader(), is(notNullValue()));
@@ -136,7 +136,7 @@ public class DoubleSubmitCSRFTest {
     public void verifyCsrfCookieSignatureShouldBeTrue() throws Exception {
         SymmetricKey key = FixtureFactory.signKey("key-1");
         String compactJwtForCSRF = FixtureFactory.compactJwtForCSRF(key, "challenge-token");
-        JsonWebToken csrfJwt = FixtureFactory.csrfJwt(compactJwtForCSRF);
+        JsonWebToken<CsrfClaims> csrfJwt = FixtureFactory.csrfJwt(compactJwtForCSRF);
 
         Boolean actual = subject.verifyCsrfCookieSignature(csrfJwt, key);
 
@@ -148,7 +148,7 @@ public class DoubleSubmitCSRFTest {
     public void verifyCsrfCookieSignatureShouldBeFalse() throws Exception {
         SymmetricKey key = FixtureFactory.signKey("key-1");
         String compactJwtForCSRF = FixtureFactory.compactJwtForCSRF(key, "challenge-token");
-        JsonWebToken csrfJwt = FixtureFactory.csrfJwt(compactJwtForCSRF);
+        JsonWebToken<CsrfClaims> csrfJwt = FixtureFactory.csrfJwt(compactJwtForCSRF);
 
         SymmetricKey key2 = FixtureFactory.signKey("key-2");
         key2.setKey("key-2-value");
@@ -179,7 +179,7 @@ public class DoubleSubmitCSRFTest {
 
         // might as well use csrfCookieValueToJwt to validate the cookie value.
 
-        JsonWebToken csrfJwt = subject.csrfToJwt(actual.getValue());
+        JsonWebToken<CsrfClaims> csrfJwt = subject.csrfToJwt(actual.getValue());
         CsrfClaims csrfClaims = (CsrfClaims) csrfJwt.getClaims();
 
         assertThat(csrfClaims.getChallengeToken(), is(notNullValue()));

@@ -21,7 +21,7 @@ public class HttpServletRequestCookieTranslatorTest {
     @Test
     public void fromShouldTranslateOk() {
         Cookie containerCookie = new Cookie("cookie-name", "cookie-value");
-        containerCookie.setDomain("www.rootservices.org");
+        containerCookie.setDomain("www.tokensmith.net");
         containerCookie.setMaxAge(100);
         containerCookie.setPath("/account");
         containerCookie.setSecure(true);
@@ -31,7 +31,7 @@ public class HttpServletRequestCookieTranslatorTest {
         net.tokensmith.otter.controller.entity.Cookie actual = subject.from(containerCookie);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getDomain(), is("www.rootservices.org"));
+        assertThat(actual.getDomain(), is("www.tokensmith.net"));
         assertThat(actual.getMaxAge(), is(100));
         assertThat(actual.getPath(), is("/account"));
         assertThat(actual.isSecure(), is(true));
@@ -42,20 +42,21 @@ public class HttpServletRequestCookieTranslatorTest {
 
     @Test
     public void toShouldTranslateOk() {
-        net.tokensmith.otter.controller.entity.Cookie otterCookie = new net.tokensmith.otter.controller.entity.Cookie();
-        otterCookie.setName("cookie-name");
-        otterCookie.setValue("cookie-value");
-        otterCookie.setDomain("www.rootservices.org");
-        otterCookie.setMaxAge(100);
-        otterCookie.setPath("/account");
-        otterCookie.setSecure(true);
-        otterCookie.setVersion(0);
-        otterCookie.setHttpOnly(true);
+        var otterCookie = new net.tokensmith.otter.controller.entity.Cookie.Builder()
+            .name("cookie-name")
+            .value("cookie-value")
+            .domain("www.tokensmith.net")
+            .maxAge(100)
+            .path("/account")
+            .secure(true)
+            .version(0)
+            .httpOnly(true)
+            .build();
 
         Cookie actual = subject.to(otterCookie);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getDomain(), is("www.rootservices.org"));
+        assertThat(actual.getDomain(), is("www.tokensmith.net"));
         assertThat(actual.getMaxAge(), is(100));
         assertThat(actual.getPath(), is("/account"));
         assertThat(actual.getSecure(), is(true));

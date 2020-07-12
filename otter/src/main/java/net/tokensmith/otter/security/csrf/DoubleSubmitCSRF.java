@@ -75,7 +75,7 @@ public class DoubleSubmitCSRF {
     }
 
     protected CsrfClaims toClaims(String value) throws CsrfException {
-        JsonWebToken csrfJwt;
+        JsonWebToken<CsrfClaims> csrfJwt;
         try {
             csrfJwt = csrfToJwt(value);
         } catch (CsrfException e) {
@@ -97,14 +97,13 @@ public class DoubleSubmitCSRF {
             throw new CsrfException(SIGNATURE_INVALID);
         }
 
-        CsrfClaims csrfClaims = (CsrfClaims) csrfJwt.getClaims();
-        return csrfClaims;
+        return csrfJwt.getClaims();
     }
 
-    public JsonWebToken csrfToJwt(String encodedCsrfCookieValue) throws CsrfException {
+    public JsonWebToken<CsrfClaims> csrfToJwt(String encodedCsrfCookieValue) throws CsrfException {
         JwtSerde jwtSerde = jwtAppFactory.jwtSerde();
 
-        JsonWebToken jsonWebToken;
+        JsonWebToken<CsrfClaims> jsonWebToken;
         try {
             jsonWebToken = jwtSerde.stringToJwt(encodedCsrfCookieValue, CsrfClaims.class);
         } catch (JsonToJwtException e) {
@@ -126,7 +125,7 @@ public class DoubleSubmitCSRF {
         return key;
     }
 
-    protected Boolean verifyCsrfCookieSignature(JsonWebToken csrfJwt, SymmetricKey signKey) throws CsrfException {
+    protected Boolean verifyCsrfCookieSignature(JsonWebToken<CsrfClaims> csrfJwt, SymmetricKey signKey) throws CsrfException {
 
         VerifySignature verifySignature;
         try {
@@ -148,14 +147,13 @@ public class DoubleSubmitCSRF {
 
         ByteArrayOutputStream compactJwt = toJwt(challengeToken);
 
-        Cookie csrfCookie = new Cookie();
-        csrfCookie.setSecure(secure);
-        csrfCookie.setName(name);
-        csrfCookie.setMaxAge(maxAge);
-        csrfCookie.setValue(compactJwt.toString());
-        csrfCookie.setHttpOnly(isHttpOnly);
-
-        return csrfCookie;
+        return new Cookie.Builder()
+                .secure(secure)
+                .name(name)
+                .maxAge(maxAge)
+                .value(compactJwt.toString())
+                .httpOnly(isHttpOnly)
+                .build();
     }
 
     public ByteArrayOutputStream toJwt(ChallengeToken challengeToken) throws CsrfException {

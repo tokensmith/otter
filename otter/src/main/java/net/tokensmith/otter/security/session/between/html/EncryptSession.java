@@ -62,12 +62,13 @@ public class EncryptSession<S, U> implements Between<S, U> {
                 throw new HaltException(COULD_NOT_ENCRYPT_SESSION, e);
             }
 
-            Cookie cookie = new Cookie();
-            cookie.setName(cookieConfig.getName());
-            cookie.setMaxAge(cookieConfig.getAge());
-            cookie.setSecure(cookieConfig.getSecure());
-            cookie.setHttpOnly(cookieConfig.getHttpOnly());
-            cookie.setValue(session.toString());
+            Cookie cookie = new Cookie.Builder()
+                .name(cookieConfig.getName())
+                .maxAge(cookieConfig.getAge())
+                .secure(cookieConfig.getSecure())
+                .httpOnly(cookieConfig.getHttpOnly())
+                .value(session.toString())
+                .build();
 
             response.getCookies().put(cookieConfig.getName(), cookie);
         } else {

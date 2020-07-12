@@ -9,17 +9,16 @@ import java.util.function.Function;
 public class HttpServletRequestCookieTranslator {
 
     public Cookie from(javax.servlet.http.Cookie containerCookie) {
-        Cookie otterCookie = new Cookie();
-        otterCookie.setName(containerCookie.getName());
-        otterCookie.setValue(containerCookie.getValue());
-        otterCookie.setDomain(containerCookie.getDomain());
-        otterCookie.setMaxAge(containerCookie.getMaxAge());
-        otterCookie.setPath(containerCookie.getPath());
-        otterCookie.setVersion(containerCookie.getVersion());
-        otterCookie.setSecure(containerCookie.getSecure());
-        otterCookie.setHttpOnly(containerCookie.isHttpOnly());
-
-        return otterCookie;
+        return new Cookie.Builder()
+            .name(containerCookie.getName())
+            .value(containerCookie.getValue())
+            .domain(containerCookie.getDomain())
+            .maxAge(containerCookie.getMaxAge())
+            .path(containerCookie.getPath())
+            .version(containerCookie.getVersion())
+            .secure(containerCookie.getSecure())
+            .httpOnly(containerCookie.isHttpOnly())
+            .build();
     }
 
     public javax.servlet.http.Cookie to(Cookie otterCookie) {
