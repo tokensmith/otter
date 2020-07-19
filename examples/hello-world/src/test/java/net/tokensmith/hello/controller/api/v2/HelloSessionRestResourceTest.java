@@ -3,7 +3,6 @@ package net.tokensmith.hello.controller.api.v2;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import helper.FixtureFactory;
 import io.netty.handler.codec.http.cookie.Cookie;
-import net.tokensmith.hello.controller.html.LoginSetSessionResource;
 import net.tokensmith.hello.model.Hello;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.header.ContentType;
@@ -21,7 +20,7 @@ import java.net.URI;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 
 @Category(ServletContainerTest.class)

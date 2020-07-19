@@ -2,10 +2,10 @@ package net.tokensmith.otter.router.builder;
 
 import helper.FixtureFactory;
 import helper.fake.FakePresenter;
-import org.junit.Test;
 import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.router.entity.io.Answer;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class AnswerBuilderTest {
     

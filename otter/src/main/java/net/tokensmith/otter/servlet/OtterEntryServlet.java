@@ -1,23 +1,25 @@
 package net.tokensmith.otter.servlet;
 
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.tokensmith.otter.config.OtterAppFactory;
 import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.gateway.Configure;
 import net.tokensmith.otter.gateway.entity.Group;
-import net.tokensmith.otter.gateway.entity.rest.RestGroup;
 import net.tokensmith.otter.gateway.entity.Shape;
+import net.tokensmith.otter.gateway.entity.rest.RestGroup;
 import net.tokensmith.otter.gateway.servlet.ServletGateway;
 import net.tokensmith.otter.security.exception.SessionCtorException;
 import net.tokensmith.otter.servlet.async.OtterAsyncListener;
 import net.tokensmith.otter.servlet.async.ReadListenerImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-
-import javax.servlet.*;
+import javax.servlet.AsyncContext;
+import javax.servlet.AsyncListener;
+import javax.servlet.ReadListener;
+import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

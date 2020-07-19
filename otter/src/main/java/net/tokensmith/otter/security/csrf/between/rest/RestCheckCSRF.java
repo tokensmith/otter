@@ -2,7 +2,6 @@ package net.tokensmith.otter.security.csrf.between.rest;
 
 
 import net.tokensmith.otter.controller.entity.Cookie;
-import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.dispatch.entity.RestBtwnRequest;
 import net.tokensmith.otter.dispatch.entity.RestBtwnResponse;
 import net.tokensmith.otter.router.entity.Method;

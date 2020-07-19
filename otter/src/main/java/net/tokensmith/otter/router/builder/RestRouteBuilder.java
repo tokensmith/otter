@@ -7,7 +7,6 @@ import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.router.entity.RestRoute;
 import net.tokensmith.otter.router.entity.between.RestBetween;
 
-
 import java.util.ArrayList;
 import java.util.List;
 

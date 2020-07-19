@@ -2,8 +2,8 @@ package net.tokensmith.otter.controller.builder;
 
 
 import net.tokensmith.otter.controller.entity.Cookie;
-import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.controller.entity.mime.MimeType;
+import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.router.entity.Method;
 
 import java.util.List;

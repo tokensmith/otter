@@ -4,7 +4,6 @@ package net.tokensmith.otter.gateway.servlet.translator;
 import net.tokensmith.otter.controller.entity.Cookie;
 
 import java.util.Objects;
-import java.util.function.Function;
 
 public class HttpServletRequestCookieTranslator {
 

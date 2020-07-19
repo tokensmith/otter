@@ -2,17 +2,16 @@ package net.tokensmith.otter.dispatch.translator.rest;
 
 import helper.FixtureFactory;
 import helper.entity.model.DummyPayload;
-import org.junit.Before;
-import org.junit.Test;
 import net.tokensmith.otter.controller.entity.response.RestResponse;
 import net.tokensmith.otter.dispatch.entity.RestBtwnResponse;
 import net.tokensmith.otter.dispatch.entity.RestErrorResponse;
 import net.tokensmith.otter.router.entity.io.Answer;
-
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class RestResponseTranslatorTest {
     private RestResponseTranslator<DummyPayload> subject;

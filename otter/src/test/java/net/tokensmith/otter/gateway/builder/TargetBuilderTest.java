@@ -2,12 +2,10 @@ package net.tokensmith.otter.gateway.builder;
 
 
 import helper.entity.DummyBetween;
+import helper.entity.ServerErrorResource;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
-import helper.entity.ServerErrorResource;
 import helper.fake.FakeResource;
-import org.hamcrest.core.IsNull;
-import org.junit.Test;
 import net.tokensmith.otter.controller.builder.MimeTypeBuilder;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.mime.MimeType;
@@ -15,12 +13,13 @@ import net.tokensmith.otter.gateway.entity.ErrorTarget;
 import net.tokensmith.otter.gateway.entity.Label;
 import net.tokensmith.otter.gateway.entity.Target;
 import net.tokensmith.otter.router.entity.Method;
-
-
+import org.hamcrest.core.IsNull;
+import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class TargetBuilderTest {
 

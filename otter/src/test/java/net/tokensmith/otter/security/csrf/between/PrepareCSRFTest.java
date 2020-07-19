@@ -3,13 +3,6 @@ package net.tokensmith.otter.security.csrf.between;
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
-import net.tokensmith.otter.security.csrf.between.html.PrepareCSRF;
-import net.tokensmith.otter.security.entity.ChallengeToken;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import net.tokensmith.jwt.entity.jwt.JsonWebToken;
 import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.controller.entity.Cookie;
@@ -18,15 +11,27 @@ import net.tokensmith.otter.controller.entity.response.Response;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.security.csrf.CsrfClaims;
 import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
+import net.tokensmith.otter.security.csrf.between.html.PrepareCSRF;
 import net.tokensmith.otter.security.csrf.exception.CsrfException;
+import net.tokensmith.otter.security.entity.ChallengeToken;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.io.ByteArrayOutputStream;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 

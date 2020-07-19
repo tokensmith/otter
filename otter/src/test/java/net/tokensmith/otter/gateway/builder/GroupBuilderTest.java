@@ -1,20 +1,18 @@
 package net.tokensmith.otter.gateway.builder;
 
 import helper.entity.DummyBetween;
-import helper.entity.DummyRestBetween;
+import helper.entity.ServerErrorResource;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
-import helper.entity.ServerErrorResource;
-import net.tokensmith.otter.gateway.entity.Label;
-import net.tokensmith.otter.gateway.entity.rest.RestGroup;
-import org.junit.Test;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.gateway.entity.ErrorTarget;
 import net.tokensmith.otter.gateway.entity.Group;
+import net.tokensmith.otter.gateway.entity.Label;
+import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class GroupBuilderTest {
 

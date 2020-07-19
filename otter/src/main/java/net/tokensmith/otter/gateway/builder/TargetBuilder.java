@@ -6,12 +6,17 @@ import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.mime.MimeType;
 import net.tokensmith.otter.gateway.entity.ErrorTarget;
-import net.tokensmith.otter.gateway.entity.Target;
 import net.tokensmith.otter.gateway.entity.Label;
-import net.tokensmith.otter.router.entity.between.Between;
+import net.tokensmith.otter.gateway.entity.Target;
 import net.tokensmith.otter.router.entity.Method;
+import net.tokensmith.otter.router.entity.between.Between;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class TargetBuilder<S extends DefaultSession, U extends DefaultUser> {
     private List<Method> methods = new ArrayList<>();

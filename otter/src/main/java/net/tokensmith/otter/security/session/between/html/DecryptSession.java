@@ -1,20 +1,18 @@
 package net.tokensmith.otter.security.session.between.html;
 
 
-import net.tokensmith.otter.security.session.util.Decrypt;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.controller.entity.response.Response;
-import net.tokensmith.otter.controller.entity.StatusCode;
-import net.tokensmith.otter.security.session.exception.InvalidSessionException;
-import net.tokensmith.otter.security.exception.SessionCtorException;
-import net.tokensmith.otter.security.session.exception.SessionDecryptException;
-import net.tokensmith.otter.router.entity.between.Between;
 import net.tokensmith.otter.router.entity.Method;
+import net.tokensmith.otter.router.entity.between.Between;
 import net.tokensmith.otter.router.exception.HaltException;
-
+import net.tokensmith.otter.security.exception.SessionCtorException;
+import net.tokensmith.otter.security.session.exception.InvalidSessionException;
+import net.tokensmith.otter.security.session.exception.SessionDecryptException;
+import net.tokensmith.otter.security.session.util.Decrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

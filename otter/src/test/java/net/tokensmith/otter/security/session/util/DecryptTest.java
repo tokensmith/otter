@@ -11,8 +11,6 @@ import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.security.session.exception.InvalidSessionException;
 import net.tokensmith.otter.security.session.exception.SessionDecryptException;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
-
-
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;

@@ -1,15 +1,16 @@
 package net.tokensmith.otter.dispatch.html;
 
 import helper.FixtureFactory;
-import helper.entity.*;
+import helper.entity.HaltBetween;
+import helper.entity.OkResource;
+import helper.entity.RuntimeExceptionResource;
+import helper.entity.ServerErrorResource;
 import helper.entity.model.DummyPayload;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
-import org.junit.Before;
-import org.junit.Test;
 import net.tokensmith.otter.controller.Resource;
-import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.dispatch.translator.AnswerTranslator;
 import net.tokensmith.otter.dispatch.translator.RequestTranslator;
 import net.tokensmith.otter.router.entity.Method;
@@ -18,6 +19,8 @@ import net.tokensmith.otter.router.entity.io.Answer;
 import net.tokensmith.otter.router.entity.io.Ask;
 import net.tokensmith.otter.router.exception.HaltException;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +28,7 @@ import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 
 public class RouteRunTest {

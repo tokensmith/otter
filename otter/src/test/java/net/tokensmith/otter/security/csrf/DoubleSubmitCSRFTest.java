@@ -1,8 +1,6 @@
 package net.tokensmith.otter.security.csrf;
 
 import helper.FixtureFactory;
-import org.junit.Before;
-import org.junit.Test;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.jwt.entity.jwt.JsonWebToken;
 import net.tokensmith.jwt.serialization.exception.JsonToJwtException;
@@ -10,18 +8,19 @@ import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.security.config.SecurityAppFactory;
 import net.tokensmith.otter.security.csrf.exception.CsrfException;
 import net.tokensmith.otter.security.entity.ChallengeToken;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.number.OrderingComparison.lessThanOrEqualTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 
 public class DoubleSubmitCSRFTest {

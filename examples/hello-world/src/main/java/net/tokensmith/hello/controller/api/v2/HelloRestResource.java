@@ -7,7 +7,6 @@ import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.RestRequest;
 import net.tokensmith.otter.controller.entity.response.RestResponse;
 
-
 import java.util.Optional;
 
 public class HelloRestResource extends RestResource<ApiUser, Hello> {

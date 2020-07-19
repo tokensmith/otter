@@ -14,7 +14,6 @@ import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.exception.HaltException;
 import net.tokensmith.otter.security.Halt;
-import net.tokensmith.otter.security.session.between.rest.RestReadSession;
 import net.tokensmith.otter.security.session.util.Decrypt;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
 import org.junit.Test;
@@ -24,7 +23,7 @@ import java.util.function.BiFunction;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class RestReadSessionTest {
 

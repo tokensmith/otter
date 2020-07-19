@@ -1,13 +1,13 @@
 package net.tokensmith.otter.translator;
 
+import net.tokensmith.otter.controller.entity.mime.MimeType;
 import org.junit.Before;
 import org.junit.Test;
-import net.tokensmith.otter.controller.entity.mime.MimeType;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class MimeTypeTranslatorTest {
     private MimeTypeTranslator subject;

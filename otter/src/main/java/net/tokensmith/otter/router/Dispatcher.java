@@ -1,11 +1,11 @@
 package net.tokensmith.otter.router;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.tokensmith.otter.router.entity.Location;
 import net.tokensmith.otter.router.entity.MatchedLocation;
 import net.tokensmith.otter.router.entity.Method;
-import net.tokensmith.otter.router.entity.Location;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;

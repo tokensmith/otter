@@ -1,8 +1,6 @@
 package net.tokensmith.otter.gateway.servlet;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.gateway.Gateway;
@@ -16,13 +14,15 @@ import net.tokensmith.otter.router.builder.AnswerBuilder;
 import net.tokensmith.otter.router.entity.io.Answer;
 import net.tokensmith.otter.router.entity.io.Ask;
 import net.tokensmith.otter.router.exception.HaltException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Servlet API Gateway that translates Servlet API objects to Otter objects

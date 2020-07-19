@@ -1,10 +1,8 @@
 package net.tokensmith.otter.dispatch.json;
 
 
-import net.tokensmith.otter.controller.entity.DefaultSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.tokensmith.otter.controller.RestResource;
+import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.request.RestRequest;
 import net.tokensmith.otter.controller.entity.response.RestResponse;
@@ -17,6 +15,8 @@ import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.entity.io.Answer;
 import net.tokensmith.otter.translator.JsonTranslator;
 import net.tokensmith.otter.translator.exception.ToJsonException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 

@@ -3,7 +3,6 @@ package net.tokensmith.otter.controller.error.rest;
 import net.tokensmith.otter.controller.RestResource;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
-
 import net.tokensmith.otter.controller.entity.request.RestRequest;
 import net.tokensmith.otter.controller.entity.response.RestResponse;
 

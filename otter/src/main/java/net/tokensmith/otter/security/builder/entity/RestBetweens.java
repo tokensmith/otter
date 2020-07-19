@@ -1,6 +1,5 @@
 package net.tokensmith.otter.security.builder.entity;
 
-import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.router.entity.between.RestBetween;
 
 import java.util.List;

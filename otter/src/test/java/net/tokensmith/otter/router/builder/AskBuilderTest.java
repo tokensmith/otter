@@ -1,18 +1,22 @@
 package net.tokensmith.otter.router.builder;
 
 import helper.FixtureFactory;
-import org.junit.Before;
-import org.junit.Test;
 import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.mime.MimeType;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.entity.io.Ask;
+import org.junit.Before;
+import org.junit.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class AskBuilderTest {
     private AskBuilder subject;

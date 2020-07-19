@@ -1,9 +1,8 @@
 package net.tokensmith.otter.servlet.async;
 
+import org.eclipse.jetty.server.AsyncContextEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.eclipse.jetty.server.AsyncContextEvent;
-
 
 import javax.servlet.AsyncEvent;
 import javax.servlet.AsyncListener;

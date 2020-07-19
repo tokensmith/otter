@@ -3,12 +3,14 @@ package net.tokensmith.otter.router;
 
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.dispatch.RouteRunner;
-import net.tokensmith.otter.router.entity.*;
+import net.tokensmith.otter.router.entity.Location;
+import net.tokensmith.otter.router.entity.MatchedLocation;
 import net.tokensmith.otter.router.entity.io.Answer;
 import net.tokensmith.otter.router.entity.io.Ask;
 import net.tokensmith.otter.router.exception.HaltException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Optional;
 
 public class Engine {
     private Dispatcher dispatcher;

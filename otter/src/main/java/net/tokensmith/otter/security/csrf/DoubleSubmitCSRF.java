@@ -1,9 +1,6 @@
 package net.tokensmith.otter.security.csrf;
 
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.tokensmith.jwt.builder.compact.SecureCompactBuilder;
 import net.tokensmith.jwt.builder.exception.CompactException;
 import net.tokensmith.jwt.config.JwtAppFactory;
@@ -19,7 +16,8 @@ import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.security.RandomString;
 import net.tokensmith.otter.security.csrf.exception.CsrfException;
 import net.tokensmith.otter.security.entity.ChallengeToken;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.time.OffsetDateTime;

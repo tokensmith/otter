@@ -5,7 +5,6 @@ import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.mime.MimeType;
 import net.tokensmith.otter.router.entity.Method;
 
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

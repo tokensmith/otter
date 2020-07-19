@@ -1,20 +1,26 @@
 package net.tokensmith.otter.server.container;
 
 import net.tokensmith.otter.server.HttpServerConfig;
-import org.apache.tomcat.util.descriptor.web.ErrorPage;
+import net.tokensmith.otter.server.container.builder.WebAppContextBuilder;
+import net.tokensmith.otter.server.path.CompiledClassPath;
+import net.tokensmith.otter.server.path.WebAppPath;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.http2.server.HTTP2CServerConnectionFactory;
-import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.server.ConnectionFactory;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.CustomRequestLog;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.resource.PathResource;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.webapp.WebInfConfiguration;
 import org.eclipse.jetty.webapp.WebXmlConfiguration;
-import net.tokensmith.otter.server.container.builder.WebAppContextBuilder;
-import net.tokensmith.otter.server.path.CompiledClassPath;
-import net.tokensmith.otter.server.path.WebAppPath;
-import net.tokensmith.otter.servlet.EntryFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.DispatcherType;
 import java.io.IOException;
@@ -22,10 +28,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.EnumSet;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**

@@ -5,9 +5,9 @@ import net.tokensmith.hello.controller.html.presenter.LoginPresenter;
 import net.tokensmith.hello.security.TokenSession;
 import net.tokensmith.hello.security.User;
 import net.tokensmith.otter.controller.Resource;
+import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.controller.entity.response.Response;
-import net.tokensmith.otter.controller.entity.StatusCode;
 
 import java.util.Optional;
 

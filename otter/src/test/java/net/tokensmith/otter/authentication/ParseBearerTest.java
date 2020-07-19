@@ -1,12 +1,11 @@
 package net.tokensmith.otter.authentication;
 
+import net.tokensmith.otter.authentication.exception.BearerException;
 import org.junit.Before;
 import org.junit.Test;
-import net.tokensmith.otter.authentication.exception.BearerException;
-
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 
 public class ParseBearerTest {

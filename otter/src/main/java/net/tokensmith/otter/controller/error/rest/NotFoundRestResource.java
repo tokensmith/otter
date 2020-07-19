@@ -9,10 +9,8 @@ import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.RestRequest;
 import net.tokensmith.otter.controller.entity.response.RestResponse;
-import net.tokensmith.otter.controller.header.Header;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 public class NotFoundRestResource<U extends DefaultUser> extends RestResource<U, ClientError> {

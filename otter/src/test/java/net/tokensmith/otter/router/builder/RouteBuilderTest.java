@@ -3,16 +3,16 @@ package net.tokensmith.otter.router.builder;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import helper.fake.FakeResource;
-import org.junit.Test;
-import net.tokensmith.otter.router.entity.between.Between;
 import net.tokensmith.otter.router.entity.Route;
+import net.tokensmith.otter.router.entity.between.Between;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class RouteBuilderTest {
 

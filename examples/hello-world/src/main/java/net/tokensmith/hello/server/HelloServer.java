@@ -4,7 +4,7 @@ package net.tokensmith.hello.server;
 import net.tokensmith.hello.controller.html.HelloResource;
 import net.tokensmith.otter.server.HttpServer;
 import net.tokensmith.otter.server.HttpServerConfig;
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
 

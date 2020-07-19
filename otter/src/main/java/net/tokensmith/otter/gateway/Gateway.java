@@ -3,15 +3,14 @@ package net.tokensmith.otter.gateway;
 
 import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
-import net.tokensmith.otter.gateway.entity.rest.RestTarget;
 import net.tokensmith.otter.gateway.entity.Target;
+import net.tokensmith.otter.gateway.entity.rest.RestTarget;
 import net.tokensmith.otter.gateway.translator.LocationTranslator;
 import net.tokensmith.otter.gateway.translator.RestLocationTranslator;
 import net.tokensmith.otter.router.Dispatcher;
 import net.tokensmith.otter.router.Engine;
 import net.tokensmith.otter.router.entity.Location;
 import net.tokensmith.otter.router.entity.Method;
-
 
 import java.util.Map;
 

@@ -1,27 +1,30 @@
 package net.tokensmith.otter.gateway.builder;
 
-import helper.entity.*;
+import helper.entity.ClientErrorRestResource;
+import helper.entity.DummyRestBetween;
+import helper.entity.OkRestResource;
 import helper.entity.model.DummyErrorPayload;
 import helper.entity.model.DummyPayload;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import helper.fake.FakeValidate;
-import net.tokensmith.otter.dispatch.json.validator.Validate;
-import org.junit.Test;
 import net.tokensmith.otter.controller.builder.MimeTypeBuilder;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.mime.MimeType;
-import net.tokensmith.otter.gateway.entity.*;
+import net.tokensmith.otter.dispatch.json.validator.Validate;
+import net.tokensmith.otter.gateway.entity.Label;
 import net.tokensmith.otter.gateway.entity.rest.RestErrorTarget;
 import net.tokensmith.otter.gateway.entity.rest.RestTarget;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.translatable.Translatable;
+import org.junit.Test;
 
 import java.util.ArrayList;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class RestTargetBuilderTest {
 
