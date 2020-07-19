@@ -1,8 +1,8 @@
 package net.tokensmith.otter.authentication;
 
+import net.tokensmith.otter.authentication.exception.HttpBasicException;
 import org.junit.Before;
 import org.junit.Test;
-import net.tokensmith.otter.authentication.exception.HttpBasicException;
 
 import java.util.Base64;
 

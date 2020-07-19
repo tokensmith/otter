@@ -2,8 +2,8 @@ package net.tokensmith.otter.controller.builder;
 
 
 import net.tokensmith.otter.controller.entity.Cookie;
-import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.controller.entity.mime.MimeType;
+import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.router.entity.Method;
 
 import java.util.List;
@@ -20,6 +20,9 @@ import java.util.regex.Matcher;
 public class RequestBuilder<S, U>  {
     private Optional<Matcher> matcher;
     private Method method;
+    private String scheme;
+    private String authority;
+    private Integer port;
     private String pathWithParams;
     private MimeType contentType;
     private MimeType accept;
@@ -38,6 +41,26 @@ public class RequestBuilder<S, U>  {
 
     public RequestBuilder<S, U> method(Method method) {
         this.method = method;
+        return this;
+    }
+
+    public RequestBuilder<S, U> scheme(String scheme) {
+        this.scheme = scheme;
+        return this;
+    }
+
+    public RequestBuilder<S, U> port(Integer port) {
+        this.port = port;
+        return this;
+    }
+
+    public RequestBuilder<S, U> authority(String authority) {
+        this.authority = authority;
+        return this;
+    }
+
+    public RequestBuilder<S, U> scheme(Integer port) {
+        this.port = port;
         return this;
     }
 
@@ -92,6 +115,6 @@ public class RequestBuilder<S, U>  {
     }
 
     public Request<S, U> build() {
-        return new Request<S, U>(this.matcher, this.method, this.pathWithParams, this.contentType, this.accept, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge, this.ipAddress);
+        return new Request<S, U>(this.matcher, this.method, this.scheme, this.authority, this.port, this.pathWithParams, this.contentType, this.accept, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge, this.ipAddress);
     }
 }

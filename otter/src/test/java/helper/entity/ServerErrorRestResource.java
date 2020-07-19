@@ -2,8 +2,8 @@ package helper.entity;
 
 import helper.entity.model.DummyErrorPayload;
 import helper.entity.model.DummyUser;
-import net.tokensmith.otter.controller.error.rest.RestErrorResource;
 import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.error.rest.RestErrorResource;
 
 import java.util.Optional;
 

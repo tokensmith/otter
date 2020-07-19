@@ -2,6 +2,11 @@ package net.tokensmith.hello.controller;
 
 
 import io.netty.handler.codec.http.cookie.Cookie;
+import net.tokensmith.jwt.config.JwtAppFactory;
+import net.tokensmith.jwt.entity.jwt.JsonWebToken;
+import net.tokensmith.jwt.serialization.JwtSerde;
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.security.csrf.CsrfClaims;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.Param;
@@ -9,11 +14,6 @@ import org.asynchttpclient.Response;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import net.tokensmith.jwt.config.JwtAppFactory;
-import net.tokensmith.jwt.entity.jwt.JsonWebToken;
-import net.tokensmith.jwt.serialization.JwtSerde;
-import net.tokensmith.otter.controller.entity.StatusCode;
-import net.tokensmith.otter.security.csrf.CsrfClaims;
 import suite.IntegrationTestSuite;
 import suite.ServletContainerTest;
 
@@ -24,8 +24,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 @Category(ServletContainerTest.class)

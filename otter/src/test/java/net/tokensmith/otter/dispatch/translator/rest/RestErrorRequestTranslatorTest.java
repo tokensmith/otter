@@ -3,17 +3,17 @@ package net.tokensmith.otter.dispatch.translator.rest;
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
-import org.junit.Before;
-import org.junit.Test;
 import net.tokensmith.otter.dispatch.entity.RestBtwnRequest;
 import net.tokensmith.otter.dispatch.entity.RestErrorRequest;
 import net.tokensmith.otter.router.entity.io.Ask;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class RestErrorRequestTranslatorTest {
     private RestErrorRequestTranslator<DummySession, DummyUser> subject;
@@ -34,6 +34,9 @@ public class RestErrorRequestTranslatorTest {
         assertThat(actual.getPossibleContentTypes(), is(from.getPossibleContentTypes()));
         assertThat(actual.getPossibleAccept(), is(from.getPossibleAccepts()));
         assertThat(actual.getMethod(), is(from.getMethod()));
+        assertThat(actual.getScheme(), is(from.getScheme()));
+        assertThat(actual.getAuthority(), is(from.getAuthority()));
+        assertThat(actual.getPort(), is(from.getPort()));
         assertThat(actual.getPathWithParams(), is(from.getPathWithParams()));
         assertThat(actual.getContentType(), is(from.getContentType()));
         assertThat(actual.getAccept(), is(from.getAccept()));
@@ -60,6 +63,9 @@ public class RestErrorRequestTranslatorTest {
         assertThat(actual.getPossibleContentTypes(), is(from.getPossibleContentTypes()));
         assertThat(actual.getPossibleAccept(), is(from.getPossibleAccepts()));
         assertThat(actual.getMethod(), is(from.getMethod()));
+        assertThat(actual.getScheme(), is(from.getScheme()));
+        assertThat(actual.getAuthority(), is(from.getAuthority()));
+        assertThat(actual.getPort(), is(from.getPort()));
         assertThat(actual.getPathWithParams(), is(from.getPathWithParams()));
         assertThat(actual.getContentType(), is(from.getContentType()));
         assertThat(actual.getAccept(), is(from.getAccept()));

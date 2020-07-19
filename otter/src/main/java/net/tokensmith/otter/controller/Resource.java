@@ -1,6 +1,8 @@
 package net.tokensmith.otter.controller;
 
-import net.tokensmith.otter.controller.entity.*;
+import net.tokensmith.otter.controller.entity.DefaultSession;
+import net.tokensmith.otter.controller.entity.DefaultUser;
+import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.controller.entity.response.Response;
 

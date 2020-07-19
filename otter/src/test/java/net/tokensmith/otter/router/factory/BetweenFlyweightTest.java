@@ -4,21 +4,20 @@ import helper.FixtureFactory;
 import helper.entity.DummyBetween;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.gateway.entity.Label;
+import net.tokensmith.otter.router.entity.Method;
+import net.tokensmith.otter.router.entity.between.Between;
+import net.tokensmith.otter.security.builder.entity.Betweens;
 import org.junit.Before;
 import org.junit.Test;
-import net.tokensmith.otter.gateway.entity.Label;
-import net.tokensmith.otter.router.entity.between.Between;
-import net.tokensmith.otter.router.entity.Method;
-import net.tokensmith.otter.security.builder.entity.Betweens;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class BetweenFlyweightTest {
     private BetweenFlyweight<DummySession, DummyUser> subject;

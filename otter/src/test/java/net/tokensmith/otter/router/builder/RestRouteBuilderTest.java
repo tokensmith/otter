@@ -1,19 +1,19 @@
 package net.tokensmith.otter.router.builder;
 
+import helper.entity.OkRestResource;
 import helper.entity.model.DummyPayload;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
-import helper.entity.OkRestResource;
-import org.junit.Test;
 import net.tokensmith.otter.router.entity.RestRoute;
 import net.tokensmith.otter.router.entity.between.RestBetween;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 
 public class RestRouteBuilderTest {

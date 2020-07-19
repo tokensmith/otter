@@ -1,28 +1,32 @@
 package net.tokensmith.otter.gateway.servlet.translator;
 
 import helper.FixtureFactory;
-import net.tokensmith.otter.gateway.entity.Shape;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import net.tokensmith.otter.QueryStringToMap;
 import net.tokensmith.otter.controller.builder.MimeTypeBuilder;
 import net.tokensmith.otter.controller.entity.mime.MimeType;
 import net.tokensmith.otter.controller.header.Header;
+import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.entity.io.Ask;
 import net.tokensmith.otter.translator.MimeTypeTranslator;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -57,6 +61,9 @@ public class HttpServletRequestTranslatorTest {
     public void fromWhenPostAndContentTypeIsJsonAndAcceptIsJsonShouldTranslateOk() throws Exception {
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         when(mockContainerRequest.getMethod()).thenReturn("POST");
+        when(mockContainerRequest.getScheme()).thenReturn("https");
+        when(mockContainerRequest.getServerName()).thenReturn("tokensmith.net");
+        when(mockContainerRequest.getServerPort()).thenReturn(443);
         when(mockContainerRequest.getRequestURI()).thenReturn("/foo");
         when(mockContainerRequest.getQueryString()).thenReturn("bar=bar-value");
         when(mockContainerRequest.getCookies()).thenReturn(null);
@@ -82,6 +89,9 @@ public class HttpServletRequestTranslatorTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMethod(), is(Method.POST));
+        assertThat(actual.getScheme(), is("https"));
+        assertThat(actual.getAuthority(), is("tokensmith.net"));
+        assertThat(actual.getPort(), is(443));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getContentType(), is(notNullValue()));
@@ -108,6 +118,9 @@ public class HttpServletRequestTranslatorTest {
     public void fromWhenPostAndCookiesAreNullAndContentTypeIsFormUrlEncodedShouldTranslateOk() throws Exception {
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         when(mockContainerRequest.getMethod()).thenReturn("POST");
+        when(mockContainerRequest.getScheme()).thenReturn("https");
+        when(mockContainerRequest.getServerName()).thenReturn("tokensmith.net");
+        when(mockContainerRequest.getServerPort()).thenReturn(443);
         when(mockContainerRequest.getRequestURI()).thenReturn("/foo");
         when(mockContainerRequest.getQueryString()).thenReturn("bar=bar-value");
         when(mockContainerRequest.getCookies()).thenReturn(null);
@@ -137,6 +150,9 @@ public class HttpServletRequestTranslatorTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMethod(), is(Method.POST));
+        assertThat(actual.getScheme(), is("https"));
+        assertThat(actual.getAuthority(), is("tokensmith.net"));
+        assertThat(actual.getPort(), is(443));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getContentType(), is(notNullValue()));
@@ -165,6 +181,9 @@ public class HttpServletRequestTranslatorTest {
     public void fromWhenPutAndContentTypeIsJsonAndAcceptIsJsonShouldTranslateOk() throws Exception {
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         when(mockContainerRequest.getMethod()).thenReturn("PUT");
+        when(mockContainerRequest.getScheme()).thenReturn("https");
+        when(mockContainerRequest.getServerName()).thenReturn("tokensmith.net");
+        when(mockContainerRequest.getServerPort()).thenReturn(443);
         when(mockContainerRequest.getRequestURI()).thenReturn("/foo");
         when(mockContainerRequest.getQueryString()).thenReturn("bar=bar-value");
         when(mockContainerRequest.getCookies()).thenReturn(null);
@@ -190,6 +209,9 @@ public class HttpServletRequestTranslatorTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMethod(), is(Method.PUT));
+        assertThat(actual.getScheme(), is("https"));
+        assertThat(actual.getAuthority(), is("tokensmith.net"));
+        assertThat(actual.getPort(), is(443));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getContentType(), is(notNullValue()));
@@ -216,6 +238,9 @@ public class HttpServletRequestTranslatorTest {
     public void fromWhenPatchAndContentTypeIsJsonAndAcceptIsJsonShouldTranslateOk() throws Exception {
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         when(mockContainerRequest.getMethod()).thenReturn("PATCH");
+        when(mockContainerRequest.getScheme()).thenReturn("https");
+        when(mockContainerRequest.getServerName()).thenReturn("tokensmith.net");
+        when(mockContainerRequest.getServerPort()).thenReturn(443);
         when(mockContainerRequest.getRequestURI()).thenReturn("/foo");
         when(mockContainerRequest.getQueryString()).thenReturn("bar=bar-value");
         when(mockContainerRequest.getCookies()).thenReturn(null);
@@ -241,6 +266,9 @@ public class HttpServletRequestTranslatorTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMethod(), is(Method.PATCH));
+        assertThat(actual.getScheme(), is("https"));
+        assertThat(actual.getAuthority(), is("tokensmith.net"));
+        assertThat(actual.getPort(), is(443));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getContentType(), is(notNullValue()));

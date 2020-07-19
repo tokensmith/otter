@@ -4,8 +4,8 @@ package net.tokensmith.otter.gateway;
 import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.gateway.entity.Group;
-import net.tokensmith.otter.gateway.entity.rest.RestGroup;
 import net.tokensmith.otter.gateway.entity.Shape;
+import net.tokensmith.otter.gateway.entity.rest.RestGroup;
 
 import java.util.List;
 

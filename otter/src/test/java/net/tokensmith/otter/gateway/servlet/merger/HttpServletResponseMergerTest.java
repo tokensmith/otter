@@ -1,19 +1,20 @@
 package net.tokensmith.otter.gateway.servlet.merger;
 
 import helper.FixtureFactory;
+import net.tokensmith.otter.gateway.servlet.translator.HttpServletRequestCookieTranslator;
+import net.tokensmith.otter.router.entity.io.Answer;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.otter.gateway.servlet.translator.HttpServletRequestCookieTranslator;
-import net.tokensmith.otter.router.entity.io.Answer;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.function.Function;
-
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 public class HttpServletResponseMergerTest {

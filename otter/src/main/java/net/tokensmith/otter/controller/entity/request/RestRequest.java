@@ -14,6 +14,9 @@ public class RestRequest<U, P> {
     private List<MimeType> possibleContentTypes;
     private List<MimeType> possibleAccepts;
     private Method method;
+    private String scheme;
+    private String authority;
+    private Integer port;
     private String pathWithParams;
     private MimeType contentType;
     private MimeType accept;
@@ -28,21 +31,6 @@ public class RestRequest<U, P> {
     private Optional<Throwable> cause;
 
     public RestRequest() {}
-
-    public RestRequest(Optional<Matcher> matcher, Method method, String pathWithParams, MimeType contentType, MimeType accept, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<byte[]> body, String ipAddress, Optional<P> payload) {
-        this.matcher = matcher;
-        this.method = method;
-        this.pathWithParams = pathWithParams;
-        this.contentType = contentType;
-        this.accept = accept;
-        this.headers = headers;
-        this.cookies = cookies;
-        this.queryParams = queryParams;
-        this.formData = formData;
-        this.body = body;
-        this.ipAddress = ipAddress;
-        this.payload = payload;
-    }
 
     public Optional<Matcher> getMatcher() {
         return matcher;
@@ -66,6 +54,30 @@ public class RestRequest<U, P> {
 
     public void setMethod(Method method) {
         this.method = method;
+    }
+
+    public String getScheme() {
+        return scheme;
+    }
+
+    public void setScheme(String scheme) {
+        this.scheme = scheme;
+    }
+
+    public String getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(String authority) {
+        this.authority = authority;
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
     }
 
     public String getPathWithParams() {

@@ -3,26 +3,24 @@ package net.tokensmith.otter.security.builder;
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.config.OtterAppFactory;
-import net.tokensmith.otter.gateway.builder.ShapeBuilder;
 import net.tokensmith.otter.gateway.entity.Shape;
-import org.junit.Before;
-import org.junit.Test;
-import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.security.builder.entity.Betweens;
 import net.tokensmith.otter.security.csrf.between.html.CheckCSRF;
 import net.tokensmith.otter.security.csrf.between.html.PrepareCSRF;
 import net.tokensmith.otter.security.session.between.html.DecryptSession;
 import net.tokensmith.otter.security.session.between.html.EncryptSession;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
-
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Map;
 
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 
 public class BetweenBuilderTest {

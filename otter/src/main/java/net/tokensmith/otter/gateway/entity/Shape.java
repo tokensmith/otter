@@ -2,10 +2,8 @@ package net.tokensmith.otter.gateway.entity;
 
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.config.CookieConfig;
-import net.tokensmith.otter.controller.entity.StatusCode;
 
 import java.util.Map;
-import java.util.Optional;
 
 
 /**

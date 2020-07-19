@@ -1,14 +1,10 @@
 package net.tokensmith.otter.gateway.translator;
 
 import helper.FixtureFactory;
-import helper.entity.*;
+import helper.entity.ClientErrorResource;
+import helper.entity.ServerErrorResource;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
-import org.hamcrest.core.Is;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.dispatch.html.RouteRun;
@@ -18,13 +14,18 @@ import net.tokensmith.otter.router.entity.Location;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.factory.BetweenFlyweight;
 import net.tokensmith.otter.security.builder.entity.Betweens;
+import org.hamcrest.core.Is;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 

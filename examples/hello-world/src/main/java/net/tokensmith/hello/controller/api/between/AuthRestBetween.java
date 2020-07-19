@@ -2,7 +2,6 @@ package net.tokensmith.hello.controller.api.between;
 
 import net.tokensmith.hello.controller.api.model.ApiUser;
 import net.tokensmith.hello.security.TokenSession;
-import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.dispatch.entity.RestBtwnRequest;
 import net.tokensmith.otter.dispatch.entity.RestBtwnResponse;
 import net.tokensmith.otter.router.entity.Method;

@@ -4,23 +4,25 @@ package net.tokensmith.hello.controller.api.v2;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.tokensmith.hello.model.Hello;
 import net.tokensmith.otter.controller.entity.Cause;
-import org.asynchttpclient.ListenableFuture;
-import org.asynchttpclient.Response;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import net.tokensmith.otter.controller.entity.ClientError;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.error.rest.NotFoundRestResource;
 import net.tokensmith.otter.controller.header.ContentType;
 import net.tokensmith.otter.controller.header.Header;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Response;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import suite.IntegrationTestSuite;
 import suite.ServletContainerTest;
 
 import java.net.URI;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 @Category(ServletContainerTest.class)

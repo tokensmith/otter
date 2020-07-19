@@ -8,7 +8,6 @@ import net.tokensmith.otter.controller.entity.mime.MimeType;
 import net.tokensmith.otter.controller.entity.mime.SubType;
 import net.tokensmith.otter.controller.entity.mime.TopLevelType;
 import net.tokensmith.otter.controller.header.Header;
-import net.tokensmith.otter.gateway.servlet.ServletGateway;
 import net.tokensmith.otter.router.builder.AskBuilder;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.entity.io.Ask;
@@ -18,8 +17,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 
 /**
@@ -80,6 +82,9 @@ public class HttpServletRequestTranslator  {
         return new AskBuilder()
                 .matcher(Optional.empty())
                 .method(method)
+                .scheme(containerRequest.getScheme())
+                .authority(containerRequest.getServerName())
+                .port(containerRequest.getServerPort())
                 .pathWithParams(pathWithParams)
                 .contentType(contentType)
                 .accept(acceptTo)

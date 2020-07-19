@@ -1,12 +1,12 @@
 package net.tokensmith.hello.controller;
 
 
+import net.tokensmith.otter.controller.entity.StatusCode;
 import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.Response;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import net.tokensmith.otter.controller.entity.StatusCode;
 import suite.IntegrationTestSuite;
 import suite.ServletContainerTest;
 

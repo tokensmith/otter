@@ -1,20 +1,16 @@
 package net.tokensmith.otter.gateway.translator;
 
 import helper.FixtureFactory;
-import helper.entity.*;
+import helper.entity.ClientErrorRestResource;
+import helper.entity.ServerErrorRestResource;
 import helper.entity.model.DummyErrorPayload;
 import helper.entity.model.DummyPayload;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
-import net.tokensmith.otter.dispatch.json.validator.Validate;
-import org.hamcrest.core.Is;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.dispatch.json.JsonDispatchErrorRouteRun;
 import net.tokensmith.otter.dispatch.json.JsonRouteRun;
+import net.tokensmith.otter.dispatch.json.validator.Validate;
 import net.tokensmith.otter.gateway.entity.rest.RestError;
 import net.tokensmith.otter.gateway.entity.rest.RestErrorTarget;
 import net.tokensmith.otter.gateway.entity.rest.RestTarget;
@@ -23,13 +19,18 @@ import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.factory.RestBetweenFlyweight;
 import net.tokensmith.otter.security.builder.entity.RestBetweens;
 import net.tokensmith.otter.translatable.Translatable;
+import org.hamcrest.core.Is;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 

@@ -2,16 +2,18 @@ package net.tokensmith.otter.gateway.servlet.merger;
 
 import helper.FixtureFactory;
 import helper.fake.FakePresenter;
+import net.tokensmith.otter.router.entity.io.Answer;
 import org.junit.Before;
 import org.junit.Test;
-import net.tokensmith.otter.router.entity.io.Answer;
 
 import javax.servlet.http.HttpServletRequest;
-
-
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 
 public class HttpServletRequestMergerTest {

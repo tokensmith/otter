@@ -2,9 +2,8 @@ package net.tokensmith.hello.controller.api.v3.handler;
 
 import net.tokensmith.hello.controller.api.model.ApiUser;
 import net.tokensmith.hello.controller.api.v3.model.ServerErrorPayload;
-import net.tokensmith.otter.controller.error.rest.RestErrorResource;
 import net.tokensmith.otter.controller.entity.StatusCode;
-
+import net.tokensmith.otter.controller.error.rest.RestErrorResource;
 
 import java.util.Optional;
 

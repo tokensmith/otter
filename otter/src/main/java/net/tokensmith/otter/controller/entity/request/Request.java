@@ -5,7 +5,6 @@ import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.mime.MimeType;
 import net.tokensmith.otter.router.entity.Method;
 
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,6 +21,9 @@ public class Request<S, U> {
     private List<MimeType> possibleContentTypes;
     private List<MimeType> possibleAccepts;
     private Method method;
+    private String scheme;
+    private String authority;
+    private Integer port;
     private String pathWithParams;
     private MimeType contentType;
     private MimeType accept;
@@ -38,9 +40,12 @@ public class Request<S, U> {
 
     public Request() {}
 
-    public Request(Optional<Matcher> matcher, Method method, String pathWithParams, MimeType contentType, MimeType accept, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<byte[]> body, Optional<String> csrfChallenge, String ipAddress) {
+    public Request(Optional<Matcher> matcher, Method method, String scheme, String authority, Integer port, String pathWithParams, MimeType contentType, MimeType accept, Map<String, String> headers, Map<String, Cookie> cookies, Map<String, List<String>> queryParams, Map<String, List<String>> formData, Optional<byte[]> body, Optional<String> csrfChallenge, String ipAddress) {
         this.matcher = matcher;
         this.method = method;
+        this.scheme = scheme;
+        this.authority = authority;
+        this.port = port;
         this.pathWithParams = pathWithParams;
         this.contentType = contentType;
         this.accept = accept;
@@ -67,6 +72,30 @@ public class Request<S, U> {
 
     public void setMethod(Method method) {
         this.method = method;
+    }
+
+    public String getScheme() {
+        return scheme;
+    }
+
+    public void setScheme(String scheme) {
+        this.scheme = scheme;
+    }
+
+    public String getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(String authority) {
+        this.authority = authority;
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
     }
 
     public String getPathWithParams() {

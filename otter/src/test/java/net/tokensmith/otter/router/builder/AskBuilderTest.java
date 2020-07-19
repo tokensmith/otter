@@ -1,18 +1,22 @@
 package net.tokensmith.otter.router.builder;
 
 import helper.FixtureFactory;
-import org.junit.Before;
-import org.junit.Test;
 import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.mime.MimeType;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.entity.io.Ask;
+import org.junit.Before;
+import org.junit.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class AskBuilderTest {
     private AskBuilder subject;
@@ -31,12 +35,29 @@ public class AskBuilderTest {
     }
 
     @Test
-    public void buildWhenPathWithParamsShouldBeOk() {
-        String url = "/pathWithParams";
-        Ask actual = subject.pathWithParams(url).build();
+    public void buildWhenBaseURIPartsShouldBeOk() {
+        String scheme = "http";
+        String authority = "tokensmith.net";
+        Integer port = 443;
+
+        Ask actual = subject.scheme(scheme)
+                .authority(authority)
+                .port(port)
+                .build();
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getPathWithParams(), is(url));
+        assertThat(actual.getScheme(), is(scheme));
+        assertThat(actual.getAuthority(), is(authority));
+        assertThat(actual.getPort(), is(port));
+    }
+
+    @Test
+    public void buildWhenPathWithParamsShouldBeOk() {
+        String contextPath = "/pathWithParams";
+        Ask actual = subject.pathWithParams(contextPath).build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getPathWithParams(), is(contextPath));
     }
 
     @Test

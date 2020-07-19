@@ -11,7 +11,6 @@ import net.tokensmith.otter.router.exception.HaltException;
 import net.tokensmith.otter.security.Halt;
 import net.tokensmith.otter.translatable.Translatable;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;

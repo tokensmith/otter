@@ -4,21 +4,21 @@ import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import net.tokensmith.otter.config.OtterAppFactory;
+import net.tokensmith.otter.controller.entity.Cookie;
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.request.Request;
+import net.tokensmith.otter.controller.entity.response.Response;
 import net.tokensmith.otter.gateway.entity.Shape;
+import net.tokensmith.otter.router.entity.Method;
+import net.tokensmith.otter.router.exception.CsrfException;
+import net.tokensmith.otter.router.exception.HaltException;
 import net.tokensmith.otter.security.Halt;
+import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
 import net.tokensmith.otter.security.csrf.between.html.CheckCSRF;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.otter.controller.entity.Cookie;
-import net.tokensmith.otter.controller.entity.request.Request;
-import net.tokensmith.otter.controller.entity.response.Response;
-import net.tokensmith.otter.controller.entity.StatusCode;
-import net.tokensmith.otter.router.entity.Method;
-import net.tokensmith.otter.router.exception.CsrfException;
-import net.tokensmith.otter.router.exception.HaltException;
-import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -27,8 +27,12 @@ import java.util.function.BiFunction;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 public class CheckCSRFTest {

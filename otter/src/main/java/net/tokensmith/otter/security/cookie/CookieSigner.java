@@ -15,8 +15,8 @@ import net.tokensmith.jwt.serialization.exception.JsonToJwtException;
 import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.security.cookie.either.CookieError;
-import net.tokensmith.otter.security.cookie.either.ReadError;
 import net.tokensmith.otter.security.cookie.either.ReadEither;
+import net.tokensmith.otter.security.cookie.either.ReadError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

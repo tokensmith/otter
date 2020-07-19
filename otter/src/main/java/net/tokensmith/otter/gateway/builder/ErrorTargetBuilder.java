@@ -6,7 +6,6 @@ import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.gateway.entity.ErrorTarget;
 import net.tokensmith.otter.router.entity.between.Between;
 
-
 import java.util.ArrayList;
 import java.util.List;
 

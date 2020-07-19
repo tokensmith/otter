@@ -1,7 +1,6 @@
 package net.tokensmith.otter.security.csrf;
 
 import net.tokensmith.otter.security.RandomString;
-import net.tokensmith.otter.security.csrf.Csrf;
 import net.tokensmith.otter.security.csrf.exception.CsrfException;
 
 import javax.servlet.http.HttpServletRequest;

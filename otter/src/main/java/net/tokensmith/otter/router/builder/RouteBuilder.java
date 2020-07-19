@@ -3,8 +3,8 @@ package net.tokensmith.otter.router.builder;
 import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
-import net.tokensmith.otter.router.entity.between.Between;
 import net.tokensmith.otter.router.entity.Route;
+import net.tokensmith.otter.router.entity.between.Between;
 
 import java.util.ArrayList;
 import java.util.List;

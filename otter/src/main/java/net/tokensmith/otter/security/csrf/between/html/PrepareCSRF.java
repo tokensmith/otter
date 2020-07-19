@@ -1,19 +1,19 @@
 package net.tokensmith.otter.security.csrf.between.html;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.tokensmith.jwt.entity.jwt.JsonWebToken;
 import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.controller.entity.response.Response;
-import net.tokensmith.otter.router.entity.between.Between;
 import net.tokensmith.otter.router.entity.Method;
+import net.tokensmith.otter.router.entity.between.Between;
 import net.tokensmith.otter.router.exception.HaltException;
 import net.tokensmith.otter.security.csrf.CsrfClaims;
 import net.tokensmith.otter.security.csrf.DoubleSubmitCSRF;
 import net.tokensmith.otter.security.csrf.exception.CsrfException;
 import net.tokensmith.otter.security.entity.ChallengeToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Objects;

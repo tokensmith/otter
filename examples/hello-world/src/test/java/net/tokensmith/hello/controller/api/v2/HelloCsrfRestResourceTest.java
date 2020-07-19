@@ -8,7 +8,6 @@ import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.header.ContentType;
 import net.tokensmith.otter.controller.header.Header;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
-import org.asynchttpclient.BoundRequestBuilder;
 import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.Response;
 import org.junit.BeforeClass;
@@ -18,10 +17,6 @@ import suite.IntegrationTestSuite;
 import suite.ServletContainerTest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
