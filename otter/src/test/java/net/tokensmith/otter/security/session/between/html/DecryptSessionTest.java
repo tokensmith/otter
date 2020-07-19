@@ -3,8 +3,6 @@ package net.tokensmith.otter.security.session.between.html;
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
-import net.tokensmith.otter.security.Halt;
-import org.junit.Test;
 import net.tokensmith.otter.config.OtterAppFactory;
 import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.request.Request;
@@ -12,12 +10,14 @@ import net.tokensmith.otter.controller.entity.response.Response;
 import net.tokensmith.otter.gateway.LocationTranslatorFactory;
 import net.tokensmith.otter.gateway.entity.Label;
 import net.tokensmith.otter.gateway.entity.Shape;
+import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.exception.HaltException;
 import net.tokensmith.otter.router.factory.BetweenFlyweight;
+import net.tokensmith.otter.security.Halt;
 import net.tokensmith.otter.security.builder.entity.Betweens;
 import net.tokensmith.otter.security.exception.SessionCtorException;
 import net.tokensmith.otter.security.session.exception.InvalidSessionException;
-import net.tokensmith.otter.router.entity.Method;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,9 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
 
 public class DecryptSessionTest {
     private static OtterAppFactory otterAppFactory = new OtterAppFactory();

@@ -1,9 +1,15 @@
 package net.tokensmith.otter.controller.builder;
 
-import net.tokensmith.otter.controller.entity.mime.*;
-;
+import net.tokensmith.otter.controller.entity.mime.MimeType;
+import net.tokensmith.otter.controller.entity.mime.ParamKey;
+import net.tokensmith.otter.controller.entity.mime.ParamValue;
+import net.tokensmith.otter.controller.entity.mime.SubType;
+import net.tokensmith.otter.controller.entity.mime.TopLevelType;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+;
 
 public class MimeTypeBuilder {
     private String topLevelType;

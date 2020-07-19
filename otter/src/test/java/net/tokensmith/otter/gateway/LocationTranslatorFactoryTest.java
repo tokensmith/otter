@@ -5,17 +5,17 @@ import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
 import net.tokensmith.otter.config.OtterAppFactory;
 import net.tokensmith.otter.gateway.config.TranslatorConfig;
-import org.junit.Before;
-import org.junit.Test;
 import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.gateway.translator.LocationTranslator;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class LocationTranslatorFactoryTest {
     private Shape shape;

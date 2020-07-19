@@ -2,10 +2,11 @@ package net.tokensmith.otter.controller.builder;
 
 
 import net.tokensmith.otter.controller.entity.Cookie;
-import net.tokensmith.otter.controller.entity.response.Response;
 import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.response.Response;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
 
 public class ResponseBuilder<T> {
     private StatusCode statusCode;

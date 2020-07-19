@@ -1,10 +1,10 @@
 package net.tokensmith.otter.controller.builder;
 
-import org.junit.Test;
 import net.tokensmith.otter.controller.entity.mime.MimeType;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class MimeTypeBuilderTest {
 

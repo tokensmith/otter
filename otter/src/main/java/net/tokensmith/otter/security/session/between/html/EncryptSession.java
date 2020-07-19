@@ -1,8 +1,6 @@
 package net.tokensmith.otter.security.session.between.html;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import net.tokensmith.jwt.builder.compact.EncryptedCompactBuilder;
@@ -12,13 +10,15 @@ import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.jwt.entity.jwt.header.Algorithm;
 import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.controller.entity.Cookie;
+import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.controller.entity.response.Response;
-import net.tokensmith.otter.controller.entity.StatusCode;
-import net.tokensmith.otter.security.session.exception.EncryptSessionException;
-import net.tokensmith.otter.router.entity.between.Between;
 import net.tokensmith.otter.router.entity.Method;
+import net.tokensmith.otter.router.entity.between.Between;
 import net.tokensmith.otter.router.exception.HaltException;
+import net.tokensmith.otter.security.session.exception.EncryptSessionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 

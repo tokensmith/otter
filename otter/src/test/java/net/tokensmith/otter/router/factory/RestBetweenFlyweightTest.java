@@ -5,12 +5,12 @@ import helper.FixtureFactory;
 import helper.entity.DummyRestBetween;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
-import org.junit.Before;
-import org.junit.Test;
 import net.tokensmith.otter.gateway.entity.Label;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.entity.between.RestBetween;
 import net.tokensmith.otter.security.builder.entity.RestBetweens;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class RestBetweenFlyweightTest {
     private RestBetweenFlyweight<DummySession, DummyUser> subject;

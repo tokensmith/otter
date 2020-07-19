@@ -4,7 +4,6 @@ package net.tokensmith.otter.server.path;
 import org.junit.Before;
 import org.junit.Test;
 
-
 import java.net.URI;
 
 import static org.hamcrest.CoreMatchers.is;

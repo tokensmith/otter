@@ -5,8 +5,8 @@ import net.tokensmith.otter.controller.entity.DefaultSession;
 import net.tokensmith.otter.controller.entity.DefaultUser;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.mime.MimeType;
-import net.tokensmith.otter.router.entity.between.Between;
 import net.tokensmith.otter.router.entity.Method;
+import net.tokensmith.otter.router.entity.between.Between;
 
 import java.util.List;
 import java.util.Map;

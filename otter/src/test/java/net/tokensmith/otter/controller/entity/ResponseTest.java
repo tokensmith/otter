@@ -1,11 +1,11 @@
 package net.tokensmith.otter.controller.entity;
 
-import org.junit.Test;
 import net.tokensmith.otter.controller.entity.response.Response;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class ResponseTest {
 

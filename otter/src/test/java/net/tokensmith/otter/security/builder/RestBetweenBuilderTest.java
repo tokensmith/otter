@@ -6,11 +6,8 @@ import helper.entity.model.DummyUser;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.config.OtterAppFactory;
-import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.gateway.entity.Shape;
-import net.tokensmith.otter.security.builder.entity.Betweens;
 import net.tokensmith.otter.security.builder.entity.RestBetweens;
-import net.tokensmith.otter.security.csrf.between.html.CheckCSRF;
 import net.tokensmith.otter.security.csrf.between.rest.RestCheckCSRF;
 import net.tokensmith.otter.security.session.between.rest.RestReadSession;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
@@ -21,7 +18,7 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class RestBetweenBuilderTest {
     private static OtterAppFactory otterAppFactory = new OtterAppFactory();

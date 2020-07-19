@@ -4,7 +4,6 @@ import helper.FixtureFactory;
 import helper.entity.model.DummyPayload;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
-import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.config.OtterAppFactory;
 import net.tokensmith.otter.dispatch.json.validator.Validate;
 import net.tokensmith.otter.gateway.config.RestTranslatorConfig;
@@ -16,10 +15,9 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class RestLocationTranslatorFactoryTest {
     private OtterAppFactory otterAppFactory;

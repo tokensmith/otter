@@ -3,11 +3,7 @@ package net.tokensmith.otter.security.session.between.html;
 
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
-
 import helper.entity.model.DummyUser;
-import net.tokensmith.otter.security.session.between.html.EncryptSession;
-import org.junit.Before;
-import org.junit.Test;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.controller.entity.Cookie;
@@ -17,12 +13,17 @@ import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.exception.HaltException;
 import net.tokensmith.otter.security.session.exception.EncryptSessionException;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
 
 public class EncryptSessionTest {
     private TranslatorAppFactory appFactory = new TranslatorAppFactory();

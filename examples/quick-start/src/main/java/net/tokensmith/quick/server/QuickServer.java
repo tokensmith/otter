@@ -1,11 +1,10 @@
 package net.tokensmith.quick.server;
 
 
-import net.tokensmith.quick.controller.HelloResource;
 import net.tokensmith.otter.server.HttpServer;
 import net.tokensmith.otter.server.HttpServerConfig;
+import net.tokensmith.quick.controller.HelloResource;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

@@ -2,22 +2,22 @@ package net.tokensmith.hello.controller.api.v3;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.tokensmith.hello.controller.api.v3.model.ServerErrorPayload;
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.header.ContentType;
+import net.tokensmith.otter.controller.header.Header;
+import net.tokensmith.otter.translator.config.TranslatorAppFactory;
 import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.Response;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import net.tokensmith.otter.controller.entity.StatusCode;
-import net.tokensmith.otter.controller.header.ContentType;
-import net.tokensmith.otter.controller.header.Header;
-import net.tokensmith.otter.translator.config.TranslatorAppFactory;
 import suite.IntegrationTestSuite;
 import suite.ServletContainerTest;
 
 import java.net.URI;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 @Category(ServletContainerTest.class)
 public class BrokenRestResourceTest {

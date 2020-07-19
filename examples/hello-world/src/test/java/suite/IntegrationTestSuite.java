@@ -1,13 +1,25 @@
 package suite;
 
 
-import net.tokensmith.hello.controller.*;
+import net.tokensmith.hello.controller.AssetsTest;
+import net.tokensmith.hello.controller.GoodByeResourceTest;
+import net.tokensmith.hello.controller.HelloResourceTest;
+import net.tokensmith.hello.controller.LoginResourceTest;
+import net.tokensmith.hello.controller.LoginSessionResourceTest;
+import net.tokensmith.hello.controller.LoginSetSessionResourceTest;
+import net.tokensmith.hello.controller.NotFoundResourceTest;
+import net.tokensmith.hello.controller.ProtectedResourceTest;
+import net.tokensmith.hello.controller.RunTimeExceptionResourceTest;
 import net.tokensmith.hello.controller.api.v2.BrokenRestResourceTest;
 import net.tokensmith.hello.controller.api.v2.HelloCsrfRestResourceTest;
-import net.tokensmith.hello.controller.api.v2.HelloSessionRestResourceTest;
-import net.tokensmith.otter.server.HttpServerConfig;
-import org.apache.tomcat.util.descriptor.web.ErrorPage;
 import net.tokensmith.hello.controller.api.v2.HelloRestResourceTest;
+import net.tokensmith.hello.controller.api.v2.HelloSessionRestResourceTest;
+import net.tokensmith.hello.controller.html.HelloResource;
+import net.tokensmith.otter.config.OtterAppFactory;
+import net.tokensmith.otter.server.HttpServerConfig;
+import net.tokensmith.otter.server.container.ServletContainer;
+import net.tokensmith.otter.server.container.ServletContainerFactory;
+import org.apache.tomcat.util.descriptor.web.ErrorPage;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 import org.junit.AfterClass;
@@ -15,10 +27,6 @@ import org.junit.BeforeClass;
 import org.junit.experimental.categories.Categories;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import net.tokensmith.hello.controller.html.HelloResource;
-import net.tokensmith.otter.config.OtterAppFactory;
-import net.tokensmith.otter.server.container.ServletContainer;
-import net.tokensmith.otter.server.container.ServletContainerFactory;
 
 import java.net.URI;
 import java.net.http.HttpClient;

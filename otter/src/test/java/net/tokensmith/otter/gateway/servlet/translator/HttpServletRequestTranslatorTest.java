@@ -1,28 +1,32 @@
 package net.tokensmith.otter.gateway.servlet.translator;
 
 import helper.FixtureFactory;
-import net.tokensmith.otter.gateway.entity.Shape;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import net.tokensmith.otter.QueryStringToMap;
 import net.tokensmith.otter.controller.builder.MimeTypeBuilder;
 import net.tokensmith.otter.controller.entity.mime.MimeType;
 import net.tokensmith.otter.controller.header.Header;
+import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.entity.io.Ask;
 import net.tokensmith.otter.translator.MimeTypeTranslator;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

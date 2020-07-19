@@ -2,17 +2,10 @@ package net.tokensmith.hello.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.tokensmith.hello.security.TokenSession;
-import net.tokensmith.hello.config.AppFactory;
 import helper.FixtureFactory;
 import io.netty.handler.codec.http.cookie.Cookie;
-import org.asynchttpclient.AsyncHttpClient;
-import org.asynchttpclient.ListenableFuture;
-import org.asynchttpclient.Param;
-import org.asynchttpclient.Response;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import net.tokensmith.hello.config.AppFactory;
+import net.tokensmith.hello.security.TokenSession;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.jwt.entity.jwt.JsonWebToken;
@@ -23,6 +16,13 @@ import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.security.config.SecurityAppFactory;
 import net.tokensmith.otter.security.csrf.CsrfClaims;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Param;
+import org.asynchttpclient.Response;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import suite.IntegrationTestSuite;
 import suite.ServletContainerTest;
 

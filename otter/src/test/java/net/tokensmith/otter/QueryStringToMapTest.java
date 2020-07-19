@@ -1,6 +1,5 @@
 package net.tokensmith.otter;
 
-import net.tokensmith.otter.QueryStringToMap;
 import org.junit.Before;
 import org.junit.Test;
 

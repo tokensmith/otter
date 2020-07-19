@@ -1,11 +1,15 @@
 package net.tokensmith.otter.translator;
 
 import helper.entity.model.DummyPayload;
+import net.tokensmith.otter.translator.config.TranslatorAppFactory;
+import net.tokensmith.otter.translator.exception.DeserializationException;
+import net.tokensmith.otter.translator.exception.DuplicateKeyException;
+import net.tokensmith.otter.translator.exception.InvalidPayloadException;
+import net.tokensmith.otter.translator.exception.InvalidValueException;
+import net.tokensmith.otter.translator.exception.Reason;
+import net.tokensmith.otter.translator.exception.UnknownKeyException;
 import org.junit.Before;
 import org.junit.Test;
-import net.tokensmith.otter.translator.config.TranslatorAppFactory;
-import net.tokensmith.otter.translator.exception.*;
-
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -13,7 +17,7 @@ import java.util.Optional;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 
 public class JsonTranslatorTest {

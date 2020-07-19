@@ -3,18 +3,22 @@ package net.tokensmith.otter.controller.builder;
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.controller.entity.Cookie;
+import net.tokensmith.otter.controller.entity.mime.MimeType;
+import net.tokensmith.otter.controller.entity.request.Request;
+import net.tokensmith.otter.router.entity.Method;
 import org.junit.Before;
 import org.junit.Test;
-import net.tokensmith.otter.controller.entity.Cookie;
-import net.tokensmith.otter.controller.entity.request.Request;
-import net.tokensmith.otter.controller.entity.mime.MimeType;
-import net.tokensmith.otter.router.entity.Method;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 
 public class RequestBuilderTest {

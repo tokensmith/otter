@@ -1,19 +1,22 @@
 package net.tokensmith.otter.security.csrf;
 
+import net.tokensmith.otter.security.RandomString;
+import net.tokensmith.otter.security.csrf.exception.CsrfException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.otter.security.RandomString;
-import net.tokensmith.otter.security.csrf.exception.CsrfException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 public class SynchronizerTokenTest {

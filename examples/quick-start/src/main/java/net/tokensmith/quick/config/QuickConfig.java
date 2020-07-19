@@ -1,6 +1,5 @@
 package net.tokensmith.quick.config;
 
-import net.tokensmith.quick.controller.HelloResource;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.jwt.entity.jwk.Use;
 import net.tokensmith.otter.controller.entity.DefaultSession;
@@ -15,6 +14,7 @@ import net.tokensmith.otter.gateway.entity.Shape;
 import net.tokensmith.otter.gateway.entity.Target;
 import net.tokensmith.otter.gateway.entity.rest.RestGroup;
 import net.tokensmith.otter.router.entity.Method;
+import net.tokensmith.quick.controller.HelloResource;
 
 import java.util.ArrayList;
 import java.util.List;

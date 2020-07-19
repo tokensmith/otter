@@ -1,26 +1,32 @@
 package net.tokensmith.hello.config;
 
 
+import net.tokensmith.hello.controller.api.between.AuthRestBetween;
 import net.tokensmith.hello.controller.api.between.AuthSessionRestBetween;
 import net.tokensmith.hello.controller.api.between.AuthV3RestBetween;
+import net.tokensmith.hello.controller.api.model.ApiUser;
+import net.tokensmith.hello.controller.api.v2.BrokenRestResourceV2;
 import net.tokensmith.hello.controller.api.v2.HelloCsrfRestResource;
 import net.tokensmith.hello.controller.api.v2.HelloSessionRestResource;
 import net.tokensmith.hello.controller.api.v3.BrokenRestResource;
 import net.tokensmith.hello.controller.api.v3.HelloRestResource;
-import net.tokensmith.hello.controller.html.*;
-import net.tokensmith.hello.controller.html.authenticate.AuthBetween;
-import net.tokensmith.hello.controller.html.authenticate.AuthOptBetween;
-import net.tokensmith.hello.security.TokenSession;
-import net.tokensmith.hello.controller.api.between.AuthRestBetween;
-import net.tokensmith.hello.controller.api.model.ApiUser;
-
-import net.tokensmith.hello.controller.api.v2.BrokenRestResourceV2;
 import net.tokensmith.hello.controller.api.v3.handler.BadRequestResource;
 import net.tokensmith.hello.controller.api.v3.handler.ServerErrorRestResource;
 import net.tokensmith.hello.controller.api.v3.model.BadRequestPayload;
 import net.tokensmith.hello.controller.api.v3.model.BrokenPayload;
 import net.tokensmith.hello.controller.api.v3.model.ServerErrorPayload;
+import net.tokensmith.hello.controller.html.GoodByeResource;
+import net.tokensmith.hello.controller.html.HelloResource;
+import net.tokensmith.hello.controller.html.LoginResource;
+import net.tokensmith.hello.controller.html.LoginSessionResource;
+import net.tokensmith.hello.controller.html.LoginSetSessionResource;
+import net.tokensmith.hello.controller.html.NotFoundResource;
+import net.tokensmith.hello.controller.html.ProtectedResource;
+import net.tokensmith.hello.controller.html.RunTimeExceptionResource;
+import net.tokensmith.hello.controller.html.authenticate.AuthBetween;
+import net.tokensmith.hello.controller.html.authenticate.AuthOptBetween;
 import net.tokensmith.hello.model.Hello;
+import net.tokensmith.hello.security.TokenSession;
 import net.tokensmith.hello.security.User;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.controller.RestResource;
@@ -38,13 +44,22 @@ import net.tokensmith.otter.controller.error.rest.NotAcceptableRestResource;
 import net.tokensmith.otter.controller.error.rest.NotFoundRestResource;
 import net.tokensmith.otter.gateway.Configure;
 import net.tokensmith.otter.gateway.Gateway;
-import net.tokensmith.otter.gateway.builder.*;
-import net.tokensmith.otter.gateway.entity.*;
+import net.tokensmith.otter.gateway.builder.ErrorTargetBuilder;
+import net.tokensmith.otter.gateway.builder.GroupBuilder;
+import net.tokensmith.otter.gateway.builder.RestErrorTargetBuilder;
+import net.tokensmith.otter.gateway.builder.RestGroupBuilder;
+import net.tokensmith.otter.gateway.builder.RestTargetBuilder;
+import net.tokensmith.otter.gateway.builder.ShapeBuilder;
+import net.tokensmith.otter.gateway.builder.TargetBuilder;
+import net.tokensmith.otter.gateway.entity.ErrorTarget;
+import net.tokensmith.otter.gateway.entity.Group;
+import net.tokensmith.otter.gateway.entity.Label;
+import net.tokensmith.otter.gateway.entity.Shape;
+import net.tokensmith.otter.gateway.entity.Target;
 import net.tokensmith.otter.gateway.entity.rest.RestErrorTarget;
 import net.tokensmith.otter.gateway.entity.rest.RestGroup;
 import net.tokensmith.otter.gateway.entity.rest.RestTarget;
 import net.tokensmith.otter.router.entity.Method;
-
 
 import java.util.ArrayList;
 import java.util.List;

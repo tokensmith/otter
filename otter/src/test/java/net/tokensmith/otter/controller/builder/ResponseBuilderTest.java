@@ -1,13 +1,13 @@
 package net.tokensmith.otter.controller.builder;
 
 
+import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.fake.FakePresenter;
-import helper.FixtureFactory;
-import org.junit.Test;
 import net.tokensmith.otter.controller.entity.Cookie;
-import net.tokensmith.otter.controller.entity.response.Response;
 import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.response.Response;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +15,7 @@ import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 
 public class ResponseBuilderTest {

@@ -1,17 +1,15 @@
 package net.tokensmith.otter.gateway.builder;
 
 import helper.FixtureFactory;
-import net.tokensmith.otter.config.CookieConfig;
-import net.tokensmith.otter.controller.entity.StatusCode;
-import org.junit.Test;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
+import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.gateway.entity.Shape;
+import org.junit.Test;
 
 import java.util.Map;
-import java.util.Optional;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 public class ShapeBuilderTest {
 

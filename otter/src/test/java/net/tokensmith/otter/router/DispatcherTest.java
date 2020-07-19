@@ -1,12 +1,11 @@
 package net.tokensmith.otter.router;
 
 import helper.FixtureFactory;
-import org.junit.Before;
-import org.junit.Test;
+import net.tokensmith.otter.router.entity.Location;
 import net.tokensmith.otter.router.entity.MatchedLocation;
 import net.tokensmith.otter.router.entity.Method;
-import net.tokensmith.otter.router.entity.Location;
-
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +13,7 @@ import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 
 public class DispatcherTest {

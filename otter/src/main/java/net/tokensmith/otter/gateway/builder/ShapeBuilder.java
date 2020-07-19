@@ -2,14 +2,10 @@ package net.tokensmith.otter.gateway.builder;
 
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.otter.config.CookieConfig;
-import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.gateway.entity.Shape;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-
-import static java.util.Map.entry;
 
 public class ShapeBuilder {
     private SymmetricKey signKey;

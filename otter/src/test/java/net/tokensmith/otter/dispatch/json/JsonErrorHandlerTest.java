@@ -8,12 +8,12 @@ import helper.entity.model.DummyErrorPayload;
 import helper.entity.model.DummyPayload;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
-import org.junit.Test;
 import net.tokensmith.otter.controller.RestResource;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.dispatch.entity.RestErrorRequest;
 import net.tokensmith.otter.dispatch.entity.RestErrorResponse;
-import net.tokensmith.otter.dispatch.translator.rest.*;
+import net.tokensmith.otter.dispatch.translator.rest.RestRequestTranslator;
+import net.tokensmith.otter.dispatch.translator.rest.RestResponseTranslator;
 import net.tokensmith.otter.router.entity.Method;
 import net.tokensmith.otter.router.entity.io.Answer;
 import net.tokensmith.otter.translator.JsonTranslator;
@@ -21,13 +21,13 @@ import net.tokensmith.otter.translator.config.TranslatorAppFactory;
 import net.tokensmith.otter.translator.exception.DeserializationException;
 import net.tokensmith.otter.translator.exception.InvalidValueException;
 import net.tokensmith.otter.translator.exception.Reason;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class JsonErrorHandlerTest {
 

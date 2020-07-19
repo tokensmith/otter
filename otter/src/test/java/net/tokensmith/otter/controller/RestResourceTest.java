@@ -3,15 +3,15 @@ package net.tokensmith.otter.controller;
 import helper.FixtureFactory;
 import helper.entity.model.DummyPayload;
 import helper.entity.model.DummyUser;
-import org.junit.Before;
-import org.junit.Test;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.RestRequest;
 import net.tokensmith.otter.controller.entity.response.RestResponse;
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class RestResourceTest {
     RestResource<DummyUser, DummyPayload> subject;
