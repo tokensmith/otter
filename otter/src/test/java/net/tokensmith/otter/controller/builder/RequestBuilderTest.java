@@ -3,6 +3,7 @@ package net.tokensmith.otter.controller.builder;
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
+import net.tokensmith.otter.router.entity.io.Ask;
 import org.junit.Before;
 import org.junit.Test;
 import net.tokensmith.otter.controller.entity.Cookie;
@@ -31,6 +32,23 @@ public class RequestBuilderTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMatcher().isPresent(), is(false));
+    }
+
+    @Test
+    public void buildWhenBaseURIPartsShouldBeOk() {
+        String scheme = "http";
+        String authority = "tokensmith.net";
+        Integer port = 443;
+
+        Request<DummySession, DummyUser> actual = subject.scheme(scheme)
+                .authority(authority)
+                .port(port)
+                .build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getScheme(), is(scheme));
+        assertThat(actual.getAuthority(), is(authority));
+        assertThat(actual.getPort(), is(port));
     }
 
     @Test

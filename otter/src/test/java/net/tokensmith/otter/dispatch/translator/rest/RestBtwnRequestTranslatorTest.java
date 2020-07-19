@@ -32,6 +32,9 @@ public class RestBtwnRequestTranslatorTest {
         assertThat(actual.getMatcher(), is(from.getMatcher()));
         assertThat(actual.getPossibleContentTypes(), is(from.getPossibleContentTypes()));
         assertThat(actual.getMethod(), is(from.getMethod()));
+        assertThat(actual.getScheme(), is(from.getScheme()));
+        assertThat(actual.getAuthority(), is(from.getAuthority()));
+        assertThat(actual.getPort(), is(from.getPort()));
         assertThat(actual.getPathWithParams(), is(from.getPathWithParams()));
         assertThat(actual.getContentType(), is(from.getContentType()));
         assertThat(actual.getAccept(), is(from.getAccept()));
@@ -57,6 +60,9 @@ public class RestBtwnRequestTranslatorTest {
         assertThat(actual.getPossibleContentTypes(), is(from.getPossibleContentTypes()));
         assertThat(actual.getPossibleAccepts(), is(from.getPossibleAccepts()));
         assertThat(actual.getMethod(), is(from.getMethod()));
+        assertThat(actual.getScheme(), is(from.getScheme()));
+        assertThat(actual.getAuthority(), is(from.getAuthority()));
+        assertThat(actual.getPort(), is(from.getPort()));
         assertThat(actual.getPathWithParams(), is(from.getPathWithParams()));
         assertThat(actual.getContentType(), is(from.getContentType()));
         assertThat(actual.getAccept(), is(from.getAccept()));

@@ -265,6 +265,9 @@ public class FixtureFactory {
             .possibleContentTypes(contentTypes)
             .possibleAccepts(contentTypes)
             .method(Method.GET)
+            .scheme("https")
+            .authority("tokensmith.net")
+            .port(443)
             .pathWithParams("")
             .contentType(html)
             .accept(html)
@@ -320,6 +323,9 @@ public class FixtureFactory {
         request.setPossibleContentTypes(contentTypes);
         request.setPossibleAccepts(contentTypes);
         request.setMethod(Method.GET);
+        request.setScheme("https");
+        request.setAuthority("tokensmith.net");
+        request.setPort(443);
         request.setPathWithParams("");
         request.setContentType(json);
         request.setAccept(json);

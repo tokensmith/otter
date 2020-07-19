@@ -14,6 +14,9 @@ public class RestBtwnRequest<S, U> {
     private List<MimeType> possibleContentTypes;
     private List<MimeType> possibleAccepts;
     private Method method;
+    private String scheme;
+    private String authority;
+    private Integer port;
     private String pathWithParams;
     private MimeType contentType;
     private MimeType accept;
@@ -58,6 +61,30 @@ public class RestBtwnRequest<S, U> {
 
     public void setMethod(Method method) {
         this.method = method;
+    }
+
+    public String getScheme() {
+        return scheme;
+    }
+
+    public void setScheme(String scheme) {
+        this.scheme = scheme;
+    }
+
+    public String getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(String authority) {
+        this.authority = authority;
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
     }
 
     public String getPathWithParams() {

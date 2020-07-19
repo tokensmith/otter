@@ -31,12 +31,29 @@ public class AskBuilderTest {
     }
 
     @Test
-    public void buildWhenPathWithParamsShouldBeOk() {
-        String url = "/pathWithParams";
-        Ask actual = subject.pathWithParams(url).build();
+    public void buildWhenBaseURIPartsShouldBeOk() {
+        String scheme = "http";
+        String authority = "tokensmith.net";
+        Integer port = 443;
+
+        Ask actual = subject.scheme(scheme)
+                .authority(authority)
+                .port(port)
+                .build();
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getPathWithParams(), is(url));
+        assertThat(actual.getScheme(), is(scheme));
+        assertThat(actual.getAuthority(), is(authority));
+        assertThat(actual.getPort(), is(port));
+    }
+
+    @Test
+    public void buildWhenPathWithParamsShouldBeOk() {
+        String contextPath = "/pathWithParams";
+        Ask actual = subject.pathWithParams(contextPath).build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getPathWithParams(), is(contextPath));
     }
 
     @Test

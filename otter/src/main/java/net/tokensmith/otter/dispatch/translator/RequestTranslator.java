@@ -14,6 +14,9 @@ public class RequestTranslator<S, U> {
         to.setPossibleContentTypes(from.getPossibleContentTypes());
         to.setPossibleAccepts(from.getPossibleAccepts());
         to.setMethod(from.getMethod());
+        to.setScheme(from.getScheme());
+        to.setAuthority(from.getAuthority());
+        to.setPort(from.getPort());
         to.setPathWithParams(from.getPathWithParams());
         to.setContentType(from.getContentType());
         to.setAccept(from.getAccept());
