@@ -3,7 +3,6 @@ package net.tokensmith.otter.controller.builder;
 import helper.FixtureFactory;
 import helper.entity.model.DummySession;
 import helper.entity.model.DummyUser;
-import net.tokensmith.otter.router.entity.io.Ask;
 import org.junit.Before;
 import org.junit.Test;
 import net.tokensmith.otter.controller.entity.Cookie;
