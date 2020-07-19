@@ -16,6 +16,9 @@ public class AskBuilder {
     private List<MimeType> possibleContentTypes;
     private List<MimeType> possibleAccepts;
     private Method method;
+    private String scheme;
+    private String authority;
+    private Integer port;
     private String pathWithParams;
     private MimeType contentType;
     private MimeType accept;
@@ -44,6 +47,22 @@ public class AskBuilder {
 
     public AskBuilder method(Method method) {
         this.method = method;
+        return this;
+    }
+
+
+    public AskBuilder scheme(String scheme) {
+        this.scheme = scheme;
+        return this;
+    }
+
+    public AskBuilder authority(String authority) {
+        this.authority = authority;
+        return this;
+    }
+
+    public AskBuilder port(Integer port) {
+        this.port = port;
         return this;
     }
 
@@ -98,6 +117,6 @@ public class AskBuilder {
     }
 
     public Ask build() {
-        return new Ask(this.matcher, this.possibleContentTypes, this.possibleAccepts, this.method, this.pathWithParams, this.contentType, this.accept, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge, this.ipAddress);
+        return new Ask(this.matcher, this.possibleContentTypes, this.possibleAccepts, this.method, this.scheme, this.authority, this.port, this.pathWithParams, this.contentType, this.accept, this.headers, this.cookies, this.queryParams, this.formData, this.body, this.csrfChallenge, this.ipAddress);
     }
 }

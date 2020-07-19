@@ -34,6 +34,23 @@ public class RequestBuilderTest {
     }
 
     @Test
+    public void buildWhenBaseURIPartsShouldBeOk() {
+        String scheme = "http";
+        String authority = "tokensmith.net";
+        Integer port = 443;
+
+        Request<DummySession, DummyUser> actual = subject.scheme(scheme)
+                .authority(authority)
+                .port(port)
+                .build();
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getScheme(), is(scheme));
+        assertThat(actual.getAuthority(), is(authority));
+        assertThat(actual.getPort(), is(port));
+    }
+
+    @Test
     public void buildWhenPathWithParamsShouldBeOk() {
         String url = "/pathWithParams";
         Request<DummySession, DummyUser> actual = subject.pathWithParams(url).build();

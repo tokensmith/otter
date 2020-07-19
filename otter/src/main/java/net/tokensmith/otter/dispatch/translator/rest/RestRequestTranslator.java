@@ -17,6 +17,9 @@ public class RestRequestTranslator<S, U, P> {
         to.setPossibleContentTypes(from.getPossibleContentTypes());
         to.setPossibleAccepts(from.getPossibleAccepts());
         to.setMethod(from.getMethod());
+        to.setScheme(from.getScheme());
+        to.setAuthority(from.getAuthority());
+        to.setPort(from.getPort());
         to.setPathWithParams(from.getPathWithParams());
         to.setContentType(from.getContentType());
         to.setAccept(from.getAccept());
@@ -38,6 +41,9 @@ public class RestRequestTranslator<S, U, P> {
         RestRequest<U, P> to = new RestRequest<U, P>();
 
         to.setMatcher(from.getMatcher());
+        to.setScheme(from.getScheme());
+        to.setAuthority(from.getAuthority());
+        to.setPort(from.getPort());
         to.setPossibleContentTypes(from.getPossibleContentTypes());
         to.setPossibleAccepts(from.getPossibleAccepts());
         to.setMethod(from.getMethod());
@@ -62,6 +68,9 @@ public class RestRequestTranslator<S, U, P> {
         RestRequest<U, P> to = new RestRequest<U, P>();
 
         to.setMatcher(from.getMatcher());
+        to.setScheme(from.getScheme());
+        to.setAuthority(from.getAuthority());
+        to.setPort(from.getPort());
         to.setPossibleContentTypes(from.getPossibleContentTypes());
         to.setPossibleAccepts(from.getPossibleAccept());
         to.setMethod(from.getMethod());

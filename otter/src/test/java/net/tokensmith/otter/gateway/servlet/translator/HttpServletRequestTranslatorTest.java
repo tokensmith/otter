@@ -57,6 +57,9 @@ public class HttpServletRequestTranslatorTest {
     public void fromWhenPostAndContentTypeIsJsonAndAcceptIsJsonShouldTranslateOk() throws Exception {
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         when(mockContainerRequest.getMethod()).thenReturn("POST");
+        when(mockContainerRequest.getScheme()).thenReturn("https");
+        when(mockContainerRequest.getServerName()).thenReturn("tokensmith.net");
+        when(mockContainerRequest.getServerPort()).thenReturn(443);
         when(mockContainerRequest.getRequestURI()).thenReturn("/foo");
         when(mockContainerRequest.getQueryString()).thenReturn("bar=bar-value");
         when(mockContainerRequest.getCookies()).thenReturn(null);
@@ -82,6 +85,9 @@ public class HttpServletRequestTranslatorTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMethod(), is(Method.POST));
+        assertThat(actual.getScheme(), is("https"));
+        assertThat(actual.getAuthority(), is("tokensmith.net"));
+        assertThat(actual.getPort(), is(443));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getContentType(), is(notNullValue()));
@@ -108,6 +114,9 @@ public class HttpServletRequestTranslatorTest {
     public void fromWhenPostAndCookiesAreNullAndContentTypeIsFormUrlEncodedShouldTranslateOk() throws Exception {
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         when(mockContainerRequest.getMethod()).thenReturn("POST");
+        when(mockContainerRequest.getScheme()).thenReturn("https");
+        when(mockContainerRequest.getServerName()).thenReturn("tokensmith.net");
+        when(mockContainerRequest.getServerPort()).thenReturn(443);
         when(mockContainerRequest.getRequestURI()).thenReturn("/foo");
         when(mockContainerRequest.getQueryString()).thenReturn("bar=bar-value");
         when(mockContainerRequest.getCookies()).thenReturn(null);
@@ -137,6 +146,9 @@ public class HttpServletRequestTranslatorTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMethod(), is(Method.POST));
+        assertThat(actual.getScheme(), is("https"));
+        assertThat(actual.getAuthority(), is("tokensmith.net"));
+        assertThat(actual.getPort(), is(443));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getContentType(), is(notNullValue()));
@@ -165,6 +177,9 @@ public class HttpServletRequestTranslatorTest {
     public void fromWhenPutAndContentTypeIsJsonAndAcceptIsJsonShouldTranslateOk() throws Exception {
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         when(mockContainerRequest.getMethod()).thenReturn("PUT");
+        when(mockContainerRequest.getScheme()).thenReturn("https");
+        when(mockContainerRequest.getServerName()).thenReturn("tokensmith.net");
+        when(mockContainerRequest.getServerPort()).thenReturn(443);
         when(mockContainerRequest.getRequestURI()).thenReturn("/foo");
         when(mockContainerRequest.getQueryString()).thenReturn("bar=bar-value");
         when(mockContainerRequest.getCookies()).thenReturn(null);
@@ -190,6 +205,9 @@ public class HttpServletRequestTranslatorTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMethod(), is(Method.PUT));
+        assertThat(actual.getScheme(), is("https"));
+        assertThat(actual.getAuthority(), is("tokensmith.net"));
+        assertThat(actual.getPort(), is(443));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getContentType(), is(notNullValue()));
@@ -216,6 +234,9 @@ public class HttpServletRequestTranslatorTest {
     public void fromWhenPatchAndContentTypeIsJsonAndAcceptIsJsonShouldTranslateOk() throws Exception {
         HttpServletRequest mockContainerRequest = mock(HttpServletRequest.class);
         when(mockContainerRequest.getMethod()).thenReturn("PATCH");
+        when(mockContainerRequest.getScheme()).thenReturn("https");
+        when(mockContainerRequest.getServerName()).thenReturn("tokensmith.net");
+        when(mockContainerRequest.getServerPort()).thenReturn(443);
         when(mockContainerRequest.getRequestURI()).thenReturn("/foo");
         when(mockContainerRequest.getQueryString()).thenReturn("bar=bar-value");
         when(mockContainerRequest.getCookies()).thenReturn(null);
@@ -241,6 +262,9 @@ public class HttpServletRequestTranslatorTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMethod(), is(Method.PATCH));
+        assertThat(actual.getScheme(), is("https"));
+        assertThat(actual.getAuthority(), is("tokensmith.net"));
+        assertThat(actual.getPort(), is(443));
         assertThat(actual.getHeaders(), is(notNullValue()));
         assertThat(actual.getHeaders().size(), is(0));
         assertThat(actual.getContentType(), is(notNullValue()));
