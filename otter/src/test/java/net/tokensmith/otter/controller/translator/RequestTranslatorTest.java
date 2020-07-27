@@ -28,6 +28,8 @@ public class RequestTranslatorTest {
         Request<DummySession, DummyUser> actual = subject.to(from);
 
         assertThat(actual, is(notNullValue()));
+
+        assertThat(actual.getCause().isPresent(), is(false));
         assertThat(actual.getMatcher(), is(from.getMatcher()));
         assertThat(actual.getPossibleContentTypes(), is(from.getPossibleContentTypes()));
         assertThat(actual.getPossibleAccepts(), is(from.getPossibleAccepts()));

@@ -87,7 +87,12 @@ public class RouteRun<S extends DefaultSession, U extends DefaultUser> implement
         Resource<S, U> errorResource = errorResources.get(statusCode);
 
         if (Objects.nonNull(errorResource)) {
+
             Request<S, U> request = requestTranslator.to(ask);
+            if (Objects.nonNull(cause)) {
+                request.setCause(Optional.of(cause));
+            }
+
             Response<S> response = answerTranslator.from(answer);
             Method method = request.getMethod();
 
@@ -209,5 +214,9 @@ public class RouteRun<S extends DefaultSession, U extends DefaultUser> implement
 
     public AnswerTranslator<S> getAnswerTranslator() {
         return answerTranslator;
+    }
+
+    public Map<StatusCode, Resource<S, U>> getErrorResources() {
+        return errorResources;
     }
 }

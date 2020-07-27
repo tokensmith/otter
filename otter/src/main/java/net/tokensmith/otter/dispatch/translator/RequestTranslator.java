@@ -10,6 +10,7 @@ public class RequestTranslator<S, U> {
     public Request<S, U> to(Ask from) {
         Request<S, U> to = new Request<>();
 
+        to.setCause(Optional.empty());
         to.setMatcher(from.getMatcher());
         to.setPossibleContentTypes(from.getPossibleContentTypes());
         to.setPossibleAccepts(from.getPossibleAccepts());
