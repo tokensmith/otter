@@ -40,7 +40,7 @@ public class JsonErrorHandler<S extends DefaultSession, U extends DefaultUser, P
     public Answer run(RestErrorRequest<U> request, RestErrorResponse response, Throwable cause) {
         RestRequest<U, P> requestToResource = restRequestTranslator.to(request, cause);
         RestResponse<P> responseToResource = restResponseTranslator.to(response);
-        RestResponse<P> responseFromResource = execute(resource, requestToResource, responseToResource, cause);
+        RestResponse<P> responseFromResource = execute(resource, requestToResource, responseToResource);
 
         Optional<byte[]> out = Optional.empty();
         Answer answer = restResponseTranslator.from(responseFromResource);
@@ -54,7 +54,7 @@ public class JsonErrorHandler<S extends DefaultSession, U extends DefaultUser, P
         return answer;
     }
 
-    protected RestResponse<P> execute(RestResource<U,P> resource, RestRequest<U, P> request, RestResponse<P> response, Throwable cause) {
+    protected RestResponse<P> execute(RestResource<U,P> resource, RestRequest<U, P> request, RestResponse<P> response) {
         Method method = request.getMethod();
         RestResponse<P> resourceResponse = null;
 

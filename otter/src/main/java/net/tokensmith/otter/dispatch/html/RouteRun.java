@@ -88,10 +88,7 @@ public class RouteRun<S extends DefaultSession, U extends DefaultUser> implement
 
         if (Objects.nonNull(errorResource)) {
 
-            Request<S, U> request = requestTranslator.to(ask);
-            if (Objects.nonNull(cause)) {
-                request.setCause(Optional.of(cause));
-            }
+            Request<S, U> request = requestTranslator.to(ask, cause);
 
             Response<S> response = answerTranslator.from(answer);
             Method method = request.getMethod();

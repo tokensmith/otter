@@ -3,6 +3,7 @@ package net.tokensmith.otter.dispatch.translator;
 import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.router.entity.io.Ask;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class RequestTranslator<S, U> {
@@ -32,6 +33,14 @@ public class RequestTranslator<S, U> {
         to.setSession(Optional.empty());
         to.setUser(Optional.empty());
 
+        return to;
+    }
+
+    public Request<S, U> to(Ask from, Throwable cause) {
+        Request<S, U> to = to(from);
+        to.setCause(
+            Objects.nonNull(cause) ? Optional.of(cause) : Optional.empty()
+        );
         return to;
     }
 }
