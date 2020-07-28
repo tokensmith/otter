@@ -5,6 +5,7 @@ import net.tokensmith.otter.dispatch.entity.RestBtwnRequest;
 import net.tokensmith.otter.dispatch.entity.RestErrorRequest;
 import net.tokensmith.otter.router.entity.io.Ask;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class RestRequestTranslator<S, U, P> {
@@ -68,6 +69,9 @@ public class RestRequestTranslator<S, U, P> {
         RestRequest<U, P> to = new RestRequest<U, P>();
 
         to.setMatcher(from.getMatcher());
+        to.setCause(
+            Objects.nonNull(cause) ? Optional.of(cause) : Optional.empty()
+        );
         to.setScheme(from.getScheme());
         to.setAuthority(from.getAuthority());
         to.setPort(from.getPort());
