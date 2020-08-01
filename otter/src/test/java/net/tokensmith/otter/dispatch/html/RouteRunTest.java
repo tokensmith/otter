@@ -11,6 +11,7 @@ import helper.entity.model.DummyUser;
 import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.Request;
+import net.tokensmith.otter.controller.entity.response.Response;
 import net.tokensmith.otter.dispatch.translator.AnswerTranslator;
 import net.tokensmith.otter.dispatch.translator.RequestTranslator;
 import net.tokensmith.otter.router.entity.Method;
@@ -29,6 +30,10 @@ import java.util.Optional;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class RouteRunTest {
