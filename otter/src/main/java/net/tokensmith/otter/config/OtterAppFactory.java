@@ -44,9 +44,9 @@ import net.tokensmith.otter.server.path.WebAppPath;
 import net.tokensmith.otter.translatable.Translatable;
 import net.tokensmith.otter.translator.MimeTypeTranslator;
 
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;

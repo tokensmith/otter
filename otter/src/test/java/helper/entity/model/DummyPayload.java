@@ -4,7 +4,7 @@ package helper.entity.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import net.tokensmith.otter.translatable.Translatable;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Optional;
 

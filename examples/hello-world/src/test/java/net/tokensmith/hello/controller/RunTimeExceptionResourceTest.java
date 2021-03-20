@@ -12,7 +12,7 @@ import suite.ServletContainerTest;
 import java.net.URI;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @Category(ServletContainerTest.class)
 public class RunTimeExceptionResourceTest {

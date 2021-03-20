@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class JsonErrorHandlerTest {
 

@@ -179,7 +179,7 @@ public class WebAppContextBuilder {
             gzipHandler.setIncludedMimeTypes(
                     gzipMimeTypes.toArray(new String[gzipMimeTypes.size()])
             );
-            webAppContext.setGzipHandler(gzipHandler);
+            webAppContext.insertHandler(gzipHandler);
         }
         webAppContext.setSessionHandler(this.sessionHandler);
         return webAppContext;

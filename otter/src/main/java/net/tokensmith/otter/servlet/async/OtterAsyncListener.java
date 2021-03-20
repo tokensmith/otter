@@ -4,9 +4,9 @@ import org.eclipse.jetty.server.AsyncContextEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.AsyncEvent;
-import javax.servlet.AsyncListener;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.AsyncEvent;
+import jakarta.servlet.AsyncListener;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 
@@ -19,7 +19,7 @@ public class OtterAsyncListener implements AsyncListener {
     public void onComplete(AsyncEvent event)  {
         AsyncContextEvent ace = (AsyncContextEvent) event;
         HttpServletRequest hsr = (HttpServletRequest) ace.getAsyncContext().getRequest();
-        LOGGER.debug("Async Done: " + hsr.getMethod() + " " + ace.getPath());
+        LOGGER.debug("Async Done: " + hsr.getMethod() + " " + hsr.getServletPath());
     }
 
     @Override
@@ -28,7 +28,7 @@ public class OtterAsyncListener implements AsyncListener {
         AsyncContextEvent ace = (AsyncContextEvent) event;
         HttpServletRequest hsr = (HttpServletRequest) ace.getAsyncContext().getRequest();
 
-        String msg = "ErrorPayload: " + hsr.getMethod() + " " + ace.getPath() + " " + t.getMessage();
+        String msg = "ErrorPayload: " + hsr.getMethod() + " " + hsr.getServletPath() + " " + t.getMessage();
         LOGGER.error(msg, t);
     }
 
@@ -37,7 +37,7 @@ public class OtterAsyncListener implements AsyncListener {
         AsyncContextEvent ace = (AsyncContextEvent) event;
         HttpServletRequest hsr = (HttpServletRequest) ace.getAsyncContext().getRequest();
 
-        LOGGER.debug("Async Started: " + hsr.getMethod() + " " + ace.getPath());
+        LOGGER.debug("Async Started: " + hsr.getMethod() + " " + hsr.getServletPath());
     }
 
     @Override
@@ -45,6 +45,6 @@ public class OtterAsyncListener implements AsyncListener {
         AsyncContextEvent ace = (AsyncContextEvent) event;
         HttpServletRequest hsr = (HttpServletRequest) ace.getAsyncContext().getRequest();
 
-        LOGGER.error("Async timeout: " + hsr.getMethod() + " " + ace.getPath());
+        LOGGER.error("Async timeout: " + hsr.getMethod() + " " + hsr.getServletPath());
     }
 }

@@ -1,10 +1,9 @@
 package net.tokensmith.hello.config;
 
 
+import jakarta.servlet.annotation.WebServlet;
 import net.tokensmith.otter.gateway.Configure;
 import net.tokensmith.otter.servlet.OtterEntryServlet;
-
-import javax.servlet.annotation.WebServlet;
 
 
 @WebServlet(value="/app/*", name="AppEntryServlet", asyncSupported = true, loadOnStartup = 1)

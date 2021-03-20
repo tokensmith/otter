@@ -28,15 +28,15 @@ ext {
 }
 
 dependencies {
-    compile project (':otter')
+    implementation project (':otter')
 
     // logging
-    testCompile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: "${log4jVersion}"
-    testCompile group: 'org.apache.logging.log4j', name: 'log4j-api', version: "${log4jVersion}"
-    testCompile group: 'org.apache.logging.log4j', name: 'log4j-core', version: "${log4jVersion}"
+    testImplementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: "${log4jVersion}"
+    testImplementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: "${log4jVersion}"
+    testImplementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: "${log4jVersion}"
 
-    testCompile 'junit:junit:4.12'
-    testCompile "org.asynchttpclient:async-http-client:2.4.4"
+    testImplementation 'junit:junit:4.12'
+    testImplementation "org.asynchttpclient:async-http-client:2.4.4"
 }
 
 configurations {

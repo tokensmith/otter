@@ -15,7 +15,7 @@ import net.tokensmith.otter.translator.MimeTypeTranslator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -98,11 +98,11 @@ public class HttpServletRequestTranslator  {
                 .build();
     }
 
-    protected Map<String, Cookie> from(javax.servlet.http.Cookie[] containerCookies) {
+    protected Map<String, Cookie> from(jakarta.servlet.http.Cookie[] containerCookies) {
         Map<String, Cookie> otterCookies = new HashMap<>();
         if (Objects.nonNull(containerCookies)) {
             // throw away duplicate cookies.. idk why duplicates occur.
-            for (javax.servlet.http.Cookie cookie : containerCookies) {
+            for (jakarta.servlet.http.Cookie cookie : containerCookies) {
                 Cookie candidate = httpServletCookieTranslator.from(cookie);
                 Cookie existing = otterCookies.get(candidate.getName());
                 if (Objects.nonNull(existing) && existing.equals(candidate)) {

@@ -3,7 +3,7 @@ package net.tokensmith.otter.server;
 import net.tokensmith.otter.servlet.EntryFilter;
 import org.apache.tomcat.util.descriptor.web.ErrorPage;
 
-import javax.servlet.Filter;
+import jakarta.servlet.Filter;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -7,7 +7,7 @@ import org.junit.Test;
 import java.util.Base64;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 
 public class ParseHttpBasicTest {

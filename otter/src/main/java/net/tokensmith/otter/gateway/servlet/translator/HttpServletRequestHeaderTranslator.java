@@ -1,7 +1,7 @@
 package net.tokensmith.otter.gateway.servlet.translator;
 
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;

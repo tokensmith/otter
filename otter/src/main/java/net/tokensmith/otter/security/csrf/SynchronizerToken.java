@@ -3,7 +3,7 @@ package net.tokensmith.otter.security.csrf;
 import net.tokensmith.otter.security.RandomString;
 import net.tokensmith.otter.security.csrf.exception.CsrfException;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import java.util.Optional;

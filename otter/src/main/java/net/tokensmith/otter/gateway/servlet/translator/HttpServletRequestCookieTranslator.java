@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class HttpServletRequestCookieTranslator {
 
-    public Cookie from(javax.servlet.http.Cookie containerCookie) {
+    public Cookie from(jakarta.servlet.http.Cookie containerCookie) {
         return new Cookie.Builder()
             .name(containerCookie.getName())
             .value(containerCookie.getValue())
@@ -20,8 +20,8 @@ public class HttpServletRequestCookieTranslator {
             .build();
     }
 
-    public javax.servlet.http.Cookie to(Cookie otterCookie) {
-        javax.servlet.http.Cookie containerCookie = new javax.servlet.http.Cookie(otterCookie.getName(), otterCookie.getValue());
+    public jakarta.servlet.http.Cookie to(Cookie otterCookie) {
+        jakarta.servlet.http.Cookie containerCookie = new jakarta.servlet.http.Cookie(otterCookie.getName(), otterCookie.getValue());
         containerCookie.setComment(otterCookie.getComment());
 
         if(Objects.nonNull(otterCookie.getDomain())) {
