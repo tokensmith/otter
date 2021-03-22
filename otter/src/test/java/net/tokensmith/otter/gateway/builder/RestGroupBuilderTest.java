@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class RestGroupBuilderTest {
 

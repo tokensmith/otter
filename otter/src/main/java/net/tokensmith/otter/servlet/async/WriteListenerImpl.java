@@ -4,9 +4,9 @@ package net.tokensmith.otter.servlet.async;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.AsyncContext;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Queue;

@@ -3,7 +3,7 @@ package net.tokensmith.otter.gateway.servlet.merger;
 
 import net.tokensmith.otter.router.entity.io.Answer;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 public class HttpServletRequestMerger {

@@ -3,11 +3,11 @@ package net.tokensmith.otter.gateway.servlet.translator;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 
 public class HttpServletRequestCookieTranslatorTest {

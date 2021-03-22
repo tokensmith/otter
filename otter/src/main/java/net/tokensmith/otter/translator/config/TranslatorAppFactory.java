@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import net.tokensmith.otter.translator.JsonTranslator;
@@ -49,7 +49,7 @@ public class TranslatorAppFactory {
         if (Objects.isNull(objectMapper)) {
             objectMapper = new ObjectMapper()
                     .setPropertyNamingStrategy(
-                            PropertyNamingStrategy.SNAKE_CASE
+                            PropertyNamingStrategies.SNAKE_CASE
                     )
                     .configure(JsonParser.Feature.STRICT_DUPLICATE_DETECTION, true)
                     .registerModule(new Jdk8Module())

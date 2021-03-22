@@ -1,6 +1,6 @@
 package net.tokensmith.otter.router;
 
-import javax.servlet.annotation.WebServlet;
+import jakarta.servlet.annotation.WebServlet;
 
 /**
  * Created by tommackenzie on 5/2/15.

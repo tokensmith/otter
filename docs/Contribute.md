@@ -15,8 +15,7 @@
 
 ## How to release.
 ```bash
-$ ./gradlew :otter:publish
-$ ./gradlew :otter-translatable:publish
+$ make publish
 ```
 
 - Goto [Maven Central staging repositories](https://oss.sonatype.org/#stagingRepositories)

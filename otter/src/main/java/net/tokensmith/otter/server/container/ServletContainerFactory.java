@@ -22,7 +22,7 @@ import org.eclipse.jetty.webapp.WebXmlConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.DispatcherType;
+import jakarta.servlet.DispatcherType;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -39,7 +39,7 @@ public class ServletContainerFactory {
     protected static Logger logger = LoggerFactory.getLogger(ServletContainerFactory.class);
     private static String DIR_ALLOWED_KEY = "org.eclipse.jetty.servlet.Default.dirAllowed";
     private static String INCLUDE_JAR_PATTERN = "org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern";
-    private static String JARS_TO_INCLUDE = ".*/[^/]*servlet-api-[^/]*\\.jar$|.*/javax.servlet.jsp.jstl-.*\\.jar$|.*/[^/]*taglibs.*\\.jar$";
+    private static String JARS_TO_INCLUDE = ".*/[^/]*servlet-api-[^/]*\\.jar$|.*/jakarta.servlet.jsp.jstl-.*\\.jar$|.*/[^/]*taglibs.*\\.jar$";
     private static String JSP_SERVLET = "org.eclipse.jetty.jsp.JettyJspServlet";
     private static String FALSE = "false";
     private CompiledClassPath compiledClassPath;

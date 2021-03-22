@@ -2,7 +2,7 @@ package net.tokensmith.otter.security.csrf;
 
 import net.tokensmith.otter.security.csrf.exception.CsrfException;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 public interface Csrf {

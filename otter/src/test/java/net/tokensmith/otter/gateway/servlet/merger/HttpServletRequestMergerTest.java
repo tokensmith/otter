@@ -6,7 +6,7 @@ import net.tokensmith.otter.router.entity.io.Answer;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 import static org.mockito.Mockito.any;

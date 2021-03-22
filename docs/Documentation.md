@@ -168,11 +168,11 @@ All `RestTargets` must relate to a `RestGroup`.
 
 #### Request Body Validation
 A request body that is intended to be delivered to a `RestResource` will be validated by 
-using `javax.validation` defined by `JSR 380`. To use it annotate a class implementation with constraints then if 
+using `jakarta.validation` defined by `JSR 380`. To use it annotate a class implementation with constraints then if 
 there are any errors Otter will send the request to the configured `RestBadRequestResource`. 
 See [error handling](#error-handling) for how that works.
 
-If `javax.validation` is not your preference then it can be replaced by passing in an implementation of Otter's 
+If `jakarta.validation` is not your preference then it can be replaced by passing in an implementation of Otter's 
 `Validate` interface into the `RestTargetBuilder`.
 
 ```java

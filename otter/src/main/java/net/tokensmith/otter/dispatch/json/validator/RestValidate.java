@@ -4,8 +4,8 @@ package net.tokensmith.otter.dispatch.json.validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
