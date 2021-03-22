@@ -22,7 +22,7 @@ example application. Only 5 files to get started.
 ## Dependency coordinates
 Latest pinned version is `1.5.7`
 
-Current development version is `1.5.7`
+Current development version is `1.6.0-SNAPSHOT`
 
 #### Maven
 ```xml
@@ -30,14 +30,14 @@ Current development version is `1.5.7`
     <dependency>
         <groupId>net.tokensmith</groupId>
         <artifactId>otter</artifactId>
-        <version>1.5.7</version>
+        <version>1.6.0-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
 
 #### Gradle
 ```groovy
-compile group: 'net.tokensmith', name: 'otter', version: '1.5.7'
+compile group: 'net.tokensmith', name: 'otter', version: '1.6.0-SNAPSHOT'
 ```
 
 ## Documentation
